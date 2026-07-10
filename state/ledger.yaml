@@ -1,0 +1,355 @@
+# ===================================================================
+# GRASS Project State Ledger
+# ===================================================================
+# Charter principle: "Maintain a machine-readable organizational state"
+# (see constitution/01-constitution.md and state/08-state-ledger-spec.md).
+#
+# This file is the canonical project handoff mechanism for every future
+# agent. If you change anything, append a row to `changelog` at the bottom.
+#
+# Schema version: 0.1.0
+# Last updated: 2026-07-10 (Day 3 of Phase 0)
+# ===================================================================
+
+schema_version: 0.1.0
+
+# -------------------------------------------------------------------
+# Phase tracking
+# -------------------------------------------------------------------
+phase: 0
+phase_name: "Repository audit and baseline"
+phase_exit_criteria:
+  - "audit/phase-0/architecture-gap.md exists with concrete gap list"
+  - "audit/phase-0/tech-debt.md exists (likely near-empty for Day 1 repo)"
+  - "audit/phase-0/6-month-roadmap.md exists with KPIs and exit criteria"
+  - "Pre-commit hooks green on the Phase-0 exit commit"
+  - "First MCP smoke test passes (Day 5 protocol)"
+  - "13 agent specs authored and lint-clean (Day 3-4)"
+  - "5 landscaping capabilities registered (Day 3)"
+
+phase_day: 3
+phase_day_of: 5
+
+# Pending phase-exit flag (Pilot Exception, see constitution/charter-amendments/pilot-exception.md)
+# Schema: list of phase objects with pilot identifier, decision_id, and review date.
+pending_phase_exit: []
+
+# -------------------------------------------------------------------
+# Strategy lock-ins (irreversible decisions ratified by the steward)
+# -------------------------------------------------------------------
+strategy_locked:
+  sequencing: "hybrid-strangler-fig"
+  mission_1_service_area:
+    city: "Largo"
+    state: "FL"
+    zips:
+      - "33771"  # primary
+      - "33770"
+      - "33778"
+      - "33773"
+      - "33774"
+      - "33756"
+  operating_model: "solo-founder-lean"
+  infra_budget_ceiling_usd_per_month: 200
+  entity_choice: null  # research output, decided Day 8
+  primary_brand: null  # research output, decided Day 10
+
+# -------------------------------------------------------------------
+# Active objectives
+# -------------------------------------------------------------------
+objectives:
+  active:
+    - id: OBJ-DAY3-001
+      title: "Author first 3 agent specs (research, architecture, engineering)"
+      owner_agent: null  # Steward is sole author Day 3
+      due: "2026-07-10"
+      status: in_progress
+      spec_ref: "agents/_schema.md"
+
+    - id: OBJ-DAY3-002
+      title: "Ratify Pilot Exception charter amendment"
+      owner_agent: null
+      due: "2026-07-10"
+      status: in_progress
+      spec_ref: "constitution/charter-amendments/pilot-exception.md"
+
+    - id: OBJ-DAY3-003
+      title: "Instantiate state ledger + capability registry"
+      owner_agent: null
+      due: "2026-07-10"
+      status: in_progress
+      spec_ref: "state/ledger.yaml + state/capability-registry.yaml"
+
+    - id: OBJ-DAY3-004
+      title: "Author CLAUDE.md as root cross-link index"
+      owner_agent: null
+      due: "2026-07-10"
+      status: in_progress
+      spec_ref: "CLAUDE.md"
+
+  blocked: []
+
+  completed:
+    - id: OBJ-DAY1-001
+      title: "git init + initial commit + LICENSE + NOTICE + README + .gitignore"
+      completed_on: "2026-07-10"
+      commit: "babd853, 3306ae7"
+
+    - id: OBJ-DAY2-001
+      title: "Dev tooling (Bun, biome, TS strict), CI (6 jobs), secrets contract, charter lint scripts"
+      completed_on: "2026-07-10"
+      commit: "d730d3c"
+
+# -------------------------------------------------------------------
+# Active decisions
+# -------------------------------------------------------------------
+# Required format per governance/05-decision-framework.md.
+# Each decision has a corresponding file in governance/decisions/.
+decisions:
+  ratified:
+    - id: D-0001
+      slug: "pilot-exception"
+      title: "Pilot Exception charter amendment"
+      decision_file: "constitution/charter-amendments/pilot-exception.md"
+      confidence: 0.85
+      review_date: "2026-08-09"
+      rationale: "Hybrid Strangler-Fig sequencing requires formal exception mechanism to remain charter-compliant. Pilot Exception encodes the existing 'documented justification' principle for early mission work."
+
+    - id: D-0002
+      slug: "tech-stack-primary"
+      title: "Tech stack primary selection for Mission 1"
+      decision_file: "governance/decisions/0002-tech-stack.md"  # to be authored
+      confidence: 0.80
+      review_date: "2026-10-10"  # after first month of production use
+      rationale: "TypeScript strict + Bun + Next.js 15 + Supabase + Stripe + Vercel + Jobber. Solo-founder leverage, $200/mo infra ceiling, managed services to defer self-hosting until Month 12."
+
+    - id: D-0003
+      slug: "mission-1-service-area"
+      title: "Mission 1 service area — Largo, FL 33771"
+      decision_file: "governance/decisions/0003-service-area.md"  # to be authored
+      confidence: 0.90
+      review_date: "2026-09-01"
+      rationale: "Single-city hyperlocal SEO tractable for solo founder. Hot-humid climate = year-round mowing revenue. Florida licensing regime is well-documented. Mature competitor set means validated market."
+
+    - id: D-0004
+      slug: "operating-model-lean"
+      title: "Solo founder / lean operating model"
+      decision_file: "governance/decisions/0004-operating-model.md"  # to be authored
+      confidence: 0.85
+      review_date: "2026-10-01"
+      rationale: "Forces architectural discipline, closes over-engineering escape hatches. $200/mo infra ceiling. Re-evaluate when MRR > $5K/mo or second human joins."
+
+  pending:
+    - id: D-0005
+      slug: "entity-choice"
+      title: "Legal entity (FL LLC vs S-Corp)"
+      confidence: 0.0
+      due_date: "2026-07-18"  # Day 8
+      decision_file: null
+      rationale_pending: "Awaiting research output from Day 8 licensing-map workstream."
+
+    - id: D-0006
+      slug: "insurance-broker"
+      title: "Insurance broker selection (Pinellas landscaping specialist)"
+      confidence: 0.0
+      due_date: "2026-07-18"
+      decision_file: null
+      rationale_pending: "Awaiting 3 quotes from research."
+
+    - id: D-0007
+      slug: "brand-domain"
+      title: "Brand identity and primary domain"
+      confidence: 0.0
+      due_date: "2026-07-20"  # Day 10
+      decision_file: null
+      rationale_pending: "Awaiting SEO keyword research."
+
+# -------------------------------------------------------------------
+# Known risks (cross-reference with state/risk-register.yaml)
+# -------------------------------------------------------------------
+risks:
+  # See state/risk-register.yaml for full risk records. This list mirrors
+  # the top-5 risks for quick reference.
+  top:
+    - risk_id: "R-CHDRIFT-001"
+      title: "Charter drift — capability registry becomes paperwork tax"
+      owner_agent: "engineering"
+      mitigation_status: "active"
+      review_date: "weekly"
+
+    - risk_id: "R-FLLIC-001"
+      title: "Florida licensing surprise mid-launch"
+      owner_agent: "operations"
+      mitigation_status: "active"
+      review_date: "2026-07-18"  # Day 8
+
+    - risk_id: "R-BURN-001"
+      title: "Solo founder context burnout by Month 3"
+      owner_agent: "executive"
+      mitigation_status: "active"
+      review_date: "weekly"
+
+    - risk_id: "R-INFRA-001"
+      title: "Self-hosting/infra tax before product-market fit"
+      owner_agent: "infrastructure"
+      mitigation_status: "active"
+      review_date: "monthly"
+
+    - risk_id: "R-HURR-001"
+      title: "Hurricane season breaks scheduling + payment ops"
+      owner_agent: "operations"
+      mitigation_status: "active"
+      review_date: "2026-06-01"  # annual pre-season
+
+  research_backlog: []  # populated by research division
+  full_list_ref: "state/risk-register.yaml"
+
+# -------------------------------------------------------------------
+# Knowledge gaps (research division tracks these)
+# -------------------------------------------------------------------
+knowledge_gaps:
+  - id: "GAP-001"
+    title: "Pinellas County lawn care competitor matrix"
+    severity: "blocking"
+    due: "2026-07-15"  # Days 10-12
+    owner_agent: "research"
+
+  - id: "GAP-002"
+    title: "Largo FL pricing floor (10+ operators surveyed)"
+    severity: "blocking"
+    due: "2026-07-17"  # Days 13-15
+    owner_agent: "research"
+
+  - id: "GAP-003"
+    title: "100-keyword cluster for 'lawn care Largo FL'"
+    severity: "blocking"
+    due: "2026-07-17"
+    owner_agent: "research"
+
+  - id: "GAP-004"
+    title: "Pinellas insurance brokers for landscaping"
+    severity: "blocking"
+    due: "2026-07-18"
+    owner_agent: "research"
+
+  - id: "GAP-005"
+    title: "SiteOne/Horizon/Ewing supplier costs (Largo)"
+    severity: "blocking"
+    due: "2026-07-17"
+    owner_agent: "research"
+
+  - id: "GAP-006"
+    title: "Equipment dealers within 30 mi (commercial mowers)"
+    severity: "blocking"
+    due: "2026-07-17"
+    owner_agent: "research"
+
+# -------------------------------------------------------------------
+# Implementation backlog (engineering division owns)
+# -------------------------------------------------------------------
+implementation_backlog:
+  - id: "IMPL-001"
+    title: "Next.js 15 app skeleton (Month 3)"
+    priority: "P1"
+    owner_agent: "engineering"
+    blocked_by: ["D-0002"]
+
+  - id: "IMPL-002"
+    title: "Supabase project + auth + RLS policies (Month 3)"
+    priority: "P1"
+    owner_agent: "engineering"
+    blocked_by: ["D-0002"]
+
+  - id: "IMPL-003"
+    title: "Jobber integration (admin app Months 0-6)"
+    priority: "P1"
+    owner_agent: "engineering"
+    blocked_by: ["D-0002"]
+
+  - id: "IMPL-004"
+    title: "Stripe payment intents + webhook handler"
+    priority: "P1"
+    owner_agent: "engineering"
+    blocked_by: ["D-0002"]
+
+  - id: "IMPL-005"
+    title: "Hurricane mode capability (registered Day 1 of operations)"
+    priority: "P0"
+    owner_agent: "operations"
+    blocked_by: []
+
+# -------------------------------------------------------------------
+# Agent assignments (current state of agent org)
+# -------------------------------------------------------------------
+agent_assignments:
+  total_documented: 13
+  in_draft: 0
+  active: 0
+  deprecated: 0
+  day_3_target: 3  # research, architecture, engineering
+  day_4_target: 10  # remaining 9 + engineering refined
+  detail_ref: "agents/"
+
+# -------------------------------------------------------------------
+# Capability registry snapshot
+# -------------------------------------------------------------------
+capability_registry:
+  total: 0
+  in_seed: 5  # mowing, edging, mulching, hedge-trim, lead-capture (Day 3)
+  detail_ref: "state/capability-registry.yaml"
+
+# -------------------------------------------------------------------
+# Metrics (cross-reference with analytics/kpi-taxonomy.md)
+# -------------------------------------------------------------------
+metrics:
+  # North Star
+  north_star: "Mission 1 Gross Margin $ run rate at end of Month 6"
+  # Operational KPIs initialized as targets; populated with values from Month 1+
+  kpi_scorecard_ref: "analytics/kpi-taxonomy.md"
+
+# -------------------------------------------------------------------
+# Repository health (rolling)
+# -------------------------------------------------------------------
+health_score: 0.62  # rough heuristic; Phase 0 in progress, no production yet
+health_components:
+  governance: 0.85  # doc set present, Pilot Exception drafted
+  knowledge: 0.20  # ledger just initialized
+  research: 0.00  # not started
+  engineering: 0.55  # tooling + CI in place, no app code yet
+  operations: 0.00  # no business running yet
+  tests: 0.40  # charter-compliance tests stubbed
+
+# -------------------------------------------------------------------
+# Next recommended actions (auto-derived; reviewed weekly)
+# -------------------------------------------------------------------
+next_actions:
+  immediate:
+    - "Author agents/research.md (Day 3 first agent)"
+    - "Author agents/architecture.md (Day 3 second agent)"
+    - "Author agents/engineering.md (Day 3 third agent)"
+    - "Update lint-agents.ts to actually validate the schema (Day 3)"
+    - "Seed state/capability-registry.yaml with 5 landscaping capabilities"
+
+  week_2:
+    - "Day 4: Author remaining 9 agent specs (executive, knowledge, marketing, seo, sales, operations, finance, qa, security, infrastructure)"
+    - "Day 4: Seed state/risk-register.yaml with 5 risks"
+    - "Day 4: Author analytics/kpi-taxonomy.md"
+    - "Day 5: Install Tier-1 MCP filesystem server"
+    - "Day 5: Run smoke test protocol (CLAUDE.md → ledger → audit)"
+    - "Day 5: Author audit/phase-0/{architecture-gap,tech-debt,6-month-roadmap}.md"
+
+  week_3:
+    - "Day 8: Author research/regulatory/largo-licensing-map.yaml (Day 8 GATE)"
+    - "Day 8: Sign-off on landscaping-WITHOUT-fertilization-WITHOUT-irrigation-WITHOUT-pest as legal service line"
+    - "Day 9: Author research/market/largo-market-size.md"
+    - "Days 10-12: Author research/competitors/largo-33771.csv"
+    - "Days 13-15: Author research/pricing/price-book.yaml + research/seo/largo-keyword-map.md + research/suppliers/largo.yaml (parallel)"
+
+# -------------------------------------------------------------------
+# Changelog (append-only)
+# -------------------------------------------------------------------
+changelog:
+  - date: "2026-07-10"
+    day: 3
+    change: "Initial ledger instantiated. Day 1+2 commits referenced. Day 3 work in progress: 4 objectives active, 4 decisions ratified, 5 risks mirrored, 6 knowledge gaps, 5 implementation backlog items."
+    by: "steward"

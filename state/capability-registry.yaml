@@ -1,0 +1,273 @@
+# ===================================================================
+# GRASS Capability Registry
+# ===================================================================
+# Charter principle: "Every organizational capability must be registered."
+# Format enforced by scripts/lint-capabilities.ts.
+#
+# Each capability entry MUST include:
+#   cap_id, name, owner_agent, version, status, inputs, outputs,
+#   consumers, tests, documentation, maturity, known_limitations,
+#   roadmap_links, created, last_updated
+# ===================================================================
+
+schema_version: 0.1.0
+last_updated: "2026-07-10"
+
+# -------------------------------------------------------------------
+# Mission 1 — Landscaping (Largo, FL) seed capabilities
+# -------------------------------------------------------------------
+# Authored Day 3, before any production code exists. They are the
+# CONTRACT for what engineering will build; without these registered,
+# no landscaping code should be merged.
+
+capabilities:
+
+  # ---------------------------------------------------------------
+  # CAP-001 — Standard lawn mowing service
+  # ---------------------------------------------------------------
+  - cap_id: cap_mowing_standard
+    name: "Standard residential lawn mowing"
+    owner_agent: operations
+    status: draft
+    version: 0.1.0
+    maturity: designed  # not yet built
+    mission: "M1"
+    description: |
+      Push-mow residential lawns ≤0.5 acre. Includes mowing, line-trim
+      edging, hard-surface blowing. Frequency 1×/week to bi-weekly.
+      Excludes bagging, hedge/shrub work, fertilization, pest control.
+    inputs:
+      - "Property record (lot size, gate type, obstacles)"
+      - "Service frequency (weekly/bi-weekly/one-time)"
+      - "Customer record (address, gate code, pets, notes)"
+    outputs:
+      - "Job record (date, duration, before/after photo optional)"
+      - "Invoice line item (mowing visit)"
+      - "Crew check-in/out timestamps"
+    consumers:
+      - "Scheduling agent (assigns to crew)"
+      - "Invoicing agent (creates invoice line)"
+      - "Operations dashboard (capacity planning)"
+    tests:
+      - "scripts/test-capabilities/cap_mowing_standard.spec.ts (Day 5+)"
+    documentation:
+      - "research/pricing/price-book.yaml (price per visit by frequency × lot bucket)"
+      - "agents/operations.md (operational runbook)"
+    known_limitations:
+      - "No automated lot-size measurement yet (manual on first visit)"
+      - "Weather cancellation policy is manual (Hurricane mode Day 1 handles named storms only)"
+    roadmap_links:
+      - "Auto-quoting from property polygon area (Month 6)"
+      - "Photo-based quality scoring via computer vision (Month 9+)"
+    created: "2026-07-10"
+    last_updated: "2026-07-10"
+
+  # ---------------------------------------------------------------
+  # CAP-002 — Hard-edge edging
+  # ---------------------------------------------------------------
+  - cap_id: cap_edging_hard_edge
+    name: "Mechanical edging along curbs and walkways"
+    owner_agent: operations
+    status: draft
+    version: 0.1.0
+    maturity: designed
+    mission: "M1"
+    description: |
+      Mechanical blade edging along concrete or asphalt edges (curbs,
+      walkways, driveways). Measured in linear feet. Often bundled
+      with mowing visit; sometimes sold as a one-time refresh.
+    inputs:
+      - "Property record (linear feet of edge to edge)"
+      - "Whether bundled with mowing visit or sold standalone"
+    outputs:
+      - "Job record (linear feet edged)"
+      - "Invoice line item ($/linear-ft by height bucket)"
+    consumers:
+      - "Scheduling agent (bundles with mowing slot)"
+      - "Invoicing agent"
+      - "Pricing research (price-book.yaml)"
+    tests:
+      - "scripts/test-capabilities/cap_edging_hard_edge.spec.ts (Day 5+)"
+    documentation:
+      - "research/pricing/price-book.yaml"
+    known_limitations:
+      - "Linear-feet estimation manual on first visit"
+      - "Spring startup edges not separately priced (bundled with first mowing visit)"
+    roadmap_links:
+      - "Property polygon auto-extraction from satellite imagery (Month 9+)"
+    created: "2026-07-10"
+    last_updated: "2026-07-10"
+
+  # ---------------------------------------------------------------
+  # CAP-003 — Mulch installation
+  # ---------------------------------------------------------------
+  - cap_id: cap_mulching_install
+    name: "Bulk mulch delivery and installation"
+    owner_agent: operations
+    status: draft
+    version: 0.1.0
+    maturity: designed
+    mission: "M1"
+    description: |
+      Bulk mulch delivery to property + installation. Priced per cubic
+      yard installed. Includes bed prep, edge definition, weed barrier
+      optional. Spring and fall are peak seasons in Largo (zone 10a).
+    inputs:
+      - "Property record (bed area, current mulch depth, edge type)"
+      - "Mulch SKU (pine bark, cypress, Eucalyptus, dyed brown)"
+      - "Depth target (1-3 inches typical)"
+    outputs:
+      - "Job record (cu-yd delivered, cu-yd installed)"
+      - "Supplier invoice matching"
+      - "Customer invoice"
+    consumers:
+      - "Operations agent (supplier coordination)"
+      - "Invoicing agent"
+      - "Suppliers research (SiteOne, Horizon, Ewing)"
+    tests:
+      - "scripts/test-capabilities/cap_mulching_install.spec.ts (Day 5+)"
+    documentation:
+      - "research/suppliers/largo.yaml (supplier pricing + lead times)"
+      - "research/pricing/price-book.yaml"
+    known_limitations:
+      - "Bulk mulch delivery requires crew of 2+; affects scheduling windows"
+      - "Storm runoff during hurricane season can displace mulch"
+    roadmap_links:
+      - "Mulch SKU calculator by bed area (Month 6)"
+      - "Subscription mulching (annual refresh contracts) (Month 9+)"
+    created: "2026-07-10"
+    last_updated: "2026-07-10"
+
+  # ---------------------------------------------------------------
+  # CAP-004 — Hedge and shrub trimming
+  # ---------------------------------------------------------------
+  - cap_id: cap_hedge_trim
+    name: "Seasonal hedge and shrub trimming"
+    owner_agent: operations
+    status: draft
+    version: 0.1.0
+    maturity: designed
+    mission: "M1"
+    description: |
+      Hedge and shrub trimming by linear foot of hedge face, height
+      bucketed (≤4ft, 4-8ft, 8ft+). Includes haul-off of clippings.
+      Seasonal peak in Largo is May-September (active growth).
+    inputs:
+      - "Property record (hedge linear feet, height bands)"
+      - "Crew assignment (1-pers vs 2-pers based on height)"
+      - "Disposal requirements (haul-off vs chip-on-site)"
+    outputs:
+      - "Job record (linear feet trimmed by height band)"
+      - "Invoice line items (per band + haul-off)"
+      - "Next-service-due estimate (60-120 days depending on species)"
+    consumers:
+      - "Scheduling agent"
+      - "Invoicing agent"
+      - "Customer success (next-service reminder)"
+    tests:
+      - "scripts/test-capabilities/cap_hedge_trim.spec.ts (Day 5+)"
+    documentation:
+      - "research/pricing/price-book.yaml"
+    known_limitations:
+      - "Height estimation manual on first visit"
+      - "Hedge species affect regrowth rate (manual tracking)"
+    roadmap_links:
+      - "Height detection via photo + computer vision (Month 12+)"
+      - "Subscription hedge trimming (Month 9+)"
+    created: "2026-07-10"
+    last_updated: "2026-07-10"
+
+  # ---------------------------------------------------------------
+  # CAP-005 — Lead capture from Google Business Profile
+  # ---------------------------------------------------------------
+  - cap_id: cap_lead_capture_gbp
+    name: "GBP form → CRM → auto-acknowledge"
+    owner_agent: sales
+    status: draft
+    version: 0.1.0
+    maturity: designed
+    mission: "M1"
+    description: |
+      Inbound lead from Google Business Profile form. Creates a CRM
+      record, sends auto-acknowledgement via SMS and email, and routes
+      to Sales for qualification. First-month primary source of leads.
+    inputs:
+      - "GBP form submission (name, phone, email, service needed)"
+      - "Property address (optional, may be deferred to quote)"
+    outputs:
+      - "Lead record in CRM"
+      - "Auto-acknowledgement SMS + email (templated, branded)"
+      - "Sales notification (SMS to on-call rep)"
+      - "Slack/email alert to steward for first 30 days (until trust built)"
+    consumers:
+      - "Sales agent (qualifies, quotes, closes)"
+      - "Analytics agent (lead-source attribution)"
+      - "Marketing agent (funnel analysis)"
+    tests:
+      - "scripts/test-capabilities/cap_lead_capture_gbp.spec.ts (Day 5+)"
+    documentation:
+      - "research/seo/largo-keyword-map.md (GBP category choice)"
+      - "agents/sales.md (qualification script)"
+    known_limitations:
+      - "GBP API requires verified business (Month 2 onboarding step)"
+      - "First 30 days: every lead surfaces to steward for manual review"
+    roadmap_links:
+      - "Auto-quoting for common services (Month 3, after price-book + lot-size data)"
+      - "Multi-channel lead capture (Facebook, NextDoor) (Month 6+)"
+    created: "2026-07-10"
+    last_updated: "2026-07-10"
+
+# -------------------------------------------------------------------
+# Reserved capabilities (defined concept, not yet authored)
+# -------------------------------------------------------------------
+# Future capabilities to register when workstream starts. Including them
+# here ensures the org remembers they exist before they're built.
+
+reserved:
+  - cap_id: cap_hurricane_mode
+    name: "Hurricane mode — pause + auto-credit + customer comms"
+    owner_agent: operations
+    status: reserved
+    mission: "M1"
+    note: |
+      Day 4 risk register R-HURR-001 calls this out as a Day-1 capability
+      for any field crew. Will be formally authored Day 4.
+
+  - cap_id: cap_auto_quote_mowing
+    name: "Auto-quote mowing for known property × frequency"
+    owner_agent: sales
+    status: reserved
+    mission: "M1"
+    note: "Depends on price-book + lot-size polygon data. Month 3+ target."
+
+  - cap_id: cap_review_request
+    name: "Auto-request Google review post-job"
+    owner_agent: marketing
+    status: reserved
+    mission: "M1"
+    note: "Critical for SEO. Twilio SMS + email fallback. Month 3+ target."
+
+  - cap_id: cap_recurring_schedule
+    name: "Recurring schedule generation (weekly mowing cadence)"
+    owner_agent: operations
+    status: reserved
+    mission: "M1"
+    note: "Predicts next 4-12 weeks of jobs for a customer. Month 3+ target."
+
+# -------------------------------------------------------------------
+# Reusability tracker (the charter-proof metric)
+# -------------------------------------------------------------------
+# Updated monthly. Tracks what percentage of registered capabilities
+# are reusable across missions vs mission-specific.
+reusability:
+  total_capabilities: 5
+  reserved_capabilities: 4
+  mission_specific: 5  # all 5 landscaping seeds are M1-specific today
+  reusable_across_missions: 0
+  reusability_pct: 0.0
+  target_by_month_6: 0.60
+  notes: |
+    As Mission 1 capabilities mature, look for patterns reusable to
+    Mission 2 (whatever it ends up being). Refactor into
+    `platform/packages/` and mark them reusable. This number is the
+    single most important chart for proving the charter is working.
