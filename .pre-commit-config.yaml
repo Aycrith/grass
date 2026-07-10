@@ -1,0 +1,68 @@
+# ===================================================================
+# GRASS pre-commit hooks
+# Per Day 2 plan: prettier + eslint + markdownlint + gitleaks
+# In Bun/TS repo we use biome instead of prettier+eslint (single tool)
+# ===================================================================
+
+default_language_version:
+  node: system
+
+default_stages: [pre-commit]
+fail_fast: false
+
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+        name: gitleaks — block secrets in commits
+        description: |
+          Charter principle: "No irreversible decision without documented justification."
+          Secrets in commits are irreversible by mistake. Block them.
+        args: ["--redact"]
+        pass_filenames: false
+
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.42.0
+    hooks:
+      - id: markdownlint
+        name: markdownlint — governance docs stay readable
+        description: |
+          Enforce consistent markdown style so governance docs remain
+          diff-friendly for years. Disables line-length rule (100-col
+          enforcement happens in biome for code).
+        args: ["--config", ".markdownlint.jsonc"]
+
+  - repo: local
+    hooks:
+      - id: grass-charter-compliance
+        name: charter compliance — capabilities & decisions referenced
+        description: |
+          Enforces charter principle "every capability must be documented,
+          tested, versioned, measurable, and discoverable."
+          Checks that any new file under apps/ or platform/packages/ has a
+          matching entry in state/capability-registry.yaml.
+        entry: bun run scripts/lint-capabilities.ts
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+
+      - id: grass-agent-spec-lint
+        name: agent spec lint — schema enforcement
+        description: |
+          Enforces the agent spec schema from agents/_schema.md on every
+          agent file. Blocks commits with missing required fields.
+        entry: bun run scripts/lint-agents.ts
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+
+      - id: grass-state-ledger-freshness
+        name: state ledger freshness
+        description: |
+          Warns when state/ledger.yaml has not been touched in >7 days.
+          Charter: state ledger is the canonical project handoff mechanism.
+        entry: bun run scripts/check-ledger-freshness.ts
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]

@@ -1,0 +1,31 @@
+{
+  "name": "grass",
+  "version": "0.1.0",
+  "description": "GRASS — AI Business Operating System. An evolving autonomous organization that launches, operates, and improves businesses. Landscaping (Largo, FL) is Mission 1.",
+  "type": "module",
+  "private": true,
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=20",
+    "bun": ">=1.3.0"
+  },
+  "scripts": {
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "test:charter": "bun run scripts/charter-compliance.ts",
+    "test:agents": "bun run scripts/lint-agents.ts",
+    "test:capabilities": "bun run scripts/lint-capabilities.ts",
+    "audit:phase-0": "ls audit/phase-0/",
+    "validate": "bun run lint && bun run typecheck && bun run test:agents && bun run test:capabilities"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/bun": "^1.3.14",
+    "@types/node": "^26.1.1",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {}
+}

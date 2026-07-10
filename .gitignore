@@ -111,3 +111,7 @@ audit/*/DRAFT*
 *.sqlite
 *.sqlite3
 prisma/migrations/dev/
+
+# --- TypeScript incremental build artifacts ---
+*.tsbuildinfo
+.tsbuildinfo

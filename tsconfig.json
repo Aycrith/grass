@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "jsx": "preserve",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@grass/constitution/*": ["constitution/*"],
+      "@grass/governance/*": ["governance/*"],
+      "@grass/architecture/*": ["architecture/*"],
+      "@grass/agents/*": ["agents/*"],
+      "@grass/state/*": ["state/*"],
+      "@grass/knowledge/*": ["knowledge/*"],
+      "@grass/research/*": ["research/*"],
+      "@grass/analytics/*": ["analytics/*"],
+      "@grass/audit/*": ["audit/*"],
+      "@grass/platform/*": ["platform/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", ".next", "out", "build", "coverage"]
+}

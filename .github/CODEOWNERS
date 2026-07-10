@@ -1,0 +1,6 @@
+# GRASS CODEOWNERS — solo founder, lean
+# Charter principle: "Every important decision must remain understandable
+# years into the future." The Steward retains ownership of every change.
+# When a second human joins, scope their ownership here.
+
+*       @steward

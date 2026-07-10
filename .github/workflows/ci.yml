@@ -1,0 +1,149 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+env:
+  BUN_VERSION: "1.3.14"
+  NODE_VERSION: "22"
+
+jobs:
+  # -----------------------------------------------------------------
+  # 1. Lint — biome (TS/JS) + markdownlint (governance docs)
+  # -----------------------------------------------------------------
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Cache Bun
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          restore-keys: ${{ runner.os }}-bun-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Biome check
+        run: bun run lint
+
+      - name: Markdownlint governance docs
+        uses: DavidAnson/markdownlint-cli2-action@v19
+        with:
+          globs: |
+            **/*.md
+
+  # -----------------------------------------------------------------
+  # 2. Typecheck — strict TS via tsc
+  # -----------------------------------------------------------------
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: TypeScript strict
+        run: bun run typecheck
+
+  # -----------------------------------------------------------------
+  # 3. Agent spec lint — charter compliance
+  # -----------------------------------------------------------------
+  agent-spec:
+    name: Agent Spec Schema
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Lint agent specs
+        run: bun run test:agents
+
+  # -----------------------------------------------------------------
+  # 4. Capability registry lint
+  # -----------------------------------------------------------------
+  capability-registry:
+    name: Capability Registry
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Lint capability registry
+        run: bun run test:capabilities
+
+  # -----------------------------------------------------------------
+  # 5. Secret scan — gitleaks
+  # -----------------------------------------------------------------
+  secrets:
+    name: Secret Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # -----------------------------------------------------------------
+  # 6. OSV supply-chain scan (runs when bun.lock exists)
+  # -----------------------------------------------------------------
+  supply-chain:
+    name: Supply-Chain Scan
+    runs-on: ubuntu-latest
+    continue-on-error: true  # non-fatal until first lockfile lands
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: OSV scan
+        uses: google/osv-scanner-action@v2
+        with:
+          lockfile: bun.lock
+        continue-on-error: true
