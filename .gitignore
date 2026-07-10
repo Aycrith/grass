@@ -1,0 +1,113 @@
+# ===================================================================
+# GRASS .gitignore
+# Tracks the planned tech stack as the repo grows. Add to it as
+# new tool categories are introduced.
+# ===================================================================
+
+# --- OS junk ---
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+ehthumbs_vista_x64.db
+.Trashes
+$RECYCLE.BIN/
+*~
+*.swp
+*.swo
+*._*
+
+# --- Editor / IDE ---
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+*.suo
+*.user
+*.userosscache
+*.sln
+*.sln.docstates
+
+# --- Node / Bun (Next.js, monorepo packages, workers) ---
+node_modules/
+.pnp
+.pnp.js
+dist/
+.next/
+.turbo/
+out/
+build/
+coverage/
+.nyc_output/
+.npm
+.eslintcache
+.stylelintcache
+.cache
+
+# --- Bun (Bun 1.3+ uses text-based bun.lock, NOT the legacy binary bun.lockb) ---
+# bun.lock IS committed (supply-chain baseline rule from Day 2 plan)
+
+# --- Environment files (NEVER commit secrets) ---
+.env
+.env.local
+.env.development
+.env.development.local
+.env.production
+.env.production.local
+.env.test
+.env.test.local
+.envrc
+!.env.example
+
+# --- Supabase ---
+supabase/.branches
+supabase/.temp
+supabase/.env
+
+# --- Next.js / Vercel ---
+.next/
+.vercel
+.turbo
+
+# --- Logs ---
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# --- Test artifacts ---
+coverage/
+.nyc_output/
+*.lcov
+
+# --- Secrets / CI artifacts that should never be in repo ---
+**/.secret
+**/*.pem
+**/*.key
+**/*.crt
+.gitleaks.toml.local
+*.gpg
+
+# --- Claude Code session memory (local-only by design) ---
+.claude/sessions/
+.claude/transcripts/
+
+# --- Phase 0 audit working drafts (only committed when finalized) ---
+audit/*/DRAFT*
+
+# --- OS-specific build artifacts ---
+*.app
+*.dSYM
+*.dSYM.zip
+*.dmg
+
+# --- Database local snapshots (Prisma, sqlite, etc.) ---
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+prisma/migrations/dev/

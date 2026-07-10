@@ -1,0 +1,13 @@
+GRASS — AI Business Operating System
+Copyright 2026 GRASS Organization
+
+This product includes software and documentation developed by the GRASS Organization
+and its contributors. The repository is an evolving AI organization, not merely a
+software project; landscaping and lawn maintenance (Mission 1) is its first
+production implementation.
+
+Governance precedence: 01_REPOSITORY_CONSTITUTION.md (stable) and
+02_ORGANIZATION_CHARTER.md (stable) override implementation decisions.
+
+For attribution of incorporated third-party works, see THIRD_PARTY_NOTICES (to be
+populated as dependencies are added in subsequent commits).
