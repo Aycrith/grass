@@ -8,7 +8,7 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-10 (Day 3 of Phase 0)
+# Last updated: 2026-07-10 (Day 4 of Phase 0)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -27,7 +27,7 @@ phase_exit_criteria:
   - "13 agent specs authored and lint-clean (Day 3-4)"
   - "5 landscaping capabilities registered (Day 3)"
 
-phase_day: 3
+phase_day: 4
 phase_day_of: 5
 
 # Pending phase-exit flag (Pilot Exception, see constitution/charter-amendments/pilot-exception.md)
@@ -59,33 +59,54 @@ strategy_locked:
 # -------------------------------------------------------------------
 objectives:
   active:
-    - id: OBJ-DAY3-001
-      title: "Author first 3 agent specs (research, architecture, engineering)"
-      owner_agent: null  # Steward is sole author Day 3
+    - id: OBJ-DAY4-001
+      title: "Seed risk register with top 5 risks from plan"
+      owner_agent: executive
       due: "2026-07-10"
       status: in_progress
-      spec_ref: "agents/_schema.md"
+      spec_ref: "state/risk-register.yaml"
 
-    - id: OBJ-DAY3-002
-      title: "Ratify Pilot Exception charter amendment"
-      owner_agent: null
+    - id: OBJ-DAY4-002
+      title: "Author remaining 9 agent specs (executive, knowledge, marketing, seo, sales, operations, finance, qa, security, infrastructure)"
+      owner_agent: architecture
       due: "2026-07-10"
       status: in_progress
-      spec_ref: "constitution/charter-amendments/pilot-exception.md"
+      spec_ref: "agents/"
 
-    - id: OBJ-DAY3-003
-      title: "Instantiate state ledger + capability registry"
-      owner_agent: null
+    - id: OBJ-DAY4-003
+      title: "Define KPI taxonomy (formula+instrument+target+owner)"
+      owner_agent: analytics
       due: "2026-07-10"
       status: in_progress
-      spec_ref: "state/ledger.yaml + state/capability-registry.yaml"
+      spec_ref: "analytics/kpi-taxonomy.md"
 
-    - id: OBJ-DAY3-004
-      title: "Author CLAUDE.md as root cross-link index"
-      owner_agent: null
+    - id: OBJ-DAY5-001
+      title: "Install Tier-1 MCP filesystem server scoped to GRASS/"
+      owner_agent: infrastructure
       due: "2026-07-10"
-      status: in_progress
-      spec_ref: "CLAUDE.md"
+      status: pending
+      spec_ref: ".mcp.json (TBD)"
+
+    - id: OBJ-DAY5-002
+      title: "Run smoke-test protocol (CLAUDE.md → state-ledger open items → gh CLI → FL licensing-map research workstream)"
+      owner_agent: executive
+      due: "2026-07-10"
+      status: pending
+      spec_ref: "scripts/smoke-test.md (TBD)"
+
+    - id: OBJ-DAY5-003
+      title: "Author audit/phase-0/{architecture-gap,tech-debt,6-month-roadmap}.md"
+      owner_agent: architecture
+      due: "2026-07-10"
+      status: pending
+      spec_ref: "audit/phase-0/"
+
+    - id: OBJ-DAY8-001
+      title: "Author research/regulatory/largo-licensing-map.yaml (FL Statute 482, FDACS, PCCLB, GI-BMP, sales tax 7%, hurricane mode)"
+      owner_agent: research
+      due: "2026-07-15"
+      status: pending
+      spec_ref: "research/regulatory/largo-licensing-map.yaml"
 
   blocked: []
 
@@ -99,6 +120,41 @@ objectives:
       title: "Dev tooling (Bun, biome, TS strict), CI (6 jobs), secrets contract, charter lint scripts"
       completed_on: "2026-07-10"
       commit: "d730d3c"
+
+    - id: OBJ-DAY3-001
+      title: "Author first 3 agent specs (research, architecture, engineering)"
+      completed_on: "2026-07-10"
+      commit: "e3887bd"
+
+    - id: OBJ-DAY3-002
+      title: "Ratify Pilot Exception charter amendment"
+      completed_on: "2026-07-10"
+      commit: "e3887bd"
+
+    - id: OBJ-DAY3-003
+      title: "Instantiate state ledger + capability registry (5 landscaping capabilities)"
+      completed_on: "2026-07-10"
+      commit: "e3887bd"
+
+    - id: OBJ-DAY3-004
+      title: "Author CLAUDE.md as root cross-link index"
+      completed_on: "2026-07-10"
+      commit: "e3887bd"
+
+    - id: OBJ-DAY4-001
+      title: "Seed risk register with top 5 risks from plan"
+      completed_on: "2026-07-10"
+      commit: "<DAY-4>"
+
+    - id: OBJ-DAY4-002
+      title: "Author remaining 10 agent specs (executive, knowledge, marketing, seo, sales, operations, finance, qa, security, infrastructure)"
+      completed_on: "2026-07-10"
+      commit: "<DAY-4>"
+
+    - id: OBJ-DAY4-003
+      title: "Define KPI taxonomy (formula+instrument+target+owner)"
+      completed_on: "2026-07-10"
+      commit: "<DAY-4>"
 
 # -------------------------------------------------------------------
 # Active decisions
@@ -283,12 +339,28 @@ implementation_backlog:
 # -------------------------------------------------------------------
 agent_assignments:
   total_documented: 13
-  in_draft: 0
+  in_draft: 13
   active: 0
   deprecated: 0
   day_3_target: 3  # research, architecture, engineering
-  day_4_target: 10  # remaining 9 + engineering refined
+  day_4_target: 13  # all 13 specs drafted
+  promotion_criteria: "Each spec needs ≥4 acceptance-criteria checkboxes completed + 2 weeks of KPI data."
   detail_ref: "agents/"
+
+  reports_to_graph:
+    - "executive → human:steward"
+    - "research → human:steward"
+    - "architecture → human:steward"
+    - "engineering → architecture"  # future re-parenting candidate
+    - "knowledge → architecture"
+    - "marketing → executive"
+    - "seo → marketing"
+    - "sales → executive"
+    - "operations → engineering"
+    - "finance → executive"
+    - "qa → engineering"
+    - "security → engineering"
+    - "infrastructure → engineering"
 
 # -------------------------------------------------------------------
 # Capability registry snapshot
@@ -310,39 +382,35 @@ metrics:
 # -------------------------------------------------------------------
 # Repository health (rolling)
 # -------------------------------------------------------------------
-health_score: 0.62  # rough heuristic; Phase 0 in progress, no production yet
+health_score: 0.71  # rough heuristic; Phase 0 in progress, no production yet
 health_components:
   governance: 0.85  # doc set present, Pilot Exception drafted
-  knowledge: 0.20  # ledger just initialized
-  research: 0.00  # not started
+  knowledge: 0.35  # ledger + risk register + KPI taxonomy in place
+  research: 0.00  # not started (Day 8 GATE)
   engineering: 0.55  # tooling + CI in place, no app code yet
   operations: 0.00  # no business running yet
-  tests: 0.40  # charter-compliance tests stubbed
+  tests: 0.55  # charter-compliance tests live, 13 agents + 9 caps validated
+  agent_org: 0.80  # all 13 specs drafted, 0 promoted to active (acceptance-criteria gate)
 
 # -------------------------------------------------------------------
 # Next recommended actions (auto-derived; reviewed weekly)
 # -------------------------------------------------------------------
 next_actions:
-  immediate:
-    - "Author agents/research.md (Day 3 first agent)"
-    - "Author agents/architecture.md (Day 3 second agent)"
-    - "Author agents/engineering.md (Day 3 third agent)"
-    - "Update lint-agents.ts to actually validate the schema (Day 3)"
-    - "Seed state/capability-registry.yaml with 5 landscaping capabilities"
+  immediate: []  # Day 4 complete
 
   week_2:
-    - "Day 4: Author remaining 9 agent specs (executive, knowledge, marketing, seo, sales, operations, finance, qa, security, infrastructure)"
-    - "Day 4: Seed state/risk-register.yaml with 5 risks"
-    - "Day 4: Author analytics/kpi-taxonomy.md"
-    - "Day 5: Install Tier-1 MCP filesystem server"
-    - "Day 5: Run smoke test protocol (CLAUDE.md → ledger → audit)"
-    - "Day 5: Author audit/phase-0/{architecture-gap,tech-debt,6-month-roadmap}.md"
+    - "Day 5: Install Tier-1 MCP filesystem server scoped to GRASS/"
+    - "Day 5: Run smoke-test protocol (CLAUDE.md → state-ledger open items → gh CLI for Day-5 audit issue → FL licensing-map research workstream)"
+    - "Day 5: Author audit/phase-0/{architecture-gap,tech-debt,6-month-roadmap}.md — exit Phase 0 + Phase 1 simultaneously"
 
   week_3:
     - "Day 8: Author research/regulatory/largo-licensing-map.yaml (Day 8 GATE)"
     - "Day 8: Sign-off on landscaping-WITHOUT-fertilization-WITHOUT-irrigation-WITHOUT-pest as legal service line"
+    - "Day 8: Decide entity choice (LLC vs S-Corp) — D-0005 closes"
+    - "Day 8: Decide insurance broker — D-0006 closes"
     - "Day 9: Author research/market/largo-market-size.md"
     - "Days 10-12: Author research/competitors/largo-33771.csv"
+    - "Day 10: Decide brand + domain — D-0007 closes"
     - "Days 13-15: Author research/pricing/price-book.yaml + research/seo/largo-keyword-map.md + research/suppliers/largo.yaml (parallel)"
 
 # -------------------------------------------------------------------
@@ -352,4 +420,17 @@ changelog:
   - date: "2026-07-10"
     day: 3
     change: "Initial ledger instantiated. Day 1+2 commits referenced. Day 3 work in progress: 4 objectives active, 4 decisions ratified, 5 risks mirrored, 6 knowledge gaps, 5 implementation backlog items."
+    by: "steward"
+
+  - date: "2026-07-10"
+    day: 4
+    change: >
+      Day 4 complete: 10 additional agent specs authored (executive, knowledge,
+      marketing, seo, sales, operations, finance, qa, security, infrastructure).
+      All 13 agent specs lint-clean. Risk register seeded with 5 risks from plan
+      (R-CHDRIFT-001, R-FLLIC-001, R-BURN-001, R-INFRA-001, R-HURR-001).
+      KPI taxonomy authored with 4-field measurement contracts (formula +
+      instrument + target + owner) for ~35 metrics across North Star, Mission 1
+      Operational, Mission 1 Growth, OS Reusability, Engineering Health, and
+      Security Health sections. Phase 0 + 1 exit on track for Day 5.
     by: "steward"

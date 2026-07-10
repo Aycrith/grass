@@ -1,0 +1,144 @@
+# ===================================================================
+# GRASS — Risk Register
+# Charter principle: "Every irreversible decision must be documented."
+# Charter principle: "Truth over convenience."
+# Risks scored as: risk_score = likelihood (1-5) x impact (1-5).
+# Review cadence: weekly (executive agent), full retro monthly.
+# ===================================================================
+
+schema_version: 0.1.0
+last_updated: 2026-07-10
+owner_agent: executive
+
+methodology:
+  likelihood: "1=remote, 2=unlikely, 3=possible, 4=likely, 5=near-certain"
+  impact: "1=negligible, 2=minor, 3=moderate, 4=major, 5=catastrophic"
+  risk_score: "likelihood x impact (1-25). >=12 = action this week."
+  review_cadence_days: 7
+
+risks:
+
+  - risk_id: R-CHDRIFT-001
+    title: "Charter drift: capability registry becomes paperwork tax"
+    description: >
+      "Every organizational capability must be registered" stops being a
+      forcing function for capability-thinking and becomes an empty form
+      agents skip or backfill. Tells: capabilities with status=active but no
+      tests; capabilities with status=active but unknown owner; capability
+      registry edit lag >7 days.
+    likelihood: 4
+    impact: 4
+    risk_score: 16
+    owner_agent: qa
+    mitigation:
+      - "Capability registration is a commit-time lint, not a doc."
+      - "`scripts/lint-capabilities.ts` blocks merge on missing fields."
+      - "Treat registration like a DB migration: atomic, build-blocking."
+      - "Weekly `scripts/charter-compliance.ts` reports the gap."
+    mitigation_link: "scripts/lint-capabilities.ts, scripts/charter-compliance.ts"
+    detection_signal: "capabilities with no test reference for >14 days"
+    review_date: 2026-07-17
+
+  - risk_id: R-FLLIC-001
+    title: "Florida licensing surprise mid-launch"
+    description: >
+      Discovering a license required for a service line on Day 30 that
+      wasn't on the original licensing map. Examples: GI-BMP prerequisite
+      for fertilizer license; FDACS Limited Commercial Fertilizer Applicator;
+      PCCLB Irrigation System Specialty Contractor for irrigation work;
+      workers' comp lapsing once first hire occurs.
+    likelihood: 3
+    impact: 5
+    risk_score: 15
+    owner_agent: research
+    mitigation:
+      - "Day 8 licensing map is the gate (research/regulatory/largo-licensing-map.yaml)."
+      - "Service decomposition explicitly excludes fertilization / irrigation / pest until licenses held."
+      - "Insurance minimums ($1M GL) before any field work."
+      - "7% sales tax (state 6% + Pinellas 1% surtax) registration Day 1."
+      - "Workers' comp corporate-officer exemption filing (solo founder)."
+    mitigation_link: "research/regulatory/largo-licensing-map.yaml (TBD Day 8)"
+    detection_signal: "service catalog change request from sales/ops without licensing check"
+    review_date: 2026-07-17
+
+  - risk_id: R-BURN-001
+    title: "Solo-founder context burnout by Month 3"
+    description: >
+      Every agent decision still routes through the steward. Approvals,
+      daily CEO-reviews, weekly retros, charter compliance checks, decision
+      template entries — cumulative load becomes unsustainable as agents
+      become more capable and decision volume grows.
+    likelihood: 4
+    impact: 4
+    risk_score: 16
+    owner_agent: executive
+    mitigation:
+      - "Authority limits in every agent spec (decides_without_human, escalates_when)."
+      - "Approval-queue budget = 5/day max; when exceeded, tighten thresholds or escalate to ADR."
+      - "Daily 30-min 'CEO review' blocked on calendar."
+      - "Weekly postmortems (one short doc, don't stack)."
+      - "Quarterly charter review including burnout signal check."
+    mitigation_link: "agents/executive.md, all agent `Escalates` sections"
+    detection_signal: "approval-queue >5/day for >3 consecutive days"
+    review_date: 2026-07-17
+
+  - risk_id: R-INFRA-001
+    title: "Self-hosting/infra tax before PMF"
+    description: >
+      Tempted to self-host at $0 revenue because managed services feel
+      expensive. Migrating prematurely when Vercel/Supabase bills grow
+      consumes engineering bandwidth Mission 1 cannot afford. Charter's
+      success metrics are not infra cost.
+    likelihood: 3
+    impact: 4
+    risk_score: 12
+    owner_agent: infrastructure
+    mitigation:
+      - "$200/mo infra ceiling is a charter rule through Month 6."
+      - "When Supabase egress / Vercel bandwidth hits $400, write it to infra_debt/, don't migrate."
+      - "Self-host only when MRR justifies dedicated infra person (Month 12+)."
+      - "Jobber $39/mo replaces admin app until Month 6 (don't build admin first)."
+    mitigation_link: "state/ledger.yaml → strategy_locked.infra_budget_ceiling_usd_per_month, agents/infrastructure.md"
+    detection_signal: "infra bill >$200/mo for any week"
+    review_date: 2026-07-17
+
+  - risk_id: R-HURR-001
+    title: "Hurricane season breaks scheduling + payment ops in Year 1"
+    description: >
+      Largo FL gets hurricanes June-November. Sustained winds >=30mph
+      make outdoor work unsafe; named-storm conditions can pause
+      scheduling for days. No-fault cancellation handling must be
+      pre-registered, not improvised mid-storm. Insurance rider
+      (business interruption + equipment flood/theft) must precede
+      any field crew starting.
+    likelihood: 4
+    impact: 4
+    risk_score: 16
+    owner_agent: operations
+    mitigation:
+      - "Hurricane mode is a registered capability Day 1 (cap_hurricane_mode)."
+      - "Hard rule: no outdoor work in named-storm conditions or sustained winds >=30mph."
+      - "Auto-credit no-fault cancellations when hurricane mode triggers."
+      - "1-month operating cash reserve before any field crew starts."
+      - "Business interruption + equipment insurance rider before first crew."
+    mitigation_link: "state/capability-registry.yaml → cap_hurricane_mode (reserved)"
+    detection_signal: "NWS hurricane watch or warning for Pinellas County"
+    review_date: 2026-07-17
+
+# ===================================================================
+# Honorable mentions (not scored, tracked for awareness)
+# ===================================================================
+honorable_mentions:
+  - "Florida-Friendly Fertilizer Rule — specific summer formulations only"
+  - "Pinellas pesticide notification rules — application notifications required for some properties"
+  - "Workers' comp — once you hire even part-time, corporate-officer exemption lapses"
+  - "GBP profile suspension — must keep NAP consistent across citations or GBP may suspend"
+  - "Solo founder IRS quarterly estimated taxes — penalty if underpayment >$1K"
+
+# ===================================================================
+# Charter-Compliance Cross-Reference
+# ===================================================================
+charter_alignment:
+  principle_no_irreversible_without_docs: "Every mitigation requires a Decision Template entry."
+  principle_research_before_assumptions: "Each risk has a detection_signal that is observable."
+  principle_truth_over_convenience: "risk_score is computed, not asserted."
