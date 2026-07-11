@@ -6,6 +6,9 @@
 > the cash gates.
 > **Cash required Year 1:** **$9.15** (one domain registration).
 > **Cash gates deferred:** $0 today, $125-4,750 when reactivated.
+> **Distribution strategy:** Hybrid — GBP + organic + free new-account
+> ad credits (Google, Meta, Microsoft, Yelp, NextDoor, Thumbtack).
+> No cash spent on ads; spend is paid by platform promos.
 > **Status:** 6 items split into 2 ACTIVE + 4 DEFERRED.
 
 ---
@@ -167,6 +170,11 @@ complaint, regulatory letter), reactivation jumps the priority queue.
 - State ledger (cash-constrained split): `state/ledger.yaml` →
   `objectives.active` (OBJ-M2-004 + OBJ-M2-006) +
   `deferred_cash_constrained` (OBJ-M2-001/002/003/005)
+- Brand brainstorm (LargoLawn / LuxuryLawn families):
+  `research/distribution/brand-name-brainstorm.md`
+- Autonomous paid acquisition (ad-credit plan):
+  `research/distribution/autonomous-paid-acquisition.md`
+- Organic distribution ideas: `research/distribution/cash-min-distribution-ideas.md`
 - Charter: `constitution/01-constitution.md`
 - Decision ADRs: `governance/decisions/`
 - Mission 2 framework (deferred to Month 10 per charter):
