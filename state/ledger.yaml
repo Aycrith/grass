@@ -87,6 +87,7 @@ objectives:
       due: "2026-07-25"
       status: pending
       spec_ref: "governance/decisions/0005-entity-choice.md"
+      draft_ready: "drafts/sunbiz/articles-of-organization.md (every field pre-filled; steward action only)"
 
     - id: OBJ-M2-002
       title: "Day 16-18: Workers comp DWC-250 + City of Largo BTR ($62) + Pinellas County BTR"
@@ -94,6 +95,10 @@ objectives:
       due: "2026-07-27"
       status: pending
       spec_ref: "research/regulatory/largo-licensing-map.yaml"
+      draft_ready:
+        - "drafts/btr/city-of-largo-btr-application.md"
+        - "drafts/btr/pinellas-county-btr-application.md"
+        - "drafts/btr/dwc-250-exemption.md"
 
     - id: OBJ-M2-003
       title: "Day 16-20: General liability insurance binding ($1M+; 3 broker quotes → D-0006 phase B)"
@@ -101,6 +106,7 @@ objectives:
       due: "2026-07-30"
       status: pending
       spec_ref: "governance/decisions/0006-insurance-broker.md"
+      draft_ready: "drafts/insurance/broker-quote-requests.md (3 broker emails + decision matrix + ADR template)"
 
     - id: OBJ-M2-004
       title: "Day 16: Brand + domain acquisition (D-0007 phase B)"
@@ -108,6 +114,7 @@ objectives:
       due: "2026-07-25"
       status: pending
       spec_ref: "governance/decisions/0007-brand-domain.md"
+      draft_ready: "drafts/brand/names-and-decision-matrix.md (5 names pre-scored; recommendation: PinellasLawn.com)"
 
     - id: OBJ-M2-005
       title: "Days 17-25: Equipment acquisition — used Exmark Lazer Z 60\" + handheld kit (~$8K)"
@@ -115,6 +122,7 @@ objectives:
       due: "2026-08-04"
       status: pending
       spec_ref: "research/suppliers/largo.yaml"
+      draft_ready: "drafts/equipment/purchase-plan.md (vendor list + sequenced purchase plan + cash-flow plan)"
 
     - id: OBJ-M2-006
       title: "Days 20-30: GBP profile optimization + 25-citation build + 5 paid pilot jobs"
@@ -122,6 +130,7 @@ objectives:
       due: "2026-08-09"
       status: pending
       spec_ref: "research/seo/largo-keyword-map.md"
+      draft_ready: "drafts/gbp/profile-content.md (every GBP field pre-filled; verification-postcard instructions)"
 
     # Living debts that survive Phase 1
     - id: OBJ-DEBT-DECISIONS-002
@@ -130,6 +139,7 @@ objectives:
       due: "2026-10-10"
       status: pending
       spec_ref: "governance/decisions/{0002,0003,0004}-*.md"
+      draft_ready: "governance/decisions/review-checklist-d0002-d0004.md (4-dimension review method + ADR template)"
 
   blocked: []  # Phase 1 exit criteria satisfied. Phase 2 next.
 
