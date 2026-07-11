@@ -64,5 +64,6 @@ Vercel (zero-devops). Config in `vercel.json`. CI checks via root
 
 ## Sitemap
 
-Generate dynamically from `BUSINESS.service_area_zips` + service slugs. Stub
-for now; Phase 7 Month-3 work adds `app/sitemap.ts`.
+Auto-generated at build from `BUSINESS.service_area_zips` + service slugs
+via `src/app/sitemap.ts`. Output: `https://grasslargo.com/sitemap.xml`
+containing all 18 routes + `robots.txt` excluding `/api/` and `/gbp`.
