@@ -80,49 +80,19 @@ strategy_locked:
 # -------------------------------------------------------------------
 objectives:
   active:
-    # Phase 2 (Month 2) — Landscaping MVP launch
-    - id: OBJ-M2-001
-      title: "Day 16: Sunbiz LLC filing + EIN + bank account + DR-1 sales tax registration"
-      owner_agent: operations
-      due: "2026-07-25"
-      status: pending
-      spec_ref: "governance/decisions/0005-entity-choice.md"
-      draft_ready: "drafts/sunbiz/articles-of-organization.md (every field pre-filled; steward action only)"
-
-    - id: OBJ-M2-002
-      title: "Day 16-18: Workers comp DWC-250 + City of Largo BTR ($62) + Pinellas County BTR"
-      owner_agent: operations
-      due: "2026-07-27"
-      status: pending
-      spec_ref: "research/regulatory/largo-licensing-map.yaml"
-      draft_ready:
-        - "drafts/btr/city-of-largo-btr-application.md"
-        - "drafts/btr/pinellas-county-btr-application.md"
-        - "drafts/btr/dwc-250-exemption.md"
-
-    - id: OBJ-M2-003
-      title: "Day 16-20: General liability insurance binding ($1M+; 3 broker quotes → D-0006 phase B)"
-      owner_agent: operations
-      due: "2026-07-30"
-      status: pending
-      spec_ref: "governance/decisions/0006-insurance-broker.md"
-      draft_ready: "drafts/insurance/broker-quote-requests.md (3 broker emails + decision matrix + ADR template)"
-
+    # Phase 2 (Month 2) — Landscaping MVP launch (CASH-CONSTRAINED MODE)
+    # Per steward direction 2026-07-10: minimize cash-out, focus on items
+    # 4 (brand/domain) and 6 (GBP + citations + first leads). Items 1, 2, 3,
+    # 5 are DEFERRED until pilot revenue covers them.
     - id: OBJ-M2-004
-      title: "Day 16: Brand + domain acquisition (D-0007 phase B)"
+      title: "Day 16: Brand + domain acquisition (D-0007 phase B) — $9.15/yr cash-min path"
       owner_agent: marketing
       due: "2026-07-25"
       status: pending
       spec_ref: "governance/decisions/0007-brand-domain.md"
-      draft_ready: "drafts/brand/names-and-decision-matrix.md (5 names pre-scored; recommendation: PinellasLawn.com)"
-
-    - id: OBJ-M2-005
-      title: "Days 17-25: Equipment acquisition — used Exmark Lazer Z 60\" + handheld kit (~$8K)"
-      owner_agent: operations
-      due: "2026-08-04"
-      status: pending
-      spec_ref: "research/suppliers/largo.yaml"
-      draft_ready: "drafts/equipment/purchase-plan.md (vendor list + sequenced purchase plan + cash-flow plan)"
+      draft_ready: "drafts/brand/names-and-decision-matrix.md (5 names pre-scored; recommendation: PinellasLawn.com @ $9.15/yr on Cloudflare Registrar)"
+      cash_required: "$9.15/yr"
+      reactivation_blocker: null
 
     - id: OBJ-M2-006
       title: "Days 20-30: GBP profile optimization + 25-citation build + 5 paid pilot jobs"
@@ -131,6 +101,50 @@ objectives:
       status: pending
       spec_ref: "research/seo/largo-keyword-map.md"
       draft_ready: "drafts/gbp/profile-content.md (every GBP field pre-filled; verification-postcard instructions)"
+      cash_required: "$0 — GBP is free; citations are free; pilot work uses borrowed/rented equipment per steward note"
+      reactivation_blocker: null
+
+  deferred_cash_constrained:
+    # Deferred until pilot revenue covers cash gates.
+    # All drafts already authored (mechanical reactivation when funds allow).
+    - id: OBJ-M2-001
+      title: "DEFERRED — Sunbiz LLC filing + EIN + bank account + DR-1 sales tax registration"
+      owner_agent: operations
+      reactivation_trigger: "First paid pilot revenue OR 30 days post-OBJ-M2-006 launch, whichever first"
+      deferral_rationale: "$125 Sunbiz filing + bank minimum + ongoing BTR costs not yet covered by revenue. Operating as sole proprietor in the interim."
+      status: deferred
+      spec_ref: "governance/decisions/0005-entity-choice.md"
+      draft_ready: "drafts/sunbiz/articles-of-organization.md (every field pre-filled; ready when funds allow)"
+
+    - id: OBJ-M2-002
+      title: "DEFERRED — Workers comp DWC-250 + City of Largo BTR + Pinellas County BTR"
+      owner_agent: operations
+      reactivation_trigger: "First paying customer OR regulatory complaint, whichever first"
+      deferral_rationale: "$62 + $30 BTRs + ongoing renewal costs. Operating without local BTR is a citation risk but not a customer-blocking risk for the first 5 pilots (residential, off-platform lead flow)."
+      status: deferred
+      spec_ref: "research/regulatory/largo-licensing-map.yaml"
+      draft_ready:
+        - "drafts/btr/city-of-largo-btr-application.md"
+        - "drafts/btr/pinellas-county-btr-application.md"
+        - "drafts/btr/dwc-250-exemption.md"
+
+    - id: OBJ-M2-003
+      title: "DEFERRED — General liability insurance binding ($1M+; 3 broker quotes → D-0006 phase B)"
+      owner_agent: operations
+      reactivation_trigger: "First paying customer OR first equipment-related incident"
+      deferral_rationale: "$2,500-4,600/yr is the largest cash gate. Operating uninsured is high-risk but the alternative (no revenue) is also high-risk. Mitigation: 5 pilots only, hand-tools-only scope, waiver-of-liability on every quote."
+      status: deferred
+      spec_ref: "governance/decisions/0006-insurance-broker.md"
+      draft_ready: "drafts/insurance/broker-quote-requests.md (3 broker emails + decision matrix + ADR template)"
+
+    - id: OBJ-M2-005
+      title: "DEFERRED — Equipment access handled outside GRASS (borrow/rent short-term)"
+      owner_agent: operations
+      reactivation_trigger: "Equipment-related incident OR first full-time hire OR $500+ equipment expense from any source"
+      deferral_rationale: "Steward confirmed equipment access is handled outside the GRASS system. No GRASS-managed artifact required at this time."
+      status: deferred
+      spec_ref: "research/suppliers/largo.yaml"
+      draft_ready: "drafts/equipment/purchase-plan.md (replaced with deferral note + reactivation triggers)"
 
     # Living debts that survive Phase 1
     - id: OBJ-DEBT-DECISIONS-002
