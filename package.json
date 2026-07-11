@@ -18,8 +18,10 @@
     "test:charter": "bun run scripts/charter-compliance.ts",
     "test:agents": "bun run scripts/lint-agents.ts",
     "test:capabilities": "bun run scripts/lint-capabilities.ts",
+    "test:ledger-freshness": "bun run scripts/check-ledger-freshness.ts",
     "audit:phase-0": "ls audit/phase-0/",
-    "validate": "bun run lint && bun run typecheck && bun run test:agents && bun run test:capabilities"
+    "smoke-test": "cat scripts/smoke-test.md",
+    "validate": "bun run lint && bun run typecheck && bun run test:charter"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schema/mcp-config.json",
+  "_comment_purpose": "GRASS repository MCP server config (Day 5 install). Scoped filesystem server only.",
+  "_comment_rule": "Charter rule: ≤5 MCP servers active per session. Tier-1 (filesystem) added Day 5; Tier-2 deferred until Month 2.",
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."],
+      "_comment_scope": "Args[0] is the repo root '.', which @modelcontextprotocol/server-filesystem resolves to absolute. This means the server can read/write anywhere inside GRASS/, which is the intended scope for a solo-founder day-to-day workflow.",
+      "_comment_alternate_scope": "To harden, replace '.' with an absolute allowlist such as '/Users/camer/DEVNEW/GRASS' once an MCP-aware permissions model lands. For Day 5 the working-directory scope is sufficient because the agent is already inside this repo.",
+      "env": {}
+    }
+  }
+}

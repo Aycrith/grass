@@ -8,7 +8,7 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-10 (Day 4 of Phase 0)
+# Last updated: 2026-07-10 (Day 5 of Phase 0 — exit criteria met)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -19,16 +19,21 @@ schema_version: 0.1.0
 phase: 0
 phase_name: "Repository audit and baseline"
 phase_exit_criteria:
-  - "audit/phase-0/architecture-gap.md exists with concrete gap list"
-  - "audit/phase-0/tech-debt.md exists (likely near-empty for Day 1 repo)"
-  - "audit/phase-0/6-month-roadmap.md exists with KPIs and exit criteria"
-  - "Pre-commit hooks green on the Phase-0 exit commit"
-  - "First MCP smoke test passes (Day 5 protocol)"
-  - "13 agent specs authored and lint-clean (Day 3-4)"
-  - "5 landscaping capabilities registered (Day 3)"
+  - "audit/phase-0/architecture-gap.md exists with concrete gap list ✓"
+  - "audit/phase-0/tech-debt.md exists (likely near-empty for Day 1 repo) ✓"
+  - "audit/phase-0/6-month-roadmap.md exists with KPIs and exit criteria ✓"
+  - "Pre-commit hooks green on the Phase-0 exit commit ✓"
+  - "First MCP smoke test passes (Day 5 protocol) ✓ — see scripts/smoke-test.md"
+  - "13 agent specs authored and lint-clean (Day 3-4) ✓"
+  - "5 landscaping capabilities registered (Day 3) ✓"
+  - "Tier-1 MCP filesystem server installed (.mcp.json) ✓"
+  - "scripts/check-ledger-freshness.ts added and live ✓"
+  - "scripts/charter-compliance.ts aggregator added and live ✓"
 
-phase_day: 4
+phase_day: 5
 phase_day_of: 5
+
+phase_exit_status: "MET — Phase 0 + Phase 1 exit criteria simultaneously satisfied."
 
 # Pending phase-exit flag (Pilot Exception, see constitution/charter-amendments/pilot-exception.md)
 # Schema: list of phase objects with pilot identifier, decision_id, and review date.
@@ -59,48 +64,6 @@ strategy_locked:
 # -------------------------------------------------------------------
 objectives:
   active:
-    - id: OBJ-DAY4-001
-      title: "Seed risk register with top 5 risks from plan"
-      owner_agent: executive
-      due: "2026-07-10"
-      status: in_progress
-      spec_ref: "state/risk-register.yaml"
-
-    - id: OBJ-DAY4-002
-      title: "Author remaining 9 agent specs (executive, knowledge, marketing, seo, sales, operations, finance, qa, security, infrastructure)"
-      owner_agent: architecture
-      due: "2026-07-10"
-      status: in_progress
-      spec_ref: "agents/"
-
-    - id: OBJ-DAY4-003
-      title: "Define KPI taxonomy (formula+instrument+target+owner)"
-      owner_agent: analytics
-      due: "2026-07-10"
-      status: in_progress
-      spec_ref: "analytics/kpi-taxonomy.md"
-
-    - id: OBJ-DAY5-001
-      title: "Install Tier-1 MCP filesystem server scoped to GRASS/"
-      owner_agent: infrastructure
-      due: "2026-07-10"
-      status: pending
-      spec_ref: ".mcp.json (TBD)"
-
-    - id: OBJ-DAY5-002
-      title: "Run smoke-test protocol (CLAUDE.md → state-ledger open items → gh CLI → FL licensing-map research workstream)"
-      owner_agent: executive
-      due: "2026-07-10"
-      status: pending
-      spec_ref: "scripts/smoke-test.md (TBD)"
-
-    - id: OBJ-DAY5-003
-      title: "Author audit/phase-0/{architecture-gap,tech-debt,6-month-roadmap}.md"
-      owner_agent: architecture
-      due: "2026-07-10"
-      status: pending
-      spec_ref: "audit/phase-0/"
-
     - id: OBJ-DAY8-001
       title: "Author research/regulatory/largo-licensing-map.yaml (FL Statute 482, FDACS, PCCLB, GI-BMP, sales tax 7%, hurricane mode)"
       owner_agent: research
@@ -108,7 +71,42 @@ objectives:
       status: pending
       spec_ref: "research/regulatory/largo-licensing-map.yaml"
 
-  blocked: []
+    - id: OBJ-DAY8-002
+      title: "Close D-0005 (entity choice) and D-0006 (insurance broker) decisions"
+      owner_agent: research
+      due: "2026-07-18"
+      status: pending
+      spec_ref: "governance/decisions/0005-entity.md + 0006-insurance.md"
+
+    - id: OBJ-DAY9-001
+      title: "Author research/market/largo-market-size.md"
+      owner_agent: research
+      due: "2026-07-19"
+      status: pending
+      spec_ref: "research/market/largo-market-size.md"
+
+    - id: OBJ-DAY10-001
+      title: "Author research/competitors/largo-33771.csv + close D-0007 (brand + domain)"
+      owner_agent: research
+      due: "2026-07-20"
+      status: pending
+      spec_ref: "research/competitors/largo-33771.csv"
+
+    - id: OBJ-DAY13-001
+      title: "Author research/pricing/price-book.yaml + research/seo/largo-keyword-map.md + research/suppliers/largo.yaml (parallel)"
+      owner_agent: research
+      due: "2026-07-23"
+      status: pending
+      spec_ref: "research/{pricing,seo,suppliers}/"
+
+    - id: OBJ-DECISIONS-001
+      title: "Close DEBT-DECISIONS-001 — author D-0002/D-0003/D-0004 ADRs in governance/decisions/"
+      owner_agent: executive
+      due: "2026-07-17"
+      status: pending
+      spec_ref: "governance/decisions/{0002,0003,0004}-*.md"
+
+  blocked: []  # Phase 0 + Phase 1 exit criteria simultaneously satisfied.
 
   completed:
     - id: OBJ-DAY1-001
@@ -154,7 +152,22 @@ objectives:
     - id: OBJ-DAY4-003
       title: "Define KPI taxonomy (formula+instrument+target+owner)"
       completed_on: "2026-07-10"
-      commit: "<DAY-4>"
+      commit: "c79c859"
+
+    - id: OBJ-DAY5-001
+      title: "Install Tier-1 MCP filesystem server scoped to GRASS/"
+      completed_on: "2026-07-10"
+      commit: "<DAY-5>"
+
+    - id: OBJ-DAY5-002
+      title: "Run smoke-test protocol (CLAUDE.md → state-ledger open items → gh CLI → FL licensing-map research workstream)"
+      completed_on: "2026-07-10"
+      commit: "<DAY-5>"
+
+    - id: OBJ-DAY5-003
+      title: "Author audit/phase-0/{architecture-gap,tech-debt,6-month-roadmap}.md"
+      completed_on: "2026-07-10"
+      commit: "<DAY-5>"
 
 # -------------------------------------------------------------------
 # Active decisions
@@ -382,26 +395,25 @@ metrics:
 # -------------------------------------------------------------------
 # Repository health (rolling)
 # -------------------------------------------------------------------
-health_score: 0.71  # rough heuristic; Phase 0 in progress, no production yet
+health_score: 0.85  # Phase 0 + Phase 1 exit criteria met; charter-compliance tests live
 health_components:
-  governance: 0.85  # doc set present, Pilot Exception drafted
-  knowledge: 0.35  # ledger + risk register + KPI taxonomy in place
-  research: 0.00  # not started (Day 8 GATE)
-  engineering: 0.55  # tooling + CI in place, no app code yet
+  governance: 0.95  # Pilot Exception ratified, audit trio authored, decisions mirror in ledger
+  knowledge: 0.50  # ledger + risk register + KPI taxonomy + smoke-test transcript
+  research: 0.00  # not started (Day 8 GATE is next gate)
+  engineering: 0.65  # tooling + CI + MCP install live, no app code yet
   operations: 0.00  # no business running yet
-  tests: 0.55  # charter-compliance tests live, 13 agents + 9 caps validated
-  agent_org: 0.80  # all 13 specs drafted, 0 promoted to active (acceptance-criteria gate)
+  tests: 0.75  # charter-compliance aggregator live, 13 agents + 9 caps + ledger-freshness
+  agent_org: 0.85  # all 13 specs drafted, reports_to graph defined, 0 promoted to active
 
 # -------------------------------------------------------------------
 # Next recommended actions (auto-derived; reviewed weekly)
 # -------------------------------------------------------------------
 next_actions:
-  immediate: []  # Day 4 complete
+  immediate: []  # Phase 0 + Phase 1 exit simultaneously satisfied
 
   week_2:
-    - "Day 5: Install Tier-1 MCP filesystem server scoped to GRASS/"
-    - "Day 5: Run smoke-test protocol (CLAUDE.md → state-ledger open items → gh CLI for Day-5 audit issue → FL licensing-map research workstream)"
-    - "Day 5: Author audit/phase-0/{architecture-gap,tech-debt,6-month-roadmap}.md — exit Phase 0 + Phase 1 simultaneously"
+    - "Day 6: Close DEBT-DECISIONS-001 — author D-0002/D-0003/D-0004 ADRs"
+    - "Day 7: Initialize `architecture/adrs/` folder with first ADR (state-ledger storage format)"
 
   week_3:
     - "Day 8: Author research/regulatory/largo-licensing-map.yaml (Day 8 GATE)"
@@ -433,4 +445,26 @@ changelog:
       instrument + target + owner) for ~35 metrics across North Star, Mission 1
       Operational, Mission 1 Growth, OS Reusability, Engineering Health, and
       Security Health sections. Phase 0 + 1 exit on track for Day 5.
+    by: "steward"
+
+  - date: "2026-07-10"
+    day: 5
+    change: >
+      Day 5 complete — Phase 0 + Phase 1 exit criteria SIMULTANEOUSLY
+      SATISFIED. Tier-1 MCP filesystem server installed (.mcp.json at repo
+      root, scoped to '.'). scripts/check-ledger-freshness.ts added —
+      enforces the "ledger always-current" charter rule with a 7-day
+      threshold. scripts/charter-compliance.ts aggregator added —
+      `bun run test:charter` runs all checks in one pass. Smoke-test
+      protocol documented at scripts/smoke-test.md (PASS, transcript
+      logged). Three Phase-0 audit deliverables authored:
+      audit/phase-0/architecture-gap.md (10 layers audited, single
+      biggest risk = D-0002/D-0003/D-0004 ADRs missing),
+      audit/phase-0/tech-debt.md (6 active items, 6 already closed,
+      near-empty as expected), audit/phase-0/6-month-roadmap.md
+      (sequenced Month-1-6 milestones with 5 decision gates, ~35 KPIs
+      with Month-3 + Month-6 targets). state/ledger.yaml updated to
+      phase_day 5/5, health_score 0.85, all Day-1-5 objectives
+      completed, Day-8 GATE queued as next gate. Phase 0 + 1 exit;
+      next: Day 8 licensing-map research workstream.
     by: "steward"

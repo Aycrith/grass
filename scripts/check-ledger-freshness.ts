@@ -1,37 +1,84 @@
 #!/usr/bin/env bun
 /**
- * check-ledger-freshness.ts — Warn when state ledger is stale (>7 days)
+ * check-ledger-freshness.ts — Enforce "state ledger always-current" rule.
  *
- * Charter principle: "This ledger is the canonical project handoff mechanism
- * for every future agent." A stale ledger means a future agent cannot resume
- * work without loss of context.
+ * Charter principle: "Maintain a machine-readable organizational state."
+ * CLAUDE.md hard rule: if state/ledger.yaml is older than 7 days, MUST be flagged.
  *
- * Day-2 stub: exits 0 until state/ledger.yaml exists (Day 3).
+ * Reads state/ledger.yaml, looks for the `last_updated:` comment header and
+ * the file's mtime, and exits 1 if either is older than the freshness
+ * threshold (default: 7 days).
  */
 
-import { existsSync, statSync } from 'node:fs';
+import { readFileSync, statSync } from 'node:fs';
 
 const LEDGER = 'state/ledger.yaml';
-const STALE_DAYS = 7;
-const MS_PER_DAY = 24 * 60 * 60 * 1000;
+const FRESHNESS_DAYS = 7;
 
-if (!existsSync(LEDGER)) {
-  console.log(`✓ ledger-freshness: ${LEDGER} not yet present (Day 3 target). Skipping.`);
-  process.exit(0);
+function parseHeaderDate(content: string): Date | null {
+  // Accept either "Last updated: 2026-07-10" inside a comment, or a YYYY-MM-DD
+  // on a line of its own. Returns the first match.
+  const m = content.match(/Last updated:\s*(\d{4}-\d{2}-\d{2})/i);
+  if (m?.[1]) return new Date(m[1]);
+  const m2 = content.match(/^(\d{4}-\d{2}-\d{2})/m);
+  return m2?.[1] ? new Date(m2[1]) : null;
 }
 
-const stats = statSync(LEDGER);
-const ageDays = (Date.now() - stats.mtimeMs) / MS_PER_DAY;
+const headerDate = (() => {
+  try {
+    return parseHeaderDate(readFileSync(LEDGER, 'utf-8'));
+  } catch {
+    return null;
+  }
+})();
 
-if (ageDays > STALE_DAYS) {
+const fileMtime = (() => {
+  try {
+    return statSync(LEDGER).mtime;
+  } catch {
+    return null;
+  }
+})();
+
+const now = new Date();
+
+function ageDaysString(d: Date | null): string {
+  if (!d) return 'unknown';
+  const ms = now.getTime() - d.getTime();
+  const days = ms / (24 * 60 * 60 * 1000);
+  return days.toFixed(1);
+}
+
+if (!headerDate && !fileMtime) {
+  console.error(`✗ ledger-freshness: ${LEDGER} not found or unreadable.`);
+  process.exit(1);
+}
+
+const headerAgeStr = ageDaysString(headerDate);
+const mtimeAgeStr = ageDaysString(fileMtime);
+
+const oldestDate: Date | null = (() => {
+  const candidates: Date[] = [];
+  if (headerDate) candidates.push(headerDate);
+  if (fileMtime) candidates.push(fileMtime);
+  return candidates.length ? new Date(Math.min(...candidates.map((d) => d.getTime()))) : null;
+})();
+
+if (!oldestDate) {
+  console.error(`✗ ledger-freshness: cannot determine staleness for ${LEDGER}.`);
+  process.exit(1);
+}
+
+const ageDays = (now.getTime() - oldestDate.getTime()) / (24 * 60 * 60 * 1000);
+
+if (ageDays > FRESHNESS_DAYS) {
   console.error(
-    `✗ ledger-freshness: ${LEDGER} last modified ${ageDays.toFixed(1)} days ago (limit: ${STALE_DAYS}).`,
+    `\n✗ ledger-freshness: ${LEDGER} is ${ageDays.toFixed(1)} days old (limit: ${FRESHNESS_DAYS}).\n  Header age: ${headerAgeStr} days\n  File mtime age: ${mtimeAgeStr} days\n  Update the ledger per the cadence in CLAUDE.md before proceeding.`,
   );
-  console.error('  Charter violation. Update state ledger before committing.');
   process.exit(1);
 }
 
 console.log(
-  `✓ ledger-freshness: ${LEDGER} is ${ageDays.toFixed(1)} days old (limit: ${STALE_DAYS}).`,
+  `✓ ledger-freshness: ${LEDGER} is ${ageDays.toFixed(1)} days old (limit: ${FRESHNESS_DAYS}).`,
 );
 process.exit(0);

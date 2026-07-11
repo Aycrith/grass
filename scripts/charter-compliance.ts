@@ -1,37 +1,44 @@
 #!/usr/bin/env bun
 /**
- * charter-compliance.ts — Top-level charter compliance sweep
+ * charter-compliance.ts — Top-level charter compliance aggregator.
  *
- * Runs all charter enforcement scripts:
- *   - lint-agents.ts (every agent spec matches schema)
- *   - lint-capabilities.ts (every capability registered)
- *   - check-ledger-freshness.ts (state ledger <=7 days old)
+ * Runs every charter-binding check (lint-agents, lint-capabilities,
+ * ledger-freshness) and returns a single pass/fail exit status.
+ * Invoked by `bun run test:charter` and CI's charter-compliance job.
  *
- * Charter principle: "Every capability must be documented, tested,
- * versioned, measurable, and discoverable."
+ * Charter principle: "Every charter-binding invariant must be enforceable
+ * from CI, not just by review."
  */
 
-import { $ } from 'bun';
+import { spawnSync } from 'node:child_process';
 
-const SCRIPTS = [
-  'scripts/lint-agents.ts',
-  'scripts/lint-capabilities.ts',
-  'scripts/check-ledger-freshness.ts',
-];
-
-let failed = 0;
-for (const script of SCRIPTS) {
-  console.log(`\n─── Running ${script} ───`);
-  const result = await $`bun run ${script}`.nothrow();
-  if (result.exitCode !== 0) {
-    failed++;
-  }
+interface CheckResult {
+  name: string;
+  script: string;
+  ok: boolean;
 }
 
-if (failed > 0) {
-  console.error(`\n✗ Charter compliance: ${failed} check(s) failed.`);
-  process.exit(1);
+const results: CheckResult[] = [];
+
+// Inline the child-process spawns here rather than import the other scripts,
+// because each script already has its own exit code contract and we just want
+// to chain them with a single combined status.
+
+function run(name: string, script: string): void {
+  const r = spawnSync('bun', ['run', script], { stdio: 'inherit' });
+  results.push({ name, script, ok: r.status === 0 });
 }
 
-console.log('\n✓ Charter compliance: all checks passed (or no targets yet).');
-process.exit(0);
+run('lint-agents', 'scripts/lint-agents.ts');
+run('lint-capabilities', 'scripts/lint-capabilities.ts');
+run('ledger-freshness', 'scripts/check-ledger-freshness.ts');
+
+console.log('\n--- Charter compliance summary ---');
+for (const r of results) {
+  console.log(`${r.ok ? '✓' : '✗'} ${r.name} (${r.script})`);
+}
+const allOk = results.every((r) => r.ok);
+console.log(
+  allOk ? '\n✓ Charter compliance: all checks passed.' : '\n✗ Charter compliance: failures above.',
+);
+process.exit(allOk ? 0 : 1);
