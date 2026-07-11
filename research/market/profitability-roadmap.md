@@ -29,19 +29,23 @@ The risk is *getting and keeping customers*, not the unit economics.
 
 ## Unit economics (every calculation flows from these)
 
-**Per-customer revenue (Year 1 steady state):**
-- Mowing weekly @ $65/visit × 26 visits/yr = **$1,690/yr LTV**
-- 30% of customers buy one mulching service @ $200 = **$60/yr blended**
-- 20% buy one hedge-trim @ $150 = **$30/yr blended**
-- **Total LTV Year 1: $1,780/customer**
-- **Monthly recurring revenue per customer: $148**
+> **2026-07-11 update:** Revisions based on live Largo FL aggregator pricing research
+> (see `research/market/largo-pricing-reality.md`). The original $65/visit assumption
+> over-priced the market by 30-65%. The corrected pricing aligns to `research/pricing/price-book.yaml`.
+
+**Per-customer revenue (Year 1 steady state, 1/4-acre lot = medium tier):**
+- Mowing weekly @ $48/visit × 26 visits/yr = **$1,248/yr LTV** (recurring mowing only)
+- 30% of customers buy one mulching service @ $110/yd × 3 yd = **$99/yr blended**
+- 20% buy one hedge-trim @ $200 average = **$40/yr blended**
+- **Total LTV Year 1: $1,387/customer** (mid-tier scenario)
+- **Monthly recurring revenue per customer: $115**
 
 **Per-customer COGS:**
 - Equipment depreciation (rental or wear-and-tear on borrowed): $8/mo
 - Fuel + drive time amortized: $12/mo
 - Materials (mulch, trimmers): $10/mo (only on service jobs)
-- **Total COGS: $30/mo per customer** = **20% of revenue**
-- **Gross margin: 80%** (well above the 35% target in pricing book;
+- **Total COGS: $30/mo per customer** = **26% of revenue**
+- **Gross margin: 74%** (well above the 35% target in pricing book;
   conservative because mower depreciation is a smaller piece of the
   pie than the model assumed)
 
@@ -54,13 +58,15 @@ The risk is *getting and keeping customers*, not the unit economics.
 - **Total overhead per customer at 25-customer scale: $11/mo**
 
 **Per-customer monthly profit at 25-customer scale:**
-- Revenue: $148
+- Revenue: $115
 - COGS: $30
 - Overhead: $11
-- **Net per customer: $107/mo**
+- **Net per customer: $74/mo**
 
-These are *good* unit economics. The hard part is scaling the
-customer count.
+These are good-but-tighter unit economics. The hard part is *both*
+scaling the customer count AND defending against aggregator pricing
+pressure. The competitive moat has to come from service quality and
+local-presence trust, not from pricing power.
 
 ---
 
@@ -76,20 +82,28 @@ customer count.
 | Month | New | Total | MRR | COGS | OH | Net | Cumulative |
 |---|---|---|---|---|---|---|---|
 | 1 | 0 | 0 | $0 | $50 | $10 | -$60 | **-$60** |
-| 2 | 1 | 1 | $148 | $80 | $15 | +$53 | -$7 |
-| 3 | 2 | 3 | $444 | $140 | $25 | +$279 | **+$272** |
-| 4 | 3 | 6 | $888 | $230 | $130 | +$528 | +$800 |
-| 5 | 4 | 10 | $1,480 | $350 | $185 | +$945 | **+$1,745** |
-| 6 | 5 | 15 | $2,220 | $495 | $230 | +$1,495 | +$3,240 |
-| 7 | 5 | 20 | $2,960 | $640 | $255 | +$2,065 | +$5,305 |
-| 8 | 5 | 25 | $3,700 | $785 | $280 | +$2,635 | +$7,940 |
-| 9 | 5 | 30 | $4,440 | $930 | $305 | +$3,205 | +$11,145 |
-| 10 | 5 | 35 | $5,180 | $1,075 | $330 | +$3,775 | +$14,920 |
-| 11 | 5 | 40 | $5,920 | $1,220 | $355 | +$4,345 | +$19,265 |
-| 12 | 5 | 45 | $6,660 | $1,365 | $380 | +$4,915 | **+$24,180** |
+| 2 | 1 | 1 | $115 | $80 | $15 | +$20 | -$40 |
+| 3 | 2 | 3 | $345 | $140 | $25 | +$180 | +$140 |
+| 4 | 3 | 6 | $690 | $230 | $130 | +$330 | +$470 |
+| 5 | 4 | 10 | $1,150 | $350 | $185 | +$615 | +$1,085 |
+| 6 | 5 | 15 | $1,725 | $495 | $230 | +$1,000 | +$2,085 |
+| 7 | 5 | 20 | $2,300 | $640 | $255 | +$1,405 | +$3,490 |
+| 8 | 5 | 25 | $2,875 | $785 | $280 | +$1,810 | +$5,300 |
+| 9 | 5 | 30 | $3,450 | $930 | $305 | +$2,215 | +$7,515 |
+| 10 | 5 | 35 | $4,025 | $1,075 | $330 | +$2,620 | +$10,135 |
+| 11 | 5 | 40 | $4,600 | $1,220 | $355 | +$3,025 | +$13,160 |
+| 12 | 5 | 45 | $5,175 | $1,365 | $380 | +$3,430 | **+$16,590** |
 
-**Month 12 baseline:** $6,660 MRR × 12 = ~$80K ARR.
-**Year 1 net profit: $24,180** (operating cash, before taxes / LLC formation costs).
+**Month 12 baseline (revised):** $5,175 MRR × 12 = ~$62K ARR.
+**Year 1 net profit (revised): $16,590** (operating cash, before taxes / LLC formation costs).
+**Breakeven: Month 3** (single month goes positive).
+**Cumulative breakeven: Month 4-5.**
+
+> Change log: MRR per customer dropped from $148 to $115 (live Largo pricing).
+> Year 1 net dropped from $24,180 to $16,590 (32% reduction). Volume targets
+> are unchanged at 5 new/month, but each customer's lower ARPU means the
+> solo-operator ceiling drops from $80K ARR to $62K ARR. To hit $80K ARR,
+> the operator needs 60+ active customers by Month 12, not 45.
 
 ---
 
