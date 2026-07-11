@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Largo Lawn — Mark only (no wordmark)
+  Usage: Favicon, GBP profile photo, app icon, business card corner mark.
+  Square 100x100 viewBox; render at any size.
+  Color: primary green #1F4E2C.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Largo Lawn mark">
+  <title>Largo Lawn mark</title>
+  <desc>Three-blade grass mark for Largo Lawn.</desc>
+
+  <!-- Centered grass-blade motif — three blades + soil line -->
+  <g fill="#1F4E2C">
+    <!-- Center blade (tallest) -->
+    <path d="M 50 78 Q 50 25 50 8 Q 50 25 50 78 Z" />
+    <!-- Left blade -->
+    <path d="M 32 78 Q 28 35 22 18 Q 30 38 38 78 Z" />
+    <!-- Right blade -->
+    <path d="M 68 78 Q 72 35 78 18 Q 70 38 62 78 Z" />
+    <!-- Base / soil line -->
+    <rect x="14" y="76" width="72" height="4" rx="2" />
+  </g>
+</svg>

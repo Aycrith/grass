@@ -80,7 +80,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <header className="site-header">
           <div className="container">
             <a href="/" className="brand">
-              🌱 {BUSINESS.name}
+              <img
+                src="/logo-mark.svg"
+                alt=""
+                className="brand-mark"
+                width={32}
+                height={32}
+              />
+              {BUSINESS.name}
             </a>
             <nav>
               <a href="/services">Services</a>

@@ -1,15 +1,52 @@
-/* Mission 1 web app — minimal CSS, no Tailwind dependency */
+/* Mission 1 web app — minimal CSS, no Tailwind dependency
+ *
+ * Brand tokens (Largo Lawn brand guidelines, brand/guidelines.md):
+ *   --ll-green   — primary brand green (#1F4E2C, deep forest)
+ *   --ll-sand    — secondary accent (#D4A574, Florida earth)
+ *   --ll-sky     — links/CTAs (#3B7DD8, trust blue)
+ *   --ll-charcoal — body text (#1A1A1A, near-black)
+ *   --ll-cream   — backgrounds (#FAF6F0, warm off-white)
+ *
+ * Inter font (Google Fonts) loaded via <link> in layout.tsx.
+ *
+ * Legacy tokens (--green-*, --gray-*, --red-*) preserved for any
+ * code that references them; will be removed once all callers migrate.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --green-700: #1f6f3a;
-  --green-500: #3aa55c;
-  --green-100: #e6f4ea;
-  --gray-900: #1a1a1a;
+  /* Brand palette */
+  --ll-green: #1F4E2C;
+  --ll-green-hover: #2A6638;
+  --ll-sand: #D4A574;
+  --ll-sky: #3B7DD8;
+  --ll-charcoal: #1A1A1A;
+  --ll-cream: #FAF6F0;
+  --ll-cream-deep: #F2EBDF;
+
+  /* Semantic aliases */
+  --color-primary: var(--ll-green);
+  --color-primary-hover: var(--ll-green-hover);
+  --color-accent: var(--ll-sand);
+  --color-cta: var(--ll-sky);
+  --color-text: var(--ll-charcoal);
+  --color-bg: white;
+  --color-bg-soft: var(--ll-cream);
+  --color-border: #E5E0D6;
+
+  /* Legacy tokens (deprecated — kept for backward compat) */
+  --green-700: var(--ll-green);
+  --green-500: var(--ll-green-hover);
+  --green-100: var(--ll-cream-deep);
+  --gray-900: var(--ll-charcoal);
   --gray-700: #4a4a4a;
-  --gray-300: #d0d0d0;
-  --gray-100: #f6f6f6;
+  --gray-300: var(--color-border);
+  --gray-100: var(--ll-cream);
   --red-700: #b3261e;
+
   --max-width: 1100px;
+  --radius: 6px;
 }
 
 * {
@@ -20,14 +57,16 @@ html,
 body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
-  color: var(--gray-900);
-  background: white;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--color-text);
+  background: var(--color-bg);
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
-  color: var(--green-700);
+  color: var(--color-cta);
   text-decoration: none;
 }
 
@@ -41,8 +80,10 @@ a:hover {
   padding: 0 1.5rem;
 }
 
+/* ----- Header ----- */
+
 .site-header {
-  border-bottom: 1px solid var(--gray-300);
+  border-bottom: 1px solid var(--color-border);
   background: white;
   position: sticky;
   top: 0;
@@ -58,9 +99,19 @@ a:hover {
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   font-weight: 700;
-  font-size: 1.2rem;
-  color: var(--green-700);
+  font-size: 1.25rem;
+  color: var(--ll-green);
+  letter-spacing: -0.02em;
+}
+
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
 }
 
 .site-header nav {
@@ -75,16 +126,19 @@ a:hover {
 }
 
 .site-header nav a.cta {
-  background: var(--green-700);
+  background: var(--ll-green);
   color: white;
   padding: 0.5rem 1rem;
-  border-radius: 6px;
+  border-radius: var(--radius);
+  transition: background 0.15s ease;
 }
 
 .site-header nav a.cta:hover {
-  background: var(--green-500);
+  background: var(--ll-green-hover);
   text-decoration: none;
 }
+
+/* ----- Main content ----- */
 
 main {
   min-height: 70vh;
@@ -95,32 +149,57 @@ h1 {
   font-size: 2.5rem;
   line-height: 1.2;
   margin: 0 0 1rem;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  color: var(--ll-charcoal);
 }
 
 h2 {
   font-size: 1.8rem;
   margin: 2rem 0 1rem;
+  letter-spacing: -0.01em;
+  font-weight: 700;
+  color: var(--ll-charcoal);
 }
 
 h3 {
   font-size: 1.3rem;
   margin: 1.5rem 0 0.5rem;
+  font-weight: 600;
+  color: var(--ll-green);
 }
 
 p {
   margin: 0 0 1rem;
 }
 
+/* ----- Hero ----- */
+
 .hero {
-  background: var(--green-100);
+  background: var(--ll-cream);
   padding: 4rem 0;
   text-align: center;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.hero h1 {
+  margin-bottom: 0.5rem;
 }
 
 .hero p {
   font-size: 1.15rem;
   color: var(--gray-700);
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
 }
+
+.hero .cta {
+  margin-top: 1rem;
+  display: inline-block;
+}
+
+/* ----- Grids + cards ----- */
 
 .grid {
   display: grid;
@@ -130,22 +209,29 @@ p {
 }
 
 .card {
-  border: 1px solid var(--gray-300);
-  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
   padding: 1.5rem;
   background: white;
+  transition: box-shadow 0.15s ease;
+}
+
+.card:hover {
+  box-shadow: 0 2px 8px rgba(31, 78, 44, 0.08);
 }
 
 .card h3 {
   margin-top: 0;
-  color: var(--green-700);
+  color: var(--ll-green);
 }
 
+/* ----- Footer ----- */
+
 .site-footer {
-  border-top: 1px solid var(--gray-300);
+  border-top: 1px solid var(--color-border);
   padding: 2rem 0;
   margin-top: 4rem;
-  background: var(--gray-100);
+  background: var(--ll-cream);
   color: var(--gray-700);
   font-size: 0.9rem;
 }
@@ -154,32 +240,69 @@ p {
   margin: 0.25rem 0;
 }
 
+/* ----- Buttons ----- */
+
 button,
 .btn {
-  background: var(--green-700);
+  background: var(--ll-green);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 6px;
+  border-radius: var(--radius);
   font-size: 1rem;
   cursor: pointer;
   font-weight: 600;
+  font-family: inherit;
+  transition: background 0.15s ease;
+  display: inline-block;
+  text-decoration: none;
 }
 
 button:hover,
 .btn:hover {
-  background: var(--green-500);
+  background: var(--ll-green-hover);
+  text-decoration: none;
+  color: white;
 }
+
+.btn-secondary {
+  background: var(--ll-sky);
+}
+
+.btn-secondary:hover {
+  background: #2E68BD;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--ll-green);
+  border: 2px solid var(--ll-green);
+}
+
+.btn-outline:hover {
+  background: var(--ll-green);
+  color: white;
+}
+
+/* ----- Forms ----- */
 
 input,
 textarea,
 select {
   width: 100%;
   padding: 0.6rem;
-  border: 1px solid var(--gray-300);
-  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
   font-size: 1rem;
   font-family: inherit;
+  background: white;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid var(--ll-green);
+  outline-offset: 2px;
 }
 
 label {
@@ -192,10 +315,72 @@ label {
   margin-bottom: 1rem;
 }
 
+/* ----- Alerts / banners ----- */
+
 .hurricane-banner {
   background: var(--red-700);
   color: white;
   padding: 1rem;
   text-align: center;
   font-weight: 600;
+}
+
+.notice {
+  background: var(--ll-cream);
+  border-left: 4px solid var(--ll-sand);
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  border-radius: var(--radius);
+}
+
+/* ----- Tables (pricing) ----- */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+th {
+  background: var(--ll-cream);
+  font-weight: 600;
+  color: var(--ll-charcoal);
+}
+
+/* ----- Utility ----- */
+
+.text-muted {
+  color: var(--gray-700);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-0 {
+  margin-top: 0;
+}
+
+.mb-0 {
+  margin-bottom: 0;
+}
+
+/* ----- Mobile ----- */
+
+@media (max-width: 640px) {
+  h1 { font-size: 1.875rem; line-height: 1.25; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.15rem; }
+  .hero { padding: 2.5rem 0; }
+  .hero p { font-size: 1rem; }
+  .site-header .container { flex-wrap: wrap; gap: 0.75rem; }
+  .site-header nav { gap: 1rem; flex-wrap: wrap; }
+  .site-header nav a:not(.cta) { font-size: 0.9rem; }
 }

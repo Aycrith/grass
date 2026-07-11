@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Largo Lawn — Wordmark logo
+  Usage: Website header, GBP cover, business card front, print assets.
+  Minimum render width: 80px (digital), 1 inch (print).
+  Color: primary green #1F4E2C on light backgrounds.
+        cream #FAF6F0 on dark backgrounds (swap fill).
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100" role="img" aria-label="Largo Lawn">
+  <title>Largo Lawn</title>
+  <desc>Wordmark for Largo Lawn — local lawn care in 33771.</desc>
+
+  <!-- Grass-blade mark — three blades forming a stylized "L" / lawn motif -->
+  <g transform="translate(20, 20)" fill="#1F4E2C">
+    <!-- Center blade (tallest) -->
+    <path d="M 30 60 Q 30 20 30 0 Q 30 20 30 60 Z" />
+    <!-- Left blade -->
+    <path d="M 18 60 Q 16 30 12 10 Q 18 30 22 60 Z" />
+    <!-- Right blade -->
+    <path d="M 42 60 Q 44 30 48 10 Q 42 30 38 60 Z" />
+    <!-- Base / soil line -->
+    <rect x="6" y="58" width="48" height="3" rx="1.5" />
+  </g>
+
+  <!-- Wordmark: "Largo Lawn" in Inter-style geometric sans -->
+  <text x="90" y="60"
+        font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif"
+        font-size="36"
+        font-weight="700"
+        fill="#1F4E2C"
+        letter-spacing="-0.5">Largo Lawn</text>
+
+  <!-- Tagline (subtle, small) -->
+  <text x="90" y="82"
+        font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif"
+        font-size="12"
+        font-weight="400"
+        fill="#1F4E2C"
+        opacity="0.7"
+        letter-spacing="0.5">YOUR NEIGHBOR'S LAWN MOWER</text>
+</svg>
