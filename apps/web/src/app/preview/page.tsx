@@ -59,6 +59,16 @@ export default function PreviewIndex() {
           <Link href="/preview/gbp">/preview/gbp</Link> — every field is pre-filled.
         </li>
         <li>
+          <input type="checkbox" /> Read the 7 operational runbooks in{' '}
+          <Link href="/preview/runbooks">/preview/runbooks</Link> — day-of-mow, weather, hurricane
+          mode, equipment, quote-to-close, retention, accounting.
+        </li>
+        <li>
+          <input type="checkbox" /> Read the 13 customer-facing content artifacts in{' '}
+          <Link href="/preview/content">/preview/content</Link> — GBP Q&amp;A, phone/email/SMS
+          scripts, quotes, invoices, waivers, printable assets.
+        </li>
+        <li>
           <input type="checkbox" /> Read the ad campaign drafts in{' '}
           <Link href="/preview/ads">/preview/ads</Link> — these run on free new-account credits,
           so $0 out-of-pocket.
@@ -92,17 +102,26 @@ export default function PreviewIndex() {
       <h2>What I changed to make this preview internally consistent</h2>
       <ul>
         <li>
-          Removed "Licensed &amp; Insured" copy from the homepage, GBP landing page, and footer.
-          The brand guidelines anti-brand list forbids it, and OBJ-M2-003 (insurance binding) is
-          deferred until $2,500 cumulative cash.
+          Removed "Licensed &amp; Insured" copy from the homepage, GBP landing page, footer, and
+          About page. The brand guidelines anti-brand list forbids it, and OBJ-M2-003 (insurance
+          binding) is deferred until $2,500 cumulative cash.
         </li>
         <li>
           Added an orange "Preview Build →" button in the site header so you can always find your
           way back here.
         </li>
         <li>
-          Rendered every draft, research artifact, and operational plan as a route under{' '}
-          <code>/preview/*</code>.
+          Rendered every draft, research artifact, customer-content artifact, and operational
+          runbook as a route under <code>/preview/*</code>.
+        </li>
+        <li>
+          Authored 13 customer-content artifacts (4 scripts/templates in Phase 2, 9 print/
+          digital/transactional assets in Phase 3) — all under <code>content/</code> and
+          browsable at <Link href="/preview/content">/preview/content</Link>.
+        </li>
+        <li>
+          Authored 7 operational runbooks (Phase 4) — all under <code>content/runbooks/</code> and
+          browsable at <Link href="/preview/runbooks">/preview/runbooks</Link>.
         </li>
       </ul>
 

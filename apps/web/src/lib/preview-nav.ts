@@ -57,7 +57,12 @@ export const PREVIEW_NAV: readonly PreviewNavItem[] = [
   {
     slug: 'runbooks',
     label: 'Operational Runbooks',
-    description: 'Day-1, day-of-mow, weather, hurricane mode (stubs)',
+    description: 'Day-of-mow, weather, hurricane mode, equipment, retention, accounting',
+  },
+  {
+    slug: 'content',
+    label: 'Customer Content',
+    description: 'GBP Q&A, phone/email/SMS scripts, quotes, invoices, waivers, assets',
   },
   {
     slug: 'decisions',
