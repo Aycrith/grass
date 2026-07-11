@@ -48,5 +48,14 @@
       "@grass/database/*": ["platform/packages/database/src/*"]
     }
   },
-  "exclude": ["node_modules", "dist", ".next", "out", "build", "coverage"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".next",
+    "out",
+    "build",
+    "coverage",
+    "**/node_modules",
+    "apps/**"
+  ]
 }

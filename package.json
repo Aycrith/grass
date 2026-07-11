@@ -21,6 +21,7 @@
     "test:ledger-freshness": "bun run scripts/check-ledger-freshness.ts",
     "audit:phase-0": "ls audit/phase-0/",
     "smoke-test": "cat scripts/smoke-test.md",
+    "typecheck:apps": "cd apps/web && tsc --noEmit",
     "validate": "bun run lint && bun run typecheck && bun run test:charter"
   },
   "devDependencies": {
