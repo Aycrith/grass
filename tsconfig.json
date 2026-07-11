@@ -33,7 +33,19 @@
       "@grass/research/*": ["research/*"],
       "@grass/analytics/*": ["analytics/*"],
       "@grass/audit/*": ["audit/*"],
-      "@grass/platform/*": ["platform/*"]
+      "@grass/platform/*": ["platform/*"],
+      "@grass/auth": ["platform/packages/auth/src/index.ts"],
+      "@grass/auth/*": ["platform/packages/auth/src/*"],
+      "@grass/crm-core": ["platform/packages/crm-core/src/index.ts"],
+      "@grass/crm-core/*": ["platform/packages/crm-core/src/*"],
+      "@grass/payments-core": ["platform/packages/payments-core/src/index.ts"],
+      "@grass/payments-core/*": ["platform/packages/payments-core/src/*"],
+      "@grass/scheduling-core": ["platform/packages/scheduling-core/src/index.ts"],
+      "@grass/scheduling-core/*": ["platform/packages/scheduling-core/src/*"],
+      "@grass/notifications-core": ["platform/packages/notifications-core/src/index.ts"],
+      "@grass/notifications-core/*": ["platform/packages/notifications-core/src/*"],
+      "@grass/database": ["platform/packages/database/src/index.ts"],
+      "@grass/database/*": ["platform/packages/database/src/*"]
     }
   },
   "exclude": ["node_modules", "dist", ".next", "out", "build", "coverage"]

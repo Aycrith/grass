@@ -1,0 +1,17 @@
+{
+  "name": "@grass/notifications-core",
+  "version": "0.1.0",
+  "description": "Notifications — Twilio SMS + Resend email. Twin: customer.preferred_contact_method.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "scripts": {
+    "test": "bun test src/"
+  },
+  "dependencies": {
+    "@grass/auth": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.14",
+    "typescript": "^5.7.2"
+  }
+}

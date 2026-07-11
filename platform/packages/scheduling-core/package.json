@@ -1,0 +1,17 @@
+{
+  "name": "@grass/scheduling-core",
+  "version": "0.1.0",
+  "description": "Scheduling service layer — Job, Schedule, Route. Twin: architecture/twin/{job,schedule,route}.md.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "scripts": {
+    "test": "bun test src/"
+  },
+  "dependencies": {
+    "@grass/auth": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.14",
+    "typescript": "^5.7.2"
+  }
+}
