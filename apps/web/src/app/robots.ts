@@ -16,6 +16,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/', '/gbp'],
       },
     ],
-    sitemap: 'https://largolandscape.pro/sitemap.xml',
+    sitemap: 'https://largolawn.pro/sitemap.xml',
   };
 }

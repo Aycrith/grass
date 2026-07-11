@@ -157,6 +157,47 @@ Domain registration on Vercel:
 
 ---
 
+## Final decision (steward override, 2026-07-10)
+
+The data-driven analysis above recommended `LargoLandscape.pro` at
+9.3/10 because it future-proofs the brand across all 6 registered
+capabilities. The steward reviewed this analysis and overrode the
+recommendation in favor of `LargoLawn.pro` for two reasons:
+
+1. **Brand sound/presentation preference.** "LargoLawn" sounds
+   cleaner and more memorable than "LargoLandscape" — the steward
+   rated this as the most reliable data signal.
+2. **Year-1 service reality.** Year 1 is ~90% lawn mowing. The
+   service-expansion concern (mulching/hedge-trim/hardscape) is
+   solvable under the "LargoLawn" brand without renaming —
+   many top lawn brands (TruGreen, LawnStarter) sell full landscape
+   work under "Lawn" names.
+
+### What this overrides
+
+The data-driven ranking above still holds (LargoLandscape.pro at 9.3,
+LargoLawn.pro at 8.0). The override is on the "phone-spellability +
+brand sound" dimension, which the steward weighted higher than the
+data-aggregated score reflects. Final pick:
+
+> **`LargoLawn.pro`** at $4.99/yr on Vercel Registrar.
+
+### Year-2 rebrand path (documented, not committed)
+
+If landscape revenue grows past 30% of book in Year 2, the documented
+rebrand path is:
+
+1. Register `LargoLandscape.pro` ($4.99/yr, new line item)
+2. 5-minute rebrand diff (12 files — see prior commit history)
+3. Update GBP profile + citations to new name (1-2 week overlap
+   period where both names point to the same site)
+4. Cancel `LargoLawn.pro` registration after 90 days
+
+**Total Year-2 rebrand cost:** $4.99 + 5 min + 1-2 weeks of dual-NAP
+overhead. Acceptable when triggered by real revenue data.
+
+---
+
 ## Cross-references
 
 - D-0007 brand strategy framework: `governance/decisions/0007-brand-domain.md`

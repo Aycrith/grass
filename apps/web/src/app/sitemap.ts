@@ -25,7 +25,7 @@ const SERVICE_SLUGS = [
 ] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = 'https://largolandscape.pro';
+  const base = 'https://largolawn.pro';
   const lastmod = new Date();
   return [
     // --- Top-level pages ---

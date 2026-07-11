@@ -1,6 +1,6 @@
 # @grass/web — Mission 1 customer-facing web app
 
-Next.js 15 App Router site for Largo Landscape.
+Next.js 15 App Router site for Largo Lawn.
 
 ## Page taxonomy
 
@@ -65,5 +65,5 @@ Vercel (zero-devops). Config in `vercel.json`. CI checks via root
 ## Sitemap
 
 Auto-generated at build from `BUSINESS.service_area_zips` + service slugs
-via `src/app/sitemap.ts`. Output: `https://largolandscape.pro/sitemap.xml`
+via `src/app/sitemap.ts`. Output: `https://largolawn.pro/sitemap.xml`
 containing all 18 routes + `robots.txt` excluding `/api/` and `/gbp`.

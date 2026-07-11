@@ -27,11 +27,18 @@ Once those four are pinned, GBP form is mechanical.
 
 Use the **D-0007 ratified name** verbatim. Per the data-driven brand
 analysis (`research/distribution/brand-name-brainstorm.md`), the
-selected name is **Largo Landscape** on the `.pro` TLD
-(`largolandscape.pro`, $4.99/yr on Vercel). Brand ratified
-2026-07-10.
+selected name is **Largo Lawn** on the `.pro` TLD
+(`largolawn.pro`, $4.99/yr on Vercel). Brand ratified 2026-07-10.
 
-> **Largo Landscape**
+**Note on landscape positioning:** "Lawn" in the brand name does NOT
+preclude landscape services. Many top lawn-care brands (TruGreen,
+LawnStarter) sell full landscape work under "Lawn" names. Year 1 service
+mix will be ~90% mowing; mulching, hedge-trim, and other landscape
+services are upsold under the same brand as customers request them.
+Year 2 rebrand to a landscape name is a documented option if landscape
+revenue grows past 30% of book — rebrand cost = $4.99 + 5 min.
+
+> **Largo Lawn**
 
 Do NOT add taglines, location keywords, or LLC suffix to the GBP business
 name. Google penalizes keyword-stuffed business names. NAP must match the
@@ -127,19 +134,19 @@ Sunday:        Closed
 
 ## Field 7: Website
 
-The D-0002 ratified URL: **`https://largolandscape.pro`** ($4.99/yr
+The D-0002 ratified URL: **`https://largolawn.pro`** ($4.99/yr
 `.pro` TLD on Vercel Registrar, ratified 2026-07-10).
 
 ## Field 8: Appointment link
 
-`https://largolandscape.pro/contact`
+`https://largolawn.pro/contact`
 
 ---
 
 ## Description (750-character max)
 
 ```
-Largo Landscape provides residential lawn care and landscaping services
+Largo Lawn provides residential lawn care and landscaping services
 across Largo, FL and the surrounding Pinellas County communities
 (33771, 33770, 33778, 33773, 33774, 33756).
 
@@ -219,7 +226,7 @@ these 5 questions from the steward's account, then answer them:
 
 **Q1:** "Do you offer weekly service in Largo FL?"
 **A1:** "Yes — weekly and bi-weekly residential mowing is our most
-popular service. Visit largolandscape.pro for pricing or message us here
+popular service. Visit largolawn.pro for pricing or message us here
 for a free quote."
 
 **Q2:** "Are you licensed and insured?"
@@ -285,7 +292,7 @@ review-acquisition engine. Process for each pilot job:
    for now — Google Voice tap later).
 2. Review-request template:
 
-   > "Thanks for choosing Largo Landscape! If you have 30 seconds, an
+   > "Thanks for choosing Largo Lawn! If you have 30 seconds, an
    > honest Google review helps us a lot — especially as a new local
    > business. Tap the link to leave one:
    > [GBP review link — generated after profile is verified]
@@ -352,10 +359,10 @@ Top 25 citation targets (priority order, do in this sequence):
 NAP template (copy verbatim to every citation):
 
 ```
-Largo Landscape
+Largo Lawn
 [Service-Area Business — address hidden OR real address per Option chosen]
 727-XXX-XXXX  [Google Voice number]
-https://largolandscape.pro
+https://largolawn.pro
 ```
 
 After each citation goes live, log it in a citation tracker:
