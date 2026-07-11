@@ -20,13 +20,13 @@ export default function AreasIndexPage() {
         your ZIP code below to learn more about service in your specific area.
       </p>
       <div className="grid">
-        {BUSINESS.service_area_zips.map((zip) => (
+        {BUSINESS.service_area_zips.map((zip: string) => (
           <div key={zip} className="card">
             <h3>
               <Link href={`/areas/${zip}`}>{zip}</Link>
             </h3>
             <p>
-              <strong>{ZIP_NAMES[zip] ?? 'Largo area'}</strong>
+              <strong>{ZIP_NAMES[zip as keyof typeof ZIP_NAMES] ?? 'Largo area'}</strong>
             </p>
             <p>
               <Link href={`/areas/${zip}`}>Service details →</Link>

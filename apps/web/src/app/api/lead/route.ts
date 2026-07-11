@@ -82,7 +82,6 @@ export async function POST(req: Request) {
       {
         first_name: validated.data.first_name,
         ...(validated.data.last_name ? { last_name: validated.data.last_name } : {}),
-        ...(validated.data.phone ? { primary_phone: '' } : {}),
         email: validated.data.email,
         ...(validated.data.phone ? { phone: validated.data.phone } : {}),
         zip: validated.data.zip,
@@ -104,8 +103,8 @@ export async function POST(req: Request) {
     await sendLeadResponse(
       {
         first_name: lead.first_name,
+        ...(lead.email ? { email: lead.email } : {}),
         ...(lead.phone ? { phone: lead.phone } : {}),
-        email: lead.email,
         preferred_contact_method: lead.phone ? 'sms' : 'email',
       },
       systemPrincipal,

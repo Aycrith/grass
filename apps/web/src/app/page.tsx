@@ -117,7 +117,7 @@ export default function HomePage() {
           </li>
           <li>
             <strong>Service Area:</strong>{' '}
-            {BUSINESS.service_area_zips.map((z) => (
+            {BUSINESS.service_area_zips.map((z: string) => (
               <span key={z}>
                 <Link href={`/areas/${z}`}>{z}</Link>{' '}
               </span>

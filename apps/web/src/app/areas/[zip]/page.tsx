@@ -54,13 +54,14 @@ const AREA_INFO: Record<ServiceAreaZip, { name: string; notes: string; nearby: s
 };
 
 export async function generateStaticParams() {
-  return BUSINESS.service_area_zips.map((zip) => ({ zip }));
+  return BUSINESS.service_area_zips.map((zip: string) => ({ zip }));
 }
 
 export async function generateMetadata({ params }: AreaParams): Promise<Metadata> {
   const { zip } = await params;
   if (!inServiceArea(zip)) return {};
   const info = AREA_INFO[zip as ServiceAreaZip];
+  if (!info) return {};
   return {
     title: `Lawn Care in ${info.name}`,
     description: info.notes,
@@ -71,6 +72,7 @@ export default async function AreaZipPage({ params }: AreaParams) {
   const { zip } = await params;
   if (!inServiceArea(zip)) notFound();
   const info = AREA_INFO[zip as ServiceAreaZip];
+  if (!info) notFound();
 
   return (
     <section className="container">

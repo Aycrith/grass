@@ -11,7 +11,7 @@ import { BUSINESS } from '@/lib/business';
 import { useState } from 'react';
 
 interface ContactFormProps {
-  source?: string;
+  source?: string | undefined;
 }
 
 interface FormState {

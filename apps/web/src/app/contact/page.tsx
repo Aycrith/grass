@@ -5,7 +5,7 @@
  * and dispatches SMS/email via @grass/notifications-core sendLeadResponse.
  */
 
-import { BUSINESS, inServiceArea } from '@/lib/business';
+import { BUSINESS } from '@/lib/business';
 import type { Metadata } from 'next';
 import ContactForm from './ContactForm';
 
@@ -49,5 +49,3 @@ export default async function ContactPage({ searchParams }: ContactProps) {
     </section>
   );
 }
-
-export { inServiceArea };

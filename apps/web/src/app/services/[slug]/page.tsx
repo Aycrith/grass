@@ -22,6 +22,7 @@ export async function generateMetadata({ params }: ServiceParams): Promise<Metad
   const { slug } = await params;
   if (!isKnownService(slug)) return {};
   const svc = SERVICES[slug];
+  if (!svc) return {};
   return {
     title: `${svc.name} in Largo, FL`,
     description: svc.tagline,
@@ -32,6 +33,7 @@ export default async function ServiceDetailPage({ params }: ServiceParams) {
   const { slug } = await params;
   if (!isKnownService(slug)) notFound();
   const svc = SERVICES[slug];
+  if (!svc) notFound();
   return (
     <>
       <ServicePageJsonLd content={svc} slug={slug} />
