@@ -1,0 +1,114 @@
+# Observability — Required Event Emissions
+# Charter rule: every capability must emit at least one metric on success and one error on failure.
+# This file enumerates the required emissions per capability.
+# Owners update this file in the same PR that updates the capability registry.
+
+capabilities:
+  - cap_id: cap_lead_capture_gbp
+    owner_agent: sales
+    metrics:
+      - name: lead.created
+        tags: [source]
+    errors:
+      - classification: gbp_api_failure
+        message_match: "Google Business Profile API"
+        actionable: true
+        escalate_to: sales
+
+  - cap_id: cap_mowing_standard
+    owner_agent: operations
+    metrics:
+      - name: job.completed
+        tags: [weather, crew_id, lot_bucket]
+      - name: job.scheduled
+        tags: [cadence, lot_bucket]
+    errors:
+      - classification: equipment_failure
+        message_match: "equipment_failure"
+        actionable: true
+        escalate_to: operations
+
+  - cap_id: cap_edging_hard_edge
+    owner_agent: operations
+    metrics:
+      - name: job.completed
+        tags: [weather, crew_id, scope_linear_feet]
+    errors: []
+
+  - cap_id: cap_mulching_install
+    owner_agent: operations
+    metrics:
+      - name: job.completed
+        tags: [weather, crew_id, cubic_yards]
+      - name: material.delivered
+        tags: [supplier, cubic_yards]
+    errors:
+      - classification: supplier_out_of_stock
+        message_match: "out of stock|unavailable"
+        actionable: true
+        escalate_to: operations
+
+  - cap_id: cap_hedge_trim
+    owner_agent: operations
+    metrics:
+      - name: job.completed
+        tags: [weather, crew_id, hedge_height]
+    errors: []
+
+  - cap_id: cap_hurricane_prep
+    owner_agent: operations
+    metrics:
+      - name: job.completed
+        tags: [weather, crew_id, storm_name]
+    errors: []
+
+  - cap_id: cap_hurricane_mode
+    owner_agent: operations
+    metrics:
+      - name: hurricane_mode.triggered
+        tags: [storm_name, max_winds_mph]
+      - name: hurricane_mode.cleared
+        tags: [storm_name]
+    errors:
+      - classification: noaa_api_unavailable
+        message_match: "noaa|404|timeout"
+        severity: warn
+        escalate_to: operations
+
+  - cap_id: cap_seasonal_cleanup
+    owner_agent: operations
+    metrics:
+      - name: job.completed
+        tags: [weather, crew_id, season]
+    errors: []
+
+  - cap_id: cap_recurring_schedule
+    owner_agent: operations
+    metrics:
+      - name: schedule.built
+        tags: [day, jobs_count, drive_minutes]
+    errors: []
+
+  - cap_id: cap_auto_quote_mowing
+    owner_agent: sales
+    metrics:
+      - name: quote.sent
+        tags: [service_line, source]
+      - name: quote.accepted
+        tags: [service_line, source]
+      - name: quote.declined
+        tags: [service_line, source, decline_reason]
+    errors:
+      - classification: pricing_ladder_stale
+        message_match: "price book"
+        severity: warn
+        escalate_to: sales
+
+  - cap_id: cap_review_request
+    owner_agent: marketing
+    metrics:
+      - name: review_request.sent
+        tags: [cadence]
+      - name: review.received
+        tags: [rating, source]
+    errors: []
