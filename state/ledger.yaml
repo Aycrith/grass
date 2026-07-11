@@ -12,7 +12,7 @@
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-10 (Day 15 — Phase 1 research deliverables completed)
+# Last updated: 2026-07-10 (Day 16 — cash-min activation; items 4+6 active, 1/2/3/5 deferred)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -540,6 +540,28 @@ changelog:
       phase_day 5/5, health_score 0.85, all Day-1-5 objectives
       completed, Day-8 GATE queued as next gate. Phase 0 + 1 exit;
       next: Day 8 licensing-map research workstream.
+    by: "steward"
+
+  - date: "2026-07-10"
+    day: 16
+    change: >
+      Cash-min activation per steward direction 2026-07-10:
+      objectives.active restructured to OBJ-M2-004 (brand/domain) +
+      OBJ-M2-006 (GBP + citations + 5 paid pilots) only. New
+      objectives.deferred_cash_constrained section houses OBJ-M2-001
+      (Sunbiz), OBJ-M2-002 (BTRs+DWC-250), OBJ-M2-003 (insurance),
+      OBJ-M2-005 (equipment) with reactivation_trigger and
+      deferral_rationale on each. Drafts/brand rewritten for $6-10/yr
+      ceiling (single .com, no defensive regs). Drafts/equipment
+      replaced with deferral note (borrow/rent outside GRASS).
+      Drafts/README rewritten as cash-min index. New artifacts:
+      research/distribution/cash-min-distribution-ideas.md
+      (8 $0-cost distribution ideas), research/distribution/brand-name
+      -brainstorm.md (12 additional naming candidates in 5 angles),
+      governance/decisions/0011-cash-min-activation.md (formal
+      ratification draft). Total cash Y1 = $9.15. Total cash deferred
+      = $125-4,750 activated by cash-ladder triggers ($500/$1K/$2.5K
+      cumulative pilot revenue).
     by: "steward"
 
   - date: "2026-07-10"
