@@ -15,6 +15,11 @@ export interface PreviewNavItem {
 
 export const PREVIEW_NAV: readonly PreviewNavItem[] = [
   {
+    slug: 'design',
+    label: 'Design System',
+    description: 'Live visual swatches, type scale, components, PRD index',
+  },
+  {
     slug: 'brand',
     label: 'Brand & Voice',
     description: 'Guidelines, logo, name matrix',
