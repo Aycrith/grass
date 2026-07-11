@@ -33,7 +33,7 @@ export default function AboutPage() {
       <p>
         Most landscaping companies grow fast, hire subcontractors, and lose quality control. We
         don't. {BUSINESS.legal_entity} is a one-crew operation — every job is performed by the same
-        licensed and insured team. When you book, you know exactly who's coming.
+        person who quoted it. When you book, you know exactly who's coming.
       </p>
 
       <h2>Our Values</h2>
