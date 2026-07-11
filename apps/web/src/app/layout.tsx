@@ -13,7 +13,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://grasslargo.com'),
+  metadataBase: new URL('https://largolandscape.pro'),
   title: {
     default: `${BUSINESS.name} — Lawn Care & Landscaping in ${BUSINESS.address.city}, FL`,
     template: `%s — ${BUSINESS.name}`,
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://grasslargo.com',
+    url: 'https://largolandscape.pro',
     siteName: BUSINESS.name,
     title: `${BUSINESS.name} — Lawn Care in ${BUSINESS.address.city}, FL`,
   },

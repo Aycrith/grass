@@ -13,7 +13,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'GRASS Lawn & Landscape — Google Profile Visitors',
+  title: `${BUSINESS.name} — Google Profile Visitors`,
   description: `Welcome from our Google Business Profile. ${BUSINESS.name} based in ${BUSINESS.address.city}, FL.`,
   robots: { index: false, follow: true },
 };

@@ -85,13 +85,25 @@ objectives:
     # 4 (brand/domain) and 6 (GBP + citations + first leads). Items 1, 2, 3,
     # 5 are DEFERRED until pilot revenue covers them.
     - id: OBJ-M2-004
-      title: "Day 16: Brand + domain acquisition (D-0007 phase B) — $9.15/yr cash-min path"
+      title: "Day 16: Brand + domain acquisition (D-0007 phase B) — LargoLandscape.pro @ $4.99/yr"
       owner_agent: marketing
       due: "2026-07-25"
-      status: pending
+      status: in_progress  # brand ratified 2026-07-10; domain registration pending steward action on Vercel
       spec_ref: "governance/decisions/0007-brand-domain.md"
-      draft_ready: "drafts/brand/names-and-decision-matrix.md (5 names pre-scored; recommendation: PinellasLawn.com @ $9.15/yr on Cloudflare Registrar)"
-      cash_required: "$9.15/yr"
+      draft_ready: "research/distribution/brand-name-brainstorm.md (data-driven 7-dim scoring; ratified choice: LargoLandscape.pro)"
+      decision_ref: "steward approval 2026-07-10 → see drafts/brand/names-and-decision-matrix.md 'Decision Template' section"
+      cash_required: "$4.99/yr"
+      rebrand_completed: true
+      rebrand_files:
+        - "apps/web/src/lib/business.ts"
+        - "apps/web/src/app/layout.tsx"
+        - "apps/web/src/components/ServicePage.tsx"
+        - "apps/web/src/app/gbp/page.tsx"
+        - "apps/web/src/app/sitemap.ts"
+        - "apps/web/src/app/robots.ts"
+        - "apps/web/README.md"
+        - ".env.example"
+        - "drafts/gbp/profile-content.md"
       reactivation_blocker: null
 
     - id: OBJ-M2-006

@@ -16,9 +16,10 @@ export default function AboutPage() {
     <section className="container">
       <h1>About {BUSINESS.name}</h1>
       <p>
-        GRASS is a solo-founder lawn care and landscaping business based in {BUSINESS.address.city},
-        FL. We serve residential customers in {BUSINESS.service_area_zips.length} Pinellas County
-        ZIP codes with a focused set of yard-care services.
+        {BUSINESS.name} is a solo-founder lawn care and landscaping business based in{' '}
+        {BUSINESS.address.city}, FL. We serve residential customers in{' '}
+        {BUSINESS.service_area_zips.length} Pinellas County ZIP codes with a focused set of
+        yard-care services.
       </p>
 
       <h2>Our Mission</h2>

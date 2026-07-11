@@ -25,11 +25,13 @@ Once those four are pinned, GBP form is mechanical.
 
 ## Field 1: Business name
 
-Use the **D-0007 ratified name** verbatim. Per the brand decision matrix,
-the recommended name is **PinellasLawn**. If the steward picks a different
-name, substitute it here and audit all downstream fields.
+Use the **D-0007 ratified name** verbatim. Per the data-driven brand
+analysis (`research/distribution/brand-name-brainstorm.md`), the
+selected name is **Largo Landscape** on the `.pro` TLD
+(`largolandscape.pro`, $4.99/yr on Vercel). Brand ratified
+2026-07-10.
 
-> **PinellasLawn**
+> **Largo Landscape**
 
 Do NOT add taglines, location keywords, or LLC suffix to the GBP business
 name. Google penalizes keyword-stuffed business names. NAP must match the
@@ -125,20 +127,19 @@ Sunday:        Closed
 
 ## Field 7: Website
 
-The D-0002 ratified URL (currently TBD — pick from
-drafts/brand/names-and-decision-matrix.md recommendation:
-**pinellaslawn.com**).
+The D-0002 ratified URL: **`https://largolandscape.pro`** ($4.99/yr
+`.pro` TLD on Vercel Registrar, ratified 2026-07-10).
 
 ## Field 8: Appointment link
 
-`https://pinellaslawn.com/contact` (replace domain if different brand chosen)
+`https://largolandscape.pro/contact`
 
 ---
 
 ## Description (750-character max)
 
 ```
-PinellasLawn provides residential lawn care and landscaping services
+Largo Landscape provides residential lawn care and landscaping services
 across Largo, FL and the surrounding Pinellas County communities
 (33771, 33770, 33778, 33773, 33774, 33756).
 
@@ -218,7 +219,7 @@ these 5 questions from the steward's account, then answer them:
 
 **Q1:** "Do you offer weekly service in Largo FL?"
 **A1:** "Yes — weekly and bi-weekly residential mowing is our most
-popular service. Visit pinellaslawn.com for pricing or message us here
+popular service. Visit largolandscape.pro for pricing or message us here
 for a free quote."
 
 **Q2:** "Are you licensed and insured?"
@@ -284,7 +285,7 @@ review-acquisition engine. Process for each pilot job:
    for now — Google Voice tap later).
 2. Review-request template:
 
-   > "Thanks for choosing PinellasLawn! If you have 30 seconds, an
+   > "Thanks for choosing Largo Landscape! If you have 30 seconds, an
    > honest Google review helps us a lot — especially as a new local
    > business. Tap the link to leave one:
    > [GBP review link — generated after profile is verified]
@@ -351,10 +352,10 @@ Top 25 citation targets (priority order, do in this sequence):
 NAP template (copy verbatim to every citation):
 
 ```
-PinellasLawn
+Largo Landscape
 [Service-Area Business — address hidden OR real address per Option chosen]
 727-XXX-XXXX  [Google Voice number]
-https://pinellaslawn.com
+https://largolandscape.pro
 ```
 
 After each citation goes live, log it in a citation tracker:

@@ -201,20 +201,23 @@ Registrar: Cloudflare (at-cost, no renewal markup)
 
 ## Rebrand work (mechanical, ~30 minutes)
 
-The codebase currently uses `GRASS Lawn & Landscape` (per
-`apps/web/src/lib/business.ts` and CLAUDE.md). After brand selection,
-these files need a mechanical rename:
+The codebase previously used `GRASS Lawn & Landscape` (per
+`apps/web/src/lib/business.ts` and CLAUDE.md). Brand has been
+selected as `Largo Landscape` (`.pro` TLD, $4.99/yr Vercel) and the
+rename has been applied. Files updated:
 
-- `apps/web/src/lib/business.ts` lines 11-14 — name, legal_entity, phone, email
-- `apps/web/src/app/layout.tsx` lines 16, 26 — metadataBase + openGraph url
-- `apps/web/src/components/ServicePage.tsx` line 81 — JSON-LD provider.name
-- `apps/web/src/app/gbp/page.tsx` line 16 — page title
-- `apps/web/README.md` line 3 — name reference
-- `CLAUDE.md` line referring to "GRASS Lawn & Landscape" if present
-- `state/ledger.yaml` line referring to placeholder brand
+- `apps/web/src/lib/business.ts` — name, legal_entity, email
+- `apps/web/src/app/layout.tsx` — metadataBase + openGraph url
+- `apps/web/src/components/ServicePage.tsx` — JSON-LD provider.name
+- `apps/web/src/app/gbp/page.tsx` — page title
+- `apps/web/src/app/sitemap.ts` — base URL
+- `apps/web/src/app/robots.ts` — sitemap URL
+- `apps/web/README.md` — name references
+- `.env.example` — `NEXT_PUBLIC_APP_URL` and `EMAIL_FROM`
+- `state/ledger.yaml` — OBJ-M2-004 brand entry
+- `drafts/gbp/profile-content.md` — NAP template
 
-I'll do this rename automatically when you ratify the brand. Single PR,
-reviewable in 2 minutes.
+Single PR, reviewable in 60 seconds.
 
 ## Cross-references
 

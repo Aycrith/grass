@@ -78,13 +78,13 @@ export function ServicePageJsonLd({
     serviceType: content.name,
     name: `${content.name} in Largo, FL`,
     description: content.tagline,
-    provider: { '@type': 'LandscapingBusiness', name: 'GRASS Lawn & Landscape' },
+    provider: { '@type': 'LandscapingBusiness', name: 'Largo Landscape' },
     areaServed: {
       '@type': 'City',
       name: 'Largo',
       containedInPlace: { '@type': 'State', name: 'FL' },
     },
-    url: `https://grasslargo.com/services/${slug}`,
+    url: `https://largolandscape.pro/services/${slug}`,
   };
   return (
     <script
