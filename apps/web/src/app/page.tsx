@@ -15,8 +15,8 @@ export default function HomePage() {
         <div className="container">
           <h1>Lawn Care & Landscaping in {BUSINESS.address.city}, FL</h1>
           <p>
-            Affordable, reliable yard care for homeowners in Largo and Pinellas County. Licensed and
-            insured. Free quotes within 24 hours.
+            Affordable, reliable yard care for homeowners in Largo and Pinellas County. Locally
+            owned, serving 33771 and the five adjacent ZIPs. Free quotes within 24 hours.
           </p>
           <p>
             <Link href="/contact" className="btn">
@@ -105,8 +105,13 @@ export default function HomePage() {
         <h2>Why Choose {BUSINESS.name}?</h2>
         <ul>
           <li>
-            <strong>Local & Insured:</strong> Based in {BUSINESS.address.city}, fully licensed in
-            Florida with $1M general liability coverage.
+            <strong>Local & Solo:</strong> Based in {BUSINESS.address.city}, serving six Pinellas
+            County ZIPs personally — no subcontractors. Service area:{' '}
+            {BUSINESS.service_area_zips.map((z: string) => (
+              <span key={z}>
+                <Link href={`/areas/${z}`}>{z}</Link>{' '}
+              </span>
+            ))}.
           </li>
           <li>
             <strong>Transparent Pricing:</strong> Per-visit or per-project rates — no surprise fees.
@@ -114,14 +119,6 @@ export default function HomePage() {
           <li>
             <strong>Hurricane-Smart:</strong> When winds hit {BUSINESS.hurricane_wind_threshold_mph}
             + mph, we pause outdoor work and auto-reschedule — no charge for weather cancellations.
-          </li>
-          <li>
-            <strong>Service Area:</strong>{' '}
-            {BUSINESS.service_area_zips.map((z: string) => (
-              <span key={z}>
-                <Link href={`/areas/${z}`}>{z}</Link>{' '}
-              </span>
-            ))}
           </li>
         </ul>
       </section>

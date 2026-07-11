@@ -372,6 +372,228 @@ th {
   margin-bottom: 0;
 }
 
+/* ----- Markdown preview surface (used by /preview/* routes) ----- */
+
+.markdown-preview {
+  line-height: 1.65;
+  color: var(--ll-charcoal);
+}
+
+.markdown-preview h1 {
+  font-size: 2rem;
+  margin: 1.5rem 0 1rem;
+  letter-spacing: -0.02em;
+}
+
+.markdown-preview h2 {
+  font-size: 1.5rem;
+  margin: 2rem 0 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.markdown-preview h3 {
+  font-size: 1.15rem;
+  margin: 1.5rem 0 0.5rem;
+  color: var(--ll-green);
+}
+
+.markdown-preview h4 {
+  font-size: 1rem;
+  margin: 1.25rem 0 0.5rem;
+  color: var(--ll-charcoal);
+  font-weight: 600;
+}
+
+.markdown-preview p {
+  margin: 0.75rem 0;
+}
+
+.markdown-preview ul,
+.markdown-preview ol {
+  margin: 0.75rem 0 0.75rem 1.5rem;
+}
+
+.markdown-preview li {
+  margin: 0.25rem 0;
+}
+
+.markdown-preview table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+}
+
+.markdown-preview th,
+.markdown-preview td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+}
+
+.markdown-preview th {
+  background: var(--ll-cream);
+  font-weight: 600;
+}
+
+.markdown-preview code {
+  background: var(--ll-cream);
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  font-size: 0.9em;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+}
+
+.markdown-preview pre {
+  background: var(--ll-cream);
+  padding: 1rem;
+  border-radius: var(--radius);
+  overflow-x: auto;
+  font-size: 0.85rem;
+}
+
+.markdown-preview pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.markdown-preview blockquote {
+  border-left: 3px solid var(--ll-sand);
+  margin: 1rem 0;
+  padding: 0.5rem 1rem;
+  background: var(--ll-cream);
+  color: var(--gray-700);
+}
+
+.markdown-preview hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 2rem 0;
+}
+
+.markdown-preview a {
+  color: var(--ll-sky);
+  text-decoration: underline;
+}
+
+/* ----- Preview layout (sidebar + main) ----- */
+
+.preview-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 2rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+}
+
+.preview-sidebar {
+  position: sticky;
+  top: 80px;
+  align-self: start;
+  height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+.preview-sidebar h2 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gray-700);
+  margin: 0 0 0.5rem;
+}
+
+.preview-sidebar .preview-banner {
+  background: var(--ll-sand);
+  color: white;
+  padding: 0.75rem;
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.preview-sidebar nav a {
+  display: block;
+  padding: 0.4rem 0.5rem;
+  border-radius: 4px;
+  color: var(--ll-charcoal);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  margin: 0.1rem 0;
+}
+
+.preview-sidebar nav a:hover {
+  background: var(--ll-cream);
+  text-decoration: none;
+}
+
+.preview-sidebar nav a small {
+  display: block;
+  color: var(--gray-700);
+  font-weight: 400;
+  font-size: 0.75rem;
+  margin-top: 0.1rem;
+}
+
+.preview-main h1:first-child {
+  margin-top: 0;
+}
+
+.preview-callout {
+  background: var(--ll-cream);
+  border-left: 4px solid var(--ll-sand);
+  padding: 0.75rem 1rem;
+  margin: 0 0 1.5rem;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  color: var(--ll-charcoal);
+}
+
+.preview-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.preview-card-grid .card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  background: white;
+  transition: box-shadow 0.15s ease;
+}
+
+.preview-card-grid .card:hover {
+  box-shadow: 0 2px 8px rgba(31, 78, 44, 0.08);
+}
+
+.preview-card-grid .card h3 {
+  margin: 0 0 0.5rem;
+  color: var(--ll-green);
+  font-size: 1.05rem;
+}
+
+.preview-card-grid .card p {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+  color: var(--gray-700);
+}
+
+@media (max-width: 900px) {
+  .preview-layout {
+    grid-template-columns: 1fr;
+  }
+  .preview-sidebar {
+    position: static;
+    height: auto;
+    margin-bottom: 1rem;
+  }
+}
+
 /* ----- Mobile ----- */
 
 @media (max-width: 640px) {

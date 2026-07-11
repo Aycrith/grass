@@ -23,9 +23,9 @@ export default function GbpLandingPage() {
     <section className="container">
       <h1>Welcome from Google</h1>
       <p>
-        Thanks for finding us on Google! {BUSINESS.name} is a licensed and insured lawn-care service
-        based in {BUSINESS.address.city}, FL. We serve {BUSINESS.service_area_zips.length} ZIP codes
-        in Pinellas County.
+        Thanks for finding us on Google! {BUSINESS.name} is a locally-owned lawn-care service based
+        in {BUSINESS.address.city}, FL. We serve {BUSINESS.service_area_zips.length} ZIP codes in
+        Pinellas County.
       </p>
 
       <h2>Get a Free Quote</h2>
@@ -44,8 +44,9 @@ export default function GbpLandingPage() {
 
       <h2>Why Google Visitors Choose Us</h2>
       <ul>
-        <li>✓ Licensed & Insured in Florida</li>
+        <li>✓ Locally owned & operated</li>
         <li>✓ Transparent pricing — no surprise fees</li>
+        <li>✓ Free quotes within 24 hours</li>
         <li>✓ Weather-fair scheduling (no charge for rain cancellations)</li>
         <li>✓ Hurricane mode — auto-pause + auto-reschedule during named storms</li>
         <li>✓ Local, solo-founder accountability</li>

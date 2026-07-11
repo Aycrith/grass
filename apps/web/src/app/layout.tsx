@@ -94,6 +94,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <a href="/areas">Service Areas</a>
               <a href="/pricing">Pricing</a>
               <a href="/about">About</a>
+              <a
+                href="/preview"
+                style={{
+                  background: 'var(--ll-sand)',
+                  color: 'white',
+                  padding: '0.35rem 0.7rem',
+                  borderRadius: 'var(--radius)',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                }}
+              >
+                Preview Build →
+              </a>
               <a href="/contact" className="cta">
                 Get a Quote
               </a>
@@ -112,7 +125,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
             </p>
             <p>
-              <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · Licensed & Insured (FL)
+              <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · Serving 33771 + 33770,
+              33773, 33774, 33778, 33756
             </p>
           </div>
         </footer>
