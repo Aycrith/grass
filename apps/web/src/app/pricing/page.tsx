@@ -102,8 +102,7 @@ export default function PricingPage() {
 
       <h2>What's Not Included</h2>
       <p>
-        To stay in compliance with Florida regulations and our insurance coverage, we do not
-        currently offer:
+        To stay in compliance with Florida regulations, we do not currently offer:
       </p>
       <ul>
         <li>Fertilization (requires the FDACS Limited Commercial Fertilizer Applicator license)</li>
@@ -111,6 +110,17 @@ export default function PricingPage() {
         <li>Irrigation system installation (requires the PCCLB Irrigation Specialty license)</li>
       </ul>
       <p>We can refer you to trusted licensed partners for these services.</p>
+
+      <h2>Sales Tax Note (Year 1)</h2>
+      <p>
+        For the first phase of operation, our invoice reads <em>&ldquo;tax not yet
+        collected&rdquo;</em>. The Florida / Pinellas combined rate is{' '}
+        {BUSINESS.sales_tax_pct.toFixed(2)}% ({'6%'} FL state +
+        {' '}{BUSINESS.sales_tax_pct - 6}% Pinellas County surtax). Once we register for Florida
+        sales tax (DR-1) at the first-cash milestone, we&apos;ll add a sales-tax line item to
+        invoices and remit quarterly. Until then, we either absorb the tax into the advertised
+        price or invoice it transparently for your records — your choice at quote-time.
+      </p>
 
       <h2>Sales Tax</h2>
       <p>

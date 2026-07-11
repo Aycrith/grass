@@ -21,8 +21,9 @@ export const SERVICES: Record<string, ServiceContent> = {
       'Blowing clippings off all hard surfaces',
       'Grass-cycling or bagged clippings (your choice)',
       'Service reminders sent the day before',
+      'Auto-reschedule on rain at no charge',
     ],
-    pricing: 'From $45 per visit (small lots) to $95 per visit (large lots)',
+    pricing: 'From $45 per visit (small lots) to $95 per visit (large lots) — recurring customers save 15%',
     faqs: [
       {
         q: 'How often should I mow in Florida?',
@@ -49,8 +50,9 @@ export const SERVICES: Record<string, ServiceContent> = {
       'Edging along all curbs, walks, patios',
       'Bed-line edging for defined bed borders',
       'Cleanup of all debris after edging',
+      'Paver-safe depth adjustment — no chipping',
     ],
-    pricing: 'From $0.75 per linear foot (standalone) or included with mowing',
+    pricing: 'From $0.75 per linear foot (standalone) or included with mowing visit',
     faqs: [
       {
         q: 'How often should I edge?',
@@ -74,6 +76,7 @@ export const SERVICES: Record<string, ServiceContent> = {
       '2–3 inch depth per UF/IFAS recommendation',
       'Bed edges redefined before install',
       'Old mulch removal available as add-on',
+      'Spring (March–May) and fall (Oct–Nov) preferred timing',
     ],
     pricing: 'From $110 per cubic yard installed (materials + labor)',
     faqs: [
@@ -102,6 +105,7 @@ export const SERVICES: Record<string, ServiceContent> = {
       'Dead-wood removal',
       'Shape maintenance (rounded, squared, or naturalistic)',
       'All debris hauled off-site',
+      'No more than 1/3 of live growth removed at once (plant-health rule)',
     ],
     pricing: 'From $2.25 per linear foot (height-dependent)',
     faqs: [

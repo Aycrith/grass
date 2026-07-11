@@ -54,20 +54,24 @@ export default function AboutPage() {
         </li>
       </ul>
 
-      <h2>Licenses & Insurance</h2>
-      <ul>
-        <li>Florida Registered {BUSINESS.legal_entity}</li>
-        <li>City of Largo Business Tax Receipt</li>
-        <li>Pinellas County Business Tax Receipt</li>
-        <li>$1M General Liability Insurance</li>
-        <li>Workers' Compensation (corporate-officer exemption on file as sole proprietor)</li>
-      </ul>
+      <h2>What we don't (yet) do</h2>
       <p>
-        We do <strong>not</strong> offer fertilization, pest control, or irrigation system
+        We don&apos;t currently offer fertilization, pest control, or irrigation system
         installation. Those services require specialized Florida licensing (FDACS Limited Commercial
-        Fertilizer Applicator, FDACS §482 Pest Control, PCCLB Irrigation Specialty) that we have not
-        acquired — see our <Link href="/pricing">pricing page</Link> for details.
+        Fertilizer Applicator, FDACS §482 Pest Control, PCCLB Irrigation Specialty) that we have
+        not acquired. If you need any of those, ask us — we can recommend a licensed operator in
+        the area.
       </p>
+
+      <h2>Service register (active)</h2>
+      <ul>
+        <li>Lawn mowing (push + riding, ≤1 acre)</li>
+        <li>Mechanical edging (curbs, walks, bed lines)</li>
+        <li>Mulch installation (bulk delivery + install)</li>
+        <li>Hedge & shrub trimming (≤12 ft height)</li>
+        <li>Hurricane prep + post-storm cleanup</li>
+        <li>Seasonal cleanup (leaves, beds, debris haul-off)</li>
+      </ul>
 
       <p style={{ marginTop: '2rem' }}>
         <Link href="/contact" className="btn">

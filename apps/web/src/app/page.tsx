@@ -21,7 +21,10 @@ export default function HomePage() {
           <p>
             <Link href="/contact" className="btn">
               Get Your Free Quote →
-            </Link>
+            </Link>{' '}
+            <a href={`tel:${BUSINESS.phone}`} className="btn btn-secondary">
+              Call {BUSINESS.phone}
+            </a>
           </p>
         </div>
       </section>
