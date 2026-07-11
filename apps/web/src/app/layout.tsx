@@ -107,8 +107,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               >
                 Preview Build →
               </a>
-              <a href="/contact" className="cta">
-                Get a Quote
+              <a href="/quote" className="cta">
+                Free Quote
               </a>
             </nav>
           </div>
