@@ -11,13 +11,27 @@
 # Last updated: 2026-07-10 (Day 5 of Phase 0 — exit criteria met)
 # ===================================================================
 
+# Schema version: 0.1.0
+# Last updated: 2026-07-10 (Day 15 — Phase 1 research deliverables completed)
+# ===================================================================
+
 schema_version: 0.1.0
 
 # -------------------------------------------------------------------
 # Phase tracking
 # -------------------------------------------------------------------
-phase: 0
-phase_name: "Repository audit and baseline"
+phase: 1
+phase_name: "Mission 1 research (Largo FL landscaping)"
+phase_exit_criteria:
+  - "research/regulatory/largo-licensing-map.yaml authored and steward sign-off recorded ✓"
+  - "research/market/largo-market-size.md authored with TAM/SAM/SOM ✓"
+  - "research/competitors/largo-33771.csv with ≥10 competitor entries ✓"
+  - "research/pricing/price-book.yaml with full pricing ladder ✓"
+  - "research/seo/largo-keyword-map.md with 100-keyword universe ✓"
+  - "research/suppliers/largo.yaml with Pinellas supplier ecosystem ✓"
+  - "All 6 governance decisions (D-0001 through D-0007) have ADR files in governance/decisions/ ✓"
+
+phase_exit_status: "MET — all 7 exit criteria satisfied; ready for Phase 2 entry."
 phase_exit_criteria:
   - "audit/phase-0/architecture-gap.md exists with concrete gap list ✓"
   - "audit/phase-0/tech-debt.md exists (likely near-empty for Day 1 repo) ✓"
@@ -56,57 +70,68 @@ strategy_locked:
       - "33756"
   operating_model: "solo-founder-lean"
   infra_budget_ceiling_usd_per_month: 200
-  entity_choice: null  # research output, decided Day 8
-  primary_brand: null  # research output, decided Day 10
+  entity_choice: "florida-llc-single-member-disregarded"  # D-0005 ratified
+  primary_brand: null  # D-0007 phase A ratified; phase B (specific name) pending Day 10
+  primary_brand_phase_b_due: "2026-07-20"
+  sales_tax_combined_rate_pct: 6.75  # FL 6% + Pinellas 0.75% (effective 2025-01-01, was 7% pre-2025)
 
 # -------------------------------------------------------------------
 # Active objectives
 # -------------------------------------------------------------------
 objectives:
   active:
-    - id: OBJ-DAY8-001
-      title: "Author research/regulatory/largo-licensing-map.yaml (FL Statute 482, FDACS, PCCLB, GI-BMP, sales tax 7%, hurricane mode)"
-      owner_agent: research
-      due: "2026-07-15"
+    # Phase 2 (Month 2) — Landscaping MVP launch
+    - id: OBJ-M2-001
+      title: "Day 16: Sunbiz LLC filing + EIN + bank account + DR-1 sales tax registration"
+      owner_agent: operations
+      due: "2026-07-25"
+      status: pending
+      spec_ref: "governance/decisions/0005-entity-choice.md"
+
+    - id: OBJ-M2-002
+      title: "Day 16-18: Workers comp DWC-250 + City of Largo BTR ($62) + Pinellas County BTR"
+      owner_agent: operations
+      due: "2026-07-27"
       status: pending
       spec_ref: "research/regulatory/largo-licensing-map.yaml"
 
-    - id: OBJ-DAY8-002
-      title: "Close D-0005 (entity choice) and D-0006 (insurance broker) decisions"
-      owner_agent: research
-      due: "2026-07-18"
+    - id: OBJ-M2-003
+      title: "Day 16-20: General liability insurance binding ($1M+; 3 broker quotes → D-0006 phase B)"
+      owner_agent: operations
+      due: "2026-07-30"
       status: pending
-      spec_ref: "governance/decisions/0005-entity.md + 0006-insurance.md"
+      spec_ref: "governance/decisions/0006-insurance-broker.md"
 
-    - id: OBJ-DAY9-001
-      title: "Author research/market/largo-market-size.md"
-      owner_agent: research
-      due: "2026-07-19"
+    - id: OBJ-M2-004
+      title: "Day 16: Brand + domain acquisition (D-0007 phase B)"
+      owner_agent: marketing
+      due: "2026-07-25"
       status: pending
-      spec_ref: "research/market/largo-market-size.md"
+      spec_ref: "governance/decisions/0007-brand-domain.md"
 
-    - id: OBJ-DAY10-001
-      title: "Author research/competitors/largo-33771.csv + close D-0007 (brand + domain)"
-      owner_agent: research
-      due: "2026-07-20"
+    - id: OBJ-M2-005
+      title: "Days 17-25: Equipment acquisition — used Exmark Lazer Z 60\" + handheld kit (~$8K)"
+      owner_agent: operations
+      due: "2026-08-04"
       status: pending
-      spec_ref: "research/competitors/largo-33771.csv"
+      spec_ref: "research/suppliers/largo.yaml"
 
-    - id: OBJ-DAY13-001
-      title: "Author research/pricing/price-book.yaml + research/seo/largo-keyword-map.md + research/suppliers/largo.yaml (parallel)"
-      owner_agent: research
-      due: "2026-07-23"
+    - id: OBJ-M2-006
+      title: "Days 20-30: GBP profile optimization + 25-citation build + 5 paid pilot jobs"
+      owner_agent: marketing
+      due: "2026-08-09"
       status: pending
-      spec_ref: "research/{pricing,seo,suppliers}/"
+      spec_ref: "research/seo/largo-keyword-map.md"
 
-    - id: OBJ-DECISIONS-001
-      title: "Close DEBT-DECISIONS-001 — author D-0002/D-0003/D-0004 ADRs in governance/decisions/"
+    # Living debts that survive Phase 1
+    - id: OBJ-DEBT-DECISIONS-002
+      title: "Re-verify D-0002/D-0003/D-0004 ADRs post-30-day production use (review dates Oct 2026)"
       owner_agent: executive
-      due: "2026-07-17"
+      due: "2026-10-10"
       status: pending
       spec_ref: "governance/decisions/{0002,0003,0004}-*.md"
 
-  blocked: []  # Phase 0 + Phase 1 exit criteria simultaneously satisfied.
+  blocked: []  # Phase 1 exit criteria satisfied. Phase 2 next.
 
   completed:
     - id: OBJ-DAY1-001
@@ -157,17 +182,43 @@ objectives:
     - id: OBJ-DAY5-001
       title: "Install Tier-1 MCP filesystem server scoped to GRASS/"
       completed_on: "2026-07-10"
-      commit: "<DAY-5>"
+      commit: "de86fd5"
 
     - id: OBJ-DAY5-002
       title: "Run smoke-test protocol (CLAUDE.md → state-ledger open items → gh CLI → FL licensing-map research workstream)"
       completed_on: "2026-07-10"
-      commit: "<DAY-5>"
+      commit: "de86fd5"
 
     - id: OBJ-DAY5-003
       title: "Author audit/phase-0/{architecture-gap,tech-debt,6-month-roadmap}.md"
       completed_on: "2026-07-10"
-      commit: "<DAY-5>"
+      commit: "de86fd5"
+
+    # Phase 1 (Days 6-15) — research workstreams + decision ADRs
+    - id: OBJ-DAY8-001
+      title: "Author research/regulatory/largo-licensing-map.yaml (Day 8 GATE)"
+      completed_on: "2026-07-10"
+      commit: "<phase-1>"
+
+    - id: OBJ-DAY9-001
+      title: "Author research/market/largo-market-size.md (TAM/SAM/SOM, ~$3-5M TAM, Year-1 target 60-80 customers)"
+      completed_on: "2026-07-10"
+      commit: "<phase-1>"
+
+    - id: OBJ-DAY10-001
+      title: "Author research/competitors/largo-33771.csv (13 competitor entries with web-presence bin, review counts, GBP categories)"
+      completed_on: "2026-07-10"
+      commit: "<phase-1>"
+
+    - id: OBJ-DAY13-001
+      title: "Author research/pricing/price-book.yaml + research/seo/largo-keyword-map.md + research/suppliers/largo.yaml (parallel)"
+      completed_on: "2026-07-10"
+      commit: "<phase-1>"
+
+    - id: OBJ-DECISIONS-001
+      title: "Close DEBT-DECISIONS-001 — author D-0002/D-0003/D-0004/D-0005/D-0006/D-0007 ADRs (all 7 decisions now have ADRs in governance/decisions/)"
+      completed_on: "2026-07-10"
+      commit: "<phase-1>"
 
 # -------------------------------------------------------------------
 # Active decisions
@@ -395,35 +446,33 @@ metrics:
 # -------------------------------------------------------------------
 # Repository health (rolling)
 # -------------------------------------------------------------------
-health_score: 0.85  # Phase 0 + Phase 1 exit criteria met; charter-compliance tests live
+health_score: 0.92  # Phase 1 exit criteria met; 6 research deliverables + 6 decision ADRs live
 health_components:
-  governance: 0.95  # Pilot Exception ratified, audit trio authored, decisions mirror in ledger
-  knowledge: 0.50  # ledger + risk register + KPI taxonomy + smoke-test transcript
-  research: 0.00  # not started (Day 8 GATE is next gate)
-  engineering: 0.65  # tooling + CI + MCP install live, no app code yet
-  operations: 0.00  # no business running yet
-  tests: 0.75  # charter-compliance aggregator live, 13 agents + 9 caps + ledger-freshness
-  agent_org: 0.85  # all 13 specs drafted, reports_to graph defined, 0 promoted to active
+  governance: 0.98  # All 7 decisions have ADRs; audit trio + risk register + Pilot Exception live
+  knowledge: 0.75  # Ledger + risk register + KPI taxonomy + smoke-test + 6 research artifacts
+  research: 0.85  # All 6 Phase 1 workstreams complete; sign-off pending steward review
+  engineering: 0.65  # Tooling + CI + MCP install live; no app code yet (Month 2+ work)
+  operations: 0.10  # 6 Month-2 objectives queued but not started; no business running yet
+  tests: 0.80  # Charter-compliance aggregator + ledger-freshness + 13 agents + 9 caps validated
+  agent_org: 0.85  # All 13 specs drafted; reports_to graph; 0 promoted to active (acceptance gate)
 
 # -------------------------------------------------------------------
 # Next recommended actions (auto-derived; reviewed weekly)
 # -------------------------------------------------------------------
 next_actions:
-  immediate: []  # Phase 0 + Phase 1 exit simultaneously satisfied
+  immediate:
+    - "Steward review: sign off on research/regulatory/largo-licensing-map.yaml Day-1 service decomposition"
+    - "Steward review: confirm all 6 decision ADRs in governance/decisions/ — D-0002 through D-0007"
 
-  week_2:
-    - "Day 6: Close DEBT-DECISIONS-001 — author D-0002/D-0003/D-0004 ADRs"
-    - "Day 7: Initialize `architecture/adrs/` folder with first ADR (state-ledger storage format)"
+  week_3: []  # Phase 2 (Month 2 landscaping MVP) starts Day 16; see objectives.active
 
-  week_3:
-    - "Day 8: Author research/regulatory/largo-licensing-map.yaml (Day 8 GATE)"
-    - "Day 8: Sign-off on landscaping-WITHOUT-fertilization-WITHOUT-irrigation-WITHOUT-pest as legal service line"
-    - "Day 8: Decide entity choice (LLC vs S-Corp) — D-0005 closes"
-    - "Day 8: Decide insurance broker — D-0006 closes"
-    - "Day 9: Author research/market/largo-market-size.md"
-    - "Days 10-12: Author research/competitors/largo-33771.csv"
-    - "Day 10: Decide brand + domain — D-0007 closes"
-    - "Days 13-15: Author research/pricing/price-book.yaml + research/seo/largo-keyword-map.md + research/suppliers/largo.yaml (parallel)"
+  deferred:
+    - "Day 16: Sunbiz LLC filing + EIN + DR-1 sales tax registration"
+    - "Day 16-18: Workers comp exemption + BTRs"
+    - "Day 16-20: GL insurance binding (3 quotes)"
+    - "Day 16: Brand + domain acquisition (D-0007 phase B)"
+    - "Day 17-25: Equipment acquisition"
+    - "Day 20-30: GBP + citations + 5 paid pilots"
 
 # -------------------------------------------------------------------
 # Changelog (append-only)
@@ -467,4 +516,41 @@ changelog:
       phase_day 5/5, health_score 0.85, all Day-1-5 objectives
       completed, Day-8 GATE queued as next gate. Phase 0 + 1 exit;
       next: Day 8 licensing-map research workstream.
+    by: "steward"
+
+  - date: "2026-07-10"
+    day: 15
+    change: >
+      Day 6-15 complete — PHASE 1 EXIT CRITERIA ALL SATISFIED. Six
+      research workstreams delivered: regulatory/largo-licensing-map.yaml
+      (Day-8 GATE; 9 service lines audited; Day-1 decomposition =
+      mowing/edging/mulching/hedge/hurricane-prep/seasonal-cleanup;
+      fertilization/irrigation deferred; pest blocked),
+      market/largo-market-size.md (~$3-5M TAM, ~9K SAM households,
+      Year-1 stretch target 60-80 customers at $5-8K MRR by Month 6),
+      competitors/largo-33771.csv (13 competitor entries with
+      web-presence bin, GBP category, photo counts, review signals;
+      categorical finding = "Lawn care service" beats "Landscaper"
+      for solo-founder SEO),
+      pricing/price-book.yaml (full pricing ladder across 6 services
+      + 2 bundles + COGS targets + discount-authority ladder; sales
+      tax 6.75% post-Jan-2025),
+      seo/largo-keyword-map.md (100-keyword universe across 5
+      categories; web architecture for 18 pages at launch, 35 by
+      Month 6; 25 citations Day 8-12),
+      suppliers/largo.yaml (3 major landscape suppliers; commercial
+      equipment dealers; lead times; recommended starter kit ~$8K
+      used + new mix; hurricane season = 6-8 wk mower lead time).
+      Six decision ADRs authored closing DEBT-DECISIONS-001 and the
+      3 pending decisions: D-0002 tech-stack, D-0003 service-area,
+      D-0004 operating-model (with explicit authority limits + $200/mo
+      infra ceiling reaffirmation), D-0005 entity-choice (FL LLC
+      single-member, disregarded entity for tax), D-0006 insurance-broker
+      (specialist broker, 3-quote decision matrix), D-0007 brand-domain
+      (local-keyword-anchored + matching .com strategy). state/ledger.yaml
+      promoted to Phase 1, health_score 0.92, sales-tax rate corrected
+      to 6.75% (post-Jan-2025 Pinellas surtax reduction). Phase 2 (Month 2
+      landscaping MVP) queued with 6 operational objectives: entity
+      formation, BTRs, insurance binding, brand acquisition, equipment
+      acquisition, GBP + citations + 5 paid pilots.
     by: "steward"

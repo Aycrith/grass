@@ -1,0 +1,209 @@
+# GRASS — Price Book (Mission 1, Largo FL)
+# Sources: industry benchmarks (NALP, Workyard 2026), Largo FL operator surveys (TO BE CONDUCTED),
+# Pinellas supplier cost data (SiteOne, Horizon, Ewing — TO BE CONFIRMED).
+# This is the authoritative price ladder; sales agent uses it without modification.
+# Any deviation requires Decision Template entry + steward approval.
+
+schema_version: 0.1.0
+last_updated: "2026-07-10"
+owner_agent: sales
+review_cadence_days: 90
+file: research/pricing/price-book.yaml
+
+methodology:
+  cost_basis: "Pinellas supplier costs + 65% gross margin target"
+  discount_authority_ladder:
+    level_0_active_agent: "$0 off (any active agent may execute routine ops)"
+    level_1_sales_agent: "$25 off single quote / $50 off annual contract"
+    level_2_decision_template: "$50-200 off; 24h silent approval"
+    level_3_steward: ">$200 off; same-day approval"
+  price_floor: "DO NOT discount below cost + 35% margin unless steward-approved"
+  sales_tax_applied_pct: 6.75  # FL state 6% + Pinellas surtax 0.75% (effective 2025-01-01)
+
+# ===================================================================
+# Service: Mowing (recurring)
+# ===================================================================
+services:
+
+  - cap_id: cap_mowing_standard
+    title: "Standard mowing visit (≤0.5 acre)"
+    description: "Push-mow, edge, blow. No bagging of clippings by default."
+    pricing_model: "per_visit_tiered_by_frequency"
+    tiers:
+      - tier: "weekly"
+        lot_bucket: "small (<0.25 acre)"
+        price_usd: 38
+        price_with_tax_usd: 40.57
+      - tier: "weekly"
+        lot_bucket: "medium (0.25-0.4 acre)"
+        price_usd: 48
+        price_with_tax_usd: 51.24
+      - tier: "weekly"
+        lot_bucket: "large (0.4-0.5 acre)"
+        price_usd: 58
+        price_with_tax_usd: 61.92
+      - tier: "biweekly"
+        lot_bucket: "small (<0.25 acre)"
+        price_usd: 50
+        price_with_tax_usd: 53.38
+      - tier: "biweekly"
+        lot_bucket: "medium (0.25-0.4 acre)"
+        price_usd: 65
+        price_with_tax_usd: 69.39
+      - tier: "biweekly"
+        lot_bucket: "large (0.4-0.5 acre)"
+        price_usd: 78
+        price_with_tax_usd: 83.27
+      - tier: "monthly"
+        lot_bucket: "small (<0.25 acre)"
+        price_usd: 75
+        price_with_tax_usd: 80.06
+      - tier: "monthly"
+        lot_bucket: "medium (0.25-0.4 acre)"
+        price_usd: 95
+        price_with_tax_usd: 101.41
+      - tier: "monthly"
+        lot_bucket: "large (0.4-0.5 acre)"
+        price_usd: 115
+        price_with_tax_usd: 122.76
+    add_ons:
+      - add_on: "Bag clippings (instead of mulch)"
+        price_usd: 10
+      - add_on: "Hedge trim included"
+        price_usd: 30
+      - add_on: "Leaf removal (seasonal)"
+        price_usd: 45
+    notes: "Lot bucket uses total lawn area, not including house footprint."
+
+  - cap_id: cap_edging_hard_edge
+    title: "Mechanical edging (curbs, walkways, beds)"
+    description: "Standalone edging service or add-on. Per linear foot."
+    pricing_model: "per_linear_foot"
+    base_rate_per_lf_usd: 0.85
+    minimum_charge_usd: 35
+    example_quotes:
+      - scope: "200 linear feet (typical 0.25 acre)"
+        price_usd: 170
+      - scope: "400 linear feet (typical 0.5 acre)"
+        price_usd: 340
+
+  - cap_id: cap_mulching_install
+    title: "Mulch delivery + install"
+    description: "Bulk mulch (SiteOne/Horizon), delivered, spread, edged."
+    pricing_model: "per_cubic_yard_plus_install"
+    mulch_cost_per_cuyd_usd: 35  # TO CONFIRM with Pinellas supplier
+    install_fee_per_cuyd_usd: 75
+    total_per_cuyd_usd: 110
+    example_quotes:
+      - scope: "3 cu yd (small bed refresh)"
+        mulch_cost: 105
+        install_fee: 225
+        total_usd: 330
+      - scope: "5 cu yd (typical full-yard refresh)"
+        mulch_cost: 175
+        install_fee: 375
+        total_usd: 550
+      - scope: "8 cu yd (large property)"
+        mulch_cost: 280
+        install_fee: 600
+        total_usd: 880
+    notes: "Includes delivery within service area; outside-radius surcharge applies."
+
+  - cap_id: cap_hedge_trim
+    title: "Hedge and shrub trimming"
+    description: "Seasonal or as-needed trim. Per linear foot by hedge height."
+    pricing_model: "per_linear_foot_tiered_by_height"
+    tiers:
+      - tier: "low (<3 ft hedge height)"
+        price_per_lf_usd: 4
+      - tier: "medium (3-6 ft)"
+        price_per_lf_usd: 7
+      - tier: "tall (>6 ft)"
+        price_per_lf_usd: 12
+    minimum_charge_usd: 80
+    example_quotes:
+      - scope: "50 linear feet, medium height"
+        price_usd: 350
+      - scope: "100 linear feet, low height"
+        price_usd: 400
+
+  - cap_id: cap_hurricane_prep
+    title: "Hurricane prep (pre-storm + post-storm)"
+    description: "Property prep ahead of named storm; debris clearance after."
+    pricing_model: "flat_per_visit_with_seasonal_uplift"
+    tiers:
+      - tier: "pre-storm prep (within 48h of named storm)"
+        price_usd: 175
+      - tier: "post-storm debris clearance (light)"
+        price_usd: 350
+      - tier: "post-storm debris clearance (heavy, with chainsaw)"
+        price_usd: 650
+    notes: "Time-and-materials for jobs >$650. Surge pricing DOES apply during active hurricane watch/warning."
+
+  - cap_id: cap_seasonal_cleanup
+    title: "Seasonal cleanup (leaf/branch)"
+    description: "Fall leaf removal, spring bed prep."
+    pricing_model: "flat_per_visit_with_lot_tier"
+    tiers:
+      - tier: "small lot"
+        price_usd: 120
+      - tier: "medium lot"
+        price_usd: 180
+      - tier: "large lot"
+        price_usd: 280
+
+# ===================================================================
+# Bundle pricing (drives higher AOV + retention)
+# ===================================================================
+bundles:
+  - bundle_id: bundle_weekly_full_care
+    title: "Weekly full-care (mow + edge + blow + monthly hedge check)"
+    includes: ["cap_mowing_standard", "cap_edging_hard_edge"]
+    monthly_price_usd: 175  # vs $185 à-la-carte
+    discount_pct: 5
+    target_segment: "Year-round recurring customer (highest LTV)"
+
+  - bundle_id: bundle_seasonal_package
+    title: "Spring + fall cleanup package"
+    includes: ["cap_seasonal_cleanup", "cap_hedge_trim", "cap_mulching_install"]
+    package_price_usd: 450  # 2 cleanups + 1 mulch + 1 hedge
+    discount_pct: 12
+    target_segment: "Annual package buyer (medium LTV)"
+
+# ===================================================================
+# COGS targets (industry benchmarks)
+# ===================================================================
+cogs_targets:
+  cap_mowing_standard:
+    labor_per_visit_usd: 12  # solo founder opportunity cost (alternative use of time)
+    fuel_per_visit_usd: 4
+    equipment_depreciation_per_visit_usd: 3
+    total_cogs_usd: 19
+    target_gross_margin_pct: 60  # on $48 base price
+  cap_mulching_install:
+    materials_per_cuyd_usd: 35
+    labor_per_cuyd_usd: 25
+    delivery_per_cuyd_usd: 8
+    total_cogs_per_cuyd_usd: 68
+    target_gross_margin_pct: 38
+  cap_hedge_trim:
+    labor_per_visit_usd: 35
+    equipment_per_visit_usd: 8
+    total_cogs_usd: 43
+    target_gross_margin_pct: 55
+
+# ===================================================================
+# Survey data (TO COMPLETE — steward action)
+# ===================================================================
+operator_survey:
+  status: "pending"
+  target: "≥10 Largo/Pinellas lawn care operators"
+  questions:
+    - "What do you charge for weekly mowing of a 0.25-acre lot?"
+    - "Do you bundle mulch/hedge with mowing?"
+    - "What is your minimum service area radius?"
+    - "Do you require contracts or month-to-month?"
+    - "How do you handle payment (ACH, check, card)?"
+    - "What is your cancellation policy?"
+  deliverable: "Update this YAML with confirmed Largo-specific rates (vs benchmark)."
+  due: "Day 9"

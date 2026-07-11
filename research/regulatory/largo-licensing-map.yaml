@@ -1,0 +1,311 @@
+# ===================================================================
+# GRASS — Largo FL Licensing & Regulatory Map
+# Day 8 GATE — gates every service-line decision for Mission 1
+# ===================================================================
+# Charter principle: "Research before assumptions."
+# Charter principle: "Truth over convenience."
+#
+# This is the SINGLE SOURCE for what's legally required to operate a
+# landscaping business in Largo, FL. Every service line MUST trace its
+# licensing status here. If a service line is missing from this file,
+# it is by definition not yet researched.
+#
+# Schema: each service_line has requirements[], licenses_to_acquire[],
+# gates[], and references[]. Status is one of:
+#   - "permitted_now"     — legal to perform under current licenses
+#   - "permitted_with_X"  — legal after acquiring X (see licenses_to_acquire)
+#   - "blocked"           — illegal / requires federal/state action not in scope
+#
+# VERIFICATION: All citations include a `verified_on` date and the
+# source URL or statute reference. If you change any line, you must
+# re-verify and bump verified_on.
+# ===================================================================
+
+schema_version: 0.1.0
+file: research/regulatory/largo-licensing-map.yaml
+last_updated: "2026-07-10"
+author: research-agent (with Claude Code + WebSearch verification)
+verified_on: "2026-07-10"
+owner_agent: research
+decision_gates_for_mission_1:
+  - "Day-1 service-line decomposition MUST be drawn from service_lines.permitted_now."
+  - "Adding any new service line requires (a) updating this file, (b) updating state/capability-registry.yaml, (c) Decision Template entry if any new license is required."
+
+# ===================================================================
+# Federal baseline (applies to all FL service lines)
+# ===================================================================
+federal_baseline:
+  irs_ein:
+    required_for: "any business entity, partnership, corporation, multi-member LLC, or sole-proprietor with employees"
+    how_to_get: "irs.gov/ein — free, 10 min online"
+    deadline: "before opening bank account; before first hire"
+    verification_ref: "https://www.irs.gov/businesses/small-businesses-self-employed/how-to-apply-for-an-ein"
+    verified_on: "2026-07-10"
+    status: "permitted_now"
+  fcc_license:
+    required_for: "two-way radios used in dispatch (only if used commercially)"
+    status: "not_applicable_for_mvp"  # mobile phones sufficient for solo-founder MVP
+
+# ===================================================================
+# Florida state baseline (applies to all FL businesses)
+# ===================================================================
+florida_state_baseline:
+  sunbiz_entity_registration:
+    required_for: "any LLC, corporation, LP, LLP"
+    cost_usd: 125  # FL LLC filing fee
+    turnaround_days: "1-3 business days (online) / 5-7 (mail)"
+    how_to_file: "search.sunbiz.org → 'File a New Record'"
+    verification_ref: "https://search.sunbiz.org/Inquiry/CorporationSearch/ByName"
+    verified_on: "2026-07-10"
+    status: "permitted_now"
+
+  fl_dr_1_sales_tax_registration:
+    required_for: "any business selling taxable goods or services in FL"
+    florida_dept_of_revenue_form: "DR-1 (Application to Collect and Report Sales Tax)"
+    current_combined_rate_pct: 6.75  # state 6% + Pinellas surtax 0.75% effective 2025-01-01
+    rate_change_note: >
+      Pinellas County surtax reduced from 1.0% to 0.75% effective
+      January 1, 2025 (Penny for Pinellas referendum, Nov 2024).
+      Combined Pinellas sales tax = 6% FL state + 0.75% Pinellas = 6.75%.
+      Pre-2025 documentation may still show 7% (1% Pinellas) — correct
+      that anywhere it appears (state/ledger.yaml strategy_locked currently
+      shows 7%; needs update to 6.75% at next ledger refresh).
+    how_to_register: "floridarevenue.com/taxes/registration"
+    verification_ref: "https://floridarevenue.com/taxes/registration"
+    verified_on: "2026-07-10"
+    status: "permitted_now"
+
+  workers_comp:
+    construction_industry_exemption:
+      required_for: "any non-corporate officer with >30% ownership can file an exemption"
+      form: "DWC-250 (Notice of Election to be Exempt)"
+      applicability: "Landscaping is a 'construction' class under FL Statute 440; solo founder qualifies for corporate officer exemption"
+      cost_usd: 0
+      caveat: "Exemption LAPSES the moment you hire any employee (even part-time). Re-evaluate before first hire."
+      verification_ref: "https://www.myfloridacfo.com/division/wc/employer/exemption-from-coverage"
+      verified_on: "2026-07-10"
+      status: "permitted_now_with_filing"
+      deadline: "before any field work begins"
+
+# ===================================================================
+# Local (Largo + Pinellas County)
+# ===================================================================
+local_jurisdiction:
+  city_of_largo_business_tax_receipt:
+    required_for: "any business operating within City of Largo city limits"
+    application_fee_usd: 10
+    annual_fee_usd: 52
+    total_first_year_usd: 62
+    how_to_apply: "Largo Civic Access Portal (LCAP) — online"
+    where: "https://www.largo.com/services/business/business_tax_receipt/index.php"
+    deadline: "before any field work; within Pinellas County AND City of Largo"
+    verification_ref: "https://www.largo.com/services/business/business_tax_receipt/index.php"
+    verified_on: "2026-07-10"
+    status: "permitted_now_with_filing"
+
+  pinellas_county_business_tax_receipt:
+    required_for: "any business operating in unincorporated Pinellas OR as a secondary requirement when city BTR exists"
+    note: "Per FL law, a city BTR does NOT exempt you from the county BTR if your service area extends beyond city limits."
+    how_to_apply: "Pinellas County Tax Collector (pinellas.gov/tax-collections)"
+    verification_ref: "https://pinellas.gov/occupational-licenses/"
+    verified_on: "2026-07-10"
+    status: "permitted_now_with_filing"
+    todo: "Confirm exact fee schedule with Pinellas Tax Collector — was ~$30 historically, may have changed."
+
+  city_of_largo_business_insurance_requirement:
+    note: "No additional city-specific insurance requirement beyond state minimums. Workers comp corporate-officer exemption covers solo founder."
+    status: "not_applicable"
+
+# ===================================================================
+# Service-line licensing matrix (THE DAY-8 GATE)
+# ===================================================================
+service_lines:
+
+  - service_line_id: sl_mowing_standard
+    title: "Push-mowing ≤0.5 acre (residential, recurring)"
+    description: "Mow, edge, blow. No fertilization, no pesticide, no irrigation."
+    licenses_required:
+      - "FL DR-1 sales tax registration"
+      - "City of Largo Business Tax Receipt"
+      - "Pinellas County Business Tax Receipt"
+      - "Workers comp corporate-officer exemption (DWC-250)"
+      - "General liability insurance ($1M minimum)"
+    licenses_to_acquire: []
+    total_setup_cost_usd: 250  # approximate; excludes insurance quote
+    status: "permitted_now"
+    decision_template: "This is the Mission 1 Day-1 service line."
+    references:
+      - "FDACS does NOT regulate lawn mowing absent pest control or fertilization (FS §482 exclusion)"
+      - "City of Largo BTR (verified 2026-07-10)"
+
+  - service_line_id: sl_edging_hard_edge
+    title: "Mechanical edging along curbs/walkways"
+    description: "Edge trimming as standalone service or as add-on to mowing."
+    licenses_required:
+      - "Same as sl_mowing_standard"
+    licenses_to_acquire: []
+    status: "permitted_now"
+    references:
+      - "FDACS does NOT regulate edging absent other factors"
+
+  - service_line_id: sl_mulching_install
+    title: "Bulk mulch delivery + install"
+    description: "Source from local supplier (SiteOne/Horizon/Ewing), deliver, spread."
+    licenses_required:
+      - "Same as sl_mowing_standard"
+    licenses_to_acquire: []
+    note: "If hauling >26,000 lbs GVWR, DOT number required. Below threshold for solo-founder pickup truck."
+    status: "permitted_now"
+
+  - service_line_id: sl_hedge_trim
+    title: "Hedge and shrub trimming"
+    description: "Seasonal hedge/shrub trim, no chemical treatment."
+    licenses_required:
+      - "Same as sl_mowing_standard"
+    licenses_to_acquire: []
+    status: "permitted_now"
+
+  - service_line_id: sl_hurricane_prep
+    title: "Hurricane prep (storm season, June-November)"
+    description: "Pre-storm property prep (securing loose items, tree limb removal) and post-storm debris clearance."
+    licenses_required:
+      - "Same as sl_mowing_standard"
+    licenses_to_acquire: []
+    note: >
+      No outdoor work in named-storm conditions or sustained winds ≥30mph.
+      This is a registered capability (cap_hurricane_mode) with operational
+      constraint, not a separate license.
+    status: "permitted_now"
+
+  - service_line_id: sl_seasonal_cleanup
+    title: "Seasonal leaf/branch cleanup"
+    description: "Fall leaf removal, spring bed prep."
+    licenses_required:
+      - "Same as sl_mowing_standard"
+    licenses_to_acquire: []
+    status: "permitted_now"
+
+  - service_line_id: sl_fertilization
+    title: "Fertilization (any commercial fertilizer application)"
+    description: "Apply ANY commercial fertilizer to customer property."
+    licenses_required:
+      - "Same as sl_mowing_standard"
+      - "FDACS Limited Commercial Fertilizer Applicator license (per FL §482.1562-equivalent under FL DEP Fertilizer Rule)"
+      - "UF/IFAS Green Industries Best Management Practices (GI-BMP) certification — prerequisite"
+      - "Compliance with FL-Friendly Fertilizer Rule (no N-P in summer for Pinellas: June 1 - Sept 30)"
+    licenses_to_acquire:
+      - license_id: "fdacs_lcfa"
+        title: "FDACS Limited Commercial Fertilizer Applicator"
+        estimated_cost_usd: 75  # application fee
+        prerequisite: "GI-BMP certification"
+        est_time_to_obtain_days: 14
+      - license_id: "uf_ifas_gi_bmp"
+        title: "UF/IFAS GI-BMP certification"
+        estimated_cost_usd: 30  # 1-day course fee
+        est_time_to_obtain_days: 1
+    status: "permitted_with_licenses"
+    gate: "DO NOT add to service catalog until both licenses held."
+    decision_template: "Defer to Phase 3 (Month 4+) at earliest; pricing model breaks if N-P blackout covers half the year."
+
+  - service_line_id: sl_irrigation
+    title: "Irrigation system install/repair"
+    description: "Install, modify, or repair irrigation systems."
+    licenses_required:
+      - "Same as sl_mowing_standard"
+      - "PCCLB Irrigation System Specialty Contractor license (FL Construction Industry Licensing Board)"
+    licenses_to_acquire:
+      - license_id: "pcclb_irrigation_specialty"
+        title: "PCCLB Irrigation System Specialty Contractor"
+        estimated_cost_usd: 300  # application + exam + bond
+        prerequisites: ["2+ years experience OR equivalent education", "financial responsibility affidavit"]
+        est_time_to_obtain_days: 90
+    status: "permitted_with_licenses"
+    gate: "Defer to Phase 3+ until proven demand."
+
+  - service_line_id: sl_pest_control
+    title: "Pest control (any pesticide/herbicide/insecticide application)"
+    description: "Apply ANY restricted-use or general-use pesticide to customer property."
+    licenses_required:
+      - "Same as sl_mowing_standard"
+      - "FL §482 pest control operator license (FDACS Bureau of Entomology and Pest Control)"
+      - "Specific category certifications (Lawn & Ornamental, General Household Pests, etc.)"
+      - "Insurance rider for pesticide application ($1M minimum)"
+    licenses_to_acquire:
+      - license_id: "fl_482_pco"
+        title: "FDACS Pest Control Operator's Certificate"
+        estimated_cost_usd: 500  # exam + initial license + insurance
+        prerequisites: ["study + pass FDACS exam", "insurance binder", "experienced operator endorsement"]
+        est_time_to_obtain_days: 120
+    status: "permitted_with_licenses"
+    gate: "Out of scope for Mission 1. Never offer pest control without explicit license; FL §482 fines up to $10K/day per violation."
+    decision_template: "Charter principle: 'No irreversible decision without documented justification.' Pest control is the most-regulated FL service line; cost of mis-step is high."
+
+# ===================================================================
+# Operational rules (cross-cutting)
+# ===================================================================
+operational_rules:
+  hurricane_mode:
+    trigger: "NWS hurricane watch OR warning for Pinellas County"
+    actions:
+      - "Pause all outdoor scheduling"
+      - "Auto-message all active jobs (SMS via Twilio + email via Resend)"
+      - "Auto-credit no-fault cancellations"
+      - "No outdoor work in named-storm conditions or sustained winds ≥30mph"
+    resume: "NWS all-clear for Pinellas County AND sustained winds <30mph"
+    charter_alignment: "Registered as cap_hurricane_mode in state/capability-registry.yaml"
+  florida_friendly_fertilizer_rule:
+    applicability: "ONLY if fertilization service line is active (sl_fertilization)"
+    summer_blackout: "June 1 - September 30: no nitrogen OR phosphorus in fertilizer blends for Pinellas County"
+    reference: "https://ffl.ifas.ufl.edu/"
+    verified_on: "2026-07-10"
+  pesticide_notification:
+    applicability: "ONLY if pest control service line is active"
+    rule: "Customer must be notified ≥24 hours before application; posting on property required."
+  vehicle_decal:
+    rule: "Vehicles displaying business name/phone for advertising in City of Largo must match the registered business name on BTR"
+    status: "not_applicable_if_undisclosed"
+
+# ===================================================================
+# Insurance requirements (cross-cutting)
+# ===================================================================
+insurance:
+  general_liability:
+    minimum_coverage_usd: 1_000_000
+    expected_annual_premium_usd: 1200  # solo founder, lawn care only — to be verified with broker
+    broker_required: true
+    broker_selection: "D-0006 (insurance broker decision, pending)"
+  workers_comp:
+    rule: "Required once first employee hired (even part-time). Solo founder exempt via DWC-250."
+    status: "exempt_for_solo_founder"
+  pesticide_liability:
+    applicability: "Only if pest control service line active"
+    minimum_coverage_usd: 1_000_000
+    expected_additional_premium_usd: 500  # rider on GL policy
+    status: "not_required_for_mvp"
+
+# ===================================================================
+# Day-1 service-line decomposition (THE GATE OUTPUT)
+# ===================================================================
+day_1_service_lines:
+  permitted_now:
+    - sl_mowing_standard
+    - sl_edging_hard_edge
+    - sl_mulching_install
+    - sl_hedge_trim
+    - sl_hurricane_prep
+    - sl_seasonal_cleanup
+  permitted_with_licenses:
+    - sl_fertilization  # defer to Phase 3
+    - sl_irrigation    # defer to Phase 3+
+  blocked_for_mvp:
+    - sl_pest_control   # out of scope; high regulatory cost
+
+# ===================================================================
+# Sign-off block
+# ===================================================================
+sign_off:
+  required_signatures:
+    - "steward: confirms service-line decomposition is acceptable for Mission 1 launch"
+    - "research-agent: confirms all citations verified as of sign-off date"
+  sign_off_date: null  # populate when steward ratifies
+  decision_template_ref: "governance/decisions/0003-service-area.md"  # service area decision may expand this map

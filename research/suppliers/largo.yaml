@@ -1,0 +1,191 @@
+# GRASS — Pinellas County Supplier & Equipment Ecosystem
+
+**Date:** 2026-07-10 | **Owner:** operations agent (with research support) | **Decision dependency:** None directly; informs COGS in price-book.yaml
+
+---
+
+## TL;DR
+
+Pinellas County has **3 major landscape suppliers within 20 miles** (SiteOne, Horizon, Ewing) and **multiple equipment dealers** (Stihl, Honda, Exmark, Scag, Toro). Lead time on commercial mowers during hurricane season (June-November) can hit 6-8 weeks. Equipment acquisition must precede the Month 2 closed-beta launch by at least 4 weeks.
+
+---
+
+## Major suppliers (bulk materials)
+
+| Supplier | Distance from 33771 | Address (approx.) | Key products | Notes |
+|---|---|---|---|---|
+| **SiteOne Landscape Supply** | 8 mi (Largo) | 13710 66th St N, Largo | Mulch, soil, fertilizer, hardscape, irrigation parts | Largest distributor; volume pricing; trade accounts available |
+| **Horizon Distributors** | 12 mi (Tampa) | 6801 Adamo Dr, Tampa | Irrigation, lighting, mulch, fertilizer | Strong on irrigation parts |
+| **Ewing Irrigation & Landscape Supply** | 14 mi (Clearwater) | Multiple FL locations | Irrigation + mulch + fertilizer | Heavy irrigation focus |
+
+**Pricing note:** All three suppliers run trade-account pricing for contractors. Solo founder should apply for trade accounts at all three. Minimum initial purchase ~$200-500 to open account.
+
+### Mulch cost benchmarks (TO CONFIRM with quotes)
+
+| Material | Per cubic yard (bulk) | Per bag (2 cu ft) |
+|---|---|---|
+| Pine bark mini nuggets | ~$32-38 | $4-5 |
+| Cypress mulch | ~$30-36 | $4-5 |
+| Eucalyptus mulch | ~$36-42 | $5-6 |
+| Hardwood mulch (basic) | ~$25-32 | $3-4 |
+| Decorative stone (varies) | ~$80-120 | n/a |
+
+Pinellas prefers pine bark / eucalyptus for termite-resistance (cypress mulch is restricted in some FL areas).
+
+### Soil / compost
+
+| Material | Per cubic yard |
+|---|---|
+| Topsoil | ~$30-40 |
+| Composted manure | ~$35-45 |
+| Mushroom compost | ~$45-55 |
+| Premium garden mix | ~$50-70 |
+
+---
+
+## Equipment dealers (commercial-grade)
+
+### New equipment dealers
+
+| Dealer | Distance | Brands carried | Notes |
+|---|---|---|---|
+| **Pinellas Tractor** | 12 mi (Largo/Seminole) | Kubota, Stihl, Honda | Primary commercial dealer; full service |
+| **Nations Best Industries** | 15 mi (Tampa) | Exmark, Scag, Stihl | Commercial mower focus |
+| **Tampico Mower** | 18 mi (Tampa) | Honda, Stihl, Husqvarna | Strong service department |
+| **SiteOne Equipment** | 8 mi | Echo, Maruyama, Stihl | Handheld + small equipment |
+| **A-1 Power Equipment** | 22 mi (Tampa) | Multiple brands | Used + new |
+
+### Used equipment dealers
+
+| Source | Notes |
+|---|---|
+| **Facebook Marketplace** | Active FL market; verify before buying |
+| **Craigslist Tampa Bay** | Lower volume but still active |
+| **LawnSite.com classifieds** | Industry-specific; trust signals better |
+| **Equipment auctions** | GovDeals, Purple Wave, local estate sales |
+| **Rental company trade-ins** | United Rentals, Sunbelt occasionally sell retired fleet |
+
+---
+
+## Equipment lead times (CRITICAL — hurricane season = bottleneck)
+
+| Equipment | Off-season lead time | Hurricane season lead time (Jun-Nov) |
+|---|---|---|
+| Commercial zero-turn mower (Exmark Lazer Z, Scag Turf Tiger) | 1-3 weeks | **6-8 weeks** |
+| Walk-behind mower (Honda HRX) | In stock | 1-2 weeks |
+| String trimmer (Stihl FS 91, Echo SRM-225) | In stock | In stock |
+| Hedge trimmer (Stihl HS 56, Echo HC-2020) | In stock | In stock |
+| Backpack blower (Stihl BR 600, Echo PB-8010) | In stock | 1-2 weeks |
+| Edger (Stihl FC 91, Echo PE-225) | In stock | In stock |
+| Truck (used, 1/2 ton pickup) | 1-2 weeks | 2-4 weeks |
+| Trailer (open landscape, 12-16 ft) | 1-2 weeks | 1-3 weeks |
+
+**Operational implication:** Equipment acquisition for Month 2 closed-beta launch must START by end of Week 1 of operations. Order mowers no later than Day 14 of operations to receive by Day 35.
+
+---
+
+## Recommended equipment starter kit (Mission 1 Day-1)
+
+| Equipment | New price (approx.) | Used price (approx.) | Notes |
+|---|---|---|---|
+| Exmark Lazer Z 60" (zero-turn, primary mower) | $9,500-12,000 | $5,500-8,000 (1-2 yr old) | The workhorse; 60" deck for 0.4-0.5 acre lots |
+| Honda HRX217 (walk-behind backup, gates) | $700 | $300-450 | For fenced back yards |
+| Stihl FS 91 R (string trimmer) | $380 | $180-250 | Primary trimmer |
+| Echo SRM-225 (backup trimmer) | $300 | $120-180 | Secondary trimmer |
+| Stihl HS 56 (hedge trimmer) | $350 | $150-220 | Hedge work |
+| Stihl BR 600 (backpack blower) | $550 | $250-350 | Blower |
+| Stihl FC 91 (edger) | $350 | $150-200 | Edging |
+| **TOTAL equipment (new)** | **~$12,130-14,130** | | |
+| **TOTAL equipment (used)** | | **~$6,650-9,650** | |
+
+**Decision for steward:** new vs used? Trade-off:
+- **New:** warranty, predictable reliability, no first-100-hour issues. Total ~$13K.
+- **Used:** ~50% savings, faster availability, but 1-2 yr old units need maintenance sooner. Total ~$8K.
+
+**Recommendation for Day 1:** Buy the primary mower USED (savings ~$4-5K); buy handheld equipment NEW (warranty, small dollar amounts). Total Day-1 equipment ~$8K.
+
+---
+
+## Equipment maintenance schedule
+
+| Equipment | Frequency | Owner |
+|---|---|---|
+| Mower blade sharpen | Every 25 hours of use | Operations |
+| Mower oil change | Every 100 hours | Operations |
+| Mower air filter | Every 50 hours | Operations |
+| String trimmer line replacement | As needed | Operations |
+| Hedge trimmer blade sharpen | Monthly during season | Operations |
+| Blower air filter | Quarterly | Operations |
+| Truck oil change | Every 5,000 mi | Operations |
+
+**Maintenance log:** `state/capability-registry.yaml → cap_*` should each have a maintenance_link to a runbook in `agents/operations.md` or a future `agents/memory/operations/runbook.md`.
+
+---
+
+## Insurance & equipment (cross-ref D-0006)
+
+| Equipment | Value (new) | Value (used 1-2 yr) | Floater coverage needed |
+|---|---|---|---|
+| Exmark Lazer Z | $10,000 | $6,500 | Yes |
+| Honda HRX217 | $700 | $400 | Optional (low value) |
+| Handheld equipment (5 units) | $1,930 | $1,000 | Yes (bundled) |
+| Truck | $25,000 (used 1/2 ton) | $20,000 | Yes (commercial auto) |
+| Trailer | $2,500 | $1,500 | Yes |
+| **Total equipment value** | **~$40,130** | **~$29,400** | Equipment floater should cover ≥$35K aggregate |
+
+---
+
+## Rental fallback strategy
+
+When equipment breaks or is over-capacity:
+- **United Rentals** (Tampa) — full commercial fleet, daily/weekly rates.
+- **Sunbelt Rentals** — similar.
+- **Home Depot Tool Rental** — homeowner-grade, cheaper but slower availability.
+- **Cost per rental day:** zero-turn mower ~$250-400/day; trailer ~$50-100/day.
+
+**Operational rule:** If a job is scheduled and primary equipment is down, rent before rescheduling. Customer experience > equipment CAPEX payback.
+
+---
+
+## Storm preparation suppliers
+
+| Item | Source | Cost | Notes |
+|---|---|---|---|
+| Chainsaw (Stihl MS 250 or similar) | Pinellas Tractor | $400 new / $200 used | Add if not in starter kit; hurricane prep work |
+| Chain saw chaps | Same | $80 | PPE |
+| Tarps (large) | SiteOne / Home Depot | $30 each | Customer-side or job-site |
+| Generator (5-7kW portable) | Home Depot | $700-1,000 | Powers tools during post-storm outage |
+
+**Recommendation:** Add chainsaw + PPE + small generator to starter kit if budget allows. Generator can be deferred to Month 3 if Month 2 budget is tight.
+
+---
+
+## Operational notes
+
+1. **Supplier relationships matter.** A 5% volume discount at SiteOne can save $500-1000/year.
+2. **Trade accounts require FEIN/EIN** (D-0005). Open accounts in Week 1 of operations.
+3. **Cash flow vs equipment CAPEX:** Total equipment purchase ~$8-13K. Don't finance; use cash reserve (1-month operating + equipment float).
+4. **Storage:** Equipment must be stored under cover (theft + weather). Rental of a 10x10 storage unit ~$100/mo in Largo. Alternative: home garage if available.
+
+---
+
+## What this plan does NOT lock
+
+- **Specific brand preferences** (Exmark vs Scag vs Toro) — buy whatever's available used in good condition.
+- **Trailer size** — depends on truck. 12-16 ft open landscape is standard.
+- **Truck choice** — used 1/2 ton (F-150, Silverado 1500, Tundra) is appropriate. New trucks are wasteful at this stage.
+
+## Action items
+
+`OBJ-DAY13-002`: Get quotes from SiteOne, Horizon, Ewing on mulch/soil/fertilizer. Confirm trade-account eligibility.
+`OBJ-DAY13-003`: Scout used Exmark Lazer Z 60" on Facebook Marketplace + LawnSite. Target Day 14 equipment acquisition.
+`OBJ-DAY13-004`: Research rental fallback costs (United Rentals Tampa).
+
+## Sources
+
+- SiteOne Landscape Supply (siteone.com)
+- Horizon Distributors (horizononline.com)
+- Ewing Irrigation (ewingirrigation.com)
+- Pinellas Tractor (verified location, 2026)
+- Facebook Marketplace Tampa Bay (used equipment)
+- LawnSite.com classifieds (industry-specific)
