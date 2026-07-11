@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 type LotSize = 'small' | 'medium' | 'large' | 'xlarge';
 type Frequency = 'one-time' | 'bi-weekly' | 'weekly';
@@ -50,6 +50,17 @@ export function QuoteCalculator({
   const [email, setEmail] = useState('');
   const [phoneVal, setPhoneVal] = useState('');
   const [submitted, setSubmitted] = useState<null | { ok: boolean; message: string }>(null);
+  const [utm, setUtm] = useState<{ source: string; campaign: string; medium: string } | null>(null);
+
+  // Read UTM params once on mount so attribution flows through to the lead.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const source = params.get('utm_source');
+    const campaign = params.get('utm_campaign');
+    const medium = params.get('utm_medium');
+    if (source) setUtm({ source, campaign: campaign ?? '', medium: medium ?? '' });
+  }, []);
 
   const estimate = useMemo(() => {
     const base = MOW_BASE[lot];
@@ -76,7 +87,7 @@ export function QuoteCalculator({
       phone: phoneVal,
       zip,
       message: `lot=${lot} freq=${freq} addons=${Array.from(addons).join(',')} est_per_visit=$${estimate.perVisit.toFixed(0)}`,
-      source: 'quote-calculator',
+      source: utm ? `${utm.source}:${utm.campaign}` : 'quote-calculator:direct',
     };
     try {
       const res = await fetch('/api/lead', {

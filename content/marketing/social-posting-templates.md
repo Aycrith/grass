@@ -10,6 +10,13 @@
 
 ## NEXTDOOR POSTS (private but high-intent in 33771)
 
+> **Attribution:** each NextDoor post should link to the tracked short URL
+> `https://largolawn.pro/t/nextdoor-<variant>` (not the bare /quote URL).
+> When a lead comes in, the `utm_source=nextdoor` flows into the CRM so
+> you can see exactly which post produced the lead. After the domain is
+> live, paste `https://largolawn.pro/t/nextdoor-free-mow` etc. into each
+> post's link field.
+
 ### Post 1 — Free first mow (acquisition)
 
 **Title:** Free first mow from your new local neighbor
@@ -28,7 +35,8 @@ rate after the first visit if you'd like to keep going.
 Service area: 33771 + 33770, 33773, 33774, 33778, 33756.
 
 If you've been thinking about trying someone new, I'd appreciate the
-chance. Text or call: (727) 555-0123. Free quote first.
+chance. Text or call: (727) 555-0123. Free quote first:
+https://largolawn.pro/t/nextdoor-free-mow
 
 — [First name]
 Largo Lawn · largolawn.pro
@@ -54,7 +62,8 @@ quote, often same-day service.
 
 Service area: 33771 + 33770, 33773, 33774, 33778, 33756.
 
-Text/call: (727) 555-0123.
+Text/call: (727) 555-0123. Quote form:
+https://largolawn.pro/t/nextdoor-hurricane
 
 — [First name]
 Largo Lawn · largolawn.pro
@@ -84,7 +93,8 @@ edging included. No contracts, no subscriptions.
 
 Service area: 33771 + 33770, 33773, 33774, 33778, 33756.
 
-Tap me here, text, or call: (727) 555-0123. Free quote within 24 hours.
+Tap me here, text, or call: (727) 555-0123. Free quote within 24 hours:
+https://largolawn.pro/t/nextdoor-general
 
 — [First name]
 Largo Lawn · largolawn.pro
@@ -107,7 +117,8 @@ a photo of the damage and your address.
 
 Service area: 33771 + 33770, 33773, 33774, 33778, 33756.
 
-Text or call: (727) 555-0123.
+Text or call: (727) 555-0123. Quote form:
+https://largolawn.pro/t/nextdoor-storm
 
 — [First name]
 Largo Lawn · largolawn.pro
@@ -129,6 +140,7 @@ needs a lawn cutter, send them my way. They get $25 off their first
 mow, and you get a $25 credit toward your next service.
 
 Thanks neighbors.
+Quote form: https://largolawn.pro/t/nextdoor-referral
 
 — [First name]
 Largo Lawn · (727) 555-0123 · largolawn.pro
