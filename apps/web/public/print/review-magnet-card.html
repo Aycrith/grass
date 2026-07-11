@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Largo Lawn Review-Magnet Card — Print-Ready</title>
+<style>
+  /* Spec: 5" × 7" (Avery 5371 postcard), two-sided, matte.
+     Print at 100% scale on 5×7 stock. */
+  @page {
+    size: 5in 7in;
+    margin: 0;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: white;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Helvetica, Arial, sans-serif;
+    color: #1a2f25;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .card {
+    width: 5in;
+    height: 7in;
+    box-sizing: border-box;
+    background: #f7f1e3;
+    padding: 0.45in 0.5in 0.4in;
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+  }
+  .card:last-child { page-break-after: auto; }
+
+  /* Front */
+  .front .mark {
+    width: 1in;
+    height: 1in;
+    border-radius: 50%;
+    background: #2f6b3d;
+    color: #f7f1e3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36pt;
+    font-weight: 900;
+    line-height: 1;
+    margin: 0 auto 0.18in;
+  }
+  .front .wordmark {
+    text-align: center;
+    font-size: 28pt;
+    font-weight: 900;
+    color: #1a2f25;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.35in;
+  }
+  .front .headline {
+    text-align: center;
+    margin-top: 0.4in;
+  }
+  .front .headline .ask {
+    font-size: 36pt;
+    font-weight: 900;
+    color: #2f6b3d;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+  .front .headline .body {
+    margin-top: 0.35in;
+    font-size: 13pt;
+    font-weight: 600;
+    color: #1a2f25;
+    line-height: 1.3;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .front .qr-zone {
+    margin: auto auto 0.18in;
+    text-align: center;
+  }
+  .front .qr {
+    width: 1.6in;
+    height: 1.6in;
+    background: white;
+    border: 3px solid #2f6b3d;
+    margin: 0 auto 0.1in;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2f6b3d;
+    font-size: 11pt;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.1;
+    padding: 0.05in;
+    box-sizing: border-box;
+  }
+  .front .qr small { display: block; font-size: 8pt; font-weight: 400; color: #1a2f25; margin-top: 0.04in; }
+  .front .qr-caption {
+    font-size: 11pt;
+    font-weight: 600;
+    color: #1a2f25;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* Back */
+  .back {
+    padding: 0.6in 0.55in 0.5in;
+    justify-content: flex-start;
+  }
+  .back .greet {
+    font-size: 18pt;
+    font-weight: 600;
+    color: #1a2f25;
+    margin: 0 0 0.18in;
+    text-align: center;
+  }
+  .back .body {
+    font-size: 13pt;
+    color: #1a2f25;
+    line-height: 1.5;
+    text-align: left;
+    margin: 0 0 0.25in;
+  }
+  .back .body strong { font-weight: 700; color: #1a2f25; }
+  .back .body .ph { color: #2f6b3d; font-weight: 700; }
+  .back .signature {
+    text-align: right;
+    font-style: italic;
+    font-size: 16pt;
+    color: #1a2f25;
+    margin-bottom: 0.4in;
+  }
+  .back .footer {
+    margin-top: auto;
+    padding-top: 0.18in;
+    border-top: 0.02in solid #d4c9aa;
+    text-align: center;
+    font-size: 10pt;
+    color: #4a4a4a;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<!-- Front -->
+<section class="card front">
+  <div class="mark">LL</div>
+  <div class="wordmark">LARGO LAWN</div>
+
+  <div class="headline">
+    <div class="ask">Loved your mow?</div>
+    <div class="body">A 30-second Google review helps<br/>a local small business more than you know.</div>
+  </div>
+
+  <div class="qr-zone">
+    <div class="qr">SCAN<br/>TO REVIEW<small>(replace with QR to GBP review form at print time)</small></div>
+    <div class="qr-caption">scan to leave a review</div>
+  </div>
+</section>
+
+<!-- Back -->
+<section class="card back">
+  <div class="greet">Thanks for trusting us with your yard.</div>
+  <div class="body">
+    If you have 30 seconds, scan the QR code on the other side — your Google review
+    helps a local small business compete against the big guys.
+    <br/><br/>
+    If anything's not right, text me directly:
+    <span class="ph">(727) 555-0123</span>. We'll make it right.
+  </div>
+  <div class="signature">— [Your first name]</div>
+  <div class="footer">MOW · EDGE · MULCH · HEDGE · HURRICANE PREP</div>
+</section>
+
+</body>
+</html>
