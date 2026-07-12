@@ -1,0 +1,139 @@
+/* ============================================================
+ * ServiceIncludes — `/services/[slug]` "what's included" + pricing.
+ *
+ * Two-column desktop, stacked mobile. Left column: editorial
+ * intro + bullet list (clay-dot markers, shell-on-cream tiles).
+ * Right column: dark palm-shadow pricing card with sun CTA.
+ * ============================================================ */
+
+.root {
+  background: var(--ll-cream);
+  padding-block: var(--space-12);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: var(--space-8);
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-7);
+  }
+}
+
+/* ---------- Copy column ---------- */
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.eyebrow {
+  font-family: var(--font-inter);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--ll-clay);
+}
+
+.heading {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--ll-palm-bark);
+  margin: 0;
+}
+
+.bullets {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-3) 0 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+
+@media (min-width: 700px) {
+  .bullets {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.bullet {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--ll-palm-bark);
+  background: var(--ll-shell);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+}
+
+.bulletDot {
+  font-family: var(--font-fraunces), serif;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--ll-clay);
+  flex-shrink: 0;
+}
+
+/* ---------- Pricing card ---------- */
+
+.pricing {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: var(--ll-palm-shadow);
+  color: var(--ll-sand-bleached);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--elevation-2);
+}
+
+.pricingEyebrow {
+  font-family: var(--font-inter);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--ll-sun);
+  opacity: 0.95;
+}
+
+.pricingLine {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+  line-height: 1.45;
+  font-weight: 600;
+  color: var(--ll-sand-bleached);
+  margin: 0;
+}
+
+.pricingNote {
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--ll-sand-bleached);
+  opacity: 0.85;
+  margin: 0;
+  max-width: 36rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}

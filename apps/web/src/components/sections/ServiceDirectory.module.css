@@ -1,0 +1,221 @@
+/* ============================================================
+ * ServiceDirectory — `/services` index page.
+ *
+ * Sand-bleached surface to differentiate from the homepage bento
+ * (which sits on cream). Header: eyebrow + h1 + tagline.
+ *
+ * Grid: 12-col CSS grid. Mowing spans 8 cols (featured), the
+ * other 5 split as 4+4 in row 2 and 6+6 in row 3 — same
+ * asymmetric rhythm as ServiceBento so a visitor hopping between
+ * / and /services feels a continuous brand, not a different site.
+ *
+ * On mobile (≤980px) the grid collapses to a single column.
+ * ============================================================ */
+
+.root {
+  background: var(--ll-sand-bleached);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 42rem;
+  margin-bottom: var(--space-8);
+}
+
+.headerEyebrow {
+  color: var(--ll-clay);
+}
+
+.headerTitle {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: clamp(2.5rem, 5vw, 4.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--ll-palm-bark);
+  margin: 0;
+}
+
+.headerTagline {
+  font-family: var(--font-inter);
+  font-size: 1.15rem;
+  line-height: 1.55;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0;
+}
+
+/* ---------- Grid ---------- */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-4);
+}
+
+@media (max-width: 980px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+}
+
+/* ---------- Card ---------- */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--ll-shell);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--motion-duration-base) var(--motion-easing-default), box-shadow
+    var(--motion-duration-base) var(--motion-easing-default);
+}
+
+.card:hover,
+.card:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: var(--elevation-3);
+  text-decoration: none;
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--ll-clay);
+  outline-offset: 2px;
+}
+
+/* ---------- Card sizing ---------- */
+
+.cardMowing {
+  grid-column: span 8;
+  background: linear-gradient(180deg, var(--ll-shell) 0%, var(--ll-cream) 100%);
+}
+
+.cardMulching {
+  grid-column: span 4;
+}
+
+.cardEdging {
+  grid-column: span 4;
+}
+
+.cardHedge {
+  grid-column: span 4;
+}
+
+.cardHurricane {
+  grid-column: span 4;
+}
+
+.cardSeasonal {
+  grid-column: span 12;
+  background: var(--ll-cream);
+}
+
+@media (max-width: 980px) {
+  .cardMowing,
+  .cardMulching,
+  .cardEdging,
+  .cardHedge,
+  .cardHurricane,
+  .cardSeasonal {
+    grid-column: span 1;
+  }
+}
+
+/* ---------- Image ---------- */
+
+.imageWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--ll-sand);
+}
+
+.cardSeasonal .imageWrap {
+  aspect-ratio: 21 / 9;
+}
+
+.imageWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--motion-duration-slow) var(--motion-easing-default);
+}
+
+.card:hover .imageWrap img,
+.card:focus-visible .imageWrap img {
+  transform: scale(1.03);
+}
+
+/* ---------- Body ---------- */
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  flex: 1;
+}
+
+.eyebrow {
+  font-family: var(--font-inter);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--ll-clay);
+}
+
+.title {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--ll-palm-bark);
+  margin: 0;
+}
+
+.summary {
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0;
+  flex: 1;
+}
+
+.cta {
+  font-family: var(--font-inter);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ll-clay);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+/* ---------- Tail ---------- */
+
+.tail {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ll-palm-bark);
+  opacity: 0.8;
+  margin: var(--space-8) 0 0;
+  max-width: 40rem;
+}
