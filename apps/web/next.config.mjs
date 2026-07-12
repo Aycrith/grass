@@ -31,10 +31,11 @@ const nextConfig = {
       { source: '/areas/ridgecrest', destination: '/areas/33774', permanent: true },
     ];
   },
-  experimental: {
-    // Optimize for solo-founder loop speed.
-    typedRoutes: false,
-  },
+  // typedRoutes was promoted out of `experimental` in Next.js 15.5.
+  // Setting false to opt out (default is false anyway) — we don't yet
+  // have a routes-only import surface, so enabling this would just
+  // cause friction.
+  typedRoutes: false,
 };
 
 export default nextConfig;
