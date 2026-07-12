@@ -12,8 +12,8 @@
  * typography.css consumes those variables. No Google Fonts CDN @import.
  */
 
-import { BUSINESS } from '@/lib/business';
 import { SiteFooter, SiteHeader } from '@/components/site';
+import { BUSINESS } from '@/lib/business';
 import type { Metadata } from 'next';
 import { Fraunces, Inter } from 'next/font/google';
 import './globals.css';
