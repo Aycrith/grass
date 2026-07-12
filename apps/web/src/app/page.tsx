@@ -3,128 +3,59 @@
  *
  * Targets: "lawn care Largo FL", "landscaping 33771", "yard maintenance Pinellas".
  * GBP-style NAP block matches schema.org/LandscapingBusiness in layout.
+ *
+ * Canonical section composition (10 sections, eyebrows 01-09):
+ *   HeroCinematic → TrustStrip → OperatorStrip → ServiceBento →
+ *   PricingTiers → ProcessSteps → ServiceAreaMap → TestimonialQuote →
+ *   FAQAccordion → FinalCTABanner
+ *
+ * This page is the production surface for every component in the
+ * `sections/` library. visual-test/page.tsx only mounts a subset of
+ * these for per-component screenshot baselines.
  */
-
-import { BUSINESS, PRICING_FLOOR_CENTS } from '@/lib/business';
-import Link from 'next/link';
+import {
+  FAQAccordion,
+  FinalCTABanner,
+  HeroCinematic,
+  OperatorStrip,
+  PricingTiers,
+  ProcessSteps,
+  ServiceAreaMap,
+  ServiceBento,
+  TestimonialQuote,
+  TrustStrip,
+} from '@/components/sections';
 
 export default function HomePage() {
   return (
     <>
-      <section className="hero">
-        <div className="container">
-          <h1>Lawn Care & Landscaping in {BUSINESS.address.city}, FL</h1>
-          <p>
-            Affordable, reliable yard care for homeowners in Largo and Pinellas County. Locally
-            owned, serving 33771 and the five adjacent ZIPs. Free quotes within 24 hours.
-          </p>
-          <p>
-            <Link href="/contact" className="btn">
-              Get Your Free Quote →
-            </Link>{' '}
-            <a href={`tel:${BUSINESS.phone}`} className="btn btn-secondary">
-              Call {BUSINESS.phone}
-            </a>
-          </p>
-        </div>
-      </section>
+      {/* 01 — Hero */}
+      <HeroCinematic />
+      <TrustStrip />
 
-      <section className="container">
-        <h2>Our Services</h2>
-        <div className="grid">
-          <div className="card">
-            <h3>
-              <Link href="/services/mowing">Mowing</Link>
-            </h3>
-            <p>
-              Weekly, bi-weekly, or monthly mowing for lots up to 1 acre. Edging and blowing
-              included.
-            </p>
-            <p>
-              <strong>
-                From ${(PRICING_FLOOR_CENTS.mowing_per_visit_small / 100).toFixed(0)}/visit
-              </strong>
-            </p>
-          </div>
-          <div className="card">
-            <h3>
-              <Link href="/services/edging">Edging</Link>
-            </h3>
-            <p>Mechanical edging along curbs, walkways, and beds. Sharp, clean lines.</p>
-            <p>
-              <strong>
-                From ${(PRICING_FLOOR_CENTS.edging_per_linear_ft / 100).toFixed(2)}/linear ft
-              </strong>
-            </p>
-          </div>
-          <div className="card">
-            <h3>
-              <Link href="/services/mulching">Mulching</Link>
-            </h3>
-            <p>Bulk mulch delivery + install. Pine bark, cypress, or hardwood blends.</p>
-            <p>
-              <strong>
-                From $
-                {(
-                  (PRICING_FLOOR_CENTS.mulch_per_cubic_yard +
-                    PRICING_FLOOR_CENTS.mulch_install_per_cubic_yard) /
-                  100
-                ).toFixed(0)}
-                /yd³ installed
-              </strong>
-            </p>
-          </div>
-          <div className="card">
-            <h3>
-              <Link href="/services/hedge-trimming">Hedge Trimming</Link>
-            </h3>
-            <p>Seasonal hedge and shrub trimming. Heights up to 12 ft.</p>
-            <p>
-              <strong>
-                From ${(PRICING_FLOOR_CENTS.hedge_trim_per_linear_ft / 100).toFixed(2)}/linear ft
-              </strong>
-            </p>
-          </div>
-          <div className="card">
-            <h3>
-              <Link href="/services/hurricane-prep">Hurricane Prep</Link>
-            </h3>
-            <p>Pre-storm yard securing, branch removal, and post-storm cleanup. June–November.</p>
-            <p>
-              <strong>From ${(PRICING_FLOOR_CENTS.hurricane_prep_base / 100).toFixed(0)}</strong>
-            </p>
-          </div>
-          <div className="card">
-            <h3>
-              <Link href="/services/seasonal-cleanup">Seasonal Cleanup</Link>
-            </h3>
-            <p>Spring and fall leaf removal, bed cleanup, debris haul-off.</p>
-            <p>
-              <strong>From ${(PRICING_FLOOR_CENTS.seasonal_cleanup_base / 100).toFixed(0)}</strong>
-            </p>
-          </div>
-        </div>
+      {/* 02 — Operator intro */}
+      <OperatorStrip />
 
-        <h2>Why Choose {BUSINESS.name}?</h2>
-        <ul>
-          <li>
-            <strong>Local & Solo:</strong> Based in {BUSINESS.address.city}, serving six Pinellas
-            County ZIPs personally — no subcontractors. Service area:{' '}
-            {BUSINESS.service_area_zips.map((z: string) => (
-              <span key={z}>
-                <Link href={`/areas/${z}`}>{z}</Link>{' '}
-              </span>
-            ))}.
-          </li>
-          <li>
-            <strong>Transparent Pricing:</strong> Per-visit or per-project rates — no surprise fees.
-          </li>
-          <li>
-            <strong>Hurricane-Smart:</strong> When winds hit {BUSINESS.hurricane_wind_threshold_mph}
-            + mph, we pause outdoor work and auto-reschedule — no charge for weather cancellations.
-          </li>
-        </ul>
-      </section>
+      {/* 03 — Service grid */}
+      <ServiceBento />
+
+      {/* 04 — Pricing */}
+      <PricingTiers />
+
+      {/* 05 — Process */}
+      <ProcessSteps />
+
+      {/* 06 — Service area */}
+      <ServiceAreaMap />
+
+      {/* 07 — Social proof */}
+      <TestimonialQuote />
+
+      {/* 08 — FAQ */}
+      <FAQAccordion />
+
+      {/* 09 — Final CTA */}
+      <FinalCTABanner />
     </>
   );
 }
