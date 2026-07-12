@@ -35,8 +35,8 @@ export const hero = {
   secondaryCta: { label: 'Call (727) 555-0123', href: 'tel:+17275550123' },
   image: {
     alt: 'Freshly mowed lawn in 33771 at golden hour.',
-    desktopSlot: '/hero/desktop.svg',
-    mobileSlot: '/hero/mobile.svg',
+    desktopSlot: '/hero/desktop.webp',
+    mobileSlot: '/hero/mobile.webp',
   },
 } as const;
 
@@ -56,7 +56,7 @@ export const services = {
     eyebrow: '01',
     summary: 'Weekly or biweekly. Mow, edge, blow. Most yards every visit.',
     floors: { small: 4500, medium: 6500, large: 9500 },
-    imageSlot: '/services/mowing.svg',
+    imageSlot: '/services/mowing.webp',
     featured: true,
     /**
      * Real customer before/after pair. Stays `null` until the steward
@@ -78,7 +78,7 @@ export const services = {
     eyebrow: '02',
     summary: 'Crisp lines along the driveway, sidewalk, and bed edges.',
     floors: { perVisit: 7500 },
-    imageSlot: '/services/edging.svg',
+    imageSlot: '/services/edging.webp',
     beforeAfter: undefined,
   },
   mulching: {
@@ -87,7 +87,7 @@ export const services = {
     eyebrow: '03',
     summary: 'Fresh hardwood or cypress mulch, pulled and replaced as needed.',
     floors: { base: 65000, perYard: 45000 },
-    imageSlot: '/services/mulching.svg',
+    imageSlot: '/services/mulching.webp',
     beforeAfter: undefined,
   },
   'hedge-trimming': {
@@ -96,7 +96,7 @@ export const services = {
     eyebrow: '04',
     summary: 'Shape and clean up. Most hedges twice a year is plenty.',
     floors: { perVisit: 22500 },
-    imageSlot: '/services/hedge-trimming.svg',
+    imageSlot: '/services/hedge-trimming.webp',
     beforeAfter: undefined,
   },
   'hurricane-prep': {
@@ -105,7 +105,7 @@ export const services = {
     eyebrow: '05',
     summary: 'Pre-storm yard sweep + post-storm debris haul. Bound by the wind.',
     floors: { perVisit: 120000 },
-    imageSlot: '/services/hurricane-prep.svg',
+    imageSlot: '/services/hurricane-prep.webp',
     beforeAfter: undefined,
   },
   'seasonal-cleanup': {
@@ -114,7 +114,7 @@ export const services = {
     eyebrow: '06',
     summary: 'One-time deep cleanup for leaf season and after long absences.',
     floors: { perVisit: 180000 },
-    imageSlot: '/services/seasonal-cleanup.svg',
+    imageSlot: '/services/seasonal-cleanup.webp',
     beforeAfter: undefined,
   },
 } as const;

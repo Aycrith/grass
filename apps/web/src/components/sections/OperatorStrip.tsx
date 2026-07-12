@@ -38,7 +38,7 @@ export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
             <ParallaxImage offset={40} className={styles.portrait}>
               <div className={styles.portraitInner}>
                 <Image
-                  src="/operator/portrait.svg"
+                  src="/operator/portrait.webp"
                   alt={`Portrait of ${operator.name}, Largo Lawn operator`}
                   fill
                   sizes="(max-width: 980px) 100vw, 320px"
@@ -77,7 +77,7 @@ export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
                   <div key={item.name} className={styles.equipmentTile}>
                     <div className={styles.equipmentImage}>
                       <Image
-                        src={`/equipment/${slug}.svg`}
+                        src={`/equipment/${slug}.webp`}
                         alt={item.use}
                         width={200}
                         height={150}

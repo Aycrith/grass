@@ -13,7 +13,7 @@
  * `useReducedMotion` inside WordReveal + the spring in ParallaxImage.
  * Coarse pointer: parallax disabled by ParallaxImage's pointer check.
  *
- * Imagery: SVG placeholder (`/hero/desktop.svg` + `/hero/mobile.svg`).
+ * Imagery: webp hero (`/hero/desktop.webp` + `/hero/mobile.webp`).
  * Steward swaps in real yard-at-golden-hour .webp at the same paths.
  */
 
@@ -93,9 +93,9 @@ export function HeroCinematic({ className }: HeroCinematicProps): ReactNode {
           <ParallaxImage offset={60} className={styles.media}>
             <div className={styles.mediaInner}>
               <picture>
-                <source media="(max-width: 900px)" srcSet="/hero/mobile.svg" />
+                <source media="(max-width: 900px)" srcSet="/hero/mobile.webp" />
                 <Image
-                  src="/hero/desktop.svg"
+                  src="/hero/desktop.webp"
                   alt="Freshly mowed lawn in 33771 at golden hour"
                   fill
                   priority

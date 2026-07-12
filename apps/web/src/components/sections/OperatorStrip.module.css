@@ -5,8 +5,9 @@
  * 3-col on desktop: portrait | bio | equipment grid (2x2).
  * Stacks on mobile with portrait at top.
  *
- * Image: SVG placeholder /operator/portrait.svg. Steward swaps
- * in real .webp at the same path when portrait is shot.
+ * Image: /operator/portrait.webp (ComfyUI-generated stylized
+ * editorial abstraction per apps/comfyui/prompts/operator-portrait.md;
+ * placeholder swapped for steward phone photo later).
  * ============================================================ */
 
 .root {
