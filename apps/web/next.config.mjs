@@ -10,6 +10,14 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   images: {
+    // Defense-in-depth: explicit even though `false` is the default.
+    // SVGs are statically served from /public; we never accept
+    // remote SVGs (XSS vector via <script> in <foreignObject>).
+    dangerouslyAllowSVG: false,
+    // Prefer modern formats. Next.js defaults already include
+    // image/webp; declaring `image/avif` first enables smaller
+    // payloads where the browser supports it.
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
       { protocol: 'https', hostname: 'images.unsplash.com' },
