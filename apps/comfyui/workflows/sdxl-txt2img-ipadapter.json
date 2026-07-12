@@ -1,0 +1,91 @@
+{
+  "_comment": "Shared SDXL txt2img + IP-Adapter Plus workflow (API format). generate.py rewrites EmptyLatentImage.width/height per asset-class, KSampler.seed per generation, CLIPTextEncode[0].text per slug, SaveImage.filename_prefix per slug. Model names must match what's installed at C:\\ComfyUI\\ComfyUI_windows_portable\\ComfyUI\\models\\ — see apps/comfyui/control/README.md for the canonical IPAdapter reference image.",
+  "4": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "sd_xl_base_1.0.safetensors"
+    }
+  },
+  "10": {
+    "class_type": "CLIPVisionLoader",
+    "inputs": {
+      "clip_name": "clip_vision_sdxl.safetensors"
+    }
+  },
+  "11": {
+    "class_type": "IPAdapterModelLoader",
+    "inputs": {
+      "ipadapter_file": "ip-adapter-plus_sdxl_vit-h.safetensors"
+    }
+  },
+  "12": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "ip-style-ref.png"
+    }
+  },
+  "13": {
+    "class_type": "IPAdapterAdvanced",
+    "inputs": {
+      "model": ["4", 0],
+      "ipadapter": ["11", 0],
+      "image": ["12", 0],
+      "weight": 0.5,
+      "weight_type": "linear",
+      "start_at": 0.0,
+      "end_at": 1.0,
+      "clip_vision": ["10", 0]
+    }
+  },
+  "6": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "[REWRITTEN_AT_RUNTIME] positive prompt from prompts/<class>.md",
+      "clip": ["4", 1]
+    }
+  },
+  "7": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "[REWRITTEN_AT_RUNTIME] negative prompt from _style-block.md",
+      "clip": ["4", 1]
+    }
+  },
+  "5": {
+    "class_type": "EmptyLatentImage",
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "batch_size": 1
+    }
+  },
+  "3": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": ["13", 0],
+      "positive": ["6", 0],
+      "negative": ["7", 0],
+      "latent_image": ["5", 0],
+      "seed": 4242,
+      "steps": 30,
+      "cfg": 7.0,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "denoise": 1.0
+    }
+  },
+  "8": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": ["3", 0],
+      "vae": ["4", 2]
+    }
+  },
+  "9": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "filename_prefix": "largo-lawn/[REWRITTEN_AT_RUNTIME]/[slug]",
+      "images": ["8", 0]
+    }
+  }
+}
