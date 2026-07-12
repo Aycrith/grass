@@ -147,3 +147,48 @@ jobs:
         with:
           lockfile: bun.lock
         continue-on-error: true
+
+  # -----------------------------------------------------------------
+  # 7. Asset weight budget — every raster under apps/web/public ≤ 300 KB
+  #    (Plan §4 WP4 / PRD-05 §10). Transitions from no-op (transition
+  #    state, no webps yet) to hard guard once WP3 lands 19 webps.
+  # -----------------------------------------------------------------
+  asset-weight:
+    name: Asset Weight Budget
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Check raster weight budget
+        run: bun run apps/comfyui/scripts/check-weight.mjs
+
+  # -----------------------------------------------------------------
+  # 8. Image references — every <Image src="/..."> / <img src="/...">
+  #    in apps/web/src resolves to a real file under apps/web/public,
+  #    and every services.{slug}.imageSlot in lib/content.ts does too.
+  #    (Plan §4 WP4 / PRD-05 §10).
+  # -----------------------------------------------------------------
+  references:
+    name: Image References
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Verify image references resolve
+        run: bun run apps/comfyui/scripts/verify-references.mjs
