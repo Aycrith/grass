@@ -8,15 +8,13 @@
  * The default export returns null when no proof is configured.
  * Once steward supplies real customer quotes, the first item
  * appears as a hero card between ServiceAreaMap (06) and
- * FAQAccordion (07). The static "04 — From a neighbor" eyebrow
- * in this component is a placeholder; when the section is
- * actually rendered, it sits at position 07 in the homepage
- * sequence, so re-render the eyebrow inline as needed.
+ * FAQAccordion (08). The section eyebrow flows from
+ * `socialHeader.eyebrow` (lib/content.ts).
  */
 
 import { Eyebrow, Section } from '@/components/site';
 import { cn } from '@/lib/cn';
-import { social } from '@/lib/content';
+import { social, socialHeader } from '@/lib/content';
 
 import styles from './TestimonialQuote.module.css';
 
@@ -37,7 +35,7 @@ export function TestimonialQuote({ className }: TestimonialQuoteProps): React.Re
       <div className="container">
         <div className={styles.inner}>
           <Eyebrow tone="default" dot className={styles.eyebrow}>
-            07 — From a neighbor
+            {socialHeader.eyebrow}
           </Eyebrow>
           <blockquote className={styles.quote}>
             <span className={styles.quoteMark} aria-hidden="true">

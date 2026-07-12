@@ -275,8 +275,19 @@ export const finalCta = {
 /**
  * Customer testimonials / social proof.
  *
+ * `socialHeader` holds the section eyebrow. Section sits at
+ * position 07 on the homepage (after ServiceAreaMap 06, before
+ * FAQAccordion 08). The empty-state invariant on `proof: []`
+ * means the component renders nothing until steward supplies
+ * real reviews with permission.
+ */
+export const socialHeader = {
+  eyebrow: '07 — From a neighbor',
+} as const;
+
+/**
  * **Empty-state invariant**: until the steward has real customer
- * quotes with explicit written permission, this stays `proof: []`.
+ * quotes with explicit written permission, `proof` stays `[]`.
  * The TestimonialQuote component renders nothing when the array
  * is empty — invented quotes are forbidden per brand guidelines.
  *
