@@ -115,3 +115,12 @@ prisma/migrations/dev/
 # --- TypeScript incremental build artifacts ---
 *.tsbuildinfo
 .tsbuildinfo
+
+# --- ComfyUI generation workspace (apps/comfyui/) ---
+# outputs/ holds raw PNGs from ComfyUI generations (large, ephemeral).
+# curated/ holds the steward's selected keepers, pre-conversion to webp.
+# Only the curated/.gitignore'd PNGs are intentionally temporary;
+# the final webp artifacts land in apps/web/public/{hero,services,areas,operator,equipment}/
+# and ARE committed.
+apps/comfyui/outputs/
+apps/comfyui/curated/
