@@ -29,6 +29,8 @@ const nextConfig = {
       { source: '/areas/belleair', destination: '/areas/33770', permanent: true },
       { source: '/areas/harbor-bluffs', destination: '/areas/33756', permanent: true },
       { source: '/areas/ridgecrest', destination: '/areas/33774', permanent: true },
+      // Legacy favicon.ico requests (some SEO scrapers ignore <link rel="icon">).
+      { source: '/favicon.ico', destination: '/icon.svg', permanent: true },
     ];
   },
   // typedRoutes was promoted out of `experimental` in Next.js 15.5.
