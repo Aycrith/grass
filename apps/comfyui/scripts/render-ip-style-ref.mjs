@@ -40,6 +40,10 @@ async function main() {
   // "<!-- low-contrast so it doesn't dominate -->" — strip them all before
   // rasterizing. The IP-Adapter style anchor cares about pixels, not markup.
   svg = svg.replace(/<!--[\s\S]*?-->/g, "");
+  // Drop any <text> elements. IPAdapterPlus faithfully transfers text glyphs,
+  // but with a flip — "COMING SOON" renders backwards as mirrored letters.
+  // The anchor is style only, not literal text.
+  svg = svg.replace(/<text\b[^>]*>[\s\S]*?<\/text>/g, "");
 
   const buf = await sharp(Buffer.from(svg))
     .resize({

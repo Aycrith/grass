@@ -343,7 +343,12 @@ def wait_for_history(server: str, prompt_id: str) -> dict:
 
 
 def fetch_outputs(server: str, history_entry: dict, dest_dir: Path) -> list[Path]:
-    """Download every output image from a completed prompt entry."""
+    """Download every output image from a completed prompt entry.
+
+    Each image is saved as ``dest_dir / f"{counter}.png"`` where ``counter``
+    increments across all images in the prompt's outputs. The caller is
+    responsible for renaming into its canonical slug-naming scheme.
+    """
     dest_dir.mkdir(parents=True, exist_ok=True)
     saved: list[Path] = []
     counter = 0
@@ -360,6 +365,26 @@ def fetch_outputs(server: str, history_entry: dict, dest_dir: Path) -> list[Path
             out_path.write_bytes(data)
             saved.append(out_path)
     return saved
+
+
+def fetch_one(server: str, history_entry: dict, dest_path: Path) -> Path:
+    """Download the single output image of a prompt straight to ``dest_path``.
+
+    Use this when the caller already knows the canonical filename — avoids the
+    ``1.png``-per-iteration overwrite race in ``fetch_outputs``.
+    """
+    dest_path.parent.mkdir(parents=True, exist_ok=True)
+    for node_id, node_out in history_entry.get("outputs", {}).items():
+        for img in node_out.get("images", []):
+            qs = urllib.parse.urlencode({
+                "filename": img["filename"],
+                "subfolder": img.get("subfolder", ""),
+                "type": img.get("type", "output"),
+            })
+            data = http_get_bytes(server, f"/view?{qs}")
+            dest_path.write_bytes(data)
+            return dest_path
+    raise ComfyError(f"no images found in prompt outputs: {history_entry!r}")
 
 
 # -----------------------------------------------------------------------------
@@ -429,7 +454,7 @@ def seed_for_slug(slug: str, base: int | None = None) -> int:
 # -----------------------------------------------------------------------------
 
 def generate_one(server: str, slug: str, seed: int, ip_weight: float, ip_image_path: Path,
-                 style_block_body: str, client_id: str) -> list[Path]:
+                 style_block_body: str, client_id: str, dest_path: Path) -> Path:
     cls = SLUG_TO_CLASS[slug]
     prompt_file = PROMPTS_DIR / CLASS_TO_PROMPT_FILE[cls]
     workflow_file = WORKFLOWS_DIR / WORKFLOW_FILES[slug]
@@ -465,8 +490,8 @@ def generate_one(server: str, slug: str, seed: int, ip_weight: float, ip_image_p
     pid = queue_prompt(server, workflow, client_id)
     print(f"  [{slug}] queued prompt {pid} (seed={seed}, {width}x{height})", file=sys.stderr)
     entry = wait_for_history(server, pid)
-    out_paths = fetch_outputs(server, entry, OUTPUTS_DIR / slug)
-    return out_paths
+    out_path = fetch_one(server, entry, dest_path)
+    return out_path
 
 
 def main() -> int:
@@ -492,30 +517,30 @@ def main() -> int:
 
     client_id = f"largo-lawn-{os.getpid()}-{int(time.time())}"
     base_seed = seed_for_slug(args.slug)
+    slug_dir = OUTPUTS_DIR / args.slug
+    slug_dir.mkdir(parents=True, exist_ok=True)
     all_paths: list[Path] = []
     for n in range(1, args.count + 1):
         seed = base_seed + (n - 1) * 31  # small offset so each generation differs
-        paths = generate_one(
-            server=args.server,
-            slug=args.slug,
-            seed=seed,
-            ip_weight=args.ip_weight,
-            ip_image_path=ip_image,
-            style_block_body=style_body,
-            client_id=client_id,
-        )
-        # Rename sequential to 1.png..N.png per slug
-        slug_dir = OUTPUTS_DIR / args.slug
-        renamed: list[Path] = []
-        for i, p in enumerate(sorted(paths), start=1):
-            dst = slug_dir / f"{i}.png"
-            if p.resolve() != dst.resolve():
-                p.rename(dst)
-            renamed.append(dst)
-        print(f"  [{args.slug}] saved {len(renamed)} generation(s) to {slug_dir}", file=sys.stderr)
-        all_paths.extend(renamed)
+        dst = slug_dir / f"{n}.png"
+        try:
+            out_path = generate_one(
+                server=args.server,
+                slug=args.slug,
+                seed=seed,
+                ip_weight=args.ip_weight,
+                ip_image_path=ip_image,
+                style_block_body=style_body,
+                client_id=client_id,
+                dest_path=dst,
+            )
+            all_paths.append(out_path)
+            print(f"  [{args.slug}] saved generation {n}/{args.count} (seed={seed}) to {out_path}", file=sys.stderr)
+        except ComfyError as e:
+            print(f"  [{args.slug}] generation {n}/{args.count} FAILED: {e}", file=sys.stderr)
+            return 1
 
-    print(f"\n{len(all_paths)} generation(s) saved under {OUTPUTS_DIR / args.slug}")
+    print(f"\n{len(all_paths)} generation(s) saved under {slug_dir}")
     for path in sorted(all_paths):
         print(f"  {path}")
     return 0

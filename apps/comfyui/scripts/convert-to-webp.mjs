@@ -45,8 +45,9 @@ const SLUG_MAP = {
       },
       {
         path: resolve(PUBLIC_DIR, "hero/mobile.webp"),
-        // Center vertical crop, keep house visible at the top.
-        extract: { width: 1200, height: 1500, left: 600, top: 0 },
+        // Center vertical crop, keep house visible at the top. Source is
+        // 2400×1496 from SDXL — height capped at 1496 to stay in-bounds.
+        extract: { width: 1200, height: 1496, left: 600, top: 0 },
       },
     ],
   },

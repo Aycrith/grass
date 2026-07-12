@@ -1,5 +1,4 @@
 {
-  "_comment": "Shared SDXL txt2img + IP-Adapter Plus workflow (API format). generate.py rewrites EmptyLatentImage.width/height per asset-class, KSampler.seed per generation, CLIPTextEncode[0].text per slug, SaveImage.filename_prefix per slug. Model names must match what's installed at C:\\ComfyUI\\ComfyUI_windows_portable\\ComfyUI\\models\\ — see apps/comfyui/control/README.md for the canonical IPAdapter reference image.",
   "4": {
     "class_type": "CheckpointLoaderSimple",
     "inputs": {
@@ -9,7 +8,7 @@
   "10": {
     "class_type": "CLIPVisionLoader",
     "inputs": {
-      "clip_name": "clip_vision_sdxl.safetensors"
+      "clip_name": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors"
     }
   },
   "11": {
@@ -34,6 +33,8 @@
       "weight_type": "linear",
       "start_at": 0.0,
       "end_at": 1.0,
+      "combine_embeds": "average",
+      "embeds_scaling": "V only",
       "clip_vision": ["10", 0]
     }
   },
