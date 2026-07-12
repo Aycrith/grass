@@ -1,0 +1,34 @@
+/* ============================================================
+ * Container — Mission 1
+ *
+ * Width primitive. Pulls from --max-width-* tokens. Use anywhere
+ * a horizontal rail is needed; never hard-code a width in a page.
+ * ============================================================ */
+
+.root {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: var(--space-6);
+}
+
+.content {
+  max-width: var(--max-width-content);
+}
+
+.marketing {
+  max-width: var(--max-width-marketing);
+}
+
+.wide {
+  max-width: var(--max-width-wide);
+}
+
+.prose {
+  max-width: var(--max-width-prose);
+}
+
+@media (max-width: 768px) {
+  .root {
+    padding-inline: var(--space-5);
+  }
+}

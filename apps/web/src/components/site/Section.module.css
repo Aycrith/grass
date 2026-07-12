@@ -1,0 +1,90 @@
+/* ============================================================
+ * Section — Mission 1
+ *
+ * Vertical-rhythm wrapper. Variants set background + text color;
+ * `tight` / `loose` change the rhythm. Always render a child via
+ * <Container> for horizontal rhythm.
+ * ============================================================ */
+
+.root {
+  position: relative;
+  padding-block: var(--space-10);
+}
+
+.tight {
+  padding-block: var(--space-7);
+}
+
+.loose {
+  padding-block: var(--space-13);
+}
+
+.hero {
+  padding-block: var(--space-12);
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+}
+
+/* ---------- Background variants ---------- */
+
+.dark {
+  background: var(--ll-palm-shadow);
+  color: var(--ll-sand-bleached);
+}
+
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4 {
+  color: var(--ll-sand-bleached);
+}
+
+.warm {
+  background: var(--ll-sand-bleached);
+}
+
+.soft {
+  background: var(--ll-cream);
+}
+
+.white {
+  background: var(--ll-shell);
+}
+
+/* ---------- Highlight rule (top divider accent for section openers) ---------- */
+
+.eyebrowRule {
+  position: relative;
+  padding-top: calc(var(--space-10) + 24px);
+}
+
+.eyebrowRule::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 64px;
+  height: 2px;
+  background: var(--ll-clay);
+}
+
+.eyebrowRuleCenter::before {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.eyebrowRule .eyebrowInner {
+  margin-top: var(--space-3);
+}
+
+@media (max-width: 768px) {
+  .root {
+    padding-block: var(--space-9);
+  }
+
+  .hero {
+    padding-block: var(--space-10);
+    min-height: auto;
+  }
+}

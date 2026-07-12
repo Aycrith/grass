@@ -1,0 +1,237 @@
+/* ============================================================
+ * SiteFooter — Mission 1
+ *
+ * Multi-column NAP block (Services / Company / Service area / Contact).
+ * Single-column stacked on mobile. Everything referenced from
+ * lib/business → BUSINESS so NAP stays in lockstep with JSON-LD.
+ * ============================================================ */
+
+.root {
+  border-top: 1px solid var(--color-border);
+  background: var(--ll-cream);
+  padding-block: var(--space-11);
+  margin-top: var(--space-13);
+  color: var(--ll-palm-bark);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.container {
+  max-width: min(72rem, 100% - var(--space-7));
+  margin-inline: auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(3, 1fr);
+  gap: var(--space-9);
+  align-items: flex-start;
+}
+
+.brandCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--ll-palm-shadow);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.brandLine {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.brandEntity {
+  font-weight: 600;
+}
+
+.brandAddress {
+  color: var(--gray-700);
+  font-size: 0.9rem;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.colTitle {
+  font-family: var(--font-inter);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ll-clay);
+  margin: 0 0 var(--space-2);
+}
+
+.colTitleSpaced {
+  font-family: var(--font-inter);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ll-clay);
+  margin: var(--space-4) 0 var(--space-2);
+}
+
+.areaNote {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--gray-700);
+}
+
+.areaLink {
+  margin-top: var(--space-2);
+  font-size: 0.85rem;
+  color: var(--ll-palm-shadow);
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.areaLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.contactStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.linkList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.linkList a {
+  color: var(--ll-palm-bark);
+  text-decoration: none;
+  transition: color var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.linkList a:hover {
+  color: var(--ll-palm-shadow);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.zipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+}
+
+.hours {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-1) var(--space-3);
+  font-size: 0.85rem;
+  color: var(--ll-palm-bark);
+  margin: 0;
+}
+
+/* Wrapping divs around <dt>/<dd> pairs so the row reads semantically
+   while staying invisible to the grid (their children live in the
+   parent grid's columns). */
+.hoursRow {
+  display: contents;
+}
+
+.hours dt {
+  color: var(--gray-700);
+  font-weight: 500;
+}
+
+.hours dd {
+  margin: 0;
+  font-weight: 500;
+}
+
+.contactLine {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 500;
+}
+
+.contactLine a {
+  color: var(--ll-palm-shadow);
+  text-decoration: none;
+}
+
+.contactLine a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.bottom {
+  margin-top: var(--space-9);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  font-size: 0.8rem;
+  color: var(--gray-700);
+  flex-wrap: wrap;
+}
+
+.bottom a {
+  color: var(--gray-700);
+  text-decoration: none;
+}
+
+.bottom a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.legalLinks {
+  display: flex;
+  gap: var(--space-4);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-7);
+  }
+  .brandCol {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .root {
+    padding-block: var(--space-9);
+  }
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .brandCol {
+    grid-column: span 1;
+  }
+}

@@ -1,0 +1,66 @@
+/* ============================================================
+ * TestimonialQuote — Mission 1
+ *
+ * Single hero card on the sand-bleached background. Large serif
+ * quote, attribution row beneath. Empty-state: never render.
+ * ============================================================ */
+
+.root {
+  /* Section vertical rhythm + warm tone supplied by <Section>. */
+}
+
+.inner {
+  max-width: 48rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  text-align: left;
+}
+
+.eyebrow {
+  /* eyebrow styling owned by <Eyebrow> */
+}
+
+.quote {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--ll-palm-shadow);
+  letter-spacing: -0.01em;
+  margin: 0;
+  padding: 0;
+  border: none;
+  position: relative;
+}
+
+.quoteMark {
+  font-family: var(--font-fraunces), serif;
+  font-size: 4rem;
+  line-height: 0;
+  color: var(--ll-clay);
+  margin-right: 0.1em;
+  vertical-align: -0.4em;
+}
+
+.attribution {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: baseline;
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+}
+
+.name {
+  font-weight: 700;
+  color: var(--ll-palm-shadow);
+  opacity: 1;
+}
+
+.meta {
+  opacity: 0.85;
+}

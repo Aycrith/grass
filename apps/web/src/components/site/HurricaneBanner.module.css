@@ -1,0 +1,51 @@
+/* ============================================================
+ * HurricaneBanner — Mission 1
+ *
+ * Capability-bound state banner. Shown when the operator flips
+ * `cap_hurricane_mode` on; otherwise never rendered. The motion
+ * is anchored to capability changes, not user input — there is
+ * no exit animation by design.
+ * ============================================================ */
+
+.root {
+  width: 100%;
+  background: var(--ll-clay);
+  color: var(--ll-shell);
+  padding: var(--space-4) var(--space-6);
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.content {
+  max-width: var(--max-width-prose);
+}
+
+.link {
+  color: var(--ll-shell);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.link:hover {
+  text-decoration: none;
+}
+
+@media (max-width: 640px) {
+  .root {
+    padding: var(--space-3) var(--space-5);
+    font-size: 0.875rem;
+    gap: var(--space-2);
+  }
+}

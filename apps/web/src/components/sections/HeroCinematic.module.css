@@ -1,0 +1,156 @@
+/* ============================================================
+ * HeroCinematic — Mission 1 EarthSlice-inspired hero
+ *
+ * Full-bleed. Asymmetric split: copy left (~55%), layered image
+ * stack right (~45%). Image parallax tracks Lenis scroll at 0.4×
+ * velocity; headline word-by-word reveal on mount.
+ *
+ * Mobile (<=900px): stack vertically, image on top.
+ * Honors prefers-reduced-motion + coarse pointer via motion primitives.
+ * ============================================================ */
+
+.root {
+  position: relative;
+  background: var(--ll-sand-bleached);
+  overflow: hidden;
+  isolation: isolate;
+  min-height: clamp(640px, 88vh, 880px);
+  display: flex;
+  align-items: stretch;
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: var(--space-8);
+  width: 100%;
+  align-items: center;
+  padding-block: var(--space-10);
+}
+
+@media (max-width: 900px) {
+  .root {
+    min-height: auto;
+  }
+  .inner {
+    grid-template-columns: 1fr;
+    padding-block: var(--space-8);
+    gap: var(--space-7);
+  }
+}
+
+/* ---------- Copy column ---------- */
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  max-width: 36rem;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--ll-clay);
+}
+
+.headline {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 900;
+  font-size: clamp(2.75rem, 7vw, 6rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: var(--ll-palm-bark);
+  margin: 0;
+}
+
+.headlineLine {
+  display: block;
+  overflow: hidden;
+}
+
+.subhead {
+  font-family: var(--font-inter);
+  font-weight: 400;
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
+  line-height: 1.55;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0;
+  max-width: 32rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  margin-top: var(--space-2);
+}
+
+/* ---------- Image column ---------- */
+
+.media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--elevation-3);
+  background: var(--ll-palm-shadow);
+}
+
+.mediaInner {
+  position: absolute;
+  inset: -8% 0;
+  width: 100%;
+  height: 116%;
+}
+
+.mediaInner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .media {
+    aspect-ratio: 16 / 10;
+  }
+}
+
+/* ---------- Decorative clay rule under copy ---------- */
+
+.rule {
+  width: 56px;
+  height: 2px;
+  background: var(--ll-clay);
+  border-radius: 1px;
+  margin-top: var(--space-2);
+}
+
+/* ---------- Trust micro-icons ---------- */
+
+.trustRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  margin-top: var(--space-4);
+  font-family: var(--font-inter);
+  font-size: 0.85rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.75;
+}
+
+.trustItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.trustItem svg {
+  color: var(--ll-palm-shadow);
+  flex-shrink: 0;
+}

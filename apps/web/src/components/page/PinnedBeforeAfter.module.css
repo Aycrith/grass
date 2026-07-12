@@ -1,0 +1,274 @@
+/* ============================================================
+ * PinnedBeforeAfter — Mission 1 earthSlice-inspired scrub
+ *
+ * Three layout modes (selected by the component based on
+ * prefers-reduced-motion + pointer:coarse):
+ *   1. .rootPinned  — desktop, motion allowed. Section is 150vh
+ *      tall; inner pinFrame is sticky. clipPath scrubs via Framer.
+ *   2. .rootStatic  — reduced-motion. Static, no pinning.
+ *      Inner renders side-by-side panels.
+ *   3. Mobile / coarse pointer (no class toggle) — sits in normal
+ *      flow, scrub driven by a draggable range input.
+ * ============================================================ */
+
+.root {
+  position: relative;
+  background: var(--ll-palm-bark);
+  color: var(--ll-sand-bleached);
+}
+
+.rootPinned {
+  height: 150vh;
+}
+
+.rootStatic {
+  padding: var(--space-9) 0;
+}
+
+.pinStage {
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+}
+
+.rootStatic .pinStage {
+  align-items: center;
+}
+
+.pinFrame {
+  position: sticky;
+  top: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: var(--space-8);
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  padding-block: var(--space-8);
+}
+
+.rootStatic .pinFrame {
+  position: static;
+  grid-template-columns: 1fr;
+  height: auto;
+  padding-block: 0;
+}
+
+@media (max-width: 900px) {
+  .rootPinned {
+    height: auto;
+  }
+
+  .pinStage {
+    display: block;
+  }
+
+  .pinFrame {
+    position: static;
+    grid-template-columns: 1fr;
+    height: auto;
+    padding-block: var(--space-8);
+  }
+}
+
+/* ---------- Copy column ---------- */
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 30rem;
+}
+
+.rootStatic .copy {
+  max-width: 100%;
+}
+
+@media (max-width: 900px) {
+  .copy {
+    max-width: 100%;
+  }
+}
+
+.eyebrow {
+  font-family: var(--font-inter);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ll-sun);
+}
+
+.heading {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: clamp(1.875rem, 3.5vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--ll-sand-bleached);
+  margin: 0;
+}
+
+.note {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ll-sand-bleached);
+  opacity: 0.78;
+  margin: 0;
+  max-width: 28rem;
+}
+
+/* ---------- Scrub frame ---------- */
+
+.scrubFrame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--ll-palm-bark);
+  user-select: none;
+  box-shadow: var(--elevation-3);
+}
+
+@media (max-width: 900px) {
+  .scrubFrame {
+    aspect-ratio: 16 / 10;
+  }
+}
+
+.layer,
+.afterLayer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.afterLayer {
+  pointer-events: none;
+}
+
+.afterLayerManual {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.afterLayerManual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.handle {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  cursor: ew-resize;
+  z-index: 2;
+}
+
+.handle::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 4px;
+  height: 100%;
+  background: var(--ll-sand-bleached);
+  border: 0;
+  cursor: ew-resize;
+}
+
+.handle::-moz-range-thumb {
+  width: 4px;
+  height: 100%;
+  background: var(--ll-sand-bleached);
+  border: 0;
+  cursor: ew-resize;
+}
+
+.labels {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: var(--space-3);
+  pointer-events: none;
+}
+
+.labelA,
+.labelB {
+  font-family: var(--font-inter);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: var(--ll-palm-bark);
+  color: var(--ll-sand-bleached);
+  padding: 4px 12px;
+  border-radius: 999px;
+  opacity: 0.95;
+}
+
+/* ---------- Static pair (reduced motion) ---------- */
+
+.staticPair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  height: 100%;
+}
+
+@media (max-width: 700px) {
+  .staticPair {
+    grid-template-columns: 1fr;
+  }
+}
+
+.staticFig {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  height: 100%;
+}
+
+.staticFig img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+
+.staticFig figcaption {
+  font-family: var(--font-inter);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ll-sand-bleached);
+  opacity: 0.7;
+}
+
+/* ---------- Caption ---------- */
+
+.caption {
+  grid-column: 1 / -1;
+  margin: var(--space-5) auto 0;
+  max-width: 40rem;
+  text-align: center;
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  color: var(--ll-sand-bleached);
+  opacity: 0.78;
+  line-height: 1.55;
+}

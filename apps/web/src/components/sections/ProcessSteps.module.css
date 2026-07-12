@@ -1,0 +1,119 @@
+/* ============================================================
+ * ProcessSteps — 4 numbered steps horizontal desktop,
+ * vertical mobile. Each step: large number + eyebrow + title
+ * + 2-line description. Clays the numerals, palms the title.
+ * ============================================================ */
+
+.root {
+  background: var(--ll-sand-bleached);
+  padding-block: var(--space-10);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 42rem;
+  margin-bottom: var(--space-8);
+}
+
+.headerEyebrow {
+  color: var(--ll-clay);
+}
+
+.headerHeading {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  color: var(--ll-palm-bark);
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+  position: relative;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+}
+
+/* Faint connector line on desktop */
+.grid::before {
+  content: "";
+  position: absolute;
+  top: 36px;
+  left: 56px;
+  right: 56px;
+  height: 1px;
+  background: var(--ll-clay);
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .grid::before {
+    display: none;
+  }
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  position: relative;
+}
+
+.num {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: 3rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ll-clay);
+  width: 72px;
+  height: 72px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ll-cream);
+  border: 1px solid var(--ll-clay);
+  border-radius: 50%;
+  position: relative;
+  z-index: 1;
+}
+
+.label {
+  font-family: var(--font-inter);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--ll-clay);
+  margin: 0;
+}
+
+.title {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.2;
+  color: var(--ll-palm-bark);
+  margin: 0;
+}
+
+.body {
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0;
+}

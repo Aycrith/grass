@@ -1,0 +1,40 @@
+/* ============================================================
+ * Eyebrow — Mission 1
+ *
+ * Tracked label used above section openers, headers, and as a
+ * visual "section number" motif (01 — Services).
+ * ============================================================ */
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-inter);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ll-clay);
+  line-height: 1;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ll-clay);
+  flex-shrink: 0;
+}
+
+.dark {
+  color: var(--ll-sand-bleached);
+}
+
+.dark .dot {
+  background: var(--ll-sand);
+}
+
+.lg {
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+}

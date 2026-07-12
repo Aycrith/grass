@@ -1,0 +1,55 @@
+/* ============================================================
+ * FinalCTABanner — Mission 1
+ *
+ * Full-bleed palm-shadow band with sand-bleached text and a
+ * single sun CTA. Last section, no scroll-after, no parallax.
+ * ============================================================ */
+
+.root {
+  background: var(--ll-palm-shadow);
+  color: var(--ll-sand-bleached);
+}
+
+.inner {
+  padding-block: var(--space-7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-3);
+  max-width: 36rem;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  font-family: var(--font-inter);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ll-sun);
+}
+
+.headline {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--ll-sand-bleached);
+  margin: 0;
+}
+
+.micro {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ll-sand-bleached);
+  opacity: 0.85;
+  margin: 0;
+  max-width: 32rem;
+}
+
+.actions {
+  margin-top: var(--space-3);
+}

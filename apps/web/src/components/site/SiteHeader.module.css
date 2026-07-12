@@ -1,0 +1,283 @@
+/* ============================================================
+ * SiteHeader — Mission 1
+ *
+ * Sticky header. Transparent over hero; gains a sand-bleached
+ * backdrop + shadow after 80px of scroll. Mobile drawer is a
+ * Radix Dialog triggered by a hamburger button. Active route
+ * gets a 1px underline that slides to the next item on click.
+ * ============================================================ */
+
+.root {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background-color var(--motion-duration-base) var(--motion-easing-default),
+    border-color var(--motion-duration-base) var(--motion-easing-default), box-shadow
+    var(--motion-duration-base) var(--motion-easing-default);
+}
+
+.scrolled {
+  background: color-mix(in srgb, var(--ll-shell) 88%, transparent);
+  backdrop-filter: saturate(140%) blur(10px);
+  -webkit-backdrop-filter: saturate(140%) blur(10px);
+  border-bottom-color: var(--color-border);
+  box-shadow: var(--elevation-1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scrolled {
+    backdrop-filter: none;
+  }
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: var(--space-4);
+  gap: var(--space-6);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-inter);
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+  color: var(--ll-palm-shadow);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.brandMark {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+/* ---------- Desktop nav ---------- */
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.navList {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navLink {
+  position: relative;
+  display: inline-block;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--ll-palm-bark);
+  text-decoration: none;
+  transition: color var(--motion-duration-fast) var(--motion-easing-default), background-color
+    var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.navLink:hover {
+  color: var(--ll-palm-shadow);
+  background: var(--ll-cream);
+  text-decoration: none;
+}
+
+.navLink[data-active="true"] {
+  color: var(--ll-palm-shadow);
+  font-weight: 600;
+}
+
+.navLink[data-active="true"]::after {
+  content: "";
+  position: absolute;
+  left: var(--space-3);
+  right: var(--space-3);
+  bottom: 4px;
+  height: 2px;
+  background: var(--ll-clay);
+  border-radius: 1px;
+}
+
+/* ---------- CTA ---------- */
+
+.cta {
+  margin-left: var(--space-3);
+}
+
+/* ---------- Hamburger (mobile only) ---------- */
+
+.hamburger {
+  display: none;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  color: var(--ll-palm-bark);
+  cursor: pointer;
+  transition: background-color var(--motion-duration-fast) var(--motion-easing-default),
+    border-color var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.hamburger:hover {
+  background: var(--ll-cream);
+  border-color: var(--color-border);
+}
+
+/* ---------- Drawer (Radix Dialog) ---------- */
+
+.dialogOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 31, 27, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 60;
+  animation: overlayIn var(--motion-duration-base) var(--motion-easing-default);
+}
+
+@keyframes overlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.dialogContent {
+  position: fixed;
+  inset: 0;
+  background: var(--ll-shell);
+  z-index: 61;
+  padding: var(--space-7) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  animation: drawerIn var(--motion-duration-slow) var(--motion-easing-default);
+  overflow-y: auto;
+}
+
+@keyframes drawerIn {
+  from {
+    transform: translateY(-12px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.dialogHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dialogTitle {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--ll-palm-shadow);
+  margin: 0;
+}
+
+.dialogClose {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ll-palm-bark);
+  cursor: pointer;
+}
+
+.dialogClose:hover {
+  background: var(--ll-cream);
+}
+
+.dialogNav {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: var(--space-1);
+}
+
+.dialogLink {
+  display: block;
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--ll-palm-bark);
+  text-decoration: none;
+}
+
+.dialogLink:hover {
+  background: var(--ll-cream);
+  text-decoration: none;
+}
+
+.dialogLink[data-active="true"] {
+  background: var(--ll-sand-bleached);
+  color: var(--ll-palm-shadow);
+  font-weight: 600;
+}
+
+.dialogFooter {
+  margin-top: auto;
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+  font-size: 0.85rem;
+  color: var(--gray-700);
+  line-height: 1.5;
+  font-family: var(--font-inter);
+}
+
+.dialogFooter p {
+  margin: 0;
+}
+
+.dialogFooter a {
+  color: var(--ll-palm-shadow);
+}
+
+/* Spacer between phone/email block and postal address block. */
+.dialogFooterGap {
+  margin-top: var(--space-3);
+}
+
+@media (max-width: 900px) {
+  .navList,
+  .nav .cta {
+    display: none;
+  }
+  .hamburger {
+    display: inline-flex;
+  }
+  .inner {
+    padding-block: var(--space-3);
+  }
+}

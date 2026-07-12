@@ -1,0 +1,176 @@
+/* ============================================================
+ * OperatorStrip — Mission 1 first-person "Hi, I'm the guy"
+ * block. Sits between hero and service bento on the homepage.
+ *
+ * 3-col on desktop: portrait | bio | equipment grid (2x2).
+ * Stacks on mobile with portrait at top.
+ *
+ * Image: SVG placeholder /operator/portrait.svg. Steward swaps
+ * in real .webp at the same path when portrait is shot.
+ * ============================================================ */
+
+.root {
+  background: var(--ll-shell);
+  padding-block: var(--space-10);
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-8);
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: var(--space-7);
+  }
+}
+
+/* ---------- Portrait ---------- */
+
+.portrait {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--elevation-2);
+  background: var(--ll-sand-bleached);
+}
+
+.portraitInner {
+  position: absolute;
+  inset: -6% 0;
+  width: 100%;
+  height: 112%;
+}
+
+.portraitInner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ---------- Bio ---------- */
+
+.bio {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 36rem;
+}
+
+.bioEyebrow {
+  color: var(--ll-clay);
+}
+
+.bioHeading {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--ll-palm-bark);
+  margin: 0;
+}
+
+.bioHeading em {
+  font-style: normal;
+  color: var(--ll-clay);
+}
+
+.bioBody {
+  font-family: var(--font-inter);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--ll-palm-bark);
+  opacity: 0.9;
+  margin: 0;
+}
+
+.bioMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-inter);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ll-clay);
+  font-weight: 600;
+}
+
+.bioMeta::before {
+  content: "";
+  width: 28px;
+  height: 2px;
+  background: var(--ll-clay);
+  border-radius: 1px;
+}
+
+/* ---------- Equipment ---------- */
+
+.equipment {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.equipmentTitle {
+  font-family: var(--font-inter);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--ll-palm-shadow);
+  margin: 0;
+}
+
+.equipmentGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.equipmentTile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  background: var(--ll-sand-bleached);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+}
+
+.equipmentImage {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--ll-shell);
+}
+
+.equipmentImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.equipmentName {
+  font-family: var(--font-inter);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--ll-palm-bark);
+  margin: 0;
+}
+
+.equipmentUse {
+  font-family: var(--font-inter);
+  font-size: 0.8rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.7;
+  margin: 0;
+}

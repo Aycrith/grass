@@ -1,0 +1,1 @@
+export { PinnedBeforeAfter } from './PinnedBeforeAfter';

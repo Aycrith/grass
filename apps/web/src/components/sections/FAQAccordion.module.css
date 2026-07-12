@@ -1,0 +1,47 @@
+/* ============================================================
+ * FAQAccordion — Mission 1
+ *
+ * Centered header, then a wide hairline-divided Radix accordion.
+ * The accordion component itself manages its own item/trigger
+ * styling — this file only owns the section-level header layout.
+ * ============================================================ */
+
+.root {
+  /* Section vertical rhythm supplied by <Section rhythm="loose">. */
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+  max-width: 40rem;
+}
+
+.headerEyebrow {
+  /* eyebrow styles owned by the component */
+}
+
+.headerHeading {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 700;
+  color: var(--ll-palm-shadow);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: var(--space-1) 0 var(--space-3);
+}
+
+.headerSub {
+  font-family: var(--font-inter);
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0;
+}
+
+.accordion {
+  max-width: 56rem;
+}

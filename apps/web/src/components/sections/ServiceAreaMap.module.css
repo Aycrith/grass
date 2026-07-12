@@ -1,0 +1,219 @@
+/* ============================================================
+ * ServiceAreaMap — Mission 1 service-area illustration.
+ *
+ * Schematic Pinellas peninsula outline (intentionally abstract
+ * — this is not a survey-grade map) with 6 ZIP pins. Each pin
+ * links to `/areas/[zip]`. Hover/focus highlights the matching
+ * ZIP in the side rail.
+ * ============================================================ */
+
+.root {
+  background: var(--ll-palm-bark);
+  color: var(--ll-sand-bleached);
+  padding-block: var(--space-10);
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 1.2fr);
+  gap: var(--space-8);
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 32rem;
+}
+
+.headerEyebrow {
+  color: var(--ll-sand);
+}
+
+.headerHeading {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  color: var(--ll-sand-bleached);
+  margin: 0;
+}
+
+.headerSub {
+  font-family: var(--font-inter);
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--ll-sand-bleached);
+  opacity: 0.85;
+  margin: 0;
+}
+
+/* ---------- SVG map ---------- */
+
+.mapWrap {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: color-mix(in srgb, var(--ll-palm-shadow) 40%, var(--ll-palm-bark));
+  border: 1px solid color-mix(in srgb, var(--ll-sand) 25%, transparent);
+  padding: var(--space-4);
+  aspect-ratio: 4 / 5;
+}
+
+/* ---------- SVG paint tokens ----------
+   The inner SVG uses semantic classes for fills and strokes so
+   brand updates land in one place. */
+
+.water {
+  fill: var(--ll-gulf);
+  fill-opacity: 0.4;
+}
+
+.peninsula {
+  fill: var(--ll-sand);
+  fill-opacity: 0.85;
+}
+
+.label {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-style: italic;
+  fill: var(--ll-sand-bleached);
+}
+
+.labelPrimary {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-style: italic;
+  fill: var(--ll-sand-bleached);
+  font-size: 32px;
+  fill-opacity: 0.7;
+  text-anchor: middle;
+}
+
+.labelSecondary {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-style: italic;
+  fill: var(--ll-sand-bleached);
+  font-size: 28px;
+  fill-opacity: 0.55;
+  text-anchor: middle;
+}
+
+.gridLine {
+  stroke: var(--ll-sand-bleached);
+  stroke-opacity: 0.1;
+  stroke-width: 1;
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.pin {
+  cursor: pointer;
+  fill: var(--ll-clay);
+  stroke: var(--ll-sand-bleached);
+  stroke-width: 2;
+  transition: fill var(--motion-duration-base) var(--motion-easing-default), r
+    var(--motion-duration-base) var(--motion-easing-default);
+}
+
+.pin:hover,
+.pin:focus {
+  fill: var(--ll-sun);
+  outline: none;
+}
+
+/* Whole-pin group hover: rings + dot scale up slightly when the
+   user hovers anywhere on the ZIP pin. Origin is the pin center
+   so the ring grows around it symmetrically. */
+.pinGroup {
+  transform-origin: center;
+  transform-box: fill-box;
+  transition: transform var(--motion-duration-base) var(--motion-easing-default);
+  cursor: pointer;
+}
+
+.pinGroup:hover,
+.pinGroup:focus-within {
+  transform: scale(1.08);
+}
+
+.pinRing {
+  fill: none;
+  stroke: var(--ll-sand-bleached);
+  stroke-opacity: 0.4;
+  stroke-width: 1;
+  transition: stroke-opacity var(--motion-duration-base) var(--motion-easing-default);
+}
+
+.pinGroup:hover .pinRing {
+  stroke-opacity: 0.85;
+}
+
+.pinLabel {
+  font-family: var(--font-inter);
+  font-size: 14px;
+  font-weight: 700;
+  fill: var(--ll-sand-bleached);
+  pointer-events: none;
+  text-anchor: middle;
+}
+
+/* ---------- Side rail ---------- */
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.railTitle {
+  font-family: var(--font-inter);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--ll-sand);
+  margin: 0 0 var(--space-2);
+}
+
+.railItem {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  color: var(--ll-sand-bleached);
+  text-decoration: none;
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--ll-sand) 15%, transparent);
+  transition: color var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.railItem:hover,
+.railItem:focus {
+  color: var(--ll-sun);
+  outline: none;
+}
+
+.railItemZip {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  width: 56px;
+  flex-shrink: 0;
+}
+
+.railItemName {
+  opacity: 0.85;
+}
