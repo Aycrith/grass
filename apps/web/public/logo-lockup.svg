@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Largo Lawn — horizontal lockup (mark + wordmark + tagline).
+  Use in: header, business-card header, email signature.
+  Aspect 320x80; flex into any horizontal slot.
+  Wordmark: Inter Bold 32px. Tagline: Inter Medium 11px tracked +2.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" role="img" aria-label="Largo Lawn">
+  <title>Largo Lawn</title>
+  <desc>Three-blade grass mark + wordmark + tagline.</desc>
+
+  <!-- Mark, scaled to 60x60 starting at y=10 -->
+  <g transform="translate(8 10) scale(0.6)" fill="#1F4E2C">
+    <path d="M 50 78 Q 50 25 50 8 Q 50 25 50 78 Z" />
+    <path d="M 32 78 Q 28 35 22 18 Q 30 38 38 78 Z" />
+    <path d="M 68 78 Q 72 35 78 18 Q 70 38 62 78 Z" />
+    <rect x="14" y="76" width="72" height="4" rx="2" />
+  </g>
+
+  <!-- Wordmark -->
+  <text x="80" y="46"
+        font-family="Inter, -apple-system, sans-serif"
+        font-size="32" font-weight="700"
+        fill="#1F4E2C" letter-spacing="-0.5">Largo Lawn</text>
+
+  <!-- Tagline -->
+  <text x="80" y="64"
+        font-family="Inter, -apple-system, sans-serif"
+        font-size="9" font-weight="600"
+        fill="#1F4E2C" opacity="0.65"
+        letter-spacing="2">YOUR NEIGHBOR'S LAWN MOWER</text>
+</svg>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Largo Lawn — favicon. Three grass blades + soil line, brand green.
+  Next.js converts /icon.svg into the link rel="icon" tag.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Largo Lawn">
+  <title>Largo Lawn</title>
+  <g fill="#1F4E2C">
+    <!-- Center blade -->
+    <path d="M 32 60 Q 32 20 32 4 Q 32 20 32 60 Z" />
+    <!-- Left blade -->
+    <path d="M 18 60 Q 16 30 12 12 Q 18 30 22 60 Z" />
+    <!-- Right blade -->
+    <path d="M 46 60 Q 48 30 52 12 Q 46 30 42 60 Z" />
+    <!-- Soil line -->
+    <rect x="6" y="58" width="52" height="3" rx="1.5" />
+  </g>
+</svg>

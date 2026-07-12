@@ -1,0 +1,86 @@
+/* /gbp — page-level styles.
+ *
+ * Owns hero h1/lead, the "Why Google visitors choose us" feature
+ * list, the back-link row, and the two-button row in the quote CTA.
+ */
+
+.root {
+  /* nothing page-specific; uses Section/Container from @/components/site */
+}
+
+.heroTitle {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: var(--space-3) 0 var(--space-4);
+  color: var(--ll-palm-bark);
+}
+
+.heroLead {
+  font-family: var(--font-inter);
+  font-size: 1.15rem;
+  line-height: 1.55;
+  max-width: 42rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0 0 var(--space-6);
+}
+
+.sectionTitle {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 700;
+  margin: var(--space-3) 0 var(--space-4);
+  color: var(--ll-palm-bark);
+}
+
+.bodyCopy {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--ll-palm-bark);
+  opacity: 0.9;
+  max-width: 42rem;
+  margin: 0 0 var(--space-4);
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-7);
+}
+
+.reasonsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--space-2);
+  max-width: 42rem;
+}
+
+.reasonsItem {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  color: var(--ll-palm-bark);
+  background: var(--ll-shell);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+}
+
+.backLink {
+  font-family: var(--font-inter);
+  font-size: 0.9rem;
+  color: var(--ll-palm-shadow);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}

@@ -1,0 +1,102 @@
+/* /pricing — page-level styles.
+ *
+ * Per-page module owning the hero h1, rate-card grid, tax-note
+ * paragraph, and CTA banner heading scale.
+ */
+
+.heroTitle {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(2.5rem, 5vw, 4.25rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: var(--space-3) 0 var(--space-4);
+  color: var(--ll-palm-bark);
+}
+
+.heroTagline {
+  font-family: var(--font-inter);
+  font-size: 1.15rem;
+  line-height: 1.55;
+  max-width: 38rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0;
+}
+
+.sectionTitle {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 700;
+  margin: var(--space-3) 0 var(--space-5);
+  color: var(--ll-palm-bark);
+}
+
+.sectionTitleTight {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 700;
+  margin: var(--space-3) 0 var(--space-4);
+  color: var(--ll-palm-bark);
+}
+
+.taxBody {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--ll-palm-bark);
+  opacity: 0.9;
+  max-width: 44rem;
+  margin: 0;
+}
+
+.ctaTitle {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 700;
+  margin: 0;
+  color: var(--ll-palm-bark);
+}
+
+.ctaBanner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+/* Rate card: 9 rows of {label, value}. */
+
+.rateCard {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  background: var(--ll-shell);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.rateRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.rateRow:last-child {
+  border-bottom: none;
+}
+
+.rateLabel {
+  font-family: var(--font-inter);
+  color: var(--ll-palm-bark);
+}
+
+.rateValue {
+  font-family: var(--font-inter);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--ll-palm-shadow);
+}

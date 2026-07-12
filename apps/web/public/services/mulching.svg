@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Mulching service illustration.
+  Composition: cross-section of a mulched garden bed. Bark layer + plant
+  + curb edge. Earth tones; cozy.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img"
+     aria-label="Mulching — fresh bark in a garden bed">
+  <title>Mulching</title>
+
+  <defs>
+    <linearGradient id="bed" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3A2614"/>
+      <stop offset="1" stop-color="#1F1108"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky band -->
+  <rect width="1600" height="320" fill="#F4E8D0"/>
+  <rect width="1600" height="320" fill="#E8B65A" opacity="0.18"/>
+
+  <!-- Lawn strip across the top of the bed -->
+  <rect y="320" width="1600" height="140" fill="#2D5A3D"/>
+  <g opacity="0.18" stroke="#FAF6F0" stroke-width="3" fill="none">
+    <path d="M 0 360 L 1600 355"/>
+    <path d="M 0 410 L 1600 405"/>
+  </g>
+
+  <!-- Bed body (mulch) -->
+  <rect y="460" width="1600" height="440" fill="url(#bed)"/>
+
+  <!-- Bark texture: scattered chips -->
+  <g fill="#5C3A1E" opacity="0.85">
+    <ellipse cx="120" cy="540" rx="14" ry="6" transform="rotate(20 120 540)"/>
+    <ellipse cx="320" cy="580" rx="11" ry="5" transform="rotate(-30 320 580)"/>
+    <ellipse cx="520" cy="610" rx="16" ry="6" transform="rotate(40 520 610)"/>
+    <ellipse cx="780" cy="650" rx="13" ry="5" transform="rotate(-10 780 650)"/>
+    <ellipse cx="980" cy="690" rx="15" ry="6" transform="rotate(25 980 690)"/>
+    <ellipse cx="1220" cy="620" rx="12" ry="5" transform="rotate(-40 1220 620)"/>
+    <ellipse cx="1440" cy="570" rx="14" ry="6" transform="rotate(15 1440 570)"/>
+  </g>
+  <g fill="#8B4A1E" opacity="0.7">
+    <ellipse cx="220" cy="720" rx="14" ry="6" transform="rotate(-15 220 720)"/>
+    <ellipse cx="450" cy="780" rx="13" ry="5" transform="rotate(35 450 780)"/>
+    <ellipse cx="700" cy="800" rx="16" ry="6" transform="rotate(-25 700 800)"/>
+    <ellipse cx="900" cy="760" rx="14" ry="5" transform="rotate(15 900 760)"/>
+    <ellipse cx="1150" cy="820" rx="13" ry="5" transform="rotate(-30 1150 820)"/>
+    <ellipse cx="1380" cy="740" rx="15" ry="6" transform="rotate(20 1380 740)"/>
+  </g>
+
+  <!-- Curb edge between lawn and bed -->
+  <rect y="455" width="1600" height="6" fill="#FAF6F0"/>
+  <rect y="461" width="1600" height="6" fill="#1A1F1B" opacity="0.35"/>
+
+  <!-- Featured plant centerpiece -->
+  <g transform="translate(740 100)">
+    <!-- pot -->
+    <rect x="20" y="320" width="200" height="60" rx="6" fill="#B5651D"/>
+    <rect x="20" y="310" width="200" height="14" rx="3" fill="#8B4A1E"/>
+    <!-- foliage cluster -->
+    <ellipse cx="120" cy="280" rx="120" ry="36" fill="#3A6B45"/>
+    <ellipse cx="120" cy="240" rx="100" ry="80" fill="#2D5A3D"/>
+    <ellipse cx="60" cy="180" rx="44" ry="80" fill="#3A6B45"/>
+    <ellipse cx="180" cy="180" rx="44" ry="80" fill="#3A6B45"/>
+    <ellipse cx="120" cy="120" rx="44" ry="84" fill="#2D5A3D"/>
+    <!-- highlight leaves -->
+    <ellipse cx="80" cy="220" rx="20" ry="50" fill="#5C8A4E" opacity="0.7"/>
+    <ellipse cx="170" cy="200" rx="20" ry="50" fill="#5C8A4E" opacity="0.7"/>
+  </g>
+
+  <!-- Smaller plant, off-center right -->
+  <g transform="translate(1180 380)">
+    <rect x="0" y="60" width="80" height="20" rx="3" fill="#B5651D"/>
+    <ellipse cx="40" cy="40" rx="48" ry="32" fill="#3A6B45"/>
+    <ellipse cx="40" cy="20" rx="32" ry="40" fill="#2D5A3D"/>
+  </g>
+
+  <!-- Smaller plant, left -->
+  <g transform="translate(260 400)">
+    <rect x="0" y="40" width="60" height="18" rx="3" fill="#B5651D"/>
+    <ellipse cx="30" cy="20" rx="36" ry="28" fill="#3A6B45"/>
+    <ellipse cx="30" cy="0" rx="22" ry="34" fill="#2D5A3D"/>
+  </g>
+
+  <!-- Eyebrow / label -->
+  <g font-family="Inter, system-ui, sans-serif">
+    <text x="80" y="100" font-size="16" font-weight="700"
+          fill="#B5651D" letter-spacing="3">03 — MULCHING</text>
+    <text x="80" y="170" font-family="'Fraunces', Georgia, serif"
+          font-size="64" font-weight="700"
+          fill="#1A1F1B" letter-spacing="-2">A fresh bed</text>
+    <text x="80" y="232" font-family="'Fraunces', Georgia, serif"
+          font-size="64" font-weight="700"
+          fill="#1A1F1B" letter-spacing="-2">every visit.</text>
+    <text x="80" y="290" font-size="18" font-weight="500"
+          fill="#1A1F1B" opacity="0.72">
+      Bulk delivery + install. Cypress, melaleuca, or pine — your call.
+    </text>
+  </g>
+</svg>

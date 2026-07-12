@@ -1,0 +1,200 @@
+/* ============================================================
+ * QuoteCalculator — Mission 1
+ *
+ * Two-column layout on desktop (controls left / estimate summary
+ * right), single-column on mobile. Controls use design-system
+ * <Input> + <Pill> + <Button>; estimate summary card uses the
+ * design-system sand-bleached accent.
+ *
+ * The estimate card is sticky on desktop so the user sees the
+ * running total while filling in their details.
+ * ============================================================ */
+
+.root {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+
+@media (min-width: 900px) {
+  .root {
+    grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
+    gap: var(--space-6);
+    align-items: start;
+  }
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.controlGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.controlGroupHeading {
+  font-family: var(--font-inter);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ll-palm-bark);
+  opacity: 0.7;
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+
+@media (min-width: 600px) {
+  .fieldRow {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.addons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.addonButton {
+  font-family: var(--font-inter);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ll-palm-bark);
+  background: var(--ll-shell);
+  border: 1px solid var(--ll-palm-shadow);
+  border-radius: var(--radius-pill);
+  padding: 0.55rem 1rem;
+  cursor: pointer;
+  transition: background-color var(--motion-duration-fast) var(--motion-easing-default), color
+    var(--motion-duration-fast) var(--motion-easing-default), border-color
+    var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.addonButton:hover {
+  border-color: var(--ll-sun);
+}
+
+.addonButtonActive {
+  background: var(--ll-palm-shadow);
+  color: var(--ll-sand-bleached);
+  border-color: var(--ll-palm-shadow);
+}
+
+.summary {
+  background: var(--ll-sand-bleached);
+  border: 1px solid var(--ll-sand);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  position: sticky;
+  top: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.summaryEyebrow {
+  font-family: var(--font-inter);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ll-palm-bark);
+  opacity: 0.7;
+}
+
+.summaryValue {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(2.5rem, 6vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ll-palm-shadow);
+  letter-spacing: -0.02em;
+}
+
+.summaryCadence {
+  font-family: var(--font-inter);
+  font-size: 0.85rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  line-height: 1.45;
+}
+
+.summaryDivider {
+  height: 1px;
+  background: var(--ll-sand);
+  opacity: 0.5;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.formActions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.formNote {
+  font-family: var(--font-inter);
+  font-size: 0.8rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.7;
+  line-height: 1.5;
+}
+
+.formError {
+  font-family: var(--font-inter);
+  font-size: 0.85rem;
+  color: var(--color-error);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.success {
+  background: var(--ll-shell);
+  border: 1px solid var(--ll-sage-muted);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  text-align: center;
+}
+
+.successTitle {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--ll-palm-shadow);
+  margin: 0;
+}
+
+.successBody {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--ll-palm-bark);
+  opacity: 0.9;
+  margin: 0;
+}
+
+.successMeta {
+  font-family: var(--font-inter);
+  font-size: 0.85rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.7;
+  margin: var(--space-2) 0 0;
+}

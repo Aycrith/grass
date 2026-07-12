@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Mowing service illustration. EarthSlice editorial.
+  Composition: mower mid-cut, striped lawn stretching to horizon,
+  golden-hour sky. Pivotal image — appears on homepage hero bento
+  as the featured card.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img"
+     aria-label="Mowing — weekly lawn care">
+  <title>Mowing</title>
+
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E8B65A" stop-opacity="0.6"/>
+      <stop offset="0.55" stop-color="#F4E8D0"/>
+      <stop offset="1" stop-color="#FAF6F0"/>
+    </linearGradient>
+    <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5C8A4E"/>
+      <stop offset="1" stop-color="#2D5A3D"/>
+    </linearGradient>
+    <radialGradient id="haze" cx="0.78" cy="0.58" r="0.5">
+      <stop offset="0" stop-color="#F4E8D0" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#F4E8D0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="1600" height="600" fill="url(#sky)"/>
+
+  <!-- Distant hedge row -->
+  <rect y="500" width="1600" height="60" fill="#3A6B45" opacity="0.85"/>
+  <g fill="#3A6B45">
+    <circle cx="120" cy="500" r="42"/>
+    <circle cx="260" cy="500" r="48"/>
+    <circle cx="400" cy="500" r="44"/>
+    <circle cx="540" cy="500" r="50"/>
+    <circle cx="680" cy="500" r="46"/>
+    <circle cx="820" cy="500" r="48"/>
+    <circle cx="960" cy="500" r="44"/>
+    <circle cx="1100" cy="500" r="50"/>
+    <circle cx="1240" cy="500" r="46"/>
+    <circle cx="1380" cy="500" r="48"/>
+    <circle cx="1520" cy="500" r="44"/>
+  </g>
+
+  <!-- Lawn -->
+  <rect y="560" width="1600" height="340" fill="url(#grass)"/>
+
+  <!-- Mown stripes (perspective: tighter at bottom) -->
+  <g opacity="0.22" stroke="#FAF6F0" stroke-width="3" fill="none">
+    <path d="M 0 600 L 1600 595"/>
+    <path d="M 0 640 L 1600 632"/>
+    <path d="M 0 680 L 1600 670"/>
+    <path d="M 0 720 L 1600 706"/>
+    <path d="M 0 760 L 1600 740"/>
+    <path d="M 0 800 L 1600 778"/>
+    <path d="M 0 840 L 1600 816"/>
+    <path d="M 0 880 L 1600 854"/>
+  </g>
+
+  <!-- Sun glow -->
+  <circle cx="1240" cy="380" r="220" fill="#F6C673" opacity="0.7"/>
+  <circle cx="1240" cy="380" r="80" fill="#E8B65A"/>
+
+  <!-- Haze overlay -->
+  <rect width="1600" height="900" fill="url(#haze)"/>
+
+  <!-- Mower silhouette, mid-cut -->
+  <g transform="translate(640 580)" fill="#1A1F1B">
+    <!-- engine top -->
+    <rect x="80" y="0" width="220" height="100" rx="16"/>
+    <!-- grass catcher -->
+    <rect x="160" y="-40" width="160" height="40" rx="8" fill="#2D5A3D"/>
+    <!-- body / deck -->
+    <rect x="0" y="100" width="380" height="120" rx="20"/>
+    <!-- handle upright -->
+    <line x1="120" y1="50" x2="60" y2="-100"
+          stroke="#1A1F1B" stroke-width="14" stroke-linecap="round"/>
+    <line x1="280" y1="50" x2="340" y2="-100"
+          stroke="#1A1F1B" stroke-width="14" stroke-linecap="round"/>
+    <!-- handle grip -->
+    <rect x="40" y="-110" width="60" height="14" rx="7" fill="#B5651D"/>
+    <rect x="320" y="-110" width="60" height="14" rx="7" fill="#B5651D"/>
+    <!-- wheels -->
+    <circle cx="60" cy="240" r="36" fill="#1A1F1B"/>
+    <circle cx="60" cy="240" r="14" fill="#3A2614"/>
+    <circle cx="320" cy="240" r="36" fill="#1A1F1B"/>
+    <circle cx="320" cy="240" r="14" fill="#3A2614"/>
+  </g>
+
+  <!-- Cut grass clippings puff trailing behind mower -->
+  <g fill="#5C8A4E" opacity="0.85">
+    <ellipse cx="980" cy="640" rx="32" ry="6"/>
+    <ellipse cx="1040" cy="660" rx="40" ry="6"/>
+    <ellipse cx="1100" cy="650" rx="32" ry="6"/>
+    <ellipse cx="1140" cy="680" rx="36" ry="6"/>
+    <ellipse cx="1200" cy="670" rx="32" ry="6"/>
+  </g>
+
+  <!-- Eyebrow / label -->
+  <g font-family="Inter, system-ui, sans-serif">
+    <text x="80" y="100" font-size="16" font-weight="700"
+          fill="#B5651D" letter-spacing="3">01 — MOWING</text>
+    <text x="80" y="180" font-family="'Fraunces', Georgia, serif"
+          font-size="76" font-weight="700"
+          fill="#1A1F1B" letter-spacing="-2">Same day,</text>
+    <text x="80" y="252" font-family="'Fraunces', Georgia, serif"
+          font-size="76" font-weight="700"
+          fill="#1A1F1B" letter-spacing="-2">same route.</text>
+    <text x="80" y="320" font-size="20" font-weight="500"
+          fill="#1A1F1B" opacity="0.75">
+      Weekly, biweekly, or one-time. $48 floor.
+    </text>
+    <text x="80" y="350" font-size="20" font-weight="500"
+          fill="#1A1F1B" opacity="0.75">
+      I show up. I mow clean. I blow off the hard surfaces.
+    </text>
+  </g>
+</svg>

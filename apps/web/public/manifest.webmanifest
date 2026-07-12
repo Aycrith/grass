@@ -1,0 +1,47 @@
+{
+  "name": "Largo Lawn — Lawn Care in Largo, FL",
+  "short_name": "Largo Lawn",
+  "description": "Local, solo-operator lawn care in Largo and the five adjacent Pinellas ZIPs. Mowing, edging, mulching, hedge trimming, hurricane prep, seasonal cleanup.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FAF6F0",
+  "theme_color": "#2D5A3D",
+  "lang": "en-US",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "180x180",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "lifestyle", "utilities"],
+  "shortcuts": [
+    {
+      "name": "Free Quote",
+      "short_name": "Quote",
+      "url": "/quote",
+      "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "Service Area",
+      "short_name": "Areas",
+      "url": "/areas",
+      "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "Contact",
+      "short_name": "Contact",
+      "url": "/contact",
+      "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    }
+  ]
+}

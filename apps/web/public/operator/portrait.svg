@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Operator portrait placeholder. EarthSlice editorial.
+  Composition: warm sand background with sun-glow halo, abstracted
+  shoulders (work shirt, no AI face), wide-brim sun hat, gloved hand
+  resting on the mower handle. Brand-equipment hint.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img"
+     aria-label="Operator portrait placeholder — real photo coming soon">
+  <title>Operator portrait</title>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F4E8D0"/>
+      <stop offset="0.6" stop-color="#E8B65A" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#D4A574"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0.5" cy="0.45" r="0.4">
+      <stop offset="0" stop-color="#F6C673" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#F6C673" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Sand background -->
+  <rect width="800" height="1000" fill="url(#bg)"/>
+
+  <!-- Sun halo behind head -->
+  <circle cx="400" cy="450" r="320" fill="url(#halo)"/>
+
+  <!-- Mower handle silhouette in foreground (over the shoulder) -->
+  <g transform="translate(120 760)" fill="#1A1F1B">
+    <rect x="0" y="0" width="40" height="14" rx="7"/>
+    <line x1="20" y1="14" x2="20" y2="200" stroke="#1A1F1B" stroke-width="14"/>
+    <line x1="20" y1="200" x2="60" y2="240" stroke="#1A1F1B" stroke-width="12"/>
+    <rect x="20" y="80" width="120" height="40" rx="10"/>
+    <circle cx="60" cy="220" r="22" fill="#1A1F1B"/>
+  </g>
+
+  <!-- Gloved hand on handle -->
+  <g transform="translate(160 780)">
+    <ellipse cx="40" cy="20" rx="42" ry="28" fill="#C9A37A"/>
+    <!-- glove cuff -->
+    <rect x="0" y="0" width="80" height="22" rx="6" fill="#B5651D"/>
+    <!-- knuckle hint -->
+    <ellipse cx="20" cy="32" rx="6" ry="4" fill="#A88B66"/>
+    <ellipse cx="40" cy="36" rx="6" ry="4" fill="#A88B66"/>
+    <ellipse cx="60" cy="32" rx="6" ry="4" fill="#A88B66"/>
+  </g>
+
+  <!-- Shoulders / work shirt -->
+  <path d="M 100 1000 Q 100 720 400 700 Q 700 720 700 1000 Z" fill="#2D5A3D"/>
+  <!-- collar V -->
+  <polygon points="380,700 400,750 420,700" fill="#1F4E2C"/>
+  <!-- shirt logo (subtle brand mark) -->
+  <g transform="translate(370 770) scale(0.3)" fill="#F4E8D0" opacity="0.85">
+    <path d="M 50 78 Q 50 25 50 8 Q 50 25 50 78 Z"/>
+    <path d="M 32 78 Q 28 35 22 18 Q 30 38 38 78 Z"/>
+    <path d="M 68 78 Q 72 35 78 18 Q 70 38 62 78 Z"/>
+    <rect x="14" y="76" width="72" height="4" rx="2"/>
+  </g>
+  <!-- chest pocket -->
+  <rect x="440" y="780" width="80" height="60" rx="3" fill="#1F4E2C"/>
+  <!-- sun-faded shadow on shirt -->
+  <ellipse cx="400" cy="820" rx="200" ry="40" fill="#1F4E2C" opacity="0.4"/>
+
+  <!-- Neck -->
+  <rect x="360" y="600" width="80" height="100" fill="#C9A37A"/>
+
+  <!-- Head silhouette (no facial features — abstract shape) -->
+  <ellipse cx="400" cy="500" rx="140" ry="170" fill="#C9A37A"/>
+  <!-- shadow under hat brim -->
+  <ellipse cx="400" cy="430" rx="130" ry="40" fill="#A88B66" opacity="0.6"/>
+
+  <!-- Wide-brim sun hat (FL operator characteristic) -->
+  <ellipse cx="400" cy="380" rx="200" ry="40" fill="#5C4A3A"/>
+  <ellipse cx="400" cy="360" rx="120" ry="36" fill="#8B4A1E"/>
+  <ellipse cx="400" cy="350" rx="100" ry="30" fill="#5C4A3A"/>
+  <!-- hat band -->
+  <ellipse cx="400" cy="368" rx="120" ry="6" fill="#B5651D"/>
+  <!-- small mesh eyelets -->
+  <g fill="#3A2D24">
+    <circle cx="370" cy="354" r="2"/>
+    <circle cx="400" cy="348" r="2"/>
+    <circle cx="430" cy="354" r="2"/>
+  </g>
+
+  <!-- Eyebrow band / sun-faded high-tone on cheek -->
+  <ellipse cx="400" cy="520" rx="60" ry="80" fill="#B8946A" opacity="0.5"/>
+
+  <!-- Foreground grass blades at the bottom of the frame -->
+  <g stroke="#1F4E2C" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.85">
+    <path d="M 60 1000 Q 70 920 55 880"/>
+    <path d="M 120 1000 Q 130 930 115 880"/>
+    <path d="M 200 1000 Q 210 940 195 890"/>
+    <path d="M 680 1000 Q 670 920 690 880"/>
+    <path d="M 740 1000 Q 730 930 750 880"/>
+    <path d="M 640 1000 Q 650 940 635 890"/>
+  </g>
+
+  <!-- Subtle "operator · real photo coming soon" marker -->
+  <g font-family="Inter, system-ui, sans-serif" fill="#1A1F1B" opacity="0.55">
+    <text x="40" y="960" font-size="14" letter-spacing="3">OPERATOR · REAL PHOTO COMING SOON</text>
+  </g>
+</svg>

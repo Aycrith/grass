@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hurricane prep illustration. EarthSlice editorial.
+  Composition: storm clouds, wind-bent palm, rain, secure yard items.
+  Dark clay palette — the brand's "hurricane mode" feel.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img"
+     aria-label="Hurricane prep — storm-ready yard">
+  <title>Hurricane prep</title>
+
+  <defs>
+    <linearGradient id="storm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A1F1B"/>
+      <stop offset="0.7" stop-color="#3A4A52"/>
+      <stop offset="1" stop-color="#5C4A3A"/>
+    </linearGradient>
+    <linearGradient id="palm" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2D5A3D"/>
+      <stop offset="1" stop-color="#1F4E2C"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Storm sky -->
+  <rect width="1600" height="900" fill="url(#storm)"/>
+
+  <!-- Heavy rain streaks (wind-driven, slanting right) -->
+  <g stroke="#FAF6F0" stroke-width="2" opacity="0.35">
+    <line x1="100" y1="0" x2="180" y2="120"/>
+    <line x1="280" y1="0" x2="360" y2="120"/>
+    <line x1="460" y1="0" x2="540" y2="120"/>
+    <line x1="640" y1="0" x2="720" y2="120"/>
+    <line x1="820" y1="0" x2="900" y2="120"/>
+    <line x1="1000" y1="0" x2="1080" y2="120"/>
+    <line x1="1180" y1="0" x2="1260" y2="120"/>
+    <line x1="1360" y1="0" x2="1440" y2="120"/>
+
+    <line x1="60" y1="160" x2="140" y2="280"/>
+    <line x1="240" y1="160" x2="320" y2="280"/>
+    <line x1="420" y1="160" x2="500" y2="280"/>
+    <line x1="600" y1="160" x2="680" y2="280"/>
+    <line x1="780" y1="160" x2="860" y2="280"/>
+    <line x1="960" y1="160" x2="1040" y2="280"/>
+    <line x1="1140" y1="160" x2="1220" y2="280"/>
+    <line x1="1320" y1="160" x2="1400" y2="280"/>
+
+    <line x1="120" y1="320" x2="200" y2="440"/>
+    <line x1="300" y1="320" x2="380" y2="440"/>
+    <line x1="480" y1="320" x2="560" y2="440"/>
+    <line x1="660" y1="320" x2="740" y2="440"/>
+    <line x1="840" y1="320" x2="920" y2="440"/>
+    <line x1="1020" y1="320" x2="1100" y2="440"/>
+    <line x1="1200" y1="320" x2="1280" y2="440"/>
+    <line x1="1380" y1="320" x2="1460" y2="440"/>
+  </g>
+
+  <!-- Storm clouds (heavy) -->
+  <g fill="#1A1F1B" opacity="0.85">
+    <ellipse cx="380" cy="140" rx="320" ry="120"/>
+    <ellipse cx="200" cy="160" rx="220" ry="100"/>
+    <ellipse cx="600" cy="180" rx="260" ry="120"/>
+
+    <ellipse cx="1240" cy="180" rx="340" ry="130"/>
+    <ellipse cx="1080" cy="200" rx="240" ry="110"/>
+    <ellipse cx="1440" cy="200" rx="280" ry="120"/>
+  </g>
+  <g fill="#2D2D2D" opacity="0.7">
+    <ellipse cx="380" cy="200" rx="280" ry="80"/>
+    <ellipse cx="1240" cy="240" rx="300" ry="90"/>
+  </g>
+
+  <!-- Wind streak (motion lines across mid-frame) -->
+  <g stroke="#FAF6F0" stroke-width="3" opacity="0.25" fill="none">
+    <path d="M 0 320 Q 800 300 1600 340"/>
+    <path d="M 0 360 Q 800 340 1600 380"/>
+    <path d="M 0 400 Q 800 380 1600 420"/>
+  </g>
+
+  <!-- Ground (lawn, rain-soaked darker green) -->
+  <rect y="700" width="1600" height="200" fill="#1F4E2C"/>
+  <g opacity="0.18" stroke="#5C8A4E" stroke-width="2" fill="none">
+    <path d="M 0 740 L 1600 740"/>
+    <path d="M 0 780 L 1600 778"/>
+    <path d="M 0 820 L 1600 818"/>
+  </g>
+
+  <!-- Wind-bent palm -->
+  <g transform="translate(1100 700)">
+    <!-- trunk bending -->
+    <path d="M 0 0 Q 40 -200 80 -380 Q 100 -460 140 -520"
+          stroke="url(#palm)" stroke-width="20" fill="none" stroke-linecap="round"/>
+    <!-- fronds blown to right -->
+    <g fill="#2D5A3D" transform="translate(160 -520)">
+      <ellipse cx="0" cy="0" rx="180" ry="20" transform="rotate(-10)"/>
+      <ellipse cx="120" cy="-30" rx="160" ry="18" transform="rotate(-20)"/>
+      <ellipse cx="180" cy="20" rx="140" ry="18" transform="rotate(15)"/>
+      <ellipse cx="-40" cy="-30" rx="120" ry="18" transform="rotate(-30)"/>
+      <ellipse cx="-80" cy="20" rx="120" ry="18" transform="rotate(30)"/>
+    </g>
+  </g>
+
+  <!-- Smaller bent palm in background -->
+  <g transform="translate(380 700)" opacity="0.85">
+    <path d="M 0 0 Q 10 -160 30 -240"
+          stroke="#2D5A3D" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <g fill="#2D5A3D" transform="translate(36 -240)">
+      <ellipse cx="0" cy="0" rx="100" ry="14" transform="rotate(-10)"/>
+      <ellipse cx="60" cy="-20" rx="80" ry="14" transform="rotate(-20)"/>
+      <ellipse cx="-60" cy="-20" rx="80" ry="14" transform="rotate(20)"/>
+    </g>
+  </g>
+
+  <!-- Secure trash can / yard item strapped down (right foreground) -->
+  <g transform="translate(1400 800)">
+    <rect x="-30" y="-80" width="60" height="80" rx="4" fill="#1A1F1B"/>
+    <rect x="-26" y="-90" width="52" height="14" rx="3" fill="#5C4A3A"/>
+    <rect x="-40" y="-40" width="80" height="6" fill="#E8B65A" opacity="0.9"/>
+    <rect x="-40" y="-20" width="80" height="6" fill="#E8B65A" opacity="0.9"/>
+  </g>
+
+  <!-- Storm warning bolt (subtle, upper right) -->
+  <g transform="translate(1480 80)" fill="#E8B65A" opacity="0.85">
+    <path d="M 0 0 L -16 30 L 4 30 L -10 60 L 16 24 L -4 24 L 8 0 Z"/>
+  </g>
+
+  <!-- Eyebrow / label -->
+  <g font-family="Inter, system-ui, sans-serif">
+    <text x="80" y="100" font-size="16" font-weight="700"
+          fill="#E8B65A" letter-spacing="3">05 — HURRICANE PREP</text>
+    <text x="80" y="180" font-family="'Fraunces', Georgia, serif"
+          font-size="76" font-weight="700"
+          fill="#FAF6F0" letter-spacing="-2">Storm-ready</text>
+    <text x="80" y="252" font-family="'Fraunces', Georgia, serif"
+          font-size="76" font-weight="700"
+          fill="#FAF6F0" letter-spacing="-2">before it hits.</text>
+    <text x="80" y="320" font-size="20" font-weight="500"
+          fill="#FAF6F0" opacity="0.78">
+      Secure yard items, clear drainage paths,
+    </text>
+    <text x="80" y="350" font-size="20" font-weight="500"
+          fill="#FAF6F0" opacity="0.78">
+      trim back risky growth. Post-storm cleanup same week.
+    </text>
+  </g>
+</svg>

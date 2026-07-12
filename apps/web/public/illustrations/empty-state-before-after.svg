@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  EmptyState — pinned-before/after placeholder (no real customer photos).
+  Side-by-side "before" (overgrown) and "after" (manicured) panels with
+  a divider, hinting at the product without showing real lawns.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" role="img"
+     aria-label="Before and after placeholder">
+  <title>Before / after — no customer photos yet</title>
+
+  <rect width="1200" height="600" fill="#F4E8D0"/>
+
+  <!-- BEFORE panel -->
+  <g>
+    <rect x="40" y="40" width="540" height="520" fill="#8FA89B" rx="12"/>
+    <!-- overgrown sky -->
+    <rect x="40" y="40" width="540" height="200" fill="#A8A8A0" rx="12"/>
+    <text x="80" y="100" font-family="Inter, system-ui, sans-serif"
+          font-size="14" font-weight="700" fill="#1A1F1B" letter-spacing="3" opacity="0.7">BEFORE</text>
+
+    <!-- tall weeds -->
+    <g stroke="#2D5A3D" stroke-width="3" fill="none" stroke-linecap="round">
+      <path d="M 80 540 Q 75 380 78 240"/>
+      <path d="M 120 540 Q 122 360 124 200"/>
+      <path d="M 160 540 Q 156 380 158 220"/>
+      <path d="M 200 540 Q 205 360 202 180"/>
+      <path d="M 240 540 Q 236 400 240 240"/>
+      <path d="M 280 540 Q 285 360 282 200"/>
+      <path d="M 320 540 Q 318 400 320 220"/>
+      <path d="M 360 540 Q 365 380 362 240"/>
+      <path d="M 400 540 Q 396 360 400 220"/>
+      <path d="M 440 540 Q 444 400 442 240"/>
+      <path d="M 480 540 Q 478 380 480 200"/>
+      <path d="M 520 540 Q 524 400 522 220"/>
+    </g>
+    <!-- seed heads -->
+    <g fill="#5C4A3A">
+      <ellipse cx="78" cy="240" rx="6" ry="10"/>
+      <ellipse cx="124" cy="200" rx="6" ry="10"/>
+      <ellipse cx="158" cy="220" rx="6" ry="10"/>
+      <ellipse cx="202" cy="180" rx="6" ry="10"/>
+      <ellipse cx="240" cy="240" rx="6" ry="10"/>
+      <ellipse cx="282" cy="200" rx="6" ry="10"/>
+      <ellipse cx="320" cy="220" rx="6" ry="10"/>
+      <ellipse cx="362" cy="240" rx="6" ry="10"/>
+      <ellipse cx="400" cy="220" rx="6" ry="10"/>
+      <ellipse cx="442" cy="240" rx="6" ry="10"/>
+      <ellipse cx="480" cy="200" rx="6" ry="10"/>
+      <ellipse cx="522" cy="220" rx="6" ry="10"/>
+    </g>
+    <!-- ground -->
+    <rect x="40" y="540" width="540" height="20" fill="#5C4A3A" rx="0"/>
+  </g>
+
+  <!-- AFTER panel -->
+  <g>
+    <rect x="620" y="40" width="540" height="520" fill="#2D5A3D" rx="12"/>
+    <rect x="620" y="40" width="540" height="200" fill="#E8B65A" opacity="0.5" rx="12"/>
+    <text x="660" y="100" font-family="Inter, system-ui, sans-serif"
+          font-size="14" font-weight="700" fill="#1A1F1B" letter-spacing="3" opacity="0.7">AFTER</text>
+
+    <!-- sun -->
+    <circle cx="1060" cy="160" r="50" fill="#F6C673"/>
+    <circle cx="1060" cy="160" r="30" fill="#E8B65A"/>
+
+    <!-- mowed stripes on lawn -->
+    <g opacity="0.18" stroke="#FAF6F0" stroke-width="3" fill="none">
+      <path d="M 660 280 L 1140 280"/>
+      <path d="M 660 320 L 1140 318"/>
+      <path d="M 660 360 L 1140 356"/>
+      <path d="M 660 400 L 1140 394"/>
+      <path d="M 660 440 L 1140 432"/>
+      <path d="M 660 480 L 1140 470"/>
+      <path d="M 660 520 L 1140 508"/>
+    </g>
+
+    <!-- ground -->
+    <rect x="620" y="540" width="540" height="20" fill="#1F4E2C" rx="0"/>
+  </g>
+
+  <!-- Divider -->
+  <line x1="600" y1="60" x2="600" y2="540" stroke="#1A1F1B" stroke-width="2" stroke-dasharray="8 6" opacity="0.5"/>
+
+  <!-- Center scrub handle hint -->
+  <circle cx="600" cy="300" r="28" fill="#F4E8D0" stroke="#1A1F1B" stroke-width="2"/>
+  <text x="600" y="306" font-family="Inter, system-ui, sans-serif"
+        font-size="14" font-weight="700" fill="#1A1F1B"
+        text-anchor="middle">⇆</text>
+
+  <!-- Note -->
+  <g font-family="Inter, system-ui, sans-serif" fill="#1A1F1B" opacity="0.55">
+    <text x="600" y="588" font-size="13" letter-spacing="3"
+          text-anchor="middle">REAL CUSTOMER BEFORE/AFTER · COMING SOON</text>
+  </g>
+</svg>

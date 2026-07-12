@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  33770 — South Largo. Wider streets, mature oaks.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img"
+     aria-label="33770 — South Largo">
+  <title>33770 — South Largo</title>
+
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F4E8D0"/>
+      <stop offset="1" stop-color="#E8B65A" stop-opacity="0.3"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="1200" height="380" fill="url(#sky)"/>
+
+  <!-- Big oak silhouettes flanking the frame -->
+  <g fill="#2D5A3D">
+    <ellipse cx="80" cy="300" rx="120" ry="100"/>
+    <ellipse cx="60" cy="220" rx="80" ry="70"/>
+    <ellipse cx="1120" cy="280" rx="140" ry="110"/>
+    <ellipse cx="1140" cy="200" rx="90" ry="80"/>
+  </g>
+  <g fill="#5C8A4E" opacity="0.7">
+    <ellipse cx="80" cy="260" rx="80" ry="60"/>
+    <ellipse cx="1120" cy="240" rx="100" ry="70"/>
+  </g>
+
+  <!-- Oak trunks -->
+  <rect x="64" y="320" width="20" height="160" fill="#5C4A3A"/>
+  <rect x="1112" y="300" width="22" height="180" fill="#5C4A3A"/>
+
+  <!-- Drape moss (Spanish moss) -->
+  <g stroke="#8FA89B" stroke-width="2" fill="none" opacity="0.7">
+    <path d="M 80 240 Q 90 320 70 400"/>
+    <path d="M 100 220 Q 110 320 90 380"/>
+    <path d="M 50 250 Q 60 340 40 420"/>
+    <path d="M 1120 220 Q 1130 320 1110 400"/>
+    <path d="M 1140 240 Q 1150 340 1130 420"/>
+  </g>
+
+  <!-- Distant home with metal roof (common in south FL) -->
+  <g transform="translate(380 180)">
+    <rect x="0" y="80" width="220" height="160" fill="#D4A574"/>
+    <polygon points="0,80 110,40 220,80" fill="#5C5C56"/>
+    <rect x="20" y="120" width="40" height="50" fill="#1A1F1B" opacity="0.5"/>
+    <rect x="80" y="120" width="40" height="50" fill="#1A1F1B" opacity="0.5"/>
+    <rect x="140" y="120" width="40" height="50" fill="#1A1F1B" opacity="0.5"/>
+    <rect x="100" y="190" width="30" height="50" fill="#5C4A3A"/>
+    <!-- carport -->
+    <rect x="220" y="120" width="100" height="120" fill="#5C5C56"/>
+    <rect x="220" y="120" width="100" height="6" fill="#3A3A36"/>
+  </g>
+
+  <!-- Second home (right side) with landscaping -->
+  <g transform="translate(720 200)">
+    <rect x="0" y="60" width="200" height="180" fill="#F4E8D0"/>
+    <polygon points="0,60 100,20 200,60" fill="#5C4A3A"/>
+    <rect x="20" y="100" width="36" height="40" fill="#1A1F1B" opacity="0.55"/>
+    <rect x="80" y="100" width="36" height="40" fill="#1A1F1B" opacity="0.55"/>
+    <rect x="140" y="100" width="36" height="40" fill="#1A1F1B" opacity="0.55"/>
+    <rect x="86" y="170" width="30" height="70" fill="#5C4A3A"/>
+    <!-- shrubs -->
+    <ellipse cx="20" cy="240" rx="40" ry="20" fill="#3A6B45"/>
+    <ellipse cx="180" cy="240" rx="40" ry="20" fill="#3A6B45"/>
+  </g>
+
+  <!-- Lawn -->
+  <rect y="380" width="1200" height="200" fill="#2D5A3D"/>
+  <g opacity="0.16" stroke="#FAF6F0" stroke-width="2" fill="none">
+    <path d="M 0 430 L 1200 425"/>
+    <path d="M 0 480 L 1200 470"/>
+    <path d="M 0 530 L 1200 515"/>
+  </g>
+
+  <!-- Sidewalk -->
+  <rect y="580" width="1200" height="36" fill="#A8A8A0"/>
+  <!-- street -->
+  <rect y="616" width="1200" height="59" fill="#3A3A36"/>
+
+  <!-- ZIP badge -->
+  <g font-family="Inter, system-ui, sans-serif">
+    <text x="40" y="60" font-size="14" font-weight="700"
+          fill="#B5651D" letter-spacing="3">SOUTH LARGO · 33770</text>
+  </g>
+  <g font-family="Inter, system-ui, sans-serif" fill="#FAF6F0" opacity="0.42">
+    <text x="40" y="660" font-size="13" letter-spacing="3">PHOTO COMING SOON</text>
+  </g>
+</svg>

@@ -1,0 +1,133 @@
+/* /areas/[zip] — page-level styles.
+ *
+ * Owns the hero h1, neighborhood image frame, services grid
+ * cards, body paragraphs, CTA banner heading scale, and back link.
+ */
+
+.heroTitle {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: var(--space-3) 0 var(--space-4);
+  color: var(--ll-palm-bark);
+}
+
+.heroTagline {
+  font-family: var(--font-inter);
+  font-size: 1.15rem;
+  line-height: 1.55;
+  max-width: 40rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0 0 var(--space-6);
+}
+
+.sectionTitle {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 700;
+  margin: var(--space-3) 0 var(--space-5);
+  color: var(--ll-palm-bark);
+}
+
+.sectionTitleTight {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 700;
+  margin: var(--space-3) 0 var(--space-4);
+  color: var(--ll-palm-bark);
+}
+
+.ctaTitle {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 700;
+  margin: 0;
+  color: var(--ll-palm-bark);
+}
+
+.ctaBody {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 36rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+}
+
+.ctaBanner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.bodyCopy {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--ll-palm-bark);
+  opacity: 0.9;
+  max-width: 44rem;
+  margin: 0 0 var(--space-4);
+}
+
+.bodyCopyLast {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--ll-palm-bark);
+  opacity: 0.9;
+  max-width: 44rem;
+  margin: 0;
+}
+
+.media {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--ll-sand-bleached);
+  aspect-ratio: 16 / 9;
+}
+
+.servicesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-3);
+}
+
+.serviceLink {
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ll-palm-shadow);
+  background: var(--ll-shell);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  text-decoration: none;
+  transition: border-color var(--motion-duration-fast) var(--motion-easing-default), transform
+    var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.serviceLink:hover,
+.serviceLink:focus {
+  border-color: var(--ll-clay);
+  transform: translateY(-2px);
+}
+
+.backLink {
+  font-family: var(--font-inter);
+  font-size: 0.85rem;
+  color: var(--ll-palm-shadow);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}

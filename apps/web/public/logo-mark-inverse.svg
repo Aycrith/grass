@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Largo Lawn — inverse mark.
+  Use over --ll-palm-shadow / dark backgrounds. Sand-bleached fill.
+  Same 100x100 viewBox as logo-mark.svg so it slots into the same
+  <LogoMark> primitive via override.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Largo Lawn mark (inverse)">
+  <title>Largo Lawn mark — inverse</title>
+  <desc>Three-blade grass mark for Largo Lawn, sand-bleached for dark surfaces.</desc>
+  <g fill="#F4E8D0">
+    <path d="M 50 78 Q 50 25 50 8 Q 50 25 50 78 Z" />
+    <path d="M 32 78 Q 28 35 22 18 Q 30 38 38 78 Z" />
+    <path d="M 68 78 Q 72 35 78 18 Q 70 38 62 78 Z" />
+    <rect x="14" y="76" width="72" height="4" rx="2" />
+  </g>
+</svg>

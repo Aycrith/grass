@@ -1,0 +1,178 @@
+/* ============================================================
+ * ContactForm — Mission 1
+ *
+ * Two-column layout on desktop (form left / sidebar copy right),
+ * single-column on mobile. Form uses design-system <Input> +
+ * <Button>; sidebar uses the warm sand-bleached background.
+ * ============================================================ */
+
+.root {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+
+@media (min-width: 900px) {
+  .root {
+    grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
+    gap: var(--space-6);
+    align-items: start;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.formActions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.formNote {
+  font-family: var(--font-inter);
+  font-size: 0.8rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.7;
+  line-height: 1.5;
+}
+
+.formError {
+  font-family: var(--font-inter);
+  font-size: 0.85rem;
+  color: var(--color-error);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+
+@media (min-width: 600px) {
+  .fieldRow {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.sidebar {
+  background: var(--ll-sand-bleached);
+  border: 1px solid var(--ll-sand);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.sidebarEyebrow {
+  font-family: var(--font-inter);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ll-palm-bark);
+  opacity: 0.7;
+}
+
+.sidebarHeading {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-weight: 700;
+  color: var(--ll-palm-shadow);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.sidebarBody {
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--ll-palm-bark);
+  opacity: 0.9;
+  margin: 0;
+}
+
+.sidebarList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-family: var(--font-inter);
+  font-size: 0.85rem;
+  color: var(--ll-palm-bark);
+}
+
+.sidebarList li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.sidebarBullet {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  color: var(--ll-clay);
+}
+
+.success {
+  background: var(--ll-shell);
+  border: 1px solid var(--ll-sage-muted);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  text-align: center;
+}
+
+.successTitle {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--ll-palm-shadow);
+  margin: 0;
+}
+
+.successBody {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--ll-palm-bark);
+  opacity: 0.9;
+  margin: 0;
+}
+
+.successContact {
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: var(--space-2) 0 0;
+}
+
+.hurricaneNotice {
+  background: var(--ll-clay);
+  color: var(--ll-shell);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius);
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+}
+
+.hurricaneNotice strong {
+  font-weight: 700;
+}

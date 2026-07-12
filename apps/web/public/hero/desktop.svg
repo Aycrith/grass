@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hero placeholder (desktop) — EarthSlice-inspired composition.
+
+  Brand-locked palette (Phase A tokens):
+    --ll-palm-shadow  #2D5A3D  (deep palm green)
+    --ll-sand         #D4A574  (warm sand)
+    --ll-sand-bleached #F4E8D0 (bone)
+    --ll-clay         #B5651D  (rust accent)
+    --ll-cream        #FAF6F0  (off-white)
+    --ll-sun          #E8B65A  (golden hour)
+
+  This SVG is an honest, on-brand placeholder. No stock-photo
+  people, no AI faces. When the operator shoots a real yard at
+  golden hour, replace this file with the same path name and
+  nothing in the component changes.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 1200" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Hero placeholder — yard at golden hour (real photo coming soon)">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E8B65A" stop-opacity="0.55"/>
+      <stop offset="0.55" stop-color="#F4E8D0"/>
+      <stop offset="1" stop-color="#FAF6F0"/>
+    </linearGradient>
+    <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5C8A4E"/>
+      <stop offset="1" stop-color="#2D5A3D"/>
+    </linearGradient>
+    <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F6C673"/>
+      <stop offset="1" stop-color="#E8B65A" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="haze" cx="0.72" cy="0.62" r="0.55">
+      <stop offset="0" stop-color="#F4E8D0" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#F4E8D0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="2400" height="820" fill="url(#sky)"/>
+
+  <!-- Sun glow -->
+  <circle cx="1720" cy="640" r="380" fill="url(#sun)" opacity="0.9"/>
+  <circle cx="1720" cy="640" r="110" fill="#F6C673"/>
+
+  <!-- Distant palm silhouettes -->
+  <g fill="#2D5A3D" opacity="0.55">
+    <path d="M 60 820 Q 80 640 95 820 Z"/>
+    <path d="M 95 720 Q 60 690 30 710 Q 70 700 95 720 Z"/>
+    <path d="M 95 720 Q 140 685 175 705 Q 130 700 95 720 Z"/>
+    <path d="M 95 720 Q 110 660 140 640 Q 110 690 95 720 Z"/>
+
+    <path d="M 2260 820 Q 2280 600 2295 820 Z"/>
+    <path d="M 2295 690 Q 2255 655 2220 680 Q 2270 670 2295 690 Z"/>
+    <path d="M 2295 690 Q 2350 660 2380 685 Q 2325 675 2295 690 Z"/>
+  </g>
+
+  <!-- Mid-ground hedge row -->
+  <rect x="0" y="760" width="2400" height="90" fill="#3A6B45" opacity="0.7"/>
+  <g fill="#3A6B45">
+    <circle cx="120" cy="760" r="46"/>
+    <circle cx="220" cy="760" r="52"/>
+    <circle cx="330" cy="760" r="44"/>
+    <circle cx="440" cy="760" r="58"/>
+    <circle cx="560" cy="760" r="50"/>
+    <circle cx="680" cy="760" r="46"/>
+    <circle cx="800" cy="760" r="54"/>
+    <circle cx="920" cy="760" r="48"/>
+    <circle cx="1040" cy="760" r="58"/>
+    <circle cx="1160" cy="760" r="50"/>
+    <circle cx="1280" cy="760" r="46"/>
+    <circle cx="1400" cy="760" r="54"/>
+    <circle cx="1520" cy="760" r="48"/>
+    <circle cx="1640" cy="760" r="58"/>
+    <circle cx="1760" cy="760" r="50"/>
+    <circle cx="1880" cy="760" r="46"/>
+    <circle cx="2000" cy="760" r="54"/>
+    <circle cx="2120" cy="760" r="48"/>
+    <circle cx="2240" cy="760" r="58"/>
+    <circle cx="2360" cy="760" r="50"/>
+  </g>
+
+  <!-- Lawn (foreground) -->
+  <rect x="0" y="820" width="2400" height="380" fill="url(#grass)"/>
+
+  <!-- Freshly-mown stripes -->
+  <g opacity="0.18" stroke="#FAF6F0" stroke-width="3" fill="none">
+    <path d="M 0 900 L 2400 880"/>
+    <path d="M 0 970 L 2400 945"/>
+    <path d="M 0 1040 L 2400 1010"/>
+    <path d="M 0 1110 L 2400 1075"/>
+  </g>
+
+  <!-- Atmospheric haze -->
+  <rect width="2400" height="1200" fill="url(#haze)"/>
+
+  <!-- Foreground grass blades (organic) -->
+  <g stroke="#1F4E2C" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.7">
+    <path d="M 80 1200 Q 90 1140 75 1100"/>
+    <path d="M 140 1200 Q 152 1130 138 1080"/>
+    <path d="M 220 1200 Q 210 1145 230 1095"/>
+    <path d="M 310 1200 Q 322 1140 305 1085"/>
+    <path d="M 2180 1200 Q 2170 1145 2188 1095"/>
+    <path d="M 2240 1200 Q 2252 1135 2238 1080"/>
+    <path d="M 2320 1200 Q 2310 1145 2330 1100"/>
+  </g>
+
+  <!-- Subtle "coming soon" label, low-contrast so it doesn't dominate the hero -->
+  <g font-family="Inter, system-ui, sans-serif" fill="#FAF6F0" opacity="0.55">
+    <text x="60" y="1170" font-size="22" letter-spacing="2">PHOTO PLACEHOLDER · GOLDEN HOUR YARD · COMING SOON</text>
+  </g>
+</svg>

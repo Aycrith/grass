@@ -1,0 +1,186 @@
+/* /qr — page-level styles.
+ *
+ * Owns hero h1/lead, the QR-card grid, the "Where each QR goes" +
+ * "After domain + GBP go live" content cards, the QR SVG frame,
+ * and the download button.
+ */
+
+.heroTitle {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: var(--space-3) 0 var(--space-4);
+  color: var(--ll-palm-bark);
+}
+
+.heroLead {
+  font-family: var(--font-inter);
+  font-size: 1.15rem;
+  line-height: 1.55;
+  max-width: 42rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0 0 var(--space-4);
+}
+
+.heroNote {
+  font-family: var(--font-inter);
+  font-size: 0.9rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0;
+  max-width: 42rem;
+}
+
+.heroNote code {
+  font-size: 0.85rem;
+  background: var(--ll-sand-bleached);
+  padding: 0.1em 0.4em;
+  border-radius: var(--radius-sm);
+  color: var(--ll-palm-shadow);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.qrCard {
+  background: var(--ll-shell);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.qrTitle {
+  font-family: var(--font-fraunces), serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--ll-palm-shadow);
+}
+
+.qrFrame {
+  width: 220px;
+  height: 220px;
+  margin: 0;
+  border: 2px solid var(--ll-palm-shadow);
+  border-radius: var(--radius);
+  padding: var(--space-2);
+  background: var(--ll-shell);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qrFrame svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.qrDescription {
+  font-family: var(--font-inter);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--ll-palm-bark);
+  opacity: 0.9;
+  margin: 0;
+  min-height: 3.6em;
+}
+
+.qrTarget {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  word-break: break-all;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0;
+}
+
+.qrFilename {
+  font-family: var(--font-inter);
+  font-size: 0.85rem;
+  margin: 0;
+  color: var(--ll-palm-bark);
+}
+
+.downloadButton {
+  display: inline-block;
+  margin-top: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  background: var(--ll-palm-shadow);
+  color: var(--ll-sand-bleached);
+  border-radius: var(--radius);
+  text-decoration: none;
+  font-family: var(--font-inter);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.downloadButton:hover,
+.downloadButton:focus {
+  background: var(--ll-palm-bark);
+}
+
+.card {
+  background: var(--ll-shell);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-7);
+}
+
+.card + .card {
+  margin-top: var(--space-5);
+}
+
+.cardTitle {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-weight: 700;
+  margin: 0 0 var(--space-4);
+  color: var(--ll-palm-bark);
+}
+
+.cardList {
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--ll-palm-bark);
+  opacity: 0.9;
+  margin: 0;
+  padding-left: var(--space-5);
+}
+
+.cardList li {
+  margin-bottom: var(--space-2);
+}
+
+.cardList li:last-child {
+  margin-bottom: 0;
+}
+
+.cardNote {
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: var(--space-4) 0 0;
+}
+
+.cardNote code {
+  font-size: 0.85rem;
+  background: var(--ll-sand-bleached);
+  padding: 0.1em 0.4em;
+  border-radius: var(--radius-sm);
+  color: var(--ll-palm-shadow);
+}

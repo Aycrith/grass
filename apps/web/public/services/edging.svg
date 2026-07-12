@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Edging service illustration. EarthSlice-inspired editorial.
+  Composition: pavement cross-section in foreground; clean white edge
+  line as the brand detail; edger tool head pulling back the curb line.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img"
+     aria-label="Edging — clean line between grass and pavement">
+  <title>Edging</title>
+
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F4E8D0"/>
+      <stop offset="1" stop-color="#E8B65A" stop-opacity="0.4"/>
+    </linearGradient>
+    <linearGradient id="pavement" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#A8A8A0"/>
+      <stop offset="1" stop-color="#6E6E68"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky band -->
+  <rect width="1600" height="540" fill="url(#sky)"/>
+
+  <!-- Concrete / pavement (foreground) -->
+  <rect y="540" width="1600" height="360" fill="url(#pavement)"/>
+
+  <!-- Lawn (left third) -->
+  <rect y="540" width="540" height="360" fill="#2D5A3D"/>
+
+  <!-- Mown stripes on lawn -->
+  <g opacity="0.18" stroke="#FAF6F0" stroke-width="3" fill="none">
+    <path d="M 0 600 L 540 595"/>
+    <path d="M 0 680 L 540 670"/>
+    <path d="M 0 760 L 540 745"/>
+    <path d="M 0 840 L 540 820"/>
+  </g>
+
+  <!-- The crisp edge line — this is the product, literally a line -->
+  <line x1="540" y1="540" x2="1600" y2="540"
+        stroke="#FAF6F0" stroke-width="6" stroke-linecap="round"/>
+  <!-- subtle bevel shadow on the lawn side of the edge -->
+  <rect y="540" width="540" height="6" fill="#1F4E2C" opacity="0.45"/>
+
+  <!-- Edger head silhouette: cutting at the curb edge -->
+  <g transform="translate(740 320)">
+    <!-- engine block -->
+    <rect x="60" y="0" width="240" height="120" rx="20" fill="#1A1F1B"/>
+    <!-- handle upright -->
+    <line x1="80" y1="60" x2="-20" y2="-40"
+          stroke="#1A1F1B" stroke-width="14" stroke-linecap="round"/>
+    <!-- handle grip -->
+    <rect x="-60" y="-60" width="80" height="22" rx="11" fill="#B5651D"/>
+    <!-- vertical blade shaft -->
+    <line x1="190" y1="120" x2="190" y2="260"
+          stroke="#1A1F1B" stroke-width="12" stroke-linecap="round"/>
+    <!-- spinning blade (clay disk) -->
+    <circle cx="190" cy="280" r="44" fill="#B5651D"/>
+    <circle cx="190" cy="280" r="14" fill="#1A1F1B"/>
+    <!-- sparks -->
+    <g stroke="#E8B65A" stroke-width="2" fill="none" opacity="0.7">
+      <path d="M 234 286 L 268 296"/>
+      <path d="M 146 286 L 112 298"/>
+      <path d="M 200 320 L 218 350"/>
+    </g>
+  </g>
+
+  <!-- "before/after" comparison: faint jagged line on right side -->
+  <g stroke="#A8A8A0" stroke-width="3" stroke-dasharray="6 6" fill="none" opacity="0.45">
+    <path d="M 1100 540 Q 1140 530 1180 545 T 1260 540 T 1340 548 T 1420 542"/>
+  </g>
+
+  <!-- Eyebrow / label -->
+  <g font-family="Inter, system-ui, sans-serif">
+    <text x="80" y="100" font-size="16" font-weight="700"
+          fill="#B5651D" letter-spacing="3">02 — EDGING</text>
+    <text x="80" y="180" font-family="'Fraunces', Georgia, serif"
+          font-size="72" font-weight="700"
+          fill="#1A1F1B" letter-spacing="-2">A clean line</text>
+    <text x="80" y="252" font-family="'Fraunces', Georgia, serif"
+          font-size="72" font-weight="700"
+          fill="#1A1F1B" letter-spacing="-2">all the way down.</text>
+    <text x="80" y="320" font-size="20" font-weight="500"
+          fill="#1A1F1B" opacity="0.7">
+      Mechanical edge along the curb, walks, and bed lines.
+    </text>
+    <text x="80" y="350" font-size="20" font-weight="500"
+          fill="#1A1F1B" opacity="0.7">
+      Done at the start of every mow visit.
+    </text>
+  </g>
+</svg>

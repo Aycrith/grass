@@ -1,0 +1,94 @@
+/* /review — page-level styles.
+ *
+ * Owns hero h1/lead, the "Google review coming soon" call-to-quote
+ * card (centered phone button), and the "When something isn't right"
+ * copy card.
+ */
+
+.heroTitle {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: var(--space-3) 0 var(--space-4);
+  color: var(--ll-palm-bark);
+}
+
+.heroLead {
+  font-family: var(--font-inter);
+  font-size: 1.15rem;
+  line-height: 1.55;
+  max-width: 42rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0;
+}
+
+.card {
+  background: var(--ll-shell);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-7);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.cardCentered {
+  background: var(--ll-shell);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-7);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  text-align: center;
+  align-items: center;
+}
+
+.cardTitle {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 700;
+  margin: 0;
+  color: var(--ll-palm-bark);
+}
+
+.cardBody {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--ll-palm-bark);
+  opacity: 0.9;
+  margin: 0;
+  max-width: 36rem;
+}
+
+.cardBodyEmphasis {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--ll-palm-bark);
+  margin: 0;
+  max-width: 36rem;
+}
+
+.phoneButton {
+  display: inline-block;
+  padding: var(--space-4) var(--space-7);
+  background: var(--ll-palm-shadow);
+  color: var(--ll-sand-bleached);
+  border-radius: var(--radius);
+  text-decoration: none;
+  font-family: var(--font-inter);
+  font-weight: 700;
+  font-size: 1.1rem;
+  font-variant-numeric: tabular-nums;
+  transition: background var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.phoneButton:hover,
+.phoneButton:focus {
+  background: var(--ll-palm-bark);
+}

@@ -1,0 +1,51 @@
+/* /areas index — page-level styles.
+ *
+ * Owns the hero h1, tagline, and the ZIP-pill row.
+ */
+
+.heroTitle {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(2.5rem, 5vw, 4.25rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: var(--space-3) 0 var(--space-4);
+  color: var(--ll-palm-bark);
+}
+
+.heroTagline {
+  font-family: var(--font-inter);
+  font-size: 1.15rem;
+  line-height: 1.55;
+  max-width: 38rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0;
+}
+
+.zipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.zipPill {
+  font-family: var(--font-inter);
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  color: var(--ll-palm-shadow);
+  background: var(--ll-sand-bleached);
+  border: 1px solid var(--ll-clay);
+  border-radius: var(--radius-pill);
+  padding: var(--space-2) var(--space-4);
+  text-decoration: none;
+}
+
+.zipPill:hover,
+.zipPill:focus {
+  background: var(--ll-sun);
+  color: var(--ll-palm-bark);
+}
