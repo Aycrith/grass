@@ -131,3 +131,12 @@ audit/wp5-lighthouse/*.json
 
 # --- Lighthouse CI artifacts (regenerated on every CI run) ---
 .lighthouseci/
+
+# --- Playwright visual regression (baselines committed, output gitignored) ---
+apps/web/visual/test-output/
+apps/web/visual/playwright-report/
+apps/web/visual/blob-report/
+apps/web/visual/baselines/*-actual.png
+apps/web/visual/baselines/*-diff.png
+apps/web/test-results/
+apps/web/playwright-report/

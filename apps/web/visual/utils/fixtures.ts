@@ -1,0 +1,31 @@
+/**
+ * Test matrices for Playwright visual regression.
+ *
+ * The PRD-00 §4 route list mirrors what Lighthouse CI baselines (the same
+ * 6 routes × 2 viewports = 12 captures). When that list changes, update
+ * Lighthouse's `lighthouserc.nightly.cjs` URL list in lockstep.
+ */
+export const PRD_ROUTES = [
+  { slug: 'home', path: '/' },
+  { slug: 'services', path: '/services' },
+  { slug: 'services-mowing', path: '/services/mowing' },
+  { slug: 'areas-33771', path: '/areas/33771' },
+  { slug: 'pricing', path: '/pricing' },
+  { slug: 'quote', path: '/quote' },
+] as const;
+
+export const VIEWPORTS = ['desktop', 'mobile'] as const;
+
+export type Viewport = (typeof VIEWPORTS)[number];
+
+/**
+ * Component close-ups on the `_visual` test route. Each entry is one
+ * `data-test-section` anchor on `app/_visual/page.tsx`. Desktop-only —
+ * mobile responsive variants are tested via route baselines.
+ */
+export const COMPONENT_BASELINES = [
+  { slug: 'hero-cinematic', anchor: '#hero-cinematic' },
+  { slug: 'service-bento', anchor: '#service-bento' },
+  { slug: 'operator-strip', anchor: '#operator-strip' },
+  { slug: 'pricing-tiers', anchor: '#pricing-tiers' },
+] as const;

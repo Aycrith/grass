@@ -67,3 +67,23 @@ Vercel (zero-devops). Config in `vercel.json`. CI checks via root
 Auto-generated at build from `BUSINESS.service_area_zips` + service slugs
 via `src/app/sitemap.ts`. Output: `https://largolawn.pro/sitemap.xml`
 containing all 18 routes + `robots.txt` excluding `/api/` and `/gbp`.
+
+## Visual regression
+
+Playwright visual regression runs on every PR via the `visual` job in
+`.github/workflows/ci.yml`. 16 baselines: 6 PRD-00 §4 routes × 2
+viewports (desktop + mobile) plus 4 section component close-ups mounted
+on the internal `/visual-test` test route.
+
+Run locally from `apps/web/`:
+
+```bash
+bunx playwright test                       # all 16
+bunx playwright test --update-snapshots    # regenerate baselines
+```
+
+Thresholds: `maxDiffPixels: 200` + `threshold: 0.2`. Animations collapse
+via `prefers-reduced-motion: reduce` (Framer `useReducedMotion` + CSS
+queries). Date drift is masked via `utils/stabilize.ts`.
+
+See `apps/web/visual/README.md` for the full reference.

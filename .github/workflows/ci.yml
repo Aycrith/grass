@@ -257,3 +257,95 @@ jobs:
         with:
           name: lighthouse-server-log
           path: /tmp/wp5-web.log
+
+  # -----------------------------------------------------------------
+  # 10. Playwright visual regression — PR pixel guard.
+  #     16 baselines: 6 PRD-00 §4 routes × 2 viewports + 4 section
+  #     component close-ups mounted on the internal /visual-test route.
+  #     Captures run with prefers-reduced-motion: reduce so Framer +
+  #     CSS @media (prefers-reduced-motion) queries fire, eliminating
+  #     animation jitter. Per-PR budget at maxDiffPixels=200 +
+  #     threshold=0.2 (≈ 0.02% pixel diff at 1280×800).
+  #     On diff exceed, *-actual.png + *-diff.png are uploaded as
+  #     GitHub artifacts so reviewers can see what changed.
+  # -----------------------------------------------------------------
+  visual:
+    name: Playwright Visual Regression
+    needs: [lint, typecheck, asset-weight, references]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Cache Bun
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          restore-keys: ${{ runner.os }}-bun-
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-ms-playwright-${{ hashFiles('apps/web/bun.lock') }}
+          restore-keys: ${{ runner.os }}-ms-playwright-
+
+      - name: Install dependencies
+        working-directory: apps/web
+        run: bun install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        working-directory: apps/web
+        run: bunx playwright install --with-deps chromium
+
+      - name: Build web (production)
+        working-directory: apps/web
+        run: bun run build
+
+      - name: Start production server
+        working-directory: apps/web
+        run: |
+          nohup bun run start > /tmp/pw-web.log 2>&1 &
+          echo "PID=$!"
+
+      - name: Wait for server ready
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:3000/ > /dev/null; then
+              echo "Ready after ${i}s"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Server failed to start in 60s"
+          cat /tmp/pw-web.log
+          exit 1
+
+      - name: Run Playwright visual regression
+        working-directory: apps/web
+        run: bunx playwright test --project=chromium-desktop --reporter=github,list
+
+      - name: Upload diff artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-diffs
+          path: |
+            apps/web/visual/test-output/
+            apps/web/visual/baselines/*-actual.png
+            apps/web/visual/baselines/*-diff.png
+          if-no-files-found: ignore
+
+      - name: Upload server log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-server-log
+          path: /tmp/pw-web.log
+          if-no-files-found: ignore
