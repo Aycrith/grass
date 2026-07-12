@@ -69,7 +69,7 @@
   <g transform="translate(420 280)">
     <rect x="0" y="40" width="360" height="100" fill="#F4E8D0"/>
     <polygon points="0,40 180,0 360,40" fill="#5C4A3A"/>
-    <rect x="60" y="60" width="240" height="60" fill="#3B7DD8" opacity="0.7"/>
+    <rect x="60" y="60" width="240" height="60" fill="var(--ll-gulf, #2e6b8c)" opacity="0.7"/>
     <g stroke="#5C4A3A" stroke-width="3">
       <line x1="180" y1="60" x2="180" y2="120"/>
       <line x1="60" y1="90" x2="300" y2="90"/>
