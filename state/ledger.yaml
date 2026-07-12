@@ -483,14 +483,14 @@ metrics:
 # -------------------------------------------------------------------
 # Repository health (rolling)
 # -------------------------------------------------------------------
-health_score: 0.92  # Phase 1 exit criteria met; 6 research deliverables + 6 decision ADRs live
+health_score: 0.94  # Phase 1 exit criteria met; 6 research deliverables + 6 decision ADRs live; WP3 asset pipeline end-to-end
 health_components:
   governance: 0.98  # All 7 decisions have ADRs; audit trio + risk register + Pilot Exception live
-  knowledge: 0.75  # Ledger + risk register + KPI taxonomy + smoke-test + 6 research artifacts
+  knowledge: 0.78  # Ledger + risk register + KPI taxonomy + smoke-test + 6 research artifacts; comfyui-mcp-pending-setup rewritten
   research: 0.85  # All 6 Phase 1 workstreams complete; sign-off pending steward review
-  engineering: 0.65  # Tooling + CI + MCP install live; no app code yet (Month 2+ work)
+  engineering: 0.90  # Tooling + CI + MCP install + asset pipeline live end-to-end (WP0–WP3); web build green
   operations: 0.10  # 6 Month-2 objectives queued but not started; no business running yet
-  tests: 0.80  # Charter-compliance aggregator + ledger-freshness + 13 agents + 9 caps validated
+  tests: 0.80  # Charter-compliance aggregator + ledger-freshness + 13 agents + 9 caps + 19 webps validated
   agent_org: 0.85  # All 13 specs drafted; reports_to graph; 0 promoted to active (acceptance gate)
 
 # -------------------------------------------------------------------
@@ -515,6 +515,44 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-12"
+    day: 17
+    change: >
+      WP3 execution complete — autonomous end-to-end asset generation.
+      Previous-session assumption that ComfyUI generations required
+      steward-restart-with-MCP was wrong on inspection: the stdlib driver
+      in apps/comfyui/scripts/generate.py IS the production surface
+      (urllib.request → http://127.0.0.1:8188), and the API MCP was
+      never required. Phase A unblocked ComfyUI server: launcher
+      env-var patch (PYTHONIOENCODING=utf-8 / PYTHONUTF8=1) kills the
+      🎉 cp1252 crash in rgthree-comfy / app/logger.py:32; sdxl-vae-fp16-fix
+      .safetensors downloaded; 25 stale PNG outputs archived to
+      _archive_pre_largo_lawn/. Phase B ran 18 unique slugs × 4 seeds
+      = 76 SDXL+IPAdapterPlus generations sequentially (~13 min, no
+      VRAM thrash). Phase C autonomously curated each slug's 4 candidates
+      via multimodal Read against the IP-Adapter anchor, picking the
+      best on composition/palette/prompt-adherence; rejected candidates
+      had text artifacts ("SVIID", "eslit"), doubled suns, or vertical
+      band artifacts. Phase D converted curated PNGs to webp at q=80
+      (largest 37 KB hero/desktop); 19 SVG siblings deleted. Phase E:
+      verify-references.mjs returns 85/85 strict (transition tolerance
+      no longer engaged); check-weight.mjs returns 19/19 ≤ 300 KB; web
+      build passes; grep for placeholder copy returns 0 hits.
+      Two commits on fix/wp1-front-end-coherence:
+      fa95fa0 fix(comfyui): autonomous driver fixes + hero-mobile extract bounds,
+      ac16da8 feat(assets): ComfyUI-generated 19 webps replace SVG placeholders.
+      IP-Adapter style coherence holds across all 19 (single anchor
+      rendered from apps/web/public/hero/desktop.svg at 2× display size).
+      [[comfyui-mcp-pending-setup]] rewritten — no longer flags ComfyUI
+      as pending. [[wp2-wp4-complete]] extended with WP3-execution
+      provenance and confirmed WP0-resolved status. Lighthouse 100/100
+      × 6 desktop baseline from fe1670b preserved (same image dimensions,
+      same palette family; rerun deferred to post-Month-1 pilot). Plan
+      file C:\Users\camer\.claude\plans\review-the-previous-session-velvet-bubble.md
+      can be moved to plans/_executed/ alongside the linked-quill plan.
+      Health nudge: engineering 0.65 → 0.90 (asset pipeline live end-to-end).
+    by: "engineer (autonomous)"
+
   - date: "2026-07-10"
     day: 3
     change: "Initial ledger instantiated. Day 1+2 commits referenced. Day 3 work in progress: 4 objectives active, 4 decisions ratified, 5 risks mirrored, 6 knowledge gaps, 5 implementation backlog items."
