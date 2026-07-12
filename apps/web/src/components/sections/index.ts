@@ -12,5 +12,6 @@ export { ServiceAreaMap } from './ServiceAreaMap';
 export { FAQAccordion } from './FAQAccordion';
 export { FinalCTABanner } from './FinalCTABanner';
 export { TestimonialQuote } from './TestimonialQuote';
+export { OperatorNote } from './OperatorNote';
 export { EmptyState } from './EmptyState';
 export type { EmptyStateVariant } from './EmptyState';

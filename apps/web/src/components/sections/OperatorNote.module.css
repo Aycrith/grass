@@ -1,0 +1,118 @@
+/* ============================================================
+ * OperatorNote — Mission 1 editorial 07-position moment.
+ *
+ * A typographic poster: italic Fraunces quote dominates,
+ * portrait anchors attribution to the right. Thin clay rule
+ * on top signals "this is a deliberate pause, not a section."
+ *
+ * Background: warm (sand-bleached) so it sits between the dark
+ * ServiceAreaMap above and the FAQAccordion below without
+ * breaking the rhythm. No CTA — pure breathing space.
+ * ============================================================ */
+
+.root {
+  position: relative;
+}
+
+/* Thin clay rule above — same idiom used by <Section eyebrowRule> */
+.root::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 72px;
+  height: 2px;
+  background: var(--ll-clay);
+  border-radius: 1px;
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-8);
+  align-items: end;
+  max-width: 56rem;
+  margin-inline: auto;
+}
+
+@media (max-width: 768px) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+    align-items: start;
+  }
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.eyebrow {
+  /* Eyebrow styling owned by <Eyebrow> */
+}
+
+.quote {
+  font-family: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--ll-palm-bark);
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.attribution {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-inter);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--ll-clay);
+  margin: 0;
+}
+
+.attributionRule {
+  width: 28px;
+  height: 2px;
+  background: var(--ll-clay);
+  border-radius: 1px;
+}
+
+.portraitWrap {
+  flex-shrink: 0;
+  align-self: end;
+}
+
+@media (max-width: 768px) {
+  .portraitWrap {
+    order: -1;
+    align-self: start;
+  }
+}
+
+.portrait {
+  display: block;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--ll-clay);
+  box-shadow: var(--elevation-1);
+  background: var(--ll-cream);
+}
+
+@media (max-width: 768px) {
+  .portrait {
+    width: 96px;
+    height: 96px;
+  }
+}

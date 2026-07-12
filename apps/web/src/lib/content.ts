@@ -299,6 +299,25 @@ export const finalCta = {
 } as const;
 
 /**
+ * Operator's Note — editorial 07-position moment on the
+ * homepage. Sits between ServiceAreaMap (06) and FAQAccordion
+ * (08) as a typographic pause — first-person italic quote from
+ * the operator, a thin clay rule on top, a small portrait
+ * anchoring attribution on the right. No CTA.
+ *
+ * Distinct from TestimonialQuote (which renders customer reviews
+ * when social.proof[] is populated). This component is always on.
+ *
+ * Brand guideline: invented customer quotes are forbidden, but
+ * the operator speaking in first person about his own service
+ * is fine and reads with quiet authority.
+ */
+export const operatorNote = {
+  eyebrow: '07 — From the operator',
+  quote: 'Same guy, same day, every week.',
+} as const;
+
+/**
  * Customer testimonials / social proof.
  *
  * `socialHeader` holds the section eyebrow. Section sits at
