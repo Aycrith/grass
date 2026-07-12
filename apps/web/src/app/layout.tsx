@@ -9,6 +9,7 @@
  */
 
 import { BUSINESS } from '@/lib/business';
+import { SiteFooter, SiteHeader } from '@/components/site';
 import type { Metadata } from 'next';
 import './globals.css';
 
@@ -80,53 +81,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a className="skip-link" href="#main">
           Skip to main content
         </a>
-        <header className="site-header">
-          <div className="container">
-            <a href="/" className="brand">
-              <img src="/logo-mark.svg" alt="" className="brand-mark" width={32} height={32} />
-              {BUSINESS.name}
-            </a>
-            <nav>
-              <a href="/services">Services</a>
-              <a href="/areas">Service Areas</a>
-              <a href="/pricing">Pricing</a>
-              <a href="/about">About</a>
-              <a
-                href="/preview"
-                style={{
-                  background: 'var(--ll-sand)',
-                  color: 'white',
-                  padding: '0.35rem 0.7rem',
-                  borderRadius: 'var(--radius)',
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
-                }}
-              >
-                Preview Build →
-              </a>
-              <a href="/quote" className="cta">
-                Free Quote
-              </a>
-            </nav>
-          </div>
-        </header>
+        <SiteHeader />
         <main id="main">{children}</main>
-        <footer className="site-footer">
-          <div className="container">
-            <p>
-              <strong>{BUSINESS.legal_entity}</strong> · {BUSINESS.address.line1},{' '}
-              {BUSINESS.address.city}, {BUSINESS.address.state} {BUSINESS.address.zip}
-            </p>
-            <p>
-              <a href={`tel:${BUSINESS.phone}`}>{BUSINESS.phone}</a> ·{' '}
-              <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
-            </p>
-            <p>
-              <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · Serving 33771 + 33770,
-              33773, 33774, 33778, 33756
-            </p>
-          </div>
-        </footer>
+        <SiteFooter />
       </body>
     </html>
   );
