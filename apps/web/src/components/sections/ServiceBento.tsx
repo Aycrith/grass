@@ -111,7 +111,7 @@ export function ServiceBento({ className }: ServiceBentoProps): ReactNode {
                   <div className={styles.imageWrap}>
                     <Image
                       src={svc.imageSlot}
-                      alt={`${svc.title} — placeholder photo`}
+                      alt={svc.imageAlt}
                       fill
                       sizes="(max-width: 980px) 100vw, 50vw"
                     />

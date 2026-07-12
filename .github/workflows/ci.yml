@@ -192,3 +192,68 @@ jobs:
 
       - name: Verify image references resolve
         run: bun run apps/comfyui/scripts/verify-references.mjs
+
+  # -----------------------------------------------------------------
+  # 9. Lighthouse CI — PR budget guard.
+  #    Runs 2 routes (`/` + `/services/mowing`) on desktop + mobile
+  #    presets against the production build served on port 3000.
+  #    Failures post a PR comment with delta + fail open above the
+  #    budget. The full 6-route × 2-viewport sweep lives in the
+  #    nightly cron at .github/workflows/lighthouse-nightly.yml.
+  #    (Plan §3 Phase C / PRD-00 §4).
+  # -----------------------------------------------------------------
+  lighthouse:
+    name: Lighthouse CI (PR budget guard)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build web (production)
+        working-directory: apps/web
+        run: bun run build
+
+      - name: Start production server
+        working-directory: apps/web
+        run: |
+          nohup bun run start > /tmp/wp5-web.log 2>&1 &
+          echo "PID=$!"
+
+      - name: Wait for server ready
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:3000/ > /dev/null; then
+              echo "Ready after ${i}s"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Server failed to start in 60s"
+          cat /tmp/wp5-web.log
+          exit 1
+
+      - name: Lighthouse CI — desktop
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./lighthouserc.cjs
+          uploadArtifacts: true
+
+      - name: Lighthouse CI — mobile
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./lighthouserc.mobile.cjs
+          uploadArtifacts: true
+
+      - name: Upload server log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-server-log
+          path: /tmp/wp5-web.log

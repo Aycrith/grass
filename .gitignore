@@ -125,5 +125,9 @@ prisma/migrations/dev/
 apps/comfyui/outputs/
 apps/comfyui/curated/
 
-# --- WP4 Lighthouse audit JSONs (reproducible; keep SUMMARY.md committed) ---
+# --- WP4 / WP5 Lighthouse audit JSONs (reproducible; keep SUMMARY.md committed) ---
 audit/wp4-lighthouse/*.json
+audit/wp5-lighthouse/*.json
+
+# --- Lighthouse CI artifacts (regenerated on every CI run) ---
+.lighthouseci/

@@ -94,6 +94,13 @@ export function HeroCinematic({ className }: HeroCinematicProps): ReactNode {
             <div className={styles.mediaInner}>
               <picture>
                 <source media="(max-width: 900px)" srcSet="/hero/mobile.webp" />
+                {/*
+                  Alt is hand-tuned to match the IP-Adapter anchor at
+                  apps/comfyui/control/ip-style-ref.png (rendered from the
+                  original hero/desktop.svg). When the steward swaps in a
+                  real phone-photo at /hero/desktop.webp (WP5 §3 Phase D
+                  hook 2), update this string to describe the actual yard.
+                */}
                 <Image
                   src="/hero/desktop.webp"
                   alt="Freshly mowed lawn in 33771 at golden hour"

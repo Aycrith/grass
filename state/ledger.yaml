@@ -483,14 +483,14 @@ metrics:
 # -------------------------------------------------------------------
 # Repository health (rolling)
 # -------------------------------------------------------------------
-health_score: 0.94  # Phase 1 exit criteria met; 6 research deliverables + 6 decision ADRs live; WP3 asset pipeline end-to-end
+health_score: 0.95  # Phase 1 exit criteria met; 6 research deliverables + 6 decision ADRs live; WP3 + WP5 asset pipeline end-to-end
 health_components:
   governance: 0.98  # All 7 decisions have ADRs; audit trio + risk register + Pilot Exception live
-  knowledge: 0.78  # Ledger + risk register + KPI taxonomy + smoke-test + 6 research artifacts; comfyui-mcp-pending-setup rewritten
+  knowledge: 0.78  # Ledger + risk register + KPI taxonomy + smoke-test + 6 research artifacts + WP5 v2 photo hooks doc; comfyui-mcp-pending-setup rewritten
   research: 0.85  # All 6 Phase 1 workstreams complete; sign-off pending steward review
-  engineering: 0.90  # Tooling + CI + MCP install + asset pipeline live end-to-end (WP0–WP3); web build green
+  engineering: 0.92  # Tooling + CI + MCP install + asset pipeline live end-to-end (WP0–WP5); Lighthouse CI hook added; web build green
   operations: 0.10  # 6 Month-2 objectives queued but not started; no business running yet
-  tests: 0.80  # Charter-compliance aggregator + ledger-freshness + 13 agents + 9 caps + 19 webps validated
+  tests: 0.85  # Charter-compliance aggregator + ledger-freshness + 13 agents + 9 caps + 19 webps validated + Lighthouse CI PR budget guard + nightly full sweep
   agent_org: 0.85  # All 13 specs drafted; reports_to graph; 0 promoted to active (acceptance gate)
 
 # -------------------------------------------------------------------
@@ -551,6 +551,40 @@ changelog:
       file C:\Users\camer\.claude\plans\review-the-previous-session-velvet-bubble.md
       can be moved to plans/_executed/ alongside the linked-quill plan.
       Health nudge: engineering 0.65 → 0.90 (asset pipeline live end-to-end).
+    by: "engineer (autonomous)"
+
+  - date: "2026-07-12"
+    day: 17
+    change: >
+      WP5 closeout — front-end workstream finalized for steward merge.
+      (a) Post-WP3 Lighthouse baseline captured: 12 audits (6 PRD-00
+      §4 routes × desktop + mobile viewports); all 12 pass PRD-00 §4
+      success metrics (Perf ≥90 worst-observed 98, LCP ≤2.5s p75
+      worst-observed 2.27s on /quote mobile, CLS ≤0.1 worst 0.023,
+      TBT ≤200ms worst 58ms). No regressions vs the fe1670b empty-slot
+      baseline (mobile LCP improved 26ms). See audit/wp5-lighthouse/
+      SUMMARY.md. (b) Lighthouse CI hook added: .github/workflows/
+      ci.yml job 'lighthouse' runs treosh/lighthouse-ci-action@v12
+      against 2 routes × 2 viewports on every PR with budgets asserted
+      as errors (Perf ≥90, LCP ≤3s, CLS ≤0.1, TBT ≤200ms, FCP ≤2s,
+      SI ≤3s); nightly cron at lighthouse-nightly.yml runs the full
+      12-route × 2-viewport sweep on 0 6 * * *. (c) Alt-text refresh
+      complete across all 6 service cards in ServiceBento.tsx +
+      content.ts: each service now has an imageAlt string field
+      curated against the actual SDXL+IPAdapterPlus webp via multimodal
+      Read sweep; inline '— placeholder photo' template dropped from
+      ServiceBento.tsx:114. Hero alt hand-tuned comment added in
+      HeroCinematic.tsx. (d) v2 photo hooks doc authored at audit/
+      wp5-photo-hooks.md: 5 hooks (operator portrait, hero mobile,
+      areas, services, equipment) with current state, v2 path,
+      constraints, and IP-Adapter anchor reference for chain-of-custody
+      — engineer's reference for the steward's phone-photo drop. (e)
+      Draft PR body at audit/wp5-pr-body.md for steward copy/paste.
+      Verification: verify-references 85/85, check-weight 19/19,
+      web build green, typecheck green, grep for placeholder copy in
+      apps/web/src returns 0 hits. Health nudge: engineering 0.90 →
+      0.92 (Lighthouse CI gates), tests 0.80 → 0.85 (PR + nightly
+      budget guards).
     by: "engineer (autonomous)"
 
   - date: "2026-07-10"

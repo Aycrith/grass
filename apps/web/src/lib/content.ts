@@ -57,6 +57,10 @@ export const services = {
     summary: 'Weekly or biweekly. Mow, edge, blow. Most yards every visit.',
     floors: { small: 4500, medium: 6500, large: 9500 },
     imageSlot: '/services/mowing.webp',
+    // Abstract illustration: sage-green lawn with horizontal mower stripes,
+    // low rounded tree row, golden sun. (engineer-curated per WP3 webp)
+    imageAlt:
+      'Abstract illustration of a sage-green lawn with visible mower stripes, a low row of rounded trees on the horizon, and a warm golden sun overhead.',
     featured: true,
     /**
      * Real customer before/after pair. Stays `null` until the steward
@@ -79,6 +83,10 @@ export const services = {
     summary: 'Crisp lines along the driveway, sidewalk, and bed edges.',
     floors: { perVisit: 7500 },
     imageSlot: '/services/edging.webp',
+    // Abstract illustration: sage lawn, denser tree row cluster, warm peach sky
+    // with circular halo around the sun. (engineer-curated per WP3 webp)
+    imageAlt:
+      'Abstract illustration of a sage-green lawn framed by a dense row of trees, warm peach sky, and a soft sunset halo in the upper right.',
     beforeAfter: undefined,
   },
   mulching: {
@@ -88,6 +96,10 @@ export const services = {
     summary: 'Fresh hardwood or cypress mulch, pulled and replaced as needed.',
     floors: { base: 65000, perYard: 45000 },
     imageSlot: '/services/mulching.webp',
+    // Abstract illustration: tidy lawn with rounded shrubs at the foundation
+    // line, golden-hour sun. (engineer-curated per WP3 webp)
+    imageAlt:
+      'Abstract illustration of a tidy sage-green lawn with a row of rounded foundation shrubs, set under a golden-hour sun.',
     beforeAfter: undefined,
   },
   'hedge-trimming': {
@@ -97,6 +109,10 @@ export const services = {
     summary: 'Shape and clean up. Most hedges twice a year is plenty.',
     floors: { perVisit: 22500 },
     imageSlot: '/services/hedge-trimming.webp',
+    // Abstract illustration: row of uniformly trimmed hedges at the same
+    // height, evenly spaced. (engineer-curated per WP3 webp)
+    imageAlt:
+      'Abstract illustration of a row of evenly trimmed hedges at shoulder height, sage-green ground, warm sky in the background.',
     beforeAfter: undefined,
   },
   'hurricane-prep': {
@@ -106,6 +122,10 @@ export const services = {
     summary: 'Pre-storm yard sweep + post-storm debris haul. Bound by the wind.',
     floors: { perVisit: 120000 },
     imageSlot: '/services/hurricane-prep.webp',
+    // Abstract illustration: overcast peach sky, sparse and uneven tree
+    // row, cleared lawn — pre-storm sweep visual cue. (engineer-curated)
+    imageAlt:
+      'Abstract illustration of a yard under an overcast peach sky, sparse trees at the horizon, and a cleared sage-green lawn below.',
     beforeAfter: undefined,
   },
   'seasonal-cleanup': {
@@ -115,6 +135,10 @@ export const services = {
     summary: 'One-time deep cleanup for leaf season and after long absences.',
     floors: { perVisit: 180000 },
     imageSlot: '/services/seasonal-cleanup.webp',
+    // Abstract illustration: freshly cleared lawn with even tree row,
+    // double-sun golden glow — suggests a wide-open cleared space.
+    imageAlt:
+      'Abstract illustration of a freshly cleared lawn with evenly spaced trees and a wide warm sky overhead.',
     beforeAfter: undefined,
   },
 } as const;
