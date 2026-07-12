@@ -194,7 +194,7 @@
   color: var(--ll-sand-bleached);
   text-decoration: none;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: var(--space-3);
   padding: var(--space-2) 0;
   border-bottom: 1px solid color-mix(in srgb, var(--ll-sand) 15%, transparent);
@@ -205,6 +205,31 @@
 .railItem:focus {
   color: var(--ll-sun);
   outline: none;
+}
+
+/* Per-ZIP thumbnail — ComfyUI webp, sized to read as a small
+   neighborhood chip in the side rail. */
+.railItemThumb {
+  width: clamp(56px, 9vw, 80px);
+  aspect-ratio: 16 / 9;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: color-mix(in srgb, var(--ll-palm-shadow) 40%, var(--ll-palm-bark));
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-sand-bleached) 20%, transparent);
+  transition: transform var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.railItemThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.railItem:hover .railItemThumb,
+.railItem:focus .railItemThumb {
+  transform: scale(1.04);
 }
 
 .railItemZip {

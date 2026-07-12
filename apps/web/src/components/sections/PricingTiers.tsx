@@ -3,10 +3,12 @@
 /**
  * PricingTiers — three-row pricing card with featured middle.
  *
- * Reads `lib/content.ts → pricingTiers`. Featured tier lifts and
- * wears a sun ribbon. Cards fade-up stagger on enter; no number
- * animation (we want the numbers to be exactly what we billed
- * the customer — animated count-up reads dishonest).
+ * Reads `lib/content.ts → pricingHeader` for section copy
+ * (eyebrow, heading, subhead, featured ribbon, CTA label) and
+ * `lib/content.ts → pricingTiers` for tier data. Featured tier
+ * lifts and wears a sun ribbon. Cards fade-up stagger on enter;
+ * no number animation (we want the numbers to be exactly what
+ * we billed the customer — animated count-up reads dishonest).
  */
 
 import { ArrowRight } from 'lucide-react';
@@ -16,7 +18,7 @@ import type { ReactNode } from 'react';
 import { StaggerGroup } from '@/components/motion';
 import { Eyebrow, Section } from '@/components/site';
 import { cn } from '@/lib/cn';
-import { pricingTiers } from '@/lib/content';
+import { pricingHeader, pricingTiers } from '@/lib/content';
 
 import styles from './PricingTiers.module.css';
 
@@ -30,14 +32,10 @@ export function PricingTiers({ className }: PricingTiersProps): ReactNode {
       <div className="container">
         <header className={styles.header}>
           <Eyebrow tone="default" dot className={styles.headerEyebrow}>
-            04 — Pricing
+            {pricingHeader.eyebrow}
           </Eyebrow>
-          <h2 className={styles.headerHeading}>What it costs.</h2>
-          <p className={styles.headerSub}>
-            Floor pricing, per visit or per project. Most lawns fall inside the floor; bigger yards,
-            slopes, and gated back-fences bump the price. No subscription, no contract, no surprise
-            fees.
-          </p>
+          <h2 className={styles.headerHeading}>{pricingHeader.heading}</h2>
+          <p className={styles.headerSub}>{pricingHeader.subhead}</p>
         </header>
 
         <StaggerGroup as="div" className={styles.grid} childDelay={0.1}>
@@ -45,7 +43,7 @@ export function PricingTiers({ className }: PricingTiersProps): ReactNode {
             <div key={tier.title} className={cn(styles.card, tier.featured && styles.cardFeatured)}>
               {tier.featured ? (
                 <span className={styles.ribbon} aria-hidden="true">
-                  Most booked
+                  {pricingHeader.ribbon}
                 </span>
               ) : null}
               <p className={styles.eyebrow}>{tier.eyebrow}</p>
@@ -56,7 +54,7 @@ export function PricingTiers({ className }: PricingTiersProps): ReactNode {
               </p>
               <p className={styles.body}>{tier.body}</p>
               <Link href="/quote" className={styles.cta}>
-                Get a quote <ArrowRight size={16} aria-hidden="true" />
+                {pricingHeader.ctaLabel} <ArrowRight size={16} aria-hidden="true" />
               </Link>
             </div>
           ))}

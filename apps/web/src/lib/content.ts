@@ -75,6 +75,23 @@ export const serviceAreaMap = {
     '33774': 'Largo / Ridgecrest',
     '33778': 'Seminole / Largo West',
   },
+  /**
+   * Per-ZIP thumbnail map. Sources are ComfyUI-generated webps
+   * produced against `apps/comfyui/prompts/area.md`; rendered
+   * alongside each rail row so the previously-orphaned area
+   * imagery lands on the page where it was always meant to live.
+   * Generic alt text — these are abstract illustrations, not
+   * neighborhood photography.
+   */
+  areaImages: {
+    '33756': '/areas/33756.webp',
+    '33770': '/areas/33770.webp',
+    '33771': '/areas/33771.webp',
+    '33773': '/areas/33773.webp',
+    '33774': '/areas/33774.webp',
+    '33778': '/areas/33778.webp',
+  },
+  areaImageAlt: 'Abstract illustration of a Largo-area neighborhood.',
 } as const;
 
 /**
@@ -205,6 +222,15 @@ export const processSteps = [
     body: 'No subscription, no contract. Pay after each visit or set up monthly — your call.',
   },
 ] as const;
+
+export const pricingHeader = {
+  eyebrow: '04 — Pricing',
+  heading: 'What it costs.',
+  subhead:
+    'Floor pricing, per visit or per project. Most lawns fall inside the floor; bigger yards, slopes, and gated back-fences bump the price. No subscription, no contract, no surprise fees.',
+  ribbon: 'Most booked',
+  ctaLabel: 'Get a quote',
+} as const;
 
 export const pricingTiers = [
   {

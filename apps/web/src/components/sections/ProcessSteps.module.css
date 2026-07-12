@@ -17,6 +17,23 @@
   margin-bottom: var(--space-8);
 }
 
+@media (min-width: 720px) {
+  .header {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-6);
+    max-width: none;
+  }
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 42rem;
+}
+
 .headerEyebrow {
   color: var(--ll-clay);
 }
@@ -29,6 +46,32 @@
   letter-spacing: -0.015em;
   color: var(--ll-palm-bark);
   margin: 0;
+}
+
+/* Decorative header accent — reuses the mowing service webp
+   to tie this section visually back to the bento above. */
+.headerMedia {
+  width: clamp(120px, 18vw, 180px);
+  aspect-ratio: 16 / 9;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--elevation-2);
+  background: var(--ll-cream);
+}
+
+.headerMedia img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.icon {
+  width: 28px;
+  height: 28px;
+  color: var(--ll-clay);
+  margin-bottom: calc(var(--space-1) * -1);
 }
 
 .grid {

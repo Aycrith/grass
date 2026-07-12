@@ -127,8 +127,22 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
             <p className={styles.railTitle}>{serviceAreaMap.railTitle}</p>
             {BUSINESS.service_area_zips.map((zip) => {
               const name = serviceAreaMap.pinLocations[zip] ?? 'Largo area';
+              const thumbSrc = serviceAreaMap.areaImages[zip];
               return (
                 <Link key={zip} href={`/areas/${zip}`} className={styles.railItem}>
+                  <span className={styles.railItemThumb}>
+                    {thumbSrc ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={thumbSrc}
+                        alt={serviceAreaMap.areaImageAlt}
+                        loading="lazy"
+                        decoding="async"
+                        width={120}
+                        height={67}
+                      />
+                    ) : null}
+                  </span>
                   <span className={styles.railItemZip}>{zip}</span>
                   <span className={styles.railItemName}>{name}</span>
                 </Link>
