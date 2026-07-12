@@ -144,7 +144,7 @@ export function SiteFooter({ className }: SiteFooterProps): ReactNode {
         </div>
 
         <div className={styles.bottom}>
-          <span>
+          <span data-visual-mask="year">
             © {year} {BUSINESS.legal_entity}. All rights reserved.
           </span>
           <ul className={styles.legalLinks}>
