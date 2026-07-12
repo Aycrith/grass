@@ -45,6 +45,39 @@ export const trustStrip = {
 } as const;
 
 /**
+ * Service area map — section 06 on the landing page.
+ *
+ * Renders the schematic Pinellas peninsula with 6 ZIP pins (one per
+ * `BUSINESS.service_area_zips`). `pinLocations` pairs each ZIP with a
+ * neighborhood label rendered both inside the pin tooltip and in
+ * the side rail. Layout coordinates (x/y per pin) live in the
+ * component, not here — they're SVG layout config, not copy.
+ *
+ * Adding a new service-area ZIP only needs two edits:
+ *   1. Add the ZIP to `BUSINESS.service_area_zips` and
+ *      `PIN_LAYOUT` (in the component).
+ *   2. Add the matching label here.
+ */
+export const serviceAreaMap = {
+  eyebrow: '06 — Where I mow',
+  heading: 'Six ZIPs, one route.',
+  subhead:
+    'We keep the service area tight on purpose — six ZIPs across Largo and the adjacent Pinellas neighborhoods. If you are right outside one of these, ask; I sometimes make exceptions for yards next door.',
+  svgAriaLabel: 'Map of Largo Lawn service area with six ZIPs marked',
+  tampaBayLabel: 'Tampa Bay',
+  gulfOfMexicoLabel: 'Gulf of Mexico',
+  railTitle: 'Service areas',
+  pinLocations: {
+    '33756': 'Belleair / Clearwater',
+    '33770': 'Belleair Bluffs / Largo',
+    '33771': 'Largo (central)',
+    '33773': 'Largo (east)',
+    '33774': 'Largo / Ridgecrest',
+    '33778': 'Seminole / Largo West',
+  },
+} as const;
+
+/**
  * Service line items. Slugs match `/services/[slug]` routes and the keys in
  * `business.ts → PRICING_FLOOR_CENTS`. `featured: true` flags the bento card
  * that spans two columns on desktop.
