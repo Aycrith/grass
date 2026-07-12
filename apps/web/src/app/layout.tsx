@@ -77,16 +77,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
+        <a className="skip-link" href="#main">
+          Skip to main content
+        </a>
         <header className="site-header">
           <div className="container">
             <a href="/" className="brand">
-              <img
-                src="/logo-mark.svg"
-                alt=""
-                className="brand-mark"
-                width={32}
-                height={32}
-              />
+              <img src="/logo-mark.svg" alt="" className="brand-mark" width={32} height={32} />
               {BUSINESS.name}
             </a>
             <nav>
@@ -113,7 +110,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </nav>
           </div>
         </header>
-        <main>{children}</main>
+        <main id="main">{children}</main>
         <footer className="site-footer">
           <div className="container">
             <p>

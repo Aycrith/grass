@@ -74,6 +74,34 @@ a:hover {
   text-decoration: underline;
 }
 
+/* ----- Accessibility: skip-link -----
+ *
+ * Hidden by default; revealed when the link receives keyboard focus
+ * (Tab key from the URL bar). Mirrors the spec in
+ * src/styles/layout.css — duplicated here because layout.css isn't
+ * currently imported (it's part of the new sections-library CSS
+ * bundle that will land in a separate workstream).
+ */
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  padding: 0.75rem 1.25rem;
+  background: var(--ll-sand);
+  color: white;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 0 0 var(--radius) 0;
+  transform: translateY(-110%);
+  transition: transform 0.18s ease-out;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
 .container {
   max-width: var(--max-width);
   margin: 0 auto;
