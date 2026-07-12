@@ -233,6 +233,12 @@ export const pricingTiers = [
   },
 ] as const;
 
+export const faqHeader = {
+  eyebrow: '08 — Questions',
+  heading: 'Honest answers.',
+  subhead: 'A few things people ask before the first visit. No surprises, no fine print.',
+} as const;
+
 export const faq = [
   {
     q: 'What if it rains on my scheduled day?',
