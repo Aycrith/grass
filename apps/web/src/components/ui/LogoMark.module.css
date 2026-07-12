@@ -1,0 +1,11 @@
+/* LogoMark — Mission 1 brand mark wrapper.
+ *
+ * Renders the raster mark from /public/logo-mark.svg at the requested
+ * pixel size. Inherits the parent's text color via currentColor inside
+ * the SVG; here we just size + box the image.
+ */
+
+.mark {
+  display: inline-block;
+  flex-shrink: 0;
+}

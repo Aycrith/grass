@@ -1,0 +1,159 @@
+/* ============================================================
+ * Typography — Mission 1
+ *
+ * Inter (variable, loaded via next/font/google): body, prose, nav.
+ * Fraunces (variable, loaded via next/font/google): display h1/h2 only.
+ *
+ * Self-hosted woff2 subsets, `font-display: swap`, preload on
+ * layout.tsx. No Google Fonts CDN @import.
+ *
+ * Consumes the type-scale tokens from styles/tokens.css.
+ * ============================================================ */
+
+html,
+body {
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: var(--type-body);
+  line-height: var(--type-body-line);
+  color: var(--color-text);
+  font-feature-settings: "cv11", "ss01", "ss03";
+  font-variant-numeric: lining-nums proportional-nums;
+}
+
+/* Apply display font to headlines only (Fraunces). */
+h1.display,
+h2.display,
+.display {
+  font-family: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  font-feature-settings: "ss01", "liga";
+}
+
+/* ---------- Type scale utilities (apply to plain h1/h2/h3/h4) ---------- */
+
+h1 {
+  font-size: var(--type-h1);
+  line-height: var(--type-h1-line);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ll-charcoal);
+  margin-block: var(--space-6) var(--space-4);
+}
+
+h2 {
+  font-size: var(--type-h2);
+  line-height: var(--type-h2-line);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ll-charcoal);
+  margin-block: var(--space-6) var(--space-3);
+}
+
+h3 {
+  font-size: var(--type-h3);
+  line-height: var(--type-h3-line);
+  font-weight: 600;
+  color: var(--ll-green);
+  margin-block: var(--space-5) var(--space-2);
+}
+
+h4 {
+  font-size: var(--type-body);
+  line-height: var(--type-body-line);
+  font-weight: 600;
+  color: var(--ll-charcoal);
+  margin-block: var(--space-4) var(--space-2);
+}
+
+p {
+  margin-block: 0 var(--space-4);
+  line-height: var(--type-body-line);
+}
+
+small,
+.text-small {
+  font-size: var(--type-small);
+  line-height: var(--type-small-line);
+}
+
+.eyebrow {
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: var(--type-eyebrow);
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ll-clay);
+}
+
+/* Display moments (used inside Hero / section openers) */
+.display-xl {
+  font-family: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  font-weight: 900;
+  font-size: var(--type-display-lg);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  color: var(--ll-palm-bark);
+}
+
+.display-lg {
+  font-family: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  font-weight: 800;
+  font-size: var(--type-display-md);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--ll-palm-bark);
+}
+
+.display-sm {
+  font-family: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  font-weight: 700;
+  font-size: var(--type-display-sm);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--ll-palm-bark);
+}
+
+/* Link defaults (callers can override) */
+a {
+  color: var(--ll-sky);
+  text-decoration: none;
+  transition: color var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--ll-sun);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ---------- Mobile type scale (≤640px) ---------- */
+
+@media (max-width: 640px) {
+  h1 {
+    font-size: var(--type-hero);
+    line-height: var(--type-hero-line);
+  }
+  h2 {
+    font-size: var(--type-h1);
+    line-height: var(--type-h1-line);
+  }
+  h3 {
+    font-size: var(--type-h2);
+    line-height: var(--type-h2-line);
+  }
+  .display-xl,
+  .display-lg {
+    letter-spacing: -0.03em;
+  }
+}

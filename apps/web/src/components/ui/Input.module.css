@@ -1,0 +1,123 @@
+/* ============================================================
+ * Input — Mission 1
+ *
+ * Field primitives for forms. Wraps a <label> + control +
+ * optional helper/error text. Styling stays neutral — error
+ * state is a left border accent.
+ *
+ * Note: we deliberately do NOT use CSS Modules `composes` here
+ * because the project's biome config does not parse CSS Modules
+ * syntax. The shared styles are inlined in .textarea / .select.
+ * ============================================================ */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ll-palm-bark);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.required {
+  color: var(--color-error);
+  font-weight: 700;
+}
+
+/* Shared input control surface. .textarea and .select duplicate the
+ * shape so the biome CSS parser can lint the files without enabling
+ * the optional CSS Modules syntax. Keep the three in lockstep. */
+.control,
+.textarea,
+.select {
+  width: 100%;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--ll-palm-bark);
+  background: var(--ll-shell);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  transition: border-color var(--motion-duration-fast) var(--motion-easing-default), box-shadow
+    var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.control::placeholder,
+.textarea::placeholder {
+  color: var(--gray-700);
+  opacity: 0.7;
+}
+
+.control:hover:not(:disabled),
+.textarea:hover:not(:disabled),
+.select:hover:not(:disabled) {
+  border-color: var(--ll-sage-muted);
+}
+
+.control:focus,
+.textarea:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--ll-palm-shadow);
+  box-shadow: 0 0 0 3px var(--ll-sun);
+}
+
+.control:disabled,
+.textarea:disabled,
+.select:disabled {
+  background: var(--ll-cream);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ---------- Variants ---------- */
+
+.textarea {
+  resize: vertical;
+  min-height: 6rem;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ll-palm-bark) 50%),
+    linear-gradient(135deg, var(--ll-palm-bark) 50%, transparent 50%);
+  background-position: calc(100% - 18px) calc(50% - 2px), calc(100% - 13px) calc(50% - 2px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 2.5rem;
+}
+
+/* ---------- States ---------- */
+
+.error .control,
+.error .textarea,
+.error .select {
+  border-color: var(--color-error);
+}
+
+.error .control:focus,
+.error .textarea:focus,
+.error .select:focus {
+  box-shadow: 0 0 0 3px rgba(193, 71, 53, 0.2);
+}
+
+.helper {
+  font-size: 0.8rem;
+  color: var(--gray-700);
+  line-height: 1.4;
+}
+
+.errorText {
+  font-size: 0.8rem;
+  color: var(--color-error);
+  font-weight: 500;
+  line-height: 1.4;
+}

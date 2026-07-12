@@ -1,0 +1,194 @@
+/* ============================================================
+ * Card — Mission 1
+ *
+ * Variants: service | area | pricing | insight
+ * Each variant layers a hover treatment on the base surface.
+ * All values reference tokens from src/styles/tokens.css.
+ * ============================================================ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  background: var(--ll-shell);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: box-shadow var(--motion-duration-base) var(--motion-easing-default), transform
+    var(--motion-duration-base) var(--motion-easing-default), border-color
+    var(--motion-duration-base) var(--motion-easing-default);
+  position: relative;
+}
+
+.root:hover {
+  box-shadow: var(--elevation-2);
+  transform: translateY(-4px);
+  border-color: var(--ll-sage-muted);
+}
+
+/* ---------- Image region (service / area) ---------- */
+
+.image {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--ll-cream);
+  overflow: hidden;
+}
+
+.image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--motion-duration-slow) var(--motion-easing-default);
+}
+
+.root:hover .image img {
+  transform: scale(1.03);
+}
+
+.imagePlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--ll-sand-bleached) 0%, var(--ll-cream) 100%);
+  color: var(--ll-clay);
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+/* ---------- Body ---------- */
+
+.body {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  flex: 1;
+}
+
+.eyebrow {
+  font-family: var(--font-inter);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ll-clay);
+}
+
+.title {
+  font-family: var(--font-fraunces), serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--ll-palm-shadow);
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.summary {
+  color: var(--ll-palm-bark);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  opacity: 0.85;
+  margin: 0;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: var(--space-3);
+  gap: var(--space-3);
+}
+
+.price {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--ll-clay);
+  letter-spacing: -0.01em;
+}
+
+.cta {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ll-palm-shadow);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.cta:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ---------- Featured card (mowing in the services bento) ---------- */
+
+.featured {
+  border-color: var(--ll-sand);
+  background: var(--ll-sand-bleached);
+}
+
+.featured::before {
+  content: "Featured";
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--ll-sand);
+  color: var(--ll-shell);
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-pill);
+  z-index: 2;
+}
+
+/* ---------- Pricing card variant ---------- */
+
+.pricing {
+  padding: var(--space-7) var(--space-6);
+  background: var(--ll-shell);
+}
+
+.pricing.featured {
+  background: var(--ll-sand-bleached);
+  border-color: var(--ll-sun);
+  box-shadow: var(--elevation-2);
+}
+
+.pricing.featured::before {
+  background: var(--ll-sun);
+  color: var(--ll-palm-bark);
+  content: "Most chosen";
+}
+
+.priceLarge {
+  font-family: var(--font-fraunces), serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--ll-palm-shadow);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.priceCadence {
+  display: block;
+  font-family: var(--font-inter);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--gray-700);
+  margin-top: var(--space-1);
+}
+
+/* ---------- Image-less variant (insight / process step) ---------- */
+
+.insight .body {
+  padding: var(--space-6) var(--space-6) var(--space-6);
+}

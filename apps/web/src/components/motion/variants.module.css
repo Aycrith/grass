@@ -1,0 +1,50 @@
+/* Motion primitives — CSS Module companion to components/motion/variants.tsx.
+ *
+ * These exist because the project deliberately skips Tailwind (per PRD-01).
+ * The animation helpers need a small set of layout primitives that aren't
+ * brand-aware: a clip-window for word reveals, a relative overflow wrapper
+ * for parallax images, and a sticky viewport-pin scaffold.
+ */
+
+/* WordReveal — outer container holds the words in inline flow. */
+.wordRevealRoot {
+  display: inline-block;
+}
+
+/* Per-word clip window. The motion.span inside is translated
+   vertically by Framer variants; overflow:hidden is what hides
+   the off-screen translation so each word appears to "rise" into view. */
+.wordWindow {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: baseline;
+}
+
+/* The motion.span itself just needs to be display: inline-block
+   so its transforms compute correctly inside the clip window. */
+.wordInner {
+  display: inline-block;
+}
+
+/* ParallaxImage — the outer viewport clips the parallaxing
+   image so it can't leak into adjacent sections. */
+.parallaxViewport {
+  position: relative;
+  overflow: hidden;
+}
+
+/* PinnedSection — outer spacer is `relative` because the sticky
+   child is positioned against it; the inner sticky div fills the
+   viewport for the full pin duration. */
+.pinnedSpacer {
+  position: relative;
+}
+
+.pinnedStage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}

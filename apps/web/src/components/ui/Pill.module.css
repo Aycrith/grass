@@ -1,0 +1,73 @@
+/* ============================================================
+ * Pill — Mission 1
+ *
+ * Tiny badge / chip used for ZIP markers, status labels, and
+ * metadata rows. Not for CTA buttons.
+ * ============================================================ */
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0.25rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* ---------- Tones ---------- */
+
+.neutral {
+  background: var(--ll-cream);
+  color: var(--ll-palm-bark);
+  border-color: var(--color-border);
+}
+
+.accent {
+  background: var(--ll-sun);
+  color: var(--ll-palm-bark);
+}
+
+.sage {
+  background: var(--ll-sage-muted);
+  color: var(--ll-shell);
+}
+
+.dark {
+  background: var(--ll-palm-shadow);
+  color: var(--ll-sand-bleached);
+}
+
+.outline {
+  background: transparent;
+  color: var(--ll-palm-bark);
+  border-color: var(--ll-palm-shadow);
+}
+
+.danger {
+  background: var(--color-error);
+  color: var(--ll-shell);
+}
+
+/* ---------- Sizes ---------- */
+
+.sm {
+  font-size: 0.65rem;
+  padding: 0.15rem 0.55rem;
+}
+
+.md {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.7rem;
+}
+
+.lg {
+  font-size: 0.85rem;
+  padding: 0.35rem 0.95rem;
+  letter-spacing: 0.05em;
+}

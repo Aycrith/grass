@@ -1,0 +1,108 @@
+/* ============================================================
+ * Accordion — Mission 1
+ *
+ * Radix-backed. Hairline dividers between rows. Chevron rotates
+ * 180° when open. Used by FAQAccordion (Phase G) and any future
+ * settings-style disclosure lists.
+ * ============================================================ */
+
+.root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.item:first-child {
+  border-top: 1px solid var(--color-border);
+}
+
+.trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-5) 0;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ll-palm-bark);
+  cursor: pointer;
+  text-align: left;
+  transition: color var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.trigger:hover {
+  color: var(--ll-palm-shadow);
+}
+
+.trigger[data-state="open"] .chevron {
+  transform: rotate(180deg);
+}
+
+.chevron {
+  flex-shrink: 0;
+  width: 1.1em;
+  height: 1.1em;
+  color: var(--ll-clay);
+  transition: transform var(--motion-duration-base) var(--motion-easing-default);
+}
+
+.content {
+  overflow: hidden;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+}
+
+.content[data-state="open"] {
+  animation: slideDown var(--motion-duration-base) var(--motion-easing-default);
+}
+
+.content[data-state="closed"] {
+  animation: slideUp var(--motion-duration-base) var(--motion-easing-default);
+}
+
+.contentInner {
+  padding-block: 0 var(--space-5);
+  max-width: var(--max-width-prose);
+}
+
+@keyframes slideDown {
+  from {
+    height: 0;
+    opacity: 0.4;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content[data-state="open"],
+  .content[data-state="closed"] {
+    animation: none;
+  }
+  .chevron {
+    transition: none;
+  }
+}

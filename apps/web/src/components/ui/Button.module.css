@@ -1,0 +1,122 @@
+/* ============================================================
+ * Button — Mission 1
+ *
+ * Variants: primary | sun | sand | outline | ghost | danger
+ * Sizes:    sm | md | lg
+ * Renders as <button>, <a>, or <Link> depending on `as` / href.
+ * All values reference tokens from src/styles/tokens.css.
+ * ============================================================ */
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: inherit;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background-color var(--motion-duration-fast) var(--motion-easing-default),
+    border-color var(--motion-duration-fast) var(--motion-easing-default), color
+    var(--motion-duration-fast) var(--motion-easing-default), transform var(--motion-duration-fast)
+    var(--motion-easing-default);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.root:disabled,
+.root[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.root:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+/* ---------- Sizes ---------- */
+
+.sm {
+  font-size: 0.85rem;
+  padding: 0.45rem 0.95rem;
+  line-height: 1.2;
+}
+
+.md {
+  font-size: 0.95rem;
+  padding: 0.65rem 1.25rem;
+  line-height: 1.3;
+}
+
+.lg {
+  font-size: 1.05rem;
+  padding: 0.85rem 1.6rem;
+  line-height: 1.3;
+}
+
+/* ---------- Variants ---------- */
+
+.primary {
+  background: var(--ll-palm-shadow);
+  color: var(--ll-sand-bleached);
+}
+
+.primary:hover:not(:disabled) {
+  background: var(--ll-green-hover);
+}
+
+.sun {
+  background: var(--ll-sun);
+  color: var(--ll-palm-bark);
+}
+
+.sun:hover:not(:disabled) {
+  background: #d9a548;
+}
+
+.sand {
+  background: var(--ll-sand);
+  color: var(--ll-shell);
+}
+
+.sand:hover:not(:disabled) {
+  background: #c8985f;
+}
+
+.outline {
+  background: transparent;
+  color: var(--ll-palm-shadow);
+  border-color: var(--ll-palm-shadow);
+}
+
+.outline:hover:not(:disabled) {
+  background: var(--ll-palm-shadow);
+  color: var(--ll-sand-bleached);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--ll-palm-bark);
+}
+
+.ghost:hover:not(:disabled) {
+  background: var(--ll-cream);
+}
+
+.danger {
+  background: var(--color-error);
+  color: var(--ll-shell);
+}
+
+.danger:hover:not(:disabled) {
+  background: #b33f2a;
+}
+
+/* ---------- Inverse (for dark backgrounds) ---------- */
+
+.primary.inverse,
+.sun.inverse {
+  color: var(--ll-palm-bark);
+}

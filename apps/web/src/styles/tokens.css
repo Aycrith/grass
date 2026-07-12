@@ -1,0 +1,153 @@
+/* ============================================================
+ * Mission 1 design tokens — Largo Lawn
+ * Single source of truth for every CSS custom property.
+ *
+ * Brand-locked (from brand/guidelines.md) + the expanded
+ * "Pinellas-evocative" palette from product/front-end-redesign/01-design-system-prd.md.
+ * The 5 brand-locked tokens stay as semantic aliases for
+ * header logo, NAP block, and primary CTAs.
+ *
+ * Editing rule: every color, spacing, radius, elevation, or
+ * motion value used in the app must be declared here. No
+ * one-offs in component CSS modules. CI lint enforces this.
+ * ============================================================ */
+
+:root {
+  /* ---------- Brand palette (locked — do not deviate) ---------- */
+  --ll-green: #1f4e2c; /* primary brand green */
+  --ll-sand: #d4a574; /* secondary accent — Florida earth */
+  --ll-sky: #3b7dd8; /* trust / links */
+  --ll-charcoal: #1a1a1a; /* body text */
+  --ll-cream: #faf6f0; /* backgrounds (warm off-white) */
+
+  /* Note: services/hurricane-prep.svg is INTENTIONALLY dark-toned.
+     The "hurricane mode" capability (state/capability-registry.yaml →
+     cap_hurricane_mode) flips BUSINESS.hurricaneModeActive; when true,
+     <HurricaneBanner /> mounts site-wide. The dark service hero is
+     paired with that banner and is NOT a palette regression. Do NOT
+     "fix" hurricane-prep to bright tones. */
+
+  /* Brand palette derivatives */
+  --ll-green-hover: #2a6638; /* primary CTA hover */
+  --ll-cream-deep: #f2ebdf; /* secondary surface */
+
+  /* ---------- Expanded Pinellas-evocative palette ---------- */
+  --ll-palm-shadow: #2d5a3d; /* deep green; section bg */
+  --ll-palm-light: #6b9b7e; /* subdued green; tag bg */
+  --ll-gulf: #2e6b8c; /* navy; secondary headings */
+  --ll-sun: #e8b65a; /* warm gold; ribbon / badge */
+  --ll-clay: #b5651d; /* brick accent; emphasis */
+  --ll-sand-bleached: #f4e8d0; /* warm bone; hero / section bg */
+  --ll-shell: #ffffff; /* pure white; card bg */
+  --ll-palm-bark: #1a1f1b; /* near-black with green tint */
+  --ll-sage-muted: #8fa89b; /* muted green; borders / dividers */
+
+  /* ---------- Semantic aliases (consume via these) ---------- */
+  --color-primary: var(--ll-green);
+  --color-primary-hover: var(--ll-green-hover);
+  --color-accent: var(--ll-sand);
+  --color-cta: var(--ll-sky);
+  --color-text: var(--ll-charcoal);
+  --color-text-muted: #4a4a4a;
+  --color-bg: var(--ll-shell);
+  --color-bg-soft: var(--ll-cream);
+  --color-bg-warm: var(--ll-sand-bleached);
+  --color-bg-deep: var(--ll-palm-shadow);
+  --color-border: #e5e0d6;
+  --color-border-strong: var(--ll-sage-muted);
+  --color-error: #b3261e;
+
+  /* ---------- Type scale (PX, mobile-first) ---------- */
+  /* Body & prose (per brand/guidelines.md) */
+  --type-body: 16px;
+  --type-body-line: 24px;
+  --type-small: 14px;
+  --type-small-line: 20px;
+  --type-caption: 12px;
+  --type-caption-line: 16px;
+  --type-eyebrow: 11px;
+
+  /* Headings (per brand/guidelines.md) */
+  --type-h3: 22px;
+  --type-h3-line: 30px;
+  --type-h2: 28px;
+  --type-h2-line: 36px;
+  --type-h1: 36px;
+  --type-h1-line: 44px;
+  --type-hero: 48px;
+  --type-hero-line: 56px;
+
+  /* Display (Fraunces, EarthSlice-style — clamp() for fluid type) */
+  --type-display-sm: clamp(2.5rem, 4vw, 3.5rem); /* 40 → 56 */
+  --type-display-md: clamp(3rem, 5.5vw, 4.5rem); /* 48 → 72 */
+  --type-display-lg: clamp(3.5rem, 7vw, 7rem); /* 56 → 112 */
+
+  /* ---------- Spacing (8-pt grid with sub-units) ---------- */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 48px;
+  --space-10: 64px;
+  --space-11: 80px;
+  --space-12: 96px;
+  --space-13: 128px;
+  --space-14: 160px;
+  --space-15: 192px;
+  --space-16: 256px;
+
+  /* ---------- Border radius ---------- */
+  --radius-none: 0;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  /* Legacy alias — keep until all callers migrate */
+  --radius: var(--radius-md);
+
+  /* ---------- Elevation ---------- */
+  --elevation-0: none;
+  --elevation-1: 0 1px 2px rgba(26, 31, 27, 0.04), 0 2px 4px rgba(26, 31, 27, 0.04);
+  --elevation-2: 0 2px 4px rgba(31, 78, 44, 0.06), 0 8px 16px rgba(31, 78, 44, 0.08);
+  --elevation-3: 0 4px 8px rgba(26, 31, 27, 0.06), 0 16px 32px rgba(26, 31, 27, 0.1);
+  --elevation-4: 0 8px 16px rgba(26, 31, 27, 0.08), 0 24px 48px rgba(26, 31, 27, 0.14);
+  --elevation-inset: inset 0 1px 2px rgba(26, 31, 27, 0.06);
+
+  /* ---------- Motion tokens (consumed by Framer Motion + CSS) ---------- */
+  --motion-duration-fast: 150ms;
+  --motion-duration-base: 240ms;
+  --motion-duration-slow: 400ms;
+  --motion-duration-deliberate: 800ms;
+  --motion-duration-pinned: 1200ms;
+
+  --motion-easing-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-easing-emphasize: cubic-bezier(0.2, 0, 0, 1);
+  --motion-easing-emphasize-in: cubic-bezier(0.4, 0, 1, 1);
+  --motion-easing-out-quart: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-easing-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* ---------- Layout containers ---------- */
+  --max-width-prose: 720px; /* long-form reading (privacy/terms) */
+  --max-width-content: 1100px; /* legacy default — preserved */
+  --max-width-marketing: 1280px; /* landing + marketing */
+  --max-width-wide: 1440px;
+  --header-height: 72px;
+
+  /* ---------- Legacy aliases (kept until all callers migrate) ---------- */
+  --green-700: var(--ll-green);
+  --green-500: var(--ll-green-hover);
+  --green-100: var(--ll-cream-deep);
+  --gray-900: var(--ll-charcoal);
+  --gray-700: #4a4a4a;
+  --gray-300: var(--color-border);
+  --gray-100: var(--ll-cream);
+  --red-700: var(--color-error);
+  --max-width: var(--max-width-content);
+}

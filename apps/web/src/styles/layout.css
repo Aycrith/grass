@@ -1,0 +1,201 @@
+/* ============================================================
+ * Layout primitives — Mission 1
+ *
+ * Shared `.container`, `.section`, flex/grid helpers that the
+ * section components layer on top of. Token-driven; no hard-coded
+ * measurements in components.css.
+ * ============================================================ */
+
+.container {
+  width: 100%;
+  max-width: var(--max-width-content);
+  margin-inline: auto;
+  padding-inline: var(--space-6);
+}
+
+.container--marketing {
+  max-width: var(--max-width-marketing);
+}
+
+.container--wide {
+  max-width: var(--max-width-wide);
+}
+
+.container--prose {
+  max-width: var(--max-width-prose);
+}
+
+.section {
+  padding-block: var(--space-10);
+}
+
+.section--tight {
+  padding-block: var(--space-7);
+}
+
+.section--loose {
+  padding-block: var(--space-13);
+}
+
+.section--hero {
+  padding-block: var(--space-12);
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+}
+
+.section--dark {
+  background: var(--color-bg-deep);
+  color: var(--ll-sand-bleached);
+}
+
+.section--warm {
+  background: var(--color-bg-warm);
+}
+
+.section--soft {
+  background: var(--color-bg-soft);
+}
+
+/* Flex / grid helpers */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.stack--tight {
+  gap: var(--space-2);
+}
+
+.stack--loose {
+  gap: var(--space-6);
+}
+
+.row {
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+/* Grid (used by services bento, area map, footer columns) */
+.grid {
+  display: grid;
+  gap: var(--space-5);
+}
+
+/* Visually hidden — for a11y labels */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Long-form prose (privacy, terms) */
+.prose {
+  max-width: var(--max-width-prose);
+  line-height: 1.7;
+  color: var(--ll-charcoal);
+}
+
+.prose h2 {
+  font-size: var(--type-h2);
+  margin-block: var(--space-8) var(--space-3);
+}
+
+.prose h3 {
+  font-size: var(--type-h3);
+  margin-block: var(--space-6) var(--space-2);
+}
+
+.prose p,
+.prose li {
+  margin-block: 0 var(--space-3);
+}
+
+.prose ul,
+.prose ol {
+  padding-inline-start: var(--space-6);
+  margin-block: 0 var(--space-4);
+}
+
+.prose ul {
+  list-style: disc;
+}
+
+.prose ol {
+  list-style: decimal;
+}
+
+.prose a {
+  color: var(--ll-sky);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.prose blockquote {
+  border-inline-start: 3px solid var(--ll-sand);
+  margin-block: var(--space-4);
+  padding-inline-start: var(--space-4);
+  color: var(--gray-700);
+  font-style: italic;
+}
+
+/* ---------- Mobile helpers ---------- */
+@media (max-width: 768px) {
+  .container {
+    padding-inline: var(--space-5);
+  }
+  .section {
+    padding-block: var(--space-9);
+  }
+  .section--hero {
+    padding-block: var(--space-10);
+    min-height: auto;
+  }
+}
+
+/* ============================================================
+ * Skip-to-content link (a11y)
+ *
+ * Visually hidden until focused (keyboard Tab). The link points to
+ * <main id="main"> so keyboard / screen-reader users bypass the header
+ * navigation. Brand-loud on focus: sun fill + palm-bark text so it
+ * reads as an intended affordance, not a debug element.
+ * ============================================================ */
+
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  padding: var(--space-3) var(--space-5);
+  background: var(--ll-sun);
+  color: var(--ll-palm-bark);
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  border-radius: 0 0 var(--radius) 0;
+  box-shadow: var(--elevation-2);
+  transform: translateY(-110%);
+  transition: transform 0.18s var(--ease-out, ease-out);
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 3px solid var(--ll-palm-bark);
+  outline-offset: 2px;
+}
+
+/* When the user is navigating with prefers-reduced-motion, the skip
+   link still snaps into place — skipping navigation is a critical
+   affordance, not decoration. */
