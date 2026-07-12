@@ -124,3 +124,6 @@ prisma/migrations/dev/
 # and ARE committed.
 apps/comfyui/outputs/
 apps/comfyui/curated/
+
+# --- WP4 Lighthouse audit JSONs (reproducible; keep SUMMARY.md committed) ---
+audit/wp4-lighthouse/*.json
