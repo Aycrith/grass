@@ -6,12 +6,30 @@
  *
  * Sticky emergency banner shows when `hurricaneMode` is triggered via
  * `cap_hurricane_mode` capability (see @grass/scheduling-core).
+ *
+ * Typography: Inter (body) + Fraunces (display) loaded via next/font/google
+ * and exposed as `--font-inter` / `--font-fraunces` CSS variables on `<html>`.
+ * typography.css consumes those variables. No Google Fonts CDN @import.
  */
 
 import { BUSINESS } from '@/lib/business';
 import { SiteFooter, SiteHeader } from '@/components/site';
 import type { Metadata } from 'next';
+import { Fraunces, Inter } from 'next/font/google';
 import './globals.css';
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--font-fraunces',
+  display: 'swap',
+  axes: ['opsz'],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://largolawn.pro'),
@@ -69,7 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   };
 
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${fraunces.variable}`}>
       <head>
         <script
           type="application/ld+json"
