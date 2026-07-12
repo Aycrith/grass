@@ -7,6 +7,7 @@ export { TrustStrip } from './TrustStrip';
 export { OperatorStrip } from './OperatorStrip';
 export { ServiceBento } from './ServiceBento';
 export { PricingTiers } from './PricingTiers';
+export { EditorialBreak } from './EditorialBreak';
 export { ProcessSteps } from './ProcessSteps';
 export { ServiceAreaMap } from './ServiceAreaMap';
 export { FAQAccordion } from './FAQAccordion';

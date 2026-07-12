@@ -26,6 +26,15 @@ export const BUSINESS = {
   service_area_zips: ['33770', '33771', '33773', '33774', '33778', '33756'] as const,
   // Sales tax is 6% FL + 0.75% Pinellas = 6.75% effective 2025-01-01.
   sales_tax_pct: 6.75,
+  /**
+   * Hurricane mode flag. When true, the site-wide HurricaneBanner
+   * mounts and the ServiceBento hurricane-prep card gains a 2px
+   * sun border + subtle ribbon pulse (visual signal that mirrors
+   * the banner). Defaults to false — steward flips it on when the
+   * `cap_hurricane_mode` capability is triggered (see
+   * state/capability-registry.yaml).
+   */
+  hurricaneModeActive: false,
   // Hurricane operating rule: no outdoor work in named-storm conditions or sustained
   // winds >=30 mph. Hard charter rule, enforced by scheduling constraint.
   hurricane_wind_threshold_mph: 30,

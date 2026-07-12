@@ -4,10 +4,10 @@
  * Targets: "lawn care Largo FL", "landscaping 33771", "yard maintenance Pinellas".
  * GBP-style NAP block matches schema.org/LandscapingBusiness in layout.
  *
- * Canonical section composition (10 sections, eyebrows 01-09):
+ * Canonical section composition (11 sections, eyebrows 01-09):
  *   HeroCinematic → TrustStrip → OperatorStrip → ServiceBento →
- *   PricingTiers → ProcessSteps → ServiceAreaMap → OperatorNote →
- *   FAQAccordion → FinalCTABanner
+ *   PricingTiers → EditorialBreak → ProcessSteps → ServiceAreaMap →
+ *   OperatorNote → FAQAccordion → FinalCTABanner
  *
  * `OperatorNote` is the typographic pause between the dark
  * ServiceAreaMap section and the FAQ. It carries the operator's
@@ -25,6 +25,7 @@
  * these for per-component screenshot baselines.
  */
 import {
+  EditorialBreak,
   FAQAccordion,
   FinalCTABanner,
   HeroCinematic,
@@ -52,6 +53,9 @@ export default function HomePage() {
 
       {/* 04 — Pricing */}
       <PricingTiers />
+
+      {/* 04.5 — Editorial break (full-bleed image pause) */}
+      <EditorialBreak />
 
       {/* 05 — Process */}
       <ProcessSteps />

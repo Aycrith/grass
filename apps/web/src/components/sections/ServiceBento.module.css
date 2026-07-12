@@ -238,3 +238,37 @@
 .cardHedge .cta {
   color: var(--ll-clay);
 }
+
+/* ---------- Hurricane-mode signal ----------
+ *
+ * When BUSINESS.hurricaneModeActive is true, the section exposes
+ * data-hurricane-mode="true" and the hurricane-prep card gains a
+ * 2px sun outline + a slow opacity pulse on the box-shadow. The
+ * signal mirrors the site-wide HurricaneBanner so the on-page
+ * intent matches the site-wide intent.
+ *
+ * Reduced-motion: the pulse is disabled; the outline alone
+ * carries the signal.
+ */
+
+.root[data-hurricane-mode="true"] .cardHurricane {
+  outline: 2px solid var(--ll-sun);
+  outline-offset: 2px;
+  animation: hurricanePulse var(--motion-duration-deliberate) var(--motion-easing-default) infinite
+    alternate;
+}
+
+@keyframes hurricanePulse {
+  from {
+    box-shadow: var(--elevation-2);
+  }
+  to {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--ll-sun) 30%, transparent), var(--elevation-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root[data-hurricane-mode="true"] .cardHurricane {
+    animation: none;
+  }
+}

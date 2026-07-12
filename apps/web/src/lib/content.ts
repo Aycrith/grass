@@ -232,6 +232,24 @@ export const pricingHeader = {
   ctaLabel: 'Get a quote',
 } as const;
 
+/**
+ * EditorialBreak — full-bleed image pause between PricingTiers
+ * (04) and ProcessSteps (05). Single image, single editorial
+ * line. The italic Fraunces headline is the only italic-on-photo
+ * in the section library — reads as deliberate editorial rather
+ * than CTA.
+ *
+ * Imagery: services.mowing.imageSlot is the proven keeper from
+ * the 2026-07-12 ComfyUI regeneration (storybook pipeline).
+ * Steward can swap to a different imageSlot by editing this const.
+ */
+export const editorialBreak = {
+  eyebrow: 'Every Tuesday, all year',
+  headline: 'The same yard, every week.',
+  imageSlot: services.mowing.imageSlot,
+  imageAlt: services.mowing.imageAlt,
+} as const;
+
 export const pricingTiers = [
   {
     eyebrow: 'Mowing',

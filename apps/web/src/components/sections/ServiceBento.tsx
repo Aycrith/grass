@@ -15,6 +15,12 @@
  *
  * Featured flag on `services.mowing` flips its column-span to 8
  * and gives it the sand gradient surface treatment.
+ *
+ * **Hurricane mode**: when `BUSINESS.hurricaneModeActive === true`,
+ * the section exposes `data-hurricane-mode="true"` and the
+ * hurricane-prep card gains a 2px sun border (the visual signal
+ * mirrors the site-wide HurricaneBanner). Stays dormant when the
+ * flag is false (default).
  */
 
 import { ArrowRight } from 'lucide-react';
@@ -24,7 +30,7 @@ import type { ReactNode } from 'react';
 
 import { StaggerGroup } from '@/components/motion';
 import { Eyebrow, Section } from '@/components/site';
-import { PRICING_FLOOR_CENTS } from '@/lib/business';
+import { BUSINESS, PRICING_FLOOR_CENTS } from '@/lib/business';
 import { cn } from '@/lib/cn';
 import { type ServiceKey, services } from '@/lib/content';
 
@@ -83,7 +89,11 @@ export function ServiceBento({ className }: ServiceBentoProps): ReactNode {
   ];
 
   return (
-    <Section rhythm="loose" className={cn(styles.root, className)}>
+    <Section
+      rhythm="loose"
+      className={cn(styles.root, className)}
+      data-hurricane-mode={BUSINESS.hurricaneModeActive ? 'true' : undefined}
+    >
       <div className="container">
         <header className={styles.header}>
           <Eyebrow tone="default" dot className={styles.headerEyebrow}>
