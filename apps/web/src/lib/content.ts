@@ -731,6 +731,22 @@ export const reviewPage = {
     "Most lawn-care complaints come down to one of three things: missed spots, edge cleanup, or timing. We want to fix any of those before they fester — text or call us and we'll be back within 48 hours to make it right. No charge for the return visit.",
   notRightTail:
     "This is the standard we hold ourselves to. Local reputation is everything when you're a solo operator — one bad review we didn't try to fix matters more than five great ones we never had to make right.",
+  /**
+   * WP13 gate. When false (default), ReviewMagnet renders the
+   * static "coming soon" card and phone CTA. When true,
+   * ReviewMagnetForm replaces the static card with the
+   * interactive 5-star selector + GBP-redirect / feedback-form
+   * branch. Steward flips this the day the GBP profile is
+   * verified.
+   */
+  reviewMagnetEnabled: false,
+  /**
+   * GBP write-a-review URL. Placeholder until GBP is verified —
+   * the steward replaces this with the live URL when the GBP
+   * profile goes active. ReviewMagnetForm appends
+   * `?src=review-magnet&zip=...` for attribution.
+   */
+  gbpUrl: 'https://g.page/r/largo-lawn/review',
 } as const;
 
 export const processSteps = [

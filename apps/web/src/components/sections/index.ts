@@ -32,6 +32,7 @@ export { ContactHero } from './ContactHero';
 export { QuoteHero } from './QuoteHero';
 export { QuoteConfirmation } from './QuoteConfirmation';
 export { ReviewMagnet } from './ReviewMagnet';
+export { ReviewMagnetForm } from './ReviewMagnetForm';
 export { FinalCTABanner } from './FinalCTABanner';
 export { TestimonialQuote } from './TestimonialQuote';
 export { OperatorNote } from './OperatorNote';

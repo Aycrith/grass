@@ -1,16 +1,25 @@
 /**
  * ReviewMagnet — `/review` body section.
  *
- * Two-card layout for the GBP-stub review page:
- *   1. "Google review coming soon" — pre-launch state, gives
- *      visitors a phone CTA instead of the GBP form.
- *   2. "When something isn't right" — the operator's guarantee
- *      that they'll return within 48 hours to fix anything.
+ * Three stacked sub-blocks:
+ *   1. Hero — eyebrow + h1 + tagline (cream surface).
+ *   2. Form card — gated on `reviewPage.reviewMagnetEnabled`.
+ *      - When false (default), renders the static "coming soon"
+ *        card + phone CTA.
+ *      - When true, renders <ReviewMagnetForm>, the interactive
+ *        5-star selector + GBP-redirect / feedback-form branch.
+ *   3. Not-right card — the operator's 48-hour guarantee
+ *      (always visible regardless of the gate).
  *
- * Both cards read from `lib/content.ts → reviewPage`. The full
- * star-rating branch and `/api/review-handler` wiring is the
- * WP13 follow-up (gated on `reviewPage.reviewMagnetEnabled`,
- * which is currently false everywhere).
+ * Both form-card and not-right-card read from
+ * `lib/content.ts → reviewPage`. The gate flag is the only
+ * difference between pre-launch and post-launch states — the
+ * steward flips `reviewPage.reviewMagnetEnabled` the day the
+ * GBP profile is verified.
+ *
+ * Tracking: every GBP redirect appends
+ * `?src=review-magnet&zip=...` so the GBP stub can attribute
+ * visits to the review-magnet flow.
  */
 
 import type { ReactNode } from 'react';
@@ -23,6 +32,7 @@ import { cn } from '@/lib/cn';
 import { reviewPage } from '@/lib/content';
 
 import styles from './ReviewMagnet.module.css';
+import { ReviewMagnetForm } from './ReviewMagnetForm';
 
 interface ReviewMagnetProps {
   className?: string | undefined;
@@ -47,21 +57,27 @@ export function ReviewMagnet({ className }: ReviewMagnetProps): ReactNode {
         <div className="container">
           <FadeUp className={styles.card}>
             <Eyebrow tone="default" dot>
-              Coming soon
+              {reviewPage.reviewMagnetEnabled ? 'How was it?' : 'Coming soon'}
             </Eyebrow>
-            <h2 className={styles.cardHeading}>{reviewPage.comingSoonTitle}</h2>
-            <p className={styles.cardBody}>{reviewPage.comingSoonBody}</p>
-            <p className={styles.cardTail}>{reviewPage.comingSoonTail}</p>
-            <div className={styles.cardActions}>
-              <Button
-                as="a"
-                href={`tel:${BUSINESS.phone.replace(/\D/g, '')}`}
-                variant="primary"
-                size="md"
-              >
-                {BUSINESS.phone}
-              </Button>
-            </div>
+            {reviewPage.reviewMagnetEnabled ? (
+              <ReviewMagnetForm />
+            ) : (
+              <>
+                <h2 className={styles.cardHeading}>{reviewPage.comingSoonTitle}</h2>
+                <p className={styles.cardBody}>{reviewPage.comingSoonBody}</p>
+                <p className={styles.cardTail}>{reviewPage.comingSoonTail}</p>
+                <div className={styles.cardActions}>
+                  <Button
+                    as="a"
+                    href={`tel:${BUSINESS.phone.replace(/\D/g, '')}`}
+                    variant="primary"
+                    size="md"
+                  >
+                    {BUSINESS.phone}
+                  </Button>
+                </div>
+              </>
+            )}
           </FadeUp>
         </div>
       </Section>

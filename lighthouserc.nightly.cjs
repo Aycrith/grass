@@ -4,25 +4,46 @@
  * Lighthouse CI full-sweep config — runs in the nightly cron
  * (lighthouse-nightly.yml).
  *
- * 6 PRD-00 §4 routes × 2 viewports = 12 Lighthouse audits per night.
- * Posts the day's delta to the steward via the artifacts; failures
- * open a GitHub issue.
+ * WP12 expansion: covers all 16 customer-facing routes × 2 viewports
+ * = 32 Lighthouse audits per night (was 6 × desktop = 6). The
+ * nightlies are for monitoring drift, not gating PRs — every
+ * assertion is `warn`, and the nightly budget thresholds are looser
+ * than the PR guard. Failures open a GitHub issue (see the
+ * lighthouse-nightly workflow).
  *
- * Budgets are looser than PR (which only catches the 4 primary routes
- * at desktop) because nightly CI has higher variance — the full sweep
- * is for monitoring drift, not gating PRs.
+ * Slack vs PR guard:
+ *   - PR guard (lighthouserc.cjs / lighthouserc.mobile.cjs) is
+ *     tight (≥95 categories, per-metric thresholds).
+ *   - Nightly is loose (≥85 perf, per-metric thresholds bumped
+ *     +500ms) because nightly CI has higher variance.
  */
+const PRD_ROUTES = [
+  '/',
+  '/services',
+  '/services/mowing',
+  '/services/edging',
+  '/services/mulching',
+  '/services/hedge-trimming',
+  '/services/hurricane-prep',
+  '/services/seasonal-cleanup',
+  '/areas',
+  '/areas/33756',
+  '/areas/33770',
+  '/areas/33771',
+  '/areas/33773',
+  '/areas/33774',
+  '/areas/33778',
+  '/pricing',
+  '/quote',
+  '/about',
+  '/contact',
+  '/review',
+];
+
 module.exports = {
   ci: {
     collect: {
-      url: [
-        'http://localhost:3000/',
-        'http://localhost:3000/services',
-        'http://localhost:3000/services/mowing',
-        'http://localhost:3000/areas/33771',
-        'http://localhost:3000/pricing',
-        'http://localhost:3000/quote',
-      ],
+      url: PRD_ROUTES.map((p) => `http://localhost:3000${p}`),
       numberOfRuns: 1,
       settings: {
         formFactor: 'desktop',
@@ -34,6 +55,9 @@ module.exports = {
       // Nightly is warn-only — we want monitoring, not block-on-change.
       assertions: {
         'categories:performance': ['warn', { minScore: 0.85 }],
+        'categories:accessibility': ['warn', { minScore: 0.9 }],
+        'categories:best-practices': ['warn', { minScore: 0.9 }],
+        'categories:seo': ['warn', { minScore: 0.9 }],
         'largest-contentful-paint': ['warn', { maxNumericValue: 3500 }],
         'cumulative-layout-shift': ['warn', { maxNumericValue: 0.15 }],
         'total-blocking-time': ['warn', { maxNumericValue: 300 }],

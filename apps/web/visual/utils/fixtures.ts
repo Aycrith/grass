@@ -30,10 +30,21 @@ export type Viewport = (typeof VIEWPORTS)[number];
  * Component close-ups on the `_visual` test route. Each entry is one
  * `data-test-section` anchor on `app/_visual/page.tsx`. Desktop-only —
  * mobile responsive variants are tested via route baselines.
+ *
+ * WP12 expansion: 7 close-ups (4 prior + 3 marquee moments). Motion
+ * captures (MarqueeQuote at t=0 + t=20s, ServiceBeforeAfter at frame
+ * 0 + 50 + 100) live in `motion.spec.ts` so the static baselines stay
+ * deterministic across replays.
  */
 export const COMPONENT_BASELINES = [
   { slug: 'hero-cinematic', anchor: '#hero-cinematic' },
   { slug: 'service-bento', anchor: '#service-bento' },
   { slug: 'operator-strip', anchor: '#operator-strip' },
   { slug: 'pricing-tiers', anchor: '#pricing-tiers' },
+  { slug: 'editorial-break', anchor: '#editorial-break' },
+  { slug: 'service-area-stats', anchor: '#service-area-stats' },
+  { slug: 'schedule-timeline', anchor: '#schedule-timeline' },
+  { slug: 'marquee-quote', anchor: '#marquee-quote' },
+  { slug: 'equipment-showcase', anchor: '#equipment-showcase' },
+  { slug: 'service-before-after', anchor: '#service-before-after' },
 ] as const;

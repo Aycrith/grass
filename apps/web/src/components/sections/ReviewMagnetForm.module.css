@@ -1,0 +1,209 @@
+/* ============================================================
+ * ReviewMagnetForm — interactive star-rating review flow.
+ *
+ * Cream-soft surface (default). Three sub-layouts:
+ *   - `.stars` row — 5 emoji-strip stars, hover/active states
+ *   - `.form` column — name / zip / message inputs
+ *   - `.actions` row — primary CTA button or link
+ *
+ * Reduced-motion: no star pop, no transition on hover/active.
+ * The `starReduced` modifier disables transform transitions.
+ * ============================================================ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-7);
+  background: var(--ll-shell);
+  border: 1px solid color-mix(in oklab, var(--ll-palm-bark) 10%, transparent);
+  border-radius: var(--radius-xl);
+  max-width: 32rem;
+}
+
+.label {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ll-palm-bark);
+  opacity: 0.7;
+  margin-block: 0;
+}
+
+.hint {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.875rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.6;
+  margin-block: 0;
+}
+
+.thanks {
+  font-family: var(--font-fraunces), serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  line-height: 1.2;
+  color: var(--ll-palm-bark);
+  margin-block: 0;
+}
+
+.body {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--ll-palm-bark);
+  margin-block: 0;
+}
+
+.stars {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.starWrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.hiddenRadio {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.hiddenRadio:focus-visible + .star {
+  outline: 2px solid var(--ll-sky);
+  outline-offset: 2px;
+}
+
+.star {
+  background: none;
+  border: none;
+  padding: var(--space-2);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  line-height: 1;
+  color: var(--ll-sage-muted);
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: transform 200ms var(--motion-ease-out, ease-out), color 200ms
+    var(--motion-ease-out, ease-out);
+  font-family: inherit;
+}
+
+.star:hover,
+.star:focus-visible {
+  color: var(--ll-sun);
+  transform: scale(1.08);
+}
+
+.starActive {
+  color: var(--ll-sun);
+}
+
+.starReduced,
+.starReduced:hover,
+.starReduced:focus-visible {
+  transform: none;
+}
+
+.form {
+  /* Inherits root column layout; adds form-specific spacing. */
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.fieldLabel {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ll-palm-bark);
+}
+
+.input,
+.textarea {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 1rem;
+  padding: var(--space-3);
+  border: 1px solid color-mix(in oklab, var(--ll-palm-bark) 18%, transparent);
+  border-radius: var(--radius-md);
+  background: var(--ll-shell);
+  color: var(--ll-palm-bark);
+  transition: border-color 200ms var(--motion-ease-out, ease-out);
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--ll-sky);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ll-sky) 20%, transparent);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 6rem;
+  font-family: var(--font-inter), sans-serif;
+}
+
+.error {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.875rem;
+  color: var(--ll-clay);
+  margin-block: 0;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-block-start: var(--space-2);
+}
+
+.primaryLink,
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-pill);
+  background: var(--ll-green);
+  color: var(--ll-cream);
+  font-family: var(--font-inter), sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 200ms var(--motion-ease-out, ease-out), transform 200ms
+    var(--motion-ease-out, ease-out);
+}
+
+.primaryLink:hover,
+.primaryButton:hover:not(:disabled) {
+  background: var(--ll-green-hover);
+  transform: translateY(-1px);
+}
+
+.primaryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.phoneLink {
+  color: var(--ll-green);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}

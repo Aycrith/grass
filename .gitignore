@@ -96,6 +96,9 @@ coverage/
 .claude/sessions/
 .claude/transcripts/
 
+# --- Session continuation transcripts dropped at session resume ---
+*-this-session-is-being-continued-from-a-previous-c.txt
+
 # --- Phase 0 audit working drafts (only committed when finalized) ---
 audit/*/DRAFT*
 

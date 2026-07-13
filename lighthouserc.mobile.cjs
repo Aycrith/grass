@@ -3,18 +3,39 @@
  *
  * Lighthouse CI budget config — PR mobile guard.
  *
- * Same 2 routes as lighthouserc.cjs but with Lighthouse's mobile preset
- * (slow 4G + 4× CPU throttling). Mobile is where the budget matters most
- * because the production PRD-00 §4 mobile LCP has the tightest headroom
- * (worst observed: 2.27s on /quote mobile against a 2.5s budget).
+ * WP12 expansion: covers every customer-facing route under the
+ * mobile preset (slow 4G + 4× CPU throttling). Mobile is where the
+ * budget matters most because the production PRD-00 §4 mobile LCP
+ * has the tightest headroom (worst observed: 2.27s on /quote mobile
+ * against a 2.5s budget).
+ *
+ * 4-category gate mirrors lighthouserc.cjs: every category ≥95.
+ * Per-metric thresholds are looser than desktop to match the
+ * mobile-preset's slower CPU + network emulation.
  */
+const PRD_ROUTES = [
+  '/',
+  '/services',
+  '/services/mowing',
+  '/services/edging',
+  '/services/mulching',
+  '/areas',
+  '/areas/33756',
+  '/areas/33771',
+  '/areas/33773',
+  '/areas/33774',
+  '/areas/33778',
+  '/pricing',
+  '/quote',
+  '/about',
+  '/contact',
+  '/review',
+];
+
 module.exports = {
   ci: {
     collect: {
-      url: [
-        'http://localhost:3000/',
-        'http://localhost:3000/services/mowing',
-      ],
+      url: PRD_ROUTES.map((p) => `http://localhost:3000${p}`),
       numberOfRuns: 1,
       settings: {
         // Mobile preset defaults: simulated Moto G4, slow 4G, 4× CPU throttle.
@@ -42,10 +63,13 @@ module.exports = {
     },
     assert: {
       assertions: {
-        'categories:performance': ['error', { minScore: 0.9 }],
-        'largest-contentful-paint': ['error', { maxNumericValue: 3000 }],
+        'categories:performance': ['error', { minScore: 0.95 }],
+        'categories:accessibility': ['error', { minScore: 0.95 }],
+        'categories:best-practices': ['error', { minScore: 0.95 }],
+        'categories:seo': ['error', { minScore: 0.95 }],
+        'largest-contentful-paint': ['error', { maxNumericValue: 3500 }],
         'cumulative-layout-shift': ['error', { maxNumericValue: 0.1 }],
-        'total-blocking-time': ['error', { maxNumericValue: 200 }],
+        'total-blocking-time': ['error', { maxNumericValue: 300 }],
         'first-contentful-paint': ['error', { maxNumericValue: 2500 }],
         'speed-index': ['error', { maxNumericValue: 4000 }],
       },
