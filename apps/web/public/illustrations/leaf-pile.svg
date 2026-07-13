@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  leaf-pile.svg — hero decoration for /services/seasonal-cleanup.
+  Hand-drawn leaf pile with distinct species (live oak, palm frond, magnolia).
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400"
+     role="img" aria-label="Illustration — autumn leaf pile with distinct species">
+  <title>Leaf pile — seasonal cleanup</title>
+
+  <!-- Sand surface -->
+  <rect width="600" height="400" fill="#F4E8D0"/>
+
+  <!-- Ground line -->
+  <line x1="40" y1="340" x2="560" y2="340" stroke="#5C4A3A"
+        stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+
+  <!-- Base pile (organic mound) -->
+  <path d="M 120 340 Q 140 280 220 260 Q 300 240 380 260 Q 460 280 480 340 Z"
+        fill="#B5651D" opacity="0.4"/>
+
+  <!-- Leaf 1 — Live oak (lobed) -->
+  <g transform="translate(160, 280) rotate(-25)">
+    <path d="M 0 0 Q -10 -8 -14 -16 Q -16 -22 -10 -26 Q -4 -28 -2 -22
+             Q 0 -28 6 -28 Q 14 -26 14 -18 Q 16 -10 8 -4 Q 12 4 6 8
+             Q -2 12 -8 6 Q -12 8 -14 4 Q -16 0 -10 -2 Z"
+          fill="#B5651D" stroke="#1A1F1B" stroke-width="2" stroke-linejoin="round"/>
+    <line x1="0" y1="6" x2="0" y2="-22" stroke="#1A1F1B" stroke-width="1" opacity="0.5"/>
+  </g>
+
+  <!-- Leaf 2 — Palm frond (long, feathered) -->
+  <g transform="translate(220, 290) rotate(20)">
+    <path d="M 0 0 L 60 0" stroke="#1F4E2C" stroke-width="3" stroke-linecap="round"/>
+    <g stroke="#1F4E2C" stroke-width="2" stroke-linecap="round" fill="none">
+      <line x1="6" y1="0" x2="0" y2="-8"/>
+      <line x1="12" y1="0" x2="6" y2="-10"/>
+      <line x1="18" y1="0" x2="12" y2="-9"/>
+      <line x1="24" y1="0" x2="18" y2="-10"/>
+      <line x1="30" y1="0" x2="24" y2="-8"/>
+      <line x1="36" y1="0" x2="30" y2="-9"/>
+      <line x1="42" y1="0" x2="36" y2="-7"/>
+      <line x1="48" y1="0" x2="42" y2="-8"/>
+      <line x1="54" y1="0" x2="48" y2="-6"/>
+      <!-- Bottom side -->
+      <line x1="6" y1="0" x2="0" y2="8"/>
+      <line x1="12" y1="0" x2="6" y2="10"/>
+      <line x1="18" y1="0" x2="12" y2="9"/>
+      <line x1="24" y1="0" x2="18" y2="10"/>
+      <line x1="30" y1="0" x2="24" y2="8"/>
+      <line x1="36" y1="0" x2="30" y2="9"/>
+      <line x1="42" y1="0" x2="36" y2="7"/>
+      <line x1="48" y1="0" x2="42" y2="8"/>
+      <line x1="54" y1="0" x2="48" y2="6"/>
+    </g>
+  </g>
+
+  <!-- Leaf 3 — Magnolia (broad, oval) -->
+  <g transform="translate(290, 260) rotate(15)">
+    <ellipse cx="0" cy="0" rx="18" ry="12" fill="#5C4A3A"
+             stroke="#1A1F1B" stroke-width="2"/>
+    <line x1="-18" y1="0" x2="18" y2="0" stroke="#1A1F1B" stroke-width="1" opacity="0.5"/>
+  </g>
+
+  <!-- Leaf 4 — Oak (smaller, rotated) -->
+  <g transform="translate(350, 290) rotate(45)">
+    <path d="M 0 0 Q -10 -8 -14 -16 Q -16 -22 -10 -26 Q -4 -28 -2 -22
+             Q 0 -28 6 -28 Q 14 -26 14 -18 Q 16 -10 8 -4 Q 12 4 6 8
+             Q -2 12 -8 6 Q -12 8 -14 4 Q -16 0 -10 -2 Z"
+          fill="#B5651D" stroke="#1A1F1B" stroke-width="2" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Leaf 5 — Maple (star-shaped) -->
+  <g transform="translate(410, 270) rotate(-10)">
+    <path d="M 0 -16 L 4 -4 L 16 0 L 4 4 L 0 16 L -4 4 L -16 0 L -4 -4 Z"
+          fill="#E8B65A" stroke="#1A1F1B" stroke-width="2" stroke-linejoin="round"/>
+    <line x1="0" y1="-16" x2="0" y2="16" stroke="#1A1F1B" stroke-width="1" opacity="0.5"/>
+  </g>
+
+  <!-- Scattered leaves in foreground -->
+  <g>
+    <ellipse cx="100" cy="370" rx="8" ry="3" fill="#B5651D" stroke="#1A1F1B" stroke-width="1.5" transform="rotate(20 100 370)"/>
+    <ellipse cx="130" cy="380" rx="6" ry="2" fill="#5C4A3A" stroke="#1A1F1B" stroke-width="1.5" transform="rotate(-15 130 380)"/>
+    <ellipse cx="470" cy="370" rx="8" ry="3" fill="#B5651D" stroke="#1A1F1B" stroke-width="1.5" transform="rotate(-20 470 370)"/>
+    <ellipse cx="510" cy="380" rx="6" ry="2" fill="#E8B65A" stroke="#1A1F1B" stroke-width="1.5" transform="rotate(25 510 380)"/>
+    <ellipse cx="540" cy="365" rx="5" ry="2" fill="#5C4A3A" stroke="#1A1F1B" stroke-width="1.5" transform="rotate(15 540 365)"/>
+  </g>
+
+  <!-- A few leaves falling -->
+  <g opacity="0.7">
+    <g transform="translate(80, 80) rotate(45)">
+      <path d="M 0 -6 L 2 -2 L 6 0 L 2 2 L 0 6 L -2 2 L -6 0 L -2 -2 Z"
+            fill="#E8B65A" stroke="#1A1F1B" stroke-width="1"/>
+    </g>
+    <g transform="translate(540, 120) rotate(-30)">
+      <ellipse rx="6" ry="3" fill="#B5651D" stroke="#1A1F1B" stroke-width="1"/>
+    </g>
+    <g transform="translate(70, 200) rotate(60)">
+      <ellipse rx="5" ry="2" fill="#5C4A3A" stroke="#1A1F1B" stroke-width="1"/>
+    </g>
+  </g>
+</svg>

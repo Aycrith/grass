@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  quote-mark.svg — huge stylized opening quote for OperatorNote hero.
+  Fraunces-style italic but drawn as a vector glyph.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160"
+     role="img" aria-label="Decorative opening quotation mark">
+  <title>Opening quote mark</title>
+
+  <!-- Two paired glyphs, top-left nested design -->
+  <g fill="#E8B65A">
+    <!-- First quote glyph -->
+    <path d="M 24 24 C 24 14, 32 8, 44 8 C 50 8, 54 10, 56 14
+             C 50 18, 44 26, 44 36 C 44 42, 48 46, 56 46 L 56 50
+             C 42 50, 32 42, 32 28 C 32 24, 28 24, 24 24 Z"
+          transform="translate(0,0)"/>
+    <!-- Second quote glyph -->
+    <path d="M 100 24 C 100 14, 108 8, 120 8 C 126 8, 130 10, 132 14
+             C 126 18, 120 26, 120 36 C 120 42, 124 46, 132 46 L 132 50
+             C 118 50, 108 42, 108 28 C 108 24, 104 24, 100 24 Z"/>
+  </g>
+</svg>

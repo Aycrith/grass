@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  edge-blade-detail.svg — hero decoration for /services/edging.
+  Hand-drawn edger blade detail with curb line.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400"
+     role="img" aria-label="Illustration — edger blade detail with curb line">
+  <title>Edger blade — close-up</title>
+
+  <!-- Sand surface -->
+  <rect width="600" height="400" fill="#F4E8D0"/>
+
+  <!-- Concrete (top half) -->
+  <rect x="0" y="0" width="600" height="200" fill="#E5E0D8"/>
+  <!-- Lawn (bottom half) -->
+  <rect x="0" y="200" width="600" height="200" fill="#1F4E2C" opacity="0.85"/>
+
+  <!-- Curb seam (cleanly cut edge — the "after") -->
+  <line x1="0" y1="200" x2="600" y2="200" stroke="#1A1F1B"
+        stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Blade (vertical steel star-blade, hand-drawn) -->
+  <g transform="translate(300, 200)">
+    <!-- Center hub -->
+    <circle r="22" fill="#8FA89B" stroke="#1A1F1B" stroke-width="3"/>
+    <circle r="8" fill="#1A1F1B"/>
+    <!-- 4 blade arms -->
+    <g stroke="#8FA89B" stroke-width="6" stroke-linecap="round" fill="none">
+      <line x1="0" y1="-22" x2="0" y2="-72"/>
+      <line x1="22" y1="0" x2="72" y2="0"/>
+      <line x1="0" y1="22" x2="0" y2="72"/>
+      <line x1="-22" y1="0" x2="-72" y2="0"/>
+    </g>
+    <!-- Blade tips (clipped point) -->
+    <g fill="#1A1F1B">
+      <polygon points="-4,-72 4,-72 0,-86"/>
+      <polygon points="72,-4 72,4 86,0"/>
+      <polygon points="-4,72 4,72 0,86"/>
+      <polygon points="-72,-4 -72,4 -86,0"/>
+    </g>
+  </g>
+
+  <!-- Curb dotted line (the "before" — soft, wavy edge) -->
+  <path d="M 60 200 Q 120 195 180 202 Q 240 208 300 200 Q 360 192 420 204 Q 480 210 540 200"
+        fill="none" stroke="#B5651D" stroke-width="2" stroke-linecap="round"
+        stroke-dasharray="4 4" opacity="0.7"/>
+  <text x="60" y="195" font-family="Inter, sans-serif" font-size="11"
+        fill="#1A1F1B" opacity="0.55">before</text>
+  <text x="540" y="190" font-family="Inter, sans-serif" font-size="11"
+        fill="#1A1F1B" opacity="0.7" text-anchor="end">after</text>
+
+  <!-- Spark dots (motion suggestion) -->
+  <g fill="#E8B65A" opacity="0.8">
+    <circle cx="240" cy="240" r="2"/>
+    <circle cx="360" cy="240" r="2"/>
+    <circle cx="250" cy="270" r="2"/>
+    <circle cx="350" cy="270" r="2"/>
+  </g>
+</svg>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  wind-direction.svg — hero decoration for /services/hurricane-prep.
+  Hand-drawn compass rose with wind-streak path through it.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400"
+     role="img" aria-label="Illustration — compass rose with wind path through it">
+  <title>Wind direction — hurricane prep</title>
+
+  <!-- Sand surface -->
+  <rect width="600" height="400" fill="#F4E8D0"/>
+
+  <!-- Outer compass ring -->
+  <circle cx="300" cy="200" r="140" fill="none" stroke="#1A1F1B"
+          stroke-width="3"/>
+  <circle cx="300" cy="200" r="120" fill="none" stroke="#1A1F1B"
+          stroke-width="1.5" opacity="0.5"/>
+
+  <!-- Cardinal tick marks -->
+  <g stroke="#1A1F1B" stroke-width="3" stroke-linecap="round">
+    <line x1="300" y1="50" x2="300" y2="70"/>
+    <line x1="300" y1="330" x2="300" y2="350"/>
+    <line x1="150" y1="200" x2="170" y2="200"/>
+    <line x1="430" y1="200" x2="450" y2="200"/>
+  </g>
+  <!-- Intercardinal ticks -->
+  <g stroke="#1A1F1B" stroke-width="2" stroke-linecap="round" opacity="0.6">
+    <line x1="200" y1="100" x2="215" y2="115"/>
+    <line x1="400" y1="100" x2="385" y2="115"/>
+    <line x1="200" y1="300" x2="215" y2="285"/>
+    <line x1="400" y1="300" x2="385" y2="285"/>
+  </g>
+
+  <!-- Compass star (4-pointed, clay-orange north pointer) -->
+  <g>
+    <!-- North pointer (clay accent) -->
+    <path d="M 300 70 L 312 200 L 300 196 L 288 200 Z"
+          fill="#B5651D" stroke="#1A1F1B" stroke-width="2" stroke-linejoin="round"/>
+    <!-- East -->
+    <path d="M 430 200 L 300 188 L 304 200 L 300 212 Z"
+          fill="#F4E8D0" stroke="#1A1F1B" stroke-width="2" stroke-linejoin="round"/>
+    <!-- South -->
+    <path d="M 300 330 L 288 200 L 300 204 L 312 200 Z"
+          fill="#F4E8D0" stroke="#1A1F1B" stroke-width="2" stroke-linejoin="round"/>
+    <!-- West -->
+    <path d="M 170 200 L 300 212 L 296 200 L 300 188 Z"
+          fill="#F4E8D0" stroke="#1A1F1B" stroke-width="2" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Cardinal letters -->
+  <g font-family="Inter, sans-serif" font-size="14" fill="#1A1F1B"
+     font-weight="600" text-anchor="middle">
+    <text x="300" y="44">N</text>
+    <text x="300" y="368">S</text>
+    <text x="142" y="206">W</text>
+    <text x="458" y="206">E</text>
+  </g>
+
+  <!-- Center hub -->
+  <circle cx="300" cy="200" r="8" fill="#1A1F1B"/>
+  <circle cx="300" cy="200" r="4" fill="#E8B65A"/>
+
+  <!-- Wind path (curving arrow from NW to E) -->
+  <g>
+    <path d="M 130 90 Q 200 110 260 160 Q 320 200 400 220"
+          fill="none" stroke="#E8B65A" stroke-width="6" stroke-linecap="round"
+          stroke-dasharray="0"/>
+    <!-- Arrowhead -->
+    <path d="M 400 220 L 380 210 L 388 220 L 380 230 Z"
+          fill="#E8B65A" stroke="#1A1F1B" stroke-width="2" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Wind streaks (suggesting motion) -->
+  <g stroke="#1A1F1B" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5">
+    <path d="M 80 80 Q 110 90 140 95"/>
+    <path d="M 100 130 Q 130 140 160 145"/>
+    <path d="M 470 240 Q 500 250 530 260"/>
+    <path d="M 460 280 Q 490 290 520 300"/>
+  </g>
+</svg>
