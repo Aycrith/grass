@@ -4,17 +4,27 @@
  * Targets: "lawn care Largo FL", "landscaping 33771", "yard maintenance Pinellas".
  * GBP-style NAP block matches schema.org/LandscapingBusiness in layout.
  *
- * Canonical section composition (11 sections, eyebrows 01-09):
+ * Canonical section composition (14 sections, eyebrows 01-09):
  *   HeroCinematic → TrustStrip → OperatorStrip → ServiceBento →
- *   PricingTiers → EditorialBreak → ProcessSteps → ServiceAreaMap →
- *   OperatorNote → FAQAccordion → FinalCTABanner
+ *   PricingTiers → EditorialBreak → ServiceAreaStats → ProcessSteps →
+ *   ServiceAreaMap → ScheduleTimeline → OperatorNote → MarqueeQuote →
+ *   FAQAccordion → FinalCTABanner
  *
  * `OperatorNote` is the typographic pause between the dark
- * ServiceAreaMap section and the FAQ. It carries the operator's
+ * ServiceAreaMap section and the marquee. It carries the operator's
  * first-person voice ("Same guy, same day, every week.") instead of
  * a customer testimonial — brand guidelines forbid invented customer
  * quotes, and the first-person operator copy carries the same
  * authority without crossing that line.
+ *
+ * `MarqueeQuote` extends that voice into a slow horizontal scroll —
+ * 7 short operator lines, Fraunces italic, sun-color quote marks,
+ * sand-bleached surface. Reduced-motion collapses to a static list.
+ *
+ * `ServiceAreaStats` is the "by the numbers" panel between
+ * EditorialBreak and ProcessSteps — four specific data points
+ * (yards, route miles, quote turnaround, tenure) that earn trust
+ * the way the operator talks.
  *
  * `TestimonialQuote` remains in the `sections/` library as a dormant
  * component, ready to re-mount the moment a real proof item lands
@@ -29,11 +39,14 @@ import {
   FAQAccordion,
   FinalCTABanner,
   HeroCinematic,
+  MarqueeQuote,
   OperatorNote,
   OperatorStrip,
   PricingTiers,
   ProcessSteps,
+  ScheduleTimeline,
   ServiceAreaMap,
+  ServiceAreaStats,
   ServiceBento,
   TrustStrip,
 } from '@/components/sections';
@@ -57,14 +70,23 @@ export default function HomePage() {
       {/* 04.5 — Editorial break (full-bleed image pause) */}
       <EditorialBreak />
 
+      {/* 04.7 — By the numbers (sand-bleached stat panel) */}
+      <ServiceAreaStats />
+
       {/* 05 — Process */}
       <ProcessSteps />
 
       {/* 06 — Service area */}
       <ServiceAreaMap />
 
+      {/* 06.5 — Weekly schedule */}
+      <ScheduleTimeline />
+
       {/* 07 — Operator's note (typographic pause) */}
       <OperatorNote />
+
+      {/* 07.5 — Marquee (operator voice scroll) */}
+      <MarqueeQuote />
 
       {/* 08 — FAQ */}
       <FAQAccordion />

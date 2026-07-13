@@ -1,0 +1,151 @@
+/* ============================================================
+ * ServiceBeforeAfter — scroll-scrubbed compare on service pages.
+ *
+ * Two layouts in this file:
+ *
+ *   1) `.frame` + `.stage` — the live, pinned scrub. The outer
+ *      wrapper is 200vh tall so the inner sticky stage has scroll
+ *      runway; the after image is revealed via a clip-path wipe
+ *      driven by scroll progress (via framer-motion's useScroll
+ *      + useTransform).
+ *
+ *   2) `.staticRoot` + `.staticGrid` — reduced-motion fallback.
+ *      Side-by-side compare grid, no scroll binding, no pin.
+ * ============================================================ */
+
+.root {
+  /* Section supplies rhythm + tone="default" cream surface */
+}
+
+.staticRoot {
+  /* Same surface as root — modifier only adds the static grid. */
+}
+
+.eyebrow {
+  margin-bottom: var(--space-3);
+}
+
+.caption {
+  font-family: var(--font-fraunces), serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  line-height: 1.2;
+  color: var(--ll-palm-bark);
+  max-width: 36rem;
+  margin-block: 0 var(--space-9);
+}
+
+.attribution {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  color: var(--ll-palm-bark);
+  opacity: 0.6;
+  margin-block: var(--space-5) 0;
+  max-width: 36rem;
+}
+
+/* ---------- Live (pinned) scrub ---------- */
+
+.frame {
+  position: relative;
+  height: 200vh;
+  margin-block: var(--space-7);
+}
+
+.stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image {
+  object-fit: cover;
+  z-index: 0;
+}
+
+.afterWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  /* clip-path is animated via inline style from framer-motion. */
+}
+
+.imageAfter {
+  /* Synthetic "after" treatment: same source image, punched up.
+   * Replace with a distinct src + no filter once real before /
+   * after webps land. */
+  filter: saturate(1.15) brightness(1.05) contrast(0.95);
+}
+
+.divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--ll-sun);
+  transform: translateX(-1px);
+  z-index: 2;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--ll-palm-bark) 30%, transparent);
+  pointer-events: none;
+}
+
+/* ---------- Reduced-motion (static) compare grid ---------- */
+
+.staticGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-5);
+}
+
+@media (max-width: 640px) {
+  .staticGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.staticFigure {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  margin: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid color-mix(in oklab, var(--ll-palm-bark) 8%, transparent);
+}
+
+.staticImage {
+  object-fit: cover;
+}
+
+.staticLabel {
+  position: absolute;
+  inset-block-start: var(--space-3);
+  inset-inline-start: var(--space-3);
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  padding: 4px 10px;
+  background: var(--ll-palm-bark);
+  color: var(--ll-cream);
+  border-radius: var(--radius-pill);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

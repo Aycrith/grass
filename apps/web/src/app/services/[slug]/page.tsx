@@ -1,11 +1,12 @@
 /**
  * Service [slug] page — `/services/[slug]`.
  *
- * Renders the four canonical sections-library components in
+ * Renders the canonical sections-library components in
  * sequence: ServiceHero (full-bleed image + heading + tagline +
  * dual CTAs) → ServiceIncludes (what's included + pricing card)
- * → ServiceFAQ (per-service Q&A) → ServiceCTA (final per-service
- * CTA + back link to /services).
+ * → ServiceBeforeAfter (scroll-scrubbed compare) → ServiceFAQ
+ * (per-service Q&A) → ServiceCTA (final per-service CTA + back
+ * link to /services).
  *
  * SEO: each page has unique title, description, and Service-
  * type JSON-LD. Page generates statically at build time via
@@ -16,7 +17,13 @@
  * Service + PostalAddress is anchored to `BUSINESS`.
  */
 
-import { ServiceCTA, ServiceFAQ, ServiceHero, ServiceIncludes } from '@/components/sections';
+import {
+  ServiceBeforeAfter,
+  ServiceCTA,
+  ServiceFAQ,
+  ServiceHero,
+  ServiceIncludes,
+} from '@/components/sections';
 import { BUSINESS } from '@/lib/business';
 import { type ServiceKey, isKnownService, serviceDetail, services } from '@/lib/content';
 import type { Metadata } from 'next';
@@ -62,6 +69,8 @@ export default async function ServiceDetailPage({ params }: ServiceParams) {
     url: `https://largolawn.pro/services/${slug}`,
   };
 
+  const beforeAfterCopy = services[slug as ServiceKey]?.beforeAfter;
+
   return (
     <>
       <script
@@ -71,6 +80,7 @@ export default async function ServiceDetailPage({ params }: ServiceParams) {
       />
       <ServiceHero slug={slug as ServiceKey} />
       <ServiceIncludes slug={slug as ServiceKey} />
+      <ServiceBeforeAfter copy={beforeAfterCopy} />
       <ServiceFAQ slug={slug as ServiceKey} />
       <ServiceCTA serviceName={detail.name} />
     </>

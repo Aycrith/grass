@@ -1,0 +1,101 @@
+/* ============================================================
+ * MarqueeQuote — horizontally-scrolling infinite marquee.
+ *
+ * Sand-bleached surface. Two identical lists are placed
+ * side-by-side via the `track` flex container; a 40s linear
+ * scroll animates the track from 0% to -50% so the second
+ * list takes the first list's place seamlessly.
+ *
+ * Reduced-motion fallback (`.static`): the same content laid
+ * out vertically with no animation. No JS-detect, no media
+ * query — handled by the component itself so the static
+ * markup is server-rendered too.
+ * ============================================================ */
+
+.root {
+  background: var(--ll-sand-bleached);
+  padding-block: var(--space-8);
+  overflow: hidden;
+}
+
+.viewport {
+  width: 100%;
+  overflow: hidden;
+  /* Soft fade at the edges so the looping text doesn't snap. */
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    black 8%,
+    black 92%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    black 8%,
+    black 92%,
+    transparent 100%
+  );
+}
+
+.track {
+  display: flex;
+  align-items: center;
+  gap: var(--space-7);
+  width: max-content;
+  /* White-space nowrap on the children so the flex row stays
+   * one continuous string. */
+}
+
+.item {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: clamp(1.2rem, 1.8vw, 1.5rem);
+  line-height: 1.35;
+  color: var(--ll-palm-bark);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.quoteMark {
+  font-family: var(--font-fraunces), serif;
+  font-style: italic;
+  font-weight: 700;
+  color: var(--ll-sun);
+  font-size: 1.4em;
+  line-height: 1;
+}
+
+.dot {
+  color: var(--ll-clay);
+  font-weight: 700;
+  font-size: 1.2em;
+}
+
+/* ---------- Reduced-motion fallback ---------- */
+
+.static {
+  padding-block: var(--space-8);
+}
+
+.staticList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 50rem;
+}
+
+.staticItem {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  line-height: 1.45;
+  color: var(--ll-palm-bark);
+}

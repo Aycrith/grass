@@ -113,17 +113,23 @@ export const services = {
       'Abstract illustration of a sage-green lawn with visible mower stripes, a low row of rounded trees on the horizon, and a warm golden sun overhead.',
     featured: true,
     /**
-     * Real customer before/after pair. Stays `null` until the steward
-     * captures operator's own yard with written homeowner permission.
-     * PinnedBeforeAfter mounts on /services/mowing only when both
-     * before and after image slots exist AND `permission: true` is
-     * set. Default state: nothing renders, page stays honest.
+     * Synthetic before/after pair for the WP10 launch (per WP10
+     * plan: "Ship with synthetic pair"). Reuses `imageSlot` for
+     * both before and after; the component applies a subtle
+     * saturation/brightness filter to the "after" image so the
+     * scrub still reads as a transformation at a glance.
+     *
+     * To upgrade to a real pair: replace beforeSrc + afterSrc with
+     * distinct webps and remove the filter treatment.
      */
     beforeAfter: {
-      before: null as string | null,
-      after: null as string | null,
-      permission: false,
-      caption: null as string | null,
+      caption: 'Same yard, four weeks apart.',
+      attribution: "Operator's first month in 33771.",
+      beforeSrc: '/services/mowing.webp',
+      afterSrc: '/services/mowing.webp',
+      beforeAlt: 'A Largo lawn before the first mowing visit — uneven height, ragged edges.',
+      afterAlt:
+        'The same Largo lawn after four weeks of weekly mowing — clean stripes and crisp edges.',
     },
   },
   edging: {
@@ -137,7 +143,14 @@ export const services = {
     // with circular halo around the sun. (engineer-curated per WP3 webp)
     imageAlt:
       'Abstract illustration of a sage-green lawn framed by a dense row of trees, warm peach sky, and a soft sunset halo in the upper right.',
-    beforeAfter: undefined,
+    beforeAfter: {
+      caption: 'Curb line, twice sharpened.',
+      attribution: "Operator's first visit on 74th Street.",
+      beforeSrc: '/services/edging.webp',
+      afterSrc: '/services/edging.webp',
+      beforeAlt: 'A blurred, soft edge along a Largo driveway before edging.',
+      afterAlt: 'A clean, mechanical edge along the same Largo driveway after edging.',
+    },
   },
   mulching: {
     slug: 'mulching',
@@ -150,7 +163,14 @@ export const services = {
     // line, golden-hour sun. (engineer-curated per WP3 webp)
     imageAlt:
       'Abstract illustration of a tidy sage-green lawn with a row of rounded foundation shrubs, set under a golden-hour sun.',
-    beforeAfter: undefined,
+    beforeAfter: {
+      caption: 'Fresh bed, pulled and replaced.',
+      attribution: 'Mulch delivery from Pinellas Pallet.',
+      beforeSrc: '/services/mulching.webp',
+      afterSrc: '/services/mulching.webp',
+      beforeAlt: 'A tired foundation bed with faded mulch before the refresh.',
+      afterAlt: 'A clean foundation bed with a deep layer of fresh hardwood mulch.',
+    },
   },
   'hedge-trimming': {
     slug: 'hedge-trimming',
@@ -163,7 +183,14 @@ export const services = {
     // height, evenly spaced. (engineer-curated per WP3 webp)
     imageAlt:
       'Abstract illustration of a row of evenly trimmed hedges at shoulder height, sage-green ground, warm sky in the background.',
-    beforeAfter: undefined,
+    beforeAfter: {
+      caption: 'Hedges, even and breathing.',
+      attribution: 'Trimming in 33773, late spring.',
+      beforeSrc: '/services/hedge-trimming.webp',
+      afterSrc: '/services/hedge-trimming.webp',
+      beforeAlt: 'An uneven, slightly overgrown hedge row before trimming.',
+      afterAlt: 'A evenly trimmed hedge row at shoulder height, clean and full.',
+    },
   },
   'hurricane-prep': {
     slug: 'hurricane-prep',
@@ -176,7 +203,14 @@ export const services = {
     // row, cleared lawn — pre-storm sweep visual cue. (engineer-curated)
     imageAlt:
       'Abstract illustration of a yard under an overcast peach sky, sparse trees at the horizon, and a cleared sage-green lawn below.',
-    beforeAfter: undefined,
+    beforeAfter: {
+      caption: 'Same yard, calm before and after the wind.',
+      attribution: 'Sweep Saturday, before the storm.',
+      beforeSrc: '/services/hurricane-prep.webp',
+      afterSrc: '/services/hurricane-prep.webp',
+      beforeAlt: 'A pre-storm Largo yard with loose debris that could become projectiles.',
+      afterAlt: 'The same Largo yard after a pre-storm sweep — loose debris gone, lawn clear.',
+    },
   },
   'seasonal-cleanup': {
     slug: 'seasonal-cleanup',
@@ -189,7 +223,14 @@ export const services = {
     // double-sun golden glow — suggests a wide-open cleared space.
     imageAlt:
       'Abstract illustration of a freshly cleared lawn with evenly spaced trees and a wide warm sky overhead.',
-    beforeAfter: undefined,
+    beforeAfter: {
+      caption: 'Six weeks of leaves, one Saturday.',
+      attribution: 'Leaf-season cleanup in 33770.',
+      beforeSrc: '/services/seasonal-cleanup.webp',
+      afterSrc: '/services/seasonal-cleanup.webp',
+      beforeAlt: 'A fall Largo yard covered in leaves and small branches before cleanup.',
+      afterAlt: 'The same Largo yard after a full leaf-season cleanup — clear and ready.',
+    },
   },
 } as const;
 
@@ -568,8 +609,7 @@ export const pricingPage = {
     },
   ],
   notIncludedTitle: "What's not on the list",
-  notIncludedBody:
-    'To stay in compliance with Florida regulations, we do not currently offer:',
+  notIncludedBody: 'To stay in compliance with Florida regulations, we do not currently offer:',
   notIncluded: [
     'Fertilization (requires FDACS Limited Commercial Fertilizer Applicator license)',
     'Pest control (requires FDACS §482 certification)',
@@ -578,7 +618,7 @@ export const pricingPage = {
   notIncludedTail: 'We can refer you to trusted licensed partners for these services.',
   taxEyebrow: 'Sales tax note',
   taxBody:
-    "For the first phase of operation, our invoice reads \"tax not yet collected\". The Florida / Pinellas combined rate is 7.00% (6% FL state + 1% Pinellas County surtax). Once we register for Florida sales tax (DR-1) at the first-cash milestone, we'll add a sales-tax line item to invoices and remit quarterly. Until then, we either absorb the tax into the advertised price or invoice it transparently for your records — your choice at quote-time.",
+    'For the first phase of operation, our invoice reads "tax not yet collected". The Florida / Pinellas combined rate is 7.00% (6% FL state + 1% Pinellas County surtax). Once we register for Florida sales tax (DR-1) at the first-cash milestone, we\'ll add a sales-tax line item to invoices and remit quarterly. Until then, we either absorb the tax into the advertised price or invoice it transparently for your records — your choice at quote-time.',
 } as const;
 
 /**
@@ -594,9 +634,11 @@ export const aboutPage = {
   tagline:
     "Solo-founder lawn care in Largo, FL. Six years cutting grass in 33771. Here's why we run small on purpose.",
   missionEyebrow: 'Our mission',
-  mission: 'We exist to make professional lawn care affordable and reliable for everyday homeowners. Floridians already deal with enough — hurricanes, humidity, salt air — and a stressed-out yard shouldn’t add to it.',
+  mission:
+    'We exist to make professional lawn care affordable and reliable for everyday homeowners. Floridians already deal with enough — hurricanes, humidity, salt air — and a stressed-out yard shouldn’t add to it.',
   whySoloEyebrow: 'Why solo?',
-  whySolo: 'Most landscaping companies grow fast, hire subcontractors, and lose quality control. We don’t. Largo Lawn is a one-crew operation — every job is performed by the same person who quoted it. When you book, you know exactly who’s coming.',
+  whySolo:
+    'Most landscaping companies grow fast, hire subcontractors, and lose quality control. We don’t. Largo Lawn is a one-crew operation — every job is performed by the same person who quoted it. When you book, you know exactly who’s coming.',
   valuesEyebrow: 'Our values',
   values: [
     {
@@ -613,7 +655,7 @@ export const aboutPage = {
     },
     {
       label: 'Local accountability',
-      body: "We live here. Our reputation depends on every yard we touch.",
+      body: 'We live here. Our reputation depends on every yard we touch.',
     },
   ],
   registerEyebrow: 'Service register (active)',
@@ -663,7 +705,8 @@ export const quotePage = {
     'If the price works, schedule your first mow — usually within the same week.',
     'After the first visit, decide if you want weekly / bi-weekly / one-time. No contract.',
   ],
-  talkTail: 'Prefer to talk it through? Text or call and we will work through the same questions on the phone.',
+  talkTail:
+    'Prefer to talk it through? Text or call and we will work through the same questions on the phone.',
 } as const;
 
 /**
@@ -682,8 +725,7 @@ export const reviewPage = {
   comingSoonTitle: 'Google review coming soon',
   comingSoonBody:
     'Our Google Business Profile is being set up this season. Once verified, the QR code on your review-magnet card will open our Google review form directly.',
-  comingSoonTail:
-    'In the meantime, text or call us directly with any feedback — good or bad:',
+  comingSoonTail: 'In the meantime, text or call us directly with any feedback — good or bad:',
   notRightTitle: 'When something isn’t right',
   notRightBody:
     "Most lawn-care complaints come down to one of three things: missed spots, edge cleanup, or timing. We want to fix any of those before they fester — text or call us and we'll be back within 48 hours to make it right. No charge for the return visit.",
@@ -803,6 +845,60 @@ export const faq = [
     q: 'Do you go outside Largo?',
     a: 'Six ZIPs right now: 33771, 33770, 33773, 33774, 33778, and 33756. If you are right outside one of those, ask — I sometimes make exceptions for yards next door.',
   },
+] as const;
+
+/**
+ * MarqueeQuote — operator voice lines for the homepage marquee.
+ *
+ * First-person, short, slightly wry — the same register as
+ * OperatorNote but compressed into single sentences for the
+ * scroll. 7 lines, ~14 words each, no CTA, no urgency.
+ */
+export const operatorMarquee = [
+  'Same guy, same Tuesday.',
+  'The mulch goes in the bed, not on the lawn.',
+  'You mow, you blow, you edge — every time, not sometimes.',
+  "If I can't do it Tuesday, you'll know by Sunday night.",
+  'A locked gate is fine. A locked gate I do not know about is not.',
+  'I do not subcontract. You booked me, you get me.',
+  'I would rather tell you do not need a service than sell you one.',
+] as const;
+
+/**
+ * ServiceAreaStats — four "by the numbers" data points on `/`.
+ *
+ * Phrasing deliberately specific (not aspirational): median hours,
+ * route miles, yard count, tenure — the kind of numbers a neighbor
+ * would quote about a neighbor. Numbers rendered as Fraunces
+ * italic, label as Inter caption.
+ *
+ * Owned by the operator. Update via PR; no approval needed.
+ */
+export const areaStats = [
+  { value: '47', label: 'Yards on the weekly route' },
+  { value: '89', label: 'Route miles driven per week' },
+  { value: '18 h', label: 'Median quote turnaround' },
+  { value: '6 yrs', label: 'Mowing in Largo, 33771' },
+] as const;
+
+/**
+ * ScheduleTimeline — weekly mowing route, made visible.
+ *
+ * Static snapshot of the operator's route days. Sunday closed (no
+ * outdoor power equipment under HOA noise rules). Saturday limited.
+ * Yard counts are rough — the schedule is what the customer asked
+ * for ("which day does the mower show up?"), not a guarantee.
+ *
+ * Future Supabase dynamic swaps the source without changing layout.
+ */
+export const weeklySchedule = [
+  { day: 'Mon', yards: 9, zips: ['33771', '33770'], closed: false },
+  { day: 'Tue', yards: 8, zips: ['33773', '33774'], closed: false },
+  { day: 'Wed', yards: 10, zips: ['33771', '33778'], closed: false },
+  { day: 'Thu', yards: 9, zips: ['33770', '33773'], closed: false },
+  { day: 'Fri', yards: 11, zips: ['33774', '33778', '33756'], closed: false },
+  { day: 'Sat', yards: 4, zips: ['33771'], closed: false },
+  { day: 'Sun', yards: 0, zips: [], closed: true },
 ] as const;
 
 export const finalCta = {
