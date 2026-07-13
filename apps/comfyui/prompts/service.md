@@ -7,11 +7,23 @@ resolution: [1600, 900]
 output_path_template: apps/web/public/services/{slug}.webp
 seed_formula: "1100 + slug_hash"  # see _style-block.md seed table
 style_block: _style-block.md
+lora: storybook-landscapes-xl
+lora_strength: 0.75
+ip_adapter_weight: 0.55
 mood_overrides:
   hurricane-prep: hurricane
 ---
 
 # Service scene — {slug}
+
+## Style engine
+
+This scene runs **with** the storybook LoRA at 0.75 strength — slightly
+under the hero's 0.85 so the action (mower deck, edger blade, hedge
+shears) stays readable instead of being swallowed by brushwork. IP-Adapter
+at 0.55 keeps palette continuity with the rest of the library. Prepend
+trigger words: `digital storybook illustration, textured brushwork,
+sharp focus`.
 
 ## Subject
 
@@ -39,12 +51,15 @@ Light is cool and dim, sky `--ll-gulf` heavy with `--ll-palm-shadow`
 clouds. The scene is deliberately darker than the rest of the library
 — this matches the live hurricane-mode banner on the site
 (`components/site/HurricaneBanner.tsx`) and is intentional. **Do not
-brighten to match other service scenes.**
+brighten to match other service scenes.** If the LoRA pulls the sky
+back toward warm, drop LoRA strength to 0.65 for this asset only.
 
 ## Mood
 
-- Default: capable, calm, daily-rhythm-of-care.
-- Hurricane: prepared, methodical, mid-task. Not panicked.
+- Default: capable, calm, daily-rhythm-of-care. Reads as a storybook
+  spread — "this is what Tuesday morning looks like."
+- Hurricane: prepared, methodical, mid-task. Not panicked. The same
+  storybook feel but with cooler palette and shorter shadows.
 
 ## Per-slug notes
 

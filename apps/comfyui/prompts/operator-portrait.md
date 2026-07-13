@@ -7,9 +7,21 @@ resolution: [1200, 1500]
 output_path: apps/web/public/operator/portrait.webp
 seed: 7777
 style_block: _style-block.md
+lora: none
+ip_adapter_weight: 0.40
 ---
 
 # Operator portrait — stylized editorial abstraction
+
+## Style engine
+
+This scene runs **without** the storybook LoRA. The operator portrait is
+the deliberate exception to the library's painterly rule — it stays as
+clean-line editorial illustration so the human figure reads as a distinct
+visual signal, not a landscape wearing a hat. IP-Adapter weight is dropped
+to 0.40 to keep palette continuity without locking in the LoRA's
+brushwork texture. The LoRA negative `photo, realism` is added so the
+output stays illustrative.
 
 ## Why this exists
 

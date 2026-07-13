@@ -7,9 +7,21 @@ resolution: [800, 600]
 output_path_template: apps/web/public/equipment/{tool}.webp
 seed_formula: "3300 + tool_hash"
 style_block: _style-block.md
+lora: storybook-landscapes-xl
+lora_strength: 0.65
+ip_adapter_weight: 0.50
 ---
 
 # Equipment tile — {tool}
+
+## Style engine
+
+This scene runs **with** the storybook LoRA but at a **reduced 0.65
+strength** — equipment tiles are the most reference-functional imagery
+in the library (the steward wants them readable at small sizes in the
+OperatorStrip grid). Going heavy on the LoRA here turns the mower into
+a brushy blob. IP-Adapter at 0.50 keeps palette continuity without
+locking the action shot into the landscape aesthetic.
 
 ## Subject
 
@@ -39,14 +51,15 @@ slight angle that shows both the tool head and the work being done.
 ## Lighting
 
 Bright, daytime. Equipment tiles are functional reference imagery
-(trust signals) — they should be the most readable photos in the
+(trust signals) — they should be the most readable images in the
 library. Morning light is fine; overcast is fine; avoid harsh noon
 shadows.
 
 ## Mood
 
 Capable, well-maintained, professional-grade. The tool looks like it
-belongs to someone who knows what they're doing with it.
+belongs to someone who knows what they're doing with it. Painterly,
+but the action stays primary.
 
 ## See also
 

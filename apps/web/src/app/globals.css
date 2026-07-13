@@ -13,11 +13,11 @@
  * No Google Fonts CDN @import.
  */
 
-@import '../styles/tokens.css';
-@import '../styles/typography.css';
-@import '../styles/layout.css';
-@import '../styles/reset.css';
-@import '../styles/motion.css';
+@import "../styles/tokens.css";
+@import "../styles/typography.css";
+@import "../styles/layout.css";
+@import "../styles/reset.css";
+@import "../styles/motion.css";
 
 .container {
   max-width: var(--max-width);
@@ -187,7 +187,7 @@ button:hover,
 }
 
 .btn-secondary:hover {
-  background: #2E68BD;
+  background: #2e68bd;
 }
 
 .btn-outline {
@@ -514,9 +514,21 @@ th {
 /* ----- Mobile ----- */
 
 @media (max-width: 640px) {
-  .hero { padding: 2.5rem 0; }
-  .hero p { font-size: 1rem; }
-  .site-header .container { flex-wrap: wrap; gap: 0.75rem; }
-  .site-header nav { gap: 1rem; flex-wrap: wrap; }
-  .site-header nav a:not(.cta) { font-size: 0.9rem; }
+  .hero {
+    padding: 2.5rem 0;
+  }
+  .hero p {
+    font-size: 1rem;
+  }
+  .site-header .container {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .site-header nav {
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .site-header nav a:not(.cta) {
+    font-size: 0.9rem;
+  }
 }

@@ -7,9 +7,21 @@ resolution: [1200, 675]
 output_path_template: apps/web/public/areas/{zip}.webp
 seed_formula: "2200 + zip"
 style_block: _style-block.md
+lora: storybook-landscapes-xl
+lora_strength: 0.85
+ip_adapter_weight: 0.55
 ---
 
 # Area scene — {zip} ({neighborhood-name})
+
+## Style engine
+
+This scene runs **with** the storybook LoRA at 0.85 — the full hero
+treatment, because these are the "neighborhoods we serve" panels. They
+need to look like the opening illustration of a children's book about
+Largo, Florida. Prepend trigger words: `digital storybook illustration,
+textured brushwork, sharp focus`. IP-Adapter at 0.55 keeps palette
+continuity.
 
 ## Subject
 
@@ -25,6 +37,8 @@ architecture, the tree canopy, the small Florida-specific details.
   ranch houses, mature live oaks or palm silhouettes.
 - A single mower or edger visible somewhere (implies the service
   is happening here, not just here-are-some-houses).
+- Painterly depth — multiple distinct depth zones (foreground lawn,
+  midground house, background tree line) help the brushwork read.
 - No people.
 
 ## Per-ZIP flavor
@@ -47,8 +61,10 @@ the visitor "this is when we work, this is when it looks like this."
 
 ## Mood
 
-Quiet, lived-in, maintained. Not aspirational-magazine, not hoarded-rural.
-Reads as "your neighbor's block."
+Quiet, lived-in, maintained. **Storybook-spread warmth** — the kind of
+illustration you'd point to and say "this is where we live, this is
+when we work, this is what your yard could look like." Not aspirational
+magazine, not hoarded-rural. Reads as "your neighbor's block."
 
 ## See also
 

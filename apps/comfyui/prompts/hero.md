@@ -9,9 +9,21 @@ output_paths:
   - apps/web/public/hero/mobile.webp    # cropped from master
 seed: 4242
 style_block: _style-block.md
+lora: storybook-landscapes-xl
+lora_strength: 0.85
+ip_adapter_weight: 0.50
 ---
 
 # Hero — landscape composition (single master, dual-crop)
+
+## Style engine
+
+This scene runs **with** the storybook LoRA. Prepend trigger words:
+`digital storybook illustration, textured brushwork, sharp focus`.
+The negative block (brand + LoRA author) is appended by the driver.
+IP-Adapter weight is 0.50 — the hero gets its strong style from the
+LoRA + composition prompt; IP-Adapter just keeps palette continuity
+with the rest of the library.
 
 ## Subject
 
@@ -27,6 +39,8 @@ palm(s) anchor the Florida setting without becoming tropical kitsch.
 - Slight wide-angle (35mm equivalent).
 - Mower visible in mid-distance (small scale) — implies "your neighbor
   just finished", doesn't dominate.
+- Painterly depth — the LoRA pulls textures into brushwork; lean into
+  that by giving the eye a clear foreground/midground/background path.
 - No people (operator is off-frame, suggested by the mower).
 
 ## Lighting
@@ -37,9 +51,9 @@ the `--ll-sand-bleached` color near the horizon, transitioning to
 
 ## Mood
 
-Quiet, just-finished, residential, capable. The yard is the proof; the
-operator is implied. Reads as "your neighbor's lawn mower" without
-literally showing a person.
+Quiet, just-finished, residential, capable. **Reads like the
+opening spread of a children's book about a Florida neighborhood** —
+hand-drawn warmth, not stock photography.
 
 ## Crop guidance
 
