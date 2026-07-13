@@ -12,11 +12,11 @@
  */
 
 import { ArrowRight } from 'lucide-react';
-import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 import { StaggerGroup } from '@/components/motion';
 import { Eyebrow, Section } from '@/components/site';
+import { Button } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { pricingHeader, pricingTiers } from '@/lib/content';
 
@@ -53,9 +53,15 @@ export function PricingTiers({ className }: PricingTiersProps): ReactNode {
                 <span className={styles.priceCadence}> · {tier.cadence}</span>
               </p>
               <p className={styles.body}>{tier.body}</p>
-              <Link href="/quote" className={styles.cta}>
-                {pricingHeader.ctaLabel} <ArrowRight size={16} aria-hidden="true" />
-              </Link>
+              <Button
+                as="link"
+                href="/quote"
+                variant={tier.featured ? 'sun' : 'primary'}
+                size="md"
+                iconRight={<ArrowRight size={16} aria-hidden="true" />}
+              >
+                {pricingHeader.ctaLabel}
+              </Button>
             </div>
           ))}
         </StaggerGroup>

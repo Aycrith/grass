@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * ScheduleTimeline — "This week, on the route" strip on `/`.
  *
@@ -14,11 +16,15 @@
  * on mobile. Each day has a 1×1 dot of the team color + ZIPs in
  * mono. Reduced-motion: no scroll-snap animation, instant.
  *
+ * Client component (since WP14) so we can detect "today" client-side
+ * and highlight it with `data-today="true"`. The day-pulse animation
+ * is gated by `prefers-reduced-motion`.
+ *
  * This is a static v1 — future Supabase dynamic would replace
  * the content registry source without touching layout.
  */
 
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
 import { Eyebrow, Section } from '@/components/site';
@@ -31,7 +37,16 @@ interface ScheduleTimelineProps {
   className?: string | undefined;
 }
 
+/** Maps JS Date.getDay() (0=Sun) to the day-key used in `weeklySchedule`. */
+const DAY_KEYS: ReadonlyArray<string> = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
 export function ScheduleTimeline({ className }: ScheduleTimelineProps): ReactNode {
+  const [todayKey, setTodayKey] = useState<string | null>(null);
+
+  useEffect(() => {
+    setTodayKey(DAY_KEYS[new Date().getDay()] ?? null);
+  }, []);
+
   return (
     <Section rhythm="loose" tone="default" className={cn(styles.root, className)}>
       <div className="container">
@@ -49,7 +64,12 @@ export function ScheduleTimeline({ className }: ScheduleTimelineProps): ReactNod
         <FadeUp>
           <ol className={styles.strip} aria-label="Weekly mowing schedule">
             {weeklySchedule.map((day) => (
-              <li key={day.day} className={styles.day} data-day={day.day}>
+              <li
+                key={day.day}
+                className={styles.day}
+                data-day={day.day}
+                data-today={todayKey === day.day ? 'true' : undefined}
+              >
                 <div className={styles.dayHead}>
                   <span className={styles.dayDot} aria-hidden="true" />
                   <span className={styles.dayName}>{day.day}</span>

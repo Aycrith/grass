@@ -134,6 +134,16 @@
   outline: none;
 }
 
+/* ---------- Priority pin (WP14) ----------
+ * Home-base ZIP (33771) gets sun fill + thicker ring stroke so
+ * it reads as the service anchor on the map without an extra
+ * label. Composes with the active state below.
+ */
+.pin.priority {
+  fill: var(--ll-sun);
+  stroke-width: 2.5;
+}
+
 /* Whole-pin group hover: rings + dot scale up slightly when the
    user hovers anywhere on the ZIP pin. Origin is the pin center
    so the ring grows around it symmetrically. */
@@ -147,6 +157,24 @@
 .pinGroup:hover,
 .pinGroup:focus-within {
   transform: scale(1.08);
+}
+
+/* ---------- Active state (WP14) ----------
+ * When a pin is hovered or focused (or its matching rail row
+ * is), the whole pin group scales up more + ring strokes
+ * brighten. JS sets data-zip-active on the <g>; CSS paints.
+ */
+.pinGroup[data-zip-active='true'] {
+  transform: scale(1.18);
+}
+
+.pinGroup[data-zip-active='true'] .pin {
+  r: 12;
+}
+
+.pinGroup[data-zip-active='true'] .pinRing {
+  stroke-opacity: 1;
+  stroke-width: 2;
 }
 
 .pinRing {
@@ -205,6 +233,23 @@
 .railItem:focus {
   color: var(--ll-sun);
   outline: none;
+}
+
+/* ---------- Active state (WP14) ----------
+ * When a rail row is hovered/focused OR its matching pin is, the
+ * row lights up in sun-tinted glass. Padding compensates for the
+ * added background so the rail doesn't shift on activation.
+ */
+.railItem[data-zip-active='true'] {
+  background: color-mix(in oklab, var(--ll-sun) 22%, transparent);
+  color: var(--ll-sand-bleached);
+  padding-inline: var(--space-3);
+  border-radius: var(--radius);
+  border-bottom-color: transparent;
+}
+
+.railItem[data-zip-active='true'] .railItemZip {
+  opacity: 1;
 }
 
 /* Per-ZIP thumbnail — ComfyUI webp, sized to read as a small

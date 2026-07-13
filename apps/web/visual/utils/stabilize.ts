@@ -33,6 +33,19 @@ export async function maskVolatileContent(page: Page): Promise<void> {
       .last-updated {
         visibility: hidden !important;
       }
+      /* Force-show any motion element (FadeUp / StaggerGroup /
+       * ScrollReveal) still locked at opacity:0 because useInView
+       * hasn't fired by capture time. Without this, baselines look
+       * like blank panels for sections whose IO threshold
+       * (margin: '-10% 0px') hasn't been met. We force opacity:1
+       * and reset transform/transition so the page reflects its
+       * fully-revealed state at the moment of capture. */
+      [style*="opacity: 0"],
+      [style*="opacity:0"] {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+      }
     `,
   });
 }
@@ -42,6 +55,10 @@ export async function maskVolatileContent(page: Page): Promise<void> {
  *   - scroll to y=0 (predictable SiteHeader `.scrolled` state)
  *   - wait for `networkidle` (let lazy images finish decoding)
  *   - yield one rAF tick (let any pending paint flush)
+ *   - wait 1300ms — long enough for the longest FadeUp cascade
+ *     (delay 0.7s + transition 0.4s = 1.1s) plus WordReveal
+ *     (~0.9s) to complete so useInView-triggered opacity:0
+ *     elements have time to fade in before capture.
  */
 export async function settleForCapture(page: Page): Promise<void> {
   await page.evaluate(() => {
@@ -54,6 +71,7 @@ export async function settleForCapture(page: Page): Promise<void> {
         requestAnimationFrame(() => resolve());
       }),
   );
+  await page.waitForTimeout(1300);
 }
 
 /**

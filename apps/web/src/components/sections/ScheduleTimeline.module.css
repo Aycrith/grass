@@ -165,3 +165,33 @@
   background: color-mix(in oklab, var(--ll-palm-bark) 6%, transparent);
   color: var(--ll-palm-bark);
 }
+
+/* ---------- Today marker (WP14) ----------
+ * Client-side highlight of the current day. Pulse on the day
+ * dot is gated by prefers-reduced-motion so reduce-motion
+ * users see a static, still-readable schedule.
+ */
+
+.day[data-today='true'] {
+  border-color: var(--ll-clay);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--ll-sun) 30%, transparent);
+}
+
+.day[data-today='true'] .dayDot {
+  background: var(--ll-sun);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .day[data-today='true'] .dayDot {
+    animation: scheduleTodayPulse 2.4s ease-in-out infinite;
+  }
+}
+
+@keyframes scheduleTodayPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--ll-sun) 55%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 8px transparent;
+  }
+}

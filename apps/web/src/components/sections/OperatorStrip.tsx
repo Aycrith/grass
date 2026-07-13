@@ -5,10 +5,18 @@
  * neighbor's yard" first-person block.
  *
  * Sits between hero and service bento on the homepage. Shows the
- * operator portrait (parallax 0.3×), a 2-3 sentence bio, and a
- * 2×2 grid of equipment tiles (mower / trimmer / blower / edger).
+ * operator portrait (parallax 0.3×), a 2-3 sentence bio, and
+ * (since WP14) a horizontal "tools I run" metabar in place of
+ * the legacy 2×2 webp tile grid.
  *
- * All copy flows from `lib/content.ts → operator` so the steward
+ * The metabar trades webp tile micro-photography for typographic
+ * clarity — four italic-Fraunces model names with sun-colored
+ * dots in a clay-bordered column, mirroring the OperatorNote
+ * "clay rule + portrait" idiom. Reads as operator voice more
+ * directly than tiny webps did, and removes the only place on
+ * the page that rendered the equipment webp slots.
+ *
+ * Copy flows from `lib/content.ts → operator` so the steward
  * can edit it without touching this component.
  *
  * Imagery: SVG placeholder. Steward swaps in real .webp at the
@@ -18,7 +26,7 @@
 import Image from 'next/image';
 import type { ReactNode } from 'react';
 
-import { FadeUp, ParallaxImage, StaggerGroup } from '@/components/motion';
+import { FadeUp, ParallaxImage } from '@/components/motion';
 import { Eyebrow, Section } from '@/components/site';
 import { cn } from '@/lib/cn';
 import { operator } from '@/lib/content';
@@ -62,33 +70,17 @@ export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
 
           <div className={styles.equipment}>
             <p className={styles.equipmentTitle}>What I run</p>
-            <StaggerGroup as="div" className={styles.equipmentGrid} childDelay={0.06}>
-              {operator.equipment.map((item) => {
-                const slug = item.use.toLowerCase().includes('mower')
-                  ? 'mower'
-                  : item.use.toLowerCase().includes('trimmer')
-                    ? 'trimmer'
-                    : item.use.toLowerCase().includes('blower')
-                      ? 'blower'
-                      : item.use.toLowerCase().includes('edger')
-                        ? 'edger'
-                        : 'mower';
-                return (
-                  <div key={item.name} className={styles.equipmentTile}>
-                    <div className={styles.equipmentImage}>
-                      <Image
-                        src={`/equipment/${slug}.webp`}
-                        alt={item.use}
-                        width={200}
-                        height={150}
-                      />
-                    </div>
-                    <p className={styles.equipmentName}>{item.name}</p>
-                    <p className={styles.equipmentUse}>{item.use}</p>
-                  </div>
-                );
-              })}
-            </StaggerGroup>
+            <FadeUp>
+              <ul className={styles.toolBar} aria-label="Equipment list">
+                {operator.equipment.map((item) => (
+                  <li key={item.name} className={styles.tool}>
+                    <span className={styles.toolDot} aria-hidden="true" />
+                    <span className={styles.toolModel}>{item.name}</span>
+                    <span className={styles.toolUse}>{item.use}</span>
+                  </li>
+                ))}
+              </ul>
+            </FadeUp>
           </div>
         </div>
       </div>

@@ -34,6 +34,7 @@ import { BUSINESS, PRICING_FLOOR_CENTS } from '@/lib/business';
 import { cn } from '@/lib/cn';
 import { type ServiceKey, services } from '@/lib/content';
 
+import { ServiceBentoIcon } from './ServiceBentoIcon';
 import styles from './ServiceBento.module.css';
 
 interface ServiceBentoProps {
@@ -130,6 +131,7 @@ export function ServiceBento({ className }: ServiceBentoProps): ReactNode {
                     <span className={styles.eyebrow}>
                       {svc.eyebrow} — {svc.title}
                     </span>
+                    <ServiceBentoIcon service={key} className={styles.icon} />
                     <h3 className={styles.title}>{svc.title}</h3>
                     <p className={styles.summary}>{svc.summary}</p>
                     <p className={styles.price}>

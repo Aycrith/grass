@@ -88,16 +88,18 @@
   }
 }
 
-/* Faint connector line on desktop */
+/* Faint connector line on desktop — dashed 2px clay ties visually
+   to the ServiceAreaMap dashed grid lines so the whole page reads
+   as one coordinate system. */
 .grid::before {
   content: "";
   position: absolute;
   top: 36px;
   left: 56px;
   right: 56px;
-  height: 1px;
-  background: var(--ll-clay);
-  opacity: 0.25;
+  height: 0;
+  border-top: 2px dashed var(--ll-clay);
+  opacity: 0.45;
   pointer-events: none;
 }
 

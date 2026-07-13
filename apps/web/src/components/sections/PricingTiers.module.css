@@ -148,23 +148,6 @@
   flex: 1;
 }
 
-.cta {
-  font-family: var(--font-inter);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin-top: var(--space-2);
-}
-
-.card .cta {
-  color: var(--ll-clay);
-}
-
-.cardFeatured .cta {
-  color: var(--ll-sun);
-}
+/* CTA styles live in ui/Button.module.css since WP14 — every
+ * conversion point on the site now uses the same shutter-button
+ * shape (sun on dark, primary on light). */

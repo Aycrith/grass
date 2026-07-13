@@ -9,6 +9,10 @@
   background: var(--ll-palm-shadow);
   color: var(--ll-sand-bleached);
   padding-block: var(--space-5);
+  /* Deck the band between the hero above and OperatorStrip below
+     so it reads as a framed platform, not a stray dark seam. */
+  border-block: 1px solid
+    color-mix(in oklab, var(--ll-sand) 35%, transparent);
 }
 
 .inner {

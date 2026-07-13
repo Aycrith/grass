@@ -5,8 +5,19 @@
  *
  * Renders a schematic Pinellas peninsula silhouette with 6 ZIP
  * pins (one per `BUSINESS.service_area_zips`). Each pin is a
- * `<Link>` to `/areas/[zip]`. Hover/focus highlights the matching
- * row in the side rail.
+ * `<Link>` to `/areas/[zip]`.
+ *
+ * Bidirectional hover/focus sync (since WP14): pinning a ZIP on
+ * either surface — the SVG pin or the side rail row — paints a
+ * matching `data-zip-active="true"` on both. Single source of
+ * truth: the `activeZip` state. Each surface's mouse + keyboard
+ * handlers update it; CSS reads the data attribute. This keeps
+ * the JS thin and lets the visual rules live with the rest of
+ * the section's styles.
+ *
+ * Pin hierarchy: ZIPs in `PRIORITY_ZIPS` (the home-base ZIP,
+ * 33771) render with the sun fill instead of clay, marking the
+ * service anchor on the page.
  *
  * The map is intentionally stylized — this is a service-area
  * visual, not navigation software. The actual property boundary
@@ -15,7 +26,7 @@
  */
 
 import Link from 'next/link';
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 
 import { Eyebrow, Section } from '@/components/site';
 import { BUSINESS } from '@/lib/business';
@@ -47,7 +58,18 @@ const PIN_LAYOUT: Record<string, { x: number; y: number }> = {
   '33778': { x: 320, y: 760 },
 };
 
+/** ZIPs in this set render with sun fill + thicker ring stroke —
+ * marks the service anchor (home base) on the map. Hardcoded
+ * because it carries operator policy, not copy — not in
+ * `lib/content.ts`. WP14. */
+const PRIORITY_ZIPS = new Set(['33771']);
+
 export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
+  /** Single source of truth for pin↔rail sync. Both surfaces
+   * read this state to render `data-zip-active` on their own
+   * nodes. Mouse + focus handlers on each surface update it. */
+  const [activeZip, setActiveZip] = useState<string | null>(null);
+
   return (
     <Section rhythm="loose" className={cn(styles.root, className)}>
       <div className="container">
@@ -107,12 +129,30 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
               {BUSINESS.service_area_zips.map((zip) => {
                 const layout = PIN_LAYOUT[zip];
                 if (!layout) return null;
+                const isActive = activeZip === zip;
+                const isPriority = PRIORITY_ZIPS.has(zip);
                 return (
-                  <Link key={zip} href={`/areas/${zip}`} aria-label={`Service area ${zip}`}>
-                    <g className={styles.pinGroup}>
+                  <Link
+                    key={zip}
+                    href={`/areas/${zip}`}
+                    aria-label={`Service area ${zip}`}
+                    onMouseEnter={() => setActiveZip(zip)}
+                    onMouseLeave={() => setActiveZip(null)}
+                    onFocus={() => setActiveZip(zip)}
+                    onBlur={() => setActiveZip(null)}
+                  >
+                    <g
+                      className={styles.pinGroup}
+                      data-zip-active={isActive ? 'true' : undefined}
+                    >
                       <circle className={styles.pinRing} cx={layout.x} cy={layout.y} r="32" />
                       <circle className={styles.pinRing} cx={layout.x} cy={layout.y} r="20" />
-                      <circle className={styles.pin} cx={layout.x} cy={layout.y} r="10" />
+                      <circle
+                        className={cn(styles.pin, isPriority && styles.pinPriority)}
+                        cx={layout.x}
+                        cy={layout.y}
+                        r="10"
+                      />
                       <text className={styles.pinLabel} x={layout.x} y={layout.y + 4}>
                         {zip}
                       </text>
@@ -128,8 +168,18 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
             {BUSINESS.service_area_zips.map((zip) => {
               const name = serviceAreaMap.pinLocations[zip] ?? 'Largo area';
               const thumbSrc = serviceAreaMap.areaImages[zip];
+              const isActive = activeZip === zip;
               return (
-                <Link key={zip} href={`/areas/${zip}`} className={styles.railItem}>
+                <Link
+                  key={zip}
+                  href={`/areas/${zip}`}
+                  className={styles.railItem}
+                  data-zip-active={isActive ? 'true' : undefined}
+                  onMouseEnter={() => setActiveZip(zip)}
+                  onMouseLeave={() => setActiveZip(null)}
+                  onFocus={() => setActiveZip(zip)}
+                  onBlur={() => setActiveZip(null)}
+                >
                   <span className={styles.railItemThumb}>
                     {thumbSrc ? (
                       // eslint-disable-next-line @next/next/no-img-element

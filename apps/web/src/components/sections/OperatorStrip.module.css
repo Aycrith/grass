@@ -17,8 +17,11 @@
 
 .inner {
   display: grid;
-  grid-template-columns: 320px minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--space-8);
+  /* WP14 — widen the bio column since the metabar column is
+   * now content-light (4 tool rows). Portrait keeps a generous
+   * floor at 280px so it still anchors visually. */
+  grid-template-columns: minmax(280px, 0.9fr) 1.5fr 0.9fr;
+  gap: var(--space-7);
   align-items: start;
 }
 
@@ -129,49 +132,54 @@
   margin: 0;
 }
 
-.equipmentGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-3);
-}
-
-.equipmentTile {
+/* ---------- Tool metabar (WP14) ----------
+ * Replaces the 2×2 webp grid. Clay left border (same idiom as
+ * the OperatorNote clay rule) with four rows, each showing a
+ * sun-colored dot + italic-Fraunces model name + Inter use
+ * description on the right.
+ */
+.toolBar {
+  list-style: none;
+  padding: 0 var(--space-4) 0 var(--space-4);
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
-  background: var(--ll-sand-bleached);
-  border-radius: var(--radius);
-  padding: var(--space-3);
-  border: 1px solid var(--color-border);
+  gap: var(--space-3);
+  border-left: 2px solid var(--ll-clay);
 }
 
-.equipmentImage {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  background: var(--ll-shell);
+.tool {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--space-3);
+  align-items: baseline;
+  padding-block: var(--space-1);
 }
 
-.equipmentImage img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+.toolDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ll-sun);
+  flex-shrink: 0;
+  align-self: center;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ll-sun) 22%, transparent);
 }
 
-.equipmentName {
-  font-family: var(--font-inter);
-  font-weight: 600;
-  font-size: 0.95rem;
+.toolModel {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-style: italic;
   color: var(--ll-palm-bark);
-  margin: 0;
+  font-size: 1rem;
+  line-height: 1.2;
 }
 
-.equipmentUse {
+.toolUse {
   font-family: var(--font-inter);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--ll-palm-bark);
-  opacity: 0.7;
-  margin: 0;
+  opacity: 0.65;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
