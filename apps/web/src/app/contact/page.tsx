@@ -1,10 +1,17 @@
 /**
- * Contact page — lead-capture form.
+ * /contact — lead-capture page.
  *
- * Posts to /api/lead which validates, calls @grass/crm-core createLead,
- * and dispatches SMS/email via @grass/notifications-core sendLeadResponse.
+ * Mounts the canonical ContactHero + the existing
+ * <ContactForm> client component (which posts to /api/lead).
+ * The form is preserved as-is — only its editorial frame is
+ * upgraded to the section library.
+ *
+ * When /contact?source=hurricane is hit, the hero surfaces a
+ * clay-bordered hurricane-mode callout so visitors know prep /
+ * cleanup requests are being prioritized.
  */
 
+import { ContactHero } from '@/components/sections';
 import { BUSINESS } from '@/lib/business';
 import type { Metadata } from 'next';
 import ContactForm from './ContactForm';
@@ -21,31 +28,13 @@ interface ContactProps {
 export default async function ContactPage({ searchParams }: ContactProps) {
   const { source } = await searchParams;
   return (
-    <section className="container">
-      <h1>Get a Free Quote</h1>
-      <p>
-        Tell us about your yard and we'll get back to you within 24 hours during business days. Or
-        call us directly at <a href={`tel:${BUSINESS.phone}`}>{BUSINESS.phone}</a>.
-      </p>
-      {source === 'hurricane' ? (
-        <div
-          style={{
-            background: 'var(--red-700)',
-            color: 'white',
-            padding: '1rem',
-            borderRadius: 6,
-            margin: '1rem 0',
-          }}
-        >
-          <strong>Hurricane Mode Active:</strong> We are prioritizing prep and cleanup requests.
-          Please include your address and any concerns in the message field below.
+    <>
+      <ContactHero hurricaneMode={source === 'hurricane'} />
+      <section style={{ background: 'var(--ll-cream)', paddingBottom: 'var(--space-12)' }}>
+        <div className="container">
+          <ContactForm source={source} />
         </div>
-      ) : null}
-      <ContactForm source={source} />
-      <p style={{ marginTop: '2rem', fontSize: '0.9rem', color: 'var(--gray-700)' }}>
-        We currently service {BUSINESS.service_area_zips.join(', ')}.
-        {` Not sure if we cover your ZIP? Enter it above and we'll let you know.`}
-      </p>
-    </section>
+      </section>
+    </>
   );
 }

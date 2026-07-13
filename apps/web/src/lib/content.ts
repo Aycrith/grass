@@ -414,6 +414,283 @@ export function isKnownService(slug: string): slug is ServiceKey {
   return slug in services;
 }
 
+// ============================================================
+// WP9b — page-level content for areas, pricing, about, contact,
+// quote, and review. Each block is a self-contained const that
+// the corresponding section component reads from.
+// ============================================================
+
+/**
+ * AreaDirectory — `/areas` index page header.
+ *
+ * Same shape as servicesIndex: eyebrow + h1 + tagline + tail.
+ */
+export const areasIndex = {
+  eyebrow: '01 — Service areas',
+  heading: 'Six ZIPs.',
+  tagline:
+    'Largo and the five adjacent Pinellas County neighborhoods — six ZIPs we know well enough to commit to a recurring weekly route through.',
+  tail: 'Right outside one of these? Ask. I sometimes make exceptions for yards next door.',
+} as const;
+
+/**
+ * Per-ZIP area detail. Keys match BUSINESS.service_area_zips.
+ * Each entry carries: neighborhood name, intro paragraph, 3–4
+ * nearby landmarks, 1 area-specific FAQ. Image source comes
+ * from serviceAreaMap.areaImages[zip] so the same webp serves
+ * both the landing-page rail and the area-detail hero.
+ */
+export const areaDetail = {
+  '33756': {
+    zip: '33756',
+    name: 'Belleair / Clearwater',
+    heading: 'Lawn care in Belleair & Clearwater (33756)',
+    intro:
+      'Mix of historic homes and waterfront properties along the west side of Pinellas. Salinity-resistant plant selection is common — and strict HOA standards mean curb appeal matters twice over.',
+    nearby: ['Belleair', 'Belleair Beach access', 'Clearwater'],
+    faqs: [
+      {
+        q: 'Do you handle saltwater irrigation damage?',
+        a: 'Yes. Salt-tolerant grass varieties (Bahiagrass, certain St. Augustine cultivars) and a slightly higher mow height help. We can recommend a partner for soil amendments if your lawn is heavily affected.',
+      },
+    ],
+  },
+  '33770': {
+    zip: '33770',
+    name: 'Belleair Bluffs / Largo',
+    heading: 'Lawn care in Belleair Bluffs & east Largo (33770)',
+    intro:
+      'Established neighborhood with mature oaks — heavy leaf-drop in spring and lush, established landscaping requiring routine maintenance. Most yards in this ZIP have a 0.25–0.5 acre footprint.',
+    nearby: ['Belleair Bluffs', 'Indian Rocks Beach access', 'Largo Medical Center'],
+    faqs: [
+      {
+        q: 'My oak drops leaves every week in spring — is that in the mowing rate?',
+        a: 'Light leaf-drop is bundled with the mowing visit (we blow off the hard surfaces after each cut). Heavy seasonal drops in March–April can be a separate seasonal cleanup visit.',
+      },
+    ],
+  },
+  '33771': {
+    zip: '33771',
+    name: 'Largo (central)',
+    heading: 'Lawn care in central Largo (33771)',
+    intro:
+      'Our home base — fastest response times for this ZIP. Mix of older and newer homes; many 0.25–0.5 acre lots. St. Augustine grass is the dominant ground cover.',
+    nearby: ['Downtown Largo', 'Largo Central Park', 'Starkey Ranch'],
+    faqs: [
+      {
+        q: 'How fast can you start?',
+        a: 'For 33771 specifically, we can usually start within five business days of a quote. Hurricane season is the exception — book early if you want prep or cleanup.',
+      },
+    ],
+  },
+  '33773': {
+    zip: '33773',
+    name: 'Largo (east)',
+    heading: 'Lawn care in east Largo (33773)',
+    intro:
+      'Newer subdivisions with irrigation systems and Bahia or St. Augustine lawns. Many homes under 10 years old with new landscaping — different needs than older neighborhoods.',
+    nearby: ['East Bay', 'Pinellas Park border', 'Feather Sound'],
+    faqs: [
+      {
+        q: 'Do you service irrigation systems?',
+        a: 'No — irrigation installation requires the PCCLB Irrigation Specialty license, which we have not acquired. We mow and trim around irrigation heads carefully, and can recommend a licensed irrigation operator.',
+      },
+    ],
+  },
+  '33774': {
+    zip: '33774',
+    name: 'Largo / Ridgecrest',
+    heading: 'Lawn care in Ridgecrest (33774)',
+    intro:
+      'Ridgecrest area with elevated terrain and mature tree canopy. Drainage considerations and shade-tolerant grass varieties are common needs. Lots tend to be larger and more landscaped.',
+    nearby: ['Ridgecrest', 'Seminole border', 'Lake Seminole'],
+    faqs: [
+      {
+        q: 'My yard has a lot of shade — what grass will actually grow?',
+        a: 'St. Augustine cultivars like Palmetto and Seville handle partial shade well. Bahia tolerates more sun than shade. We can recommend a partner for sod or overseeding if your current turf is thinning out.',
+      },
+    ],
+  },
+  '33778': {
+    zip: '33778',
+    name: 'Seminole / Largo West',
+    heading: 'Lawn care in Seminole & west Largo (33778)',
+    intro:
+      'Coastal influence — sandy soil and salt air. Service scheduling is tight in this ZIP due to high demand. Hurricane prep is the top seller for homes this close to the Gulf.',
+    nearby: ['Seminole', 'Indian Shores access', 'Largo (west)'],
+    faqs: [
+      {
+        q: 'How quickly can you respond to a hurricane in this ZIP?',
+        a: 'Once winds drop below 30 mph sustained, we resume outdoor work and prioritize this ZIP along with 33773 and 33774. Most post-storm cleanup visits happen within 48 hours of the all-clear.',
+      },
+    ],
+  },
+} as const satisfies Record<string, AreaDetailCopy>;
+
+export interface AreaDetailCopy {
+  zip: string;
+  name: string;
+  heading: string;
+  intro: string;
+  nearby: ReadonlyArray<string>;
+  faqs: ReadonlyArray<{ q: string; a: string }>;
+}
+
+/**
+ * Pricing — `/pricing` page content.
+ *
+ * PricingHero (eyebrow + h1 + tagline) + PricingComparisonTable
+ * (rows of service-line + rate). Both read from this const so
+ * the steward edits one file when prices change.
+ *
+ * Rates are passed via BUSINESS.PRICING_FLOOR_CENTS at render
+ * time — this const carries only the human-readable labels.
+ */
+export const pricingPage = {
+  eyebrow: '01 — Pricing',
+  heading: 'What it costs.',
+  tagline:
+    'Floor pricing, per visit or per project. Most lawns fall inside the floor; bigger yards, slopes, and gated back-fences bump the price. No subscription, no contract, no surprise fees.',
+  discountEyebrow: 'Discounts & recurring',
+  discountIntro: 'Three ways to save on the floor rates above:',
+  discounts: [
+    {
+      label: 'Pre-pay 6 months',
+      body: '10% off mowing — lock in price + service priority through hurricane season.',
+    },
+    {
+      label: 'Refer a neighbor',
+      body: '$25 credit on your next invoice for each neighbor who signs up.',
+    },
+    {
+      label: 'Senior / military',
+      body: '10% off all services. Valid ID required at quote-time.',
+    },
+  ],
+  notIncludedTitle: "What's not on the list",
+  notIncludedBody:
+    'To stay in compliance with Florida regulations, we do not currently offer:',
+  notIncluded: [
+    'Fertilization (requires FDACS Limited Commercial Fertilizer Applicator license)',
+    'Pest control (requires FDACS §482 certification)',
+    'Irrigation system installation (requires PCCLB Irrigation Specialty license)',
+  ],
+  notIncludedTail: 'We can refer you to trusted licensed partners for these services.',
+  taxEyebrow: 'Sales tax note',
+  taxBody:
+    "For the first phase of operation, our invoice reads \"tax not yet collected\". The Florida / Pinellas combined rate is 7.00% (6% FL state + 1% Pinellas County surtax). Once we register for Florida sales tax (DR-1) at the first-cash milestone, we'll add a sales-tax line item to invoices and remit quarterly. Until then, we either absorb the tax into the advertised price or invoice it transparently for your records — your choice at quote-time.",
+} as const;
+
+/**
+ * About — `/about` page content.
+ *
+ * Drives AboutHero (eyebrow + h1 + tagline) and OperatorBio
+ * (long-form mission + values + service register). Steward
+ * edits one file to update the about page copy.
+ */
+export const aboutPage = {
+  eyebrow: '01 — About',
+  heading: 'About Largo Lawn.',
+  tagline:
+    "Solo-founder lawn care in Largo, FL. Six years cutting grass in 33771. Here's why we run small on purpose.",
+  missionEyebrow: 'Our mission',
+  mission: 'We exist to make professional lawn care affordable and reliable for everyday homeowners. Floridians already deal with enough — hurricanes, humidity, salt air — and a stressed-out yard shouldn’t add to it.',
+  whySoloEyebrow: 'Why solo?',
+  whySolo: 'Most landscaping companies grow fast, hire subcontractors, and lose quality control. We don’t. Largo Lawn is a one-crew operation — every job is performed by the same person who quoted it. When you book, you know exactly who’s coming.',
+  valuesEyebrow: 'Our values',
+  values: [
+    {
+      label: 'Transparent pricing',
+      body: 'Rates published on the website. No surprise fees.',
+    },
+    {
+      label: 'Weather fairness',
+      body: 'When winds hit the local hurricane threshold or it rains at your scheduled time, we auto-reschedule at no charge.',
+    },
+    {
+      label: 'No upselling',
+      body: "If your yard doesn't need a service, we'll tell you.",
+    },
+    {
+      label: 'Local accountability',
+      body: "We live here. Our reputation depends on every yard we touch.",
+    },
+  ],
+  registerEyebrow: 'Service register (active)',
+  register: [
+    'Lawn mowing (push + riding, ≤1 acre)',
+    'Mechanical edging (curbs, walks, bed lines)',
+    'Mulch installation (bulk delivery + install)',
+    'Hedge & shrub trimming (≤12 ft height)',
+    'Hurricane prep + post-storm cleanup',
+    'Seasonal cleanup (leaves, beds, debris haul-off)',
+  ],
+} as const;
+
+/**
+ * Contact — `/contact` page content.
+ *
+ * Drives ContactHero (eyebrow + h1 + tagline) above the
+ * existing ContactForm. Tagline emphasizes 24-hour response.
+ */
+export const contactPage = {
+  eyebrow: '01 — Contact',
+  heading: 'Get a free quote.',
+  tagline:
+    'Tell us about your yard and we will get back to you within 24 hours during business days. Or call us directly.',
+  hurricaneCopy:
+    'Hurricane Mode Active: We are prioritizing prep and cleanup requests. Please include your address and any concerns in the message field below.',
+  coverageLine:
+    'We currently service 33756, 33770, 33771, 33773, 33774, 33778. Not sure if we cover your ZIP? Enter it in the form and we will let you know.',
+} as const;
+
+/**
+ * Quote — `/quote` page content.
+ *
+ * Drives QuoteHero (eyebrow + h1 + tagline) above the existing
+ * QuoteCalculator, plus QuoteConfirmation (the "what happens
+ * next" step list shown below the form).
+ */
+export const quotePage = {
+  eyebrow: '01 — Free quote',
+  heading: 'Tell us about your yard.',
+  tagline:
+    'Free, no-obligation quote within 24 hours. No subscription, no contract — just a flat rate from a local operator.',
+  confirmationEyebrow: 'What happens next',
+  confirmationSteps: [
+    'Submit the form (30 seconds).',
+    'We text or email within 24 hours with a flat-rate quote.',
+    'If the price works, schedule your first mow — usually within the same week.',
+    'After the first visit, decide if you want weekly / bi-weekly / one-time. No contract.',
+  ],
+  talkTail: 'Prefer to talk it through? Text or call and we will work through the same questions on the phone.',
+} as const;
+
+/**
+ * Review — `/review` page content.
+ *
+ * Drives ReviewMagnet (placeholder until GBP verified). The
+ * post-launch GBP write-a-review URL is the only thing that
+ * changes between pre-launch and post-launch — this const
+ * holds both states so the steward can flip with one edit.
+ */
+export const reviewPage = {
+  eyebrow: '01 — Leave a review',
+  heading: 'Thanks for trusting us with your yard.',
+  tagline:
+    'A 30-second Google review helps a local small business compete against the big guys — and it means the world to a one-person operation like ours.',
+  comingSoonTitle: 'Google review coming soon',
+  comingSoonBody:
+    'Our Google Business Profile is being set up this season. Once verified, the QR code on your review-magnet card will open our Google review form directly.',
+  comingSoonTail:
+    'In the meantime, text or call us directly with any feedback — good or bad:',
+  notRightTitle: 'When something isn’t right',
+  notRightBody:
+    "Most lawn-care complaints come down to one of three things: missed spots, edge cleanup, or timing. We want to fix any of those before they fester — text or call us and we'll be back within 48 hours to make it right. No charge for the return visit.",
+  notRightTail:
+    "This is the standard we hold ourselves to. Local reputation is everything when you're a solo operator — one bad review we didn't try to fix matters more than five great ones we never had to make right.",
+} as const;
+
 export const processSteps = [
   {
     n: '01',

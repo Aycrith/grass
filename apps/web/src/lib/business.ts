@@ -10,6 +10,7 @@
 export const BUSINESS = {
   name: 'Largo Lawn',
   legal_entity: 'Largo Lawn',
+  url: 'https://largolawn.pro',
   phone: '+1-727-555-0123',
   email: 'hello@largolawn.pro',
   address: {

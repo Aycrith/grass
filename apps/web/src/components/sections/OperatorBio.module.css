@@ -1,0 +1,117 @@
+/* ============================================================
+ * OperatorBio — `/about` body: mission + why-solo + values +
+ * service register.
+ *
+ * Three stacked sections on alternating surfaces, each focused
+ * so the reader can scan or sit with one block at a time.
+ * ============================================================ */
+
+.missionSection {
+  background: var(--ll-cream);
+}
+
+.prose {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 50rem;
+  margin: 0 auto var(--space-7);
+}
+
+.prose:last-child {
+  margin-bottom: 0;
+}
+
+.body {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 400;
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+  line-height: 1.45;
+  color: var(--ll-palm-bark);
+  margin: 0;
+}
+
+/* ---------- Values ---------- */
+
+.valuesSection {
+  background: var(--ll-sand-bleached);
+}
+
+.valuesHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  max-width: 42rem;
+}
+
+.valuesHeading {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--ll-palm-bark);
+  margin: 0;
+}
+
+.valuesGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+@media (max-width: 640px) {
+  .valuesGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.valueCard {
+  background: var(--ll-shell);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.valueLabel {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--ll-clay);
+}
+
+.valueBody {
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0;
+}
+
+/* ---------- Register ---------- */
+
+.registerSection {
+  background: var(--ll-cream);
+}
+
+.registerInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 40rem;
+}
+
+.registerList {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--ll-palm-bark);
+  opacity: 0.9;
+  padding-left: var(--space-5);
+  margin: 0;
+}

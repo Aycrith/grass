@@ -1,0 +1,80 @@
+/* ============================================================
+ * AreaCTA — `/areas/[zip]` final per-area CTA.
+ *
+ * Reuses the ServiceCTA idiom: palm-shadow bg, sand-bleached
+ * text, sun CTA. Back link points to /areas (vs. ServiceCTA
+ * which points to /services) so the navigation feels ZIP-shaped
+ * when read in isolation.
+ * ============================================================ */
+
+.root {
+  background: var(--ll-palm-shadow);
+  color: var(--ll-sand-bleached);
+  padding-block: var(--space-11);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-7);
+  flex-wrap: wrap;
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 40rem;
+}
+
+.eyebrow {
+  font-family: var(--font-inter);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--ll-sun);
+}
+
+.heading {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--ll-sand-bleached);
+  margin: 0;
+}
+
+.body {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--ll-sand-bleached);
+  opacity: 0.85;
+  margin: var(--space-2) 0 0;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.back {
+  font-family: var(--font-inter);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ll-sand-bleached);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  opacity: 0.85;
+  transition: opacity var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.back:hover {
+  opacity: 1;
+  text-decoration: underline;
+}

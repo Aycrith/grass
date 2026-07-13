@@ -9,9 +9,17 @@ export const PRD_ROUTES = [
   { slug: 'home', path: '/' },
   { slug: 'services', path: '/services' },
   { slug: 'services-mowing', path: '/services/mowing' },
+  { slug: 'areas', path: '/areas' },
+  { slug: 'areas-33756', path: '/areas/33756' },
   { slug: 'areas-33771', path: '/areas/33771' },
+  { slug: 'areas-33773', path: '/areas/33773' },
+  { slug: 'areas-33774', path: '/areas/33774' },
+  { slug: 'areas-33778', path: '/areas/33778' },
   { slug: 'pricing', path: '/pricing' },
   { slug: 'quote', path: '/quote' },
+  { slug: 'about', path: '/about' },
+  { slug: 'contact', path: '/contact' },
+  { slug: 'review', path: '/review' },
 ] as const;
 
 export const VIEWPORTS = ['desktop', 'mobile'] as const;

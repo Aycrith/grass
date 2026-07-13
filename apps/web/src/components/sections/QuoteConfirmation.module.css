@@ -1,0 +1,87 @@
+/* ============================================================
+ * QuoteConfirmation — `/quote` post-submit timeline.
+ *
+ * Cream surface. 4 numbered steps in a vertical list with
+ * a Fraunces italic numbered marker on the left.
+ * ============================================================ */
+
+.root {
+  background: var(--ll-cream);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  color: var(--ll-clay);
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.step {
+  display: flex;
+  gap: var(--space-4);
+  align-items: baseline;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-4);
+}
+
+.step:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.stepNumber {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  font-style: italic;
+  color: var(--ll-clay);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  min-width: 2.5rem;
+}
+
+.stepBody {
+  font-family: var(--font-inter);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--ll-palm-bark);
+}
+
+.tail {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: var(--space-3) 0 0;
+}
+
+.phoneLine {
+  font-family: var(--font-inter);
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.phoneLine a {
+  color: var(--ll-clay);
+  text-decoration: none;
+}
+
+.phoneLine a:hover {
+  text-decoration: underline;
+}

@@ -19,7 +19,7 @@ export type PillSize = 'sm' | 'md' | 'lg';
 interface PillProps extends ComponentPropsWithoutRef<'span'> {
   tone?: PillTone;
   size?: PillSize;
-  className?: string;
+  className?: string | undefined;
   children: ReactNode;
 }
 

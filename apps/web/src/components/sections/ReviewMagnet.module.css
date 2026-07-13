@@ -1,0 +1,113 @@
+/* ============================================================
+ * ReviewMagnet — `/review` page composition.
+ *
+ * Three stacked sections on alternating surfaces:
+ *   - heroSection       cream, editorial opener
+ *   - comingSoonSection sand-bleached, primary CTA card
+ *   - notRightSection   cream, secondary "we'll fix it" card
+ *
+ * Mirrors the rhythm pattern used elsewhere (cream opener →
+ * sand card → cream card) so the page reads as part of the
+ * AAA family even though it's a low-traffic edge route.
+ * ============================================================ */
+
+.heroSection {
+  background: var(--ll-cream);
+  padding-block: var(--space-11) var(--space-9);
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 60%;
+}
+
+@media (max-width: 980px) {
+  .copy {
+    max-width: 100%;
+  }
+}
+
+.eyebrow {
+  color: var(--ll-clay);
+}
+
+.title {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: clamp(2.5rem, 5vw, 4.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--ll-palm-bark);
+  margin: 0;
+}
+
+.tagline {
+  font-family: var(--font-inter);
+  font-size: 1.15rem;
+  line-height: 1.55;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0;
+  max-width: 40rem;
+}
+
+/* ---------- Coming soon (primary CTA card) ---------- */
+
+.comingSoonSection {
+  background: var(--ll-sand-bleached);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 50rem;
+  margin: 0 auto;
+  background: var(--ll-shell);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-7);
+}
+
+.cardHeading {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--ll-palm-bark);
+  margin: 0;
+}
+
+.cardBody {
+  font-family: var(--font-inter);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0;
+}
+
+.cardTail {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0;
+}
+
+.cardActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+/* ---------- Not right (secondary card) ---------- */
+
+.notRightSection {
+  background: var(--ll-cream);
+}
