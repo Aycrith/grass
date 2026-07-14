@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-10 (Day 5 of Phase 0 — exit criteria met)
+# Last updated: 2026-07-14 (Day 18 — WP49 hero v2 + D-0008 ratified)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-10 (Day 16 — cash-min activation; items 4+6 active, 1/2/3/5 deferred)
+# Last updated: 2026-07-14 (Day 18 — hero v2 redo; WP49 swap shipped; D-0008 ratified)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -517,6 +517,49 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-14"
+    day: 20
+    change: >
+      WP49 hero v2 — replace the WP3-era hero webps (commit ac16da8,
+      Day 17) with keeper-quality painted storybook. v1 hero was
+      37 KB desktop + 22 KB mobile, blurry blob-field with no
+      architecture, no focal subject, no Pinellas identity. User
+      flagged it as 'substandard, doesn't meet acceptance criteria
+      for the visual quality, fidelity, and animation standards.'
+      D-0008 ratified, brief authored (apps/comfyui/prompts/hero-v2.md),
+      8 workflow JSONs + 3 scripts + 3 curation logs landed in
+      commit e57c7a7. Master scene generated (4 candidates @ seed
+      4242, LoRA 0.90, IP-Adapter 0.55, 40 steps), curated 24/30 —
+      candidate 1 is the keeper (ranch house + golden hour + small
+      riding mower in lower-right). Mobile scene generated
+      independently (4 candidates @ seed 4269), curated 24/30 —
+      candidate 1 is the keeper (2-story house + push mower in
+      lower-third, on-brand palette). Mower + grass layer
+      generations were ABANDONED due to LoRA bias: 4-of-4 mower
+      candidates were tractors (not push mowers), 4-of-4 grass
+      candidates were magenta blades and 4-of-4 at lower LoRA
+      were purple irises (not St Augustine lawn grass). Existing
+      brand SVGs (mower-side-profile.svg, grass-blade-cluster-xl.svg)
+      are kept as the v2 stopgap. The 7-composable layered
+      architecture was abandoned in-flight because the palm-over-
+      master composite via mix-blend-mode multiply was muddy (the
+      "five cutouts" cohesion risk from the 7-vs-video analysis
+      was realized in practice). v2 ships as a single static
+      image per breakpoint (mobile.webp 191 KB, desktop.webp
+      314 KB) inside the right column. Component swap shipped in
+      commit 72e749c — HeroCinematic.tsx now renders a single
+      next/image instead of the WP19-WP48 layered SVG composition;
+      per-layer ambient motion (palm sway / mower drift / grass
+      sway) is dropped. Motion choreography preserved on the copy
+      side (WordReveal, ParallaxImage, fade-up). LCP target
+      (≤2.0s) expected to be met or improved; Lighthouse audit
+      queued for the next run. Charter compliance: all 4 tests
+      (charter, agents, capabilities, ledger-freshness) green.
+      Typecheck green. D-0009 follow-up: long-term grass asset
+      upgrade (3 paths logged in D-0008 §v2 outcome) — the v2
+      stopgap uses the existing SVG, v3 should resolve.
+    by: "Mavis (autonomous, 2026-07-14)"
+
   - date: "2026-07-12"
     day: 18
     change: >
