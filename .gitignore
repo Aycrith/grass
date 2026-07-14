@@ -95,6 +95,9 @@ coverage/
 # --- Claude Code session memory (local-only by design) ---
 .claude/sessions/
 .claude/transcripts/
+# Orphan auto-memory that landed at repo root (canonical copy lives at
+# ~/.claude/projects/C--Users-camer-DEVNEW-GRASS/memory/)
+memory/
 
 # --- Session continuation transcripts dropped at session resume ---
 *-this-session-is-being-continued-from-a-previous-c.txt
@@ -139,6 +142,8 @@ audit/wp5-lighthouse/*.json
 apps/web/visual/test-output/
 apps/web/visual/playwright-report/
 apps/web/visual/blob-report/
+# Throwaway debug captures (scratch); canonical visual/ layout in README.md
+apps/web/visual/_oneoff/
 apps/web/visual/baselines/*-actual.png
 apps/web/visual/baselines/*-diff.png
 apps/web/test-results/
