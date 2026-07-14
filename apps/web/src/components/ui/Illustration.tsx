@@ -27,9 +27,9 @@ export type IllustrationTone = 'default' | 'dark';
 interface IllustrationProps {
   /** Path under /public, e.g. "/illustrations/mower-side-profile.svg". */
   src: string;
-  /** Width in px. Defaults to 600. */
+  /** Width in px (HTML attribute — intrinsic size for layout pre-paint). Defaults to 600. */
   width?: number;
-  /** Height in px. Defaults to 400. */
+  /** Height in px (HTML attribute — intrinsic size for layout pre-paint). Defaults to 400. */
   height?: number;
   /** Override accessible label. Pass "" for purely decorative. */
   alt?: string;
@@ -47,6 +47,13 @@ export function Illustration({
   tone = 'default',
   className,
 }: IllustrationProps) {
+  // WP34 — removed the inline `style={{ width, height }}` so CSS class
+  // sizing (e.g., `.mower { width: 38%; }`) is honored. Before this fix,
+  // the inline style silently overrode every consumer's responsive CSS
+  // (e.g., `clamp(56px, 7vw, 72px)` in OperatorStrip, `width: 100%` in
+  // ScheduleTimeline's todayMower). The HTML width/height attributes still
+  // declare the intrinsic dimensions for layout pre-paint and aspect-ratio
+  // fallback when no CSS class overrides.
   return (
     <img
       src={src}
@@ -54,7 +61,6 @@ export function Illustration({
       width={width}
       height={height}
       className={cn(styles.illustration, styles[tone], className)}
-      style={{ width, height }}
       loading="lazy"
       decoding="async"
     />

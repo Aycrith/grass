@@ -23,6 +23,7 @@
  */
 
 import { SiteFooter, SiteHeader } from '@/components/site';
+import { LenisProvider } from '@/components/motion';
 import { BUSINESS } from '@/lib/business';
 import type { Metadata } from 'next';
 import { Fraunces, Inter } from 'next/font/google';
@@ -137,9 +138,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a className="skip-link" href="#main">
           Skip to main content
         </a>
-        <SiteHeader />
-        <main id="main">{children}</main>
-        <SiteFooter />
+        {/* WP19 — LenisProvider mounts smooth-scroll so the ParallaxImage
+         * in HeroCinematic (and every other scroll-coupled component
+         * site-wide) actually sees a non-zero `scrollYProgress`. The
+         * provider is gated for prefers-reduced-motion + coarse-pointer +
+         * <=768px viewports inside LenisProvider.tsx so mobile and
+         * reduce-motion users keep native scroll. */}
+        <LenisProvider>
+          <SiteHeader />
+          <main id="main">{children}</main>
+          <SiteFooter />
+        </LenisProvider>
       </body>
     </html>
   );

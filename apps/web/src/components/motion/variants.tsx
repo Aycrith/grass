@@ -256,14 +256,39 @@ export function WordReveal({
 
 interface ParallaxImageProps {
   children: ReactNode;
+  /**
+   * WP34 — editorial siblings that should position against the panel
+   * rather than the parallaxing layer. Corner stamps, captions, and
+   * other frame decorations pass through `overlay` so they stay glued
+   * to the panel edges regardless of the parallax scroll position.
+   * Without this slot, `bottom: 16px` on an overlay element resolves
+   * against the motion.div (which has height: 0 because all its
+   * children are absolutely positioned) — the element renders at the
+   * top of the panel, not the bottom.
+   */
+  overlay?: ReactNode;
   /** Pixel range to translate over the full scroll-through of the section. */
   offset?: number;
   className?: string | undefined;
 }
 
-export function ParallaxImage({ children, offset = 80, className }: ParallaxImageProps) {
+export function ParallaxImage({ children, overlay, offset = 80, className }: ParallaxImageProps) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
+  // WP33 — defer the reduced-motion decision until after mount. SSR returns
+  // reduced=null → falsy → motionStyle={y} → renders `transform: translateY(Npx)`
+  // (because `y` interpolates from `[offset, -offset]` so progress=0 → y=offset).
+  // Playwright runs with reducedMotion: 'reduce' so on first client render
+  // reduced === true → motionStyle={} → no transform. That diff produced
+  // the lingering React 19 "attributes of server rendered HTML didn't match"
+  // warning shown in dev mode. Fix: render the same motion style on SSR +
+  // first render (mount gate), then post-mount if the user actually prefers
+  // reduced motion we can drop the parallax. This is the third application
+  // of the wp26/wp30 pattern.
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start end', 'end start'],
@@ -272,14 +297,23 @@ export function ParallaxImage({ children, offset = 80, className }: ParallaxImag
   const smooth = useSpring(scrollYProgress, { stiffness: 100, damping: 30, mass: 0.5 });
   const y = useTransform(smooth, [0, 1], [offset, -offset]);
 
-  // Build the motion style conditionally so we don't pass an `undefined` value
-  // (the project enables `exactOptionalPropertyTypes: true` and Framer's
-  // MotionStyle type rejects `undefined`).
-  const motionStyle = reduced ? {} : { y };
+  // !hydrated || !reduced → render parallax on SSR + first render + non-reduced users.
+  // hydrated && reduced → post-mount swap to {} for reduced-motion users (acceptable
+  // post-mount state change; harmless visible "settle" since the photo springs to
+  // its natural position via the spring value).
+  const motionStyle =
+    !hydrated || !reduced ? { y } : ({} as MotionStyle);
 
   return (
     <div ref={ref} className={cn(styles.parallaxViewport, className)}>
-      <motion.div style={motionStyle}>{children}</motion.div>
+      <motion.div
+        className={styles.parallaxLayer}
+        style={motionStyle}
+        suppressHydrationWarning
+      >
+        {children}
+      </motion.div>
+      {overlay}
     </div>
   );
 }

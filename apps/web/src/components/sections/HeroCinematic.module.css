@@ -45,7 +45,14 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
-  max-width: 36rem;
+  /* WP48 — widened from 36rem so the headline scales can stay in the
+   * "huge editorial hero" range (5rem max) without each .headlineLine
+   * mid-phrase wrapping. At max-width 36rem + 6rem font, "Your
+   * neighbor's" overflowed the column and wrapped to "Your" /
+   * "neighbor's" producing an orphan-word first line. 42rem gives
+   * both "Your neighbor's" and "lawn mower." room to sit on a
+   * single visual line each. */
+  max-width: 42rem;
 }
 
 .eyebrow {
@@ -58,8 +65,15 @@
 .headline {
   font-family: var(--font-fraunces), serif;
   font-weight: 900;
-  font-size: clamp(2.75rem, 7vw, 6rem);
-  line-height: 1.02;
+  /* WP48 — lowered clamp max from 6rem → 5rem so each `.headlineLine`
+   * fits in the copy column without wrapping mid-phrase. WordReveal
+   * renders each line as inline word spans, so when a phrase exceeds
+   * the column width it naturally wraps to the next visual line —
+   * producing 4 lines instead of the intended 2. At 5rem max, both
+   * "Your neighbor's" and "lawn mower." render on a single line each
+   * in a 42rem column. */
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  line-height: 1.04;
   letter-spacing: -0.02em;
   color: var(--ll-palm-bark);
   margin: 0;
@@ -98,13 +112,70 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--elevation-3);
-  background: var(--ll-palm-shadow);
+  /* WP19 — deep-green brand stage, no longer a "placeholder behind the
+   * photograph." Radial gradient warms the top-right corner so the
+   * panel reads as a deliberate Florida brand surface even before
+   * the SVG layers animate in.
+   *
+   * WP20 — second radial gradient pushed to bottom-left for subtle
+   * "cool porch shadow" depth on the staged hero. Both gradients
+   * compose to a layered Florida morning feeling without competing
+   * with the SVG layers above them. */
+  background:
+    radial-gradient(
+      circle at 60% 36%,
+      color-mix(in oklab, var(--ll-sun) 18%, var(--ll-palm-shadow)) 0%,
+      color-mix(in oklab, var(--ll-sun) 8%, var(--ll-palm-shadow)) 22%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 18% 84%,
+      color-mix(in oklab, var(--ll-palm-light) 35%, var(--ll-palm-shadow)) 0%,
+      transparent 35%
+    ),
+    radial-gradient(
+      ellipse at top right,
+      color-mix(in oklab, var(--ll-palm-light) 60%, var(--ll-palm-shadow)) 0%,
+      var(--ll-palm-shadow) 70%
+    );
+}
+
+/* WP20 — morning warmth halo behind the palm. Wide soft sun-color
+ * bloom that visually carries the "golden hour" caption promise into
+ * the SVG composition. Screen blend lifts the deep-green stage
+ * without overpowering the dark palm silhouette that paints on top.
+ *
+ * WP21 — re-centered the halo on the palm SVG's own sun position
+ * (~60% horizontal, ~36% vertical of the panel — derived from
+ * cx=380 cy=140 in pinellas-palm.svg's 600×400 viewBox, scaled into
+ * the .palmWrap box). With the inline sun arc removed, the palm's
+ * sun is the single sun source, so the halo now blooms from exactly
+ * that point. */
+.glow {
+  position: absolute;
+  top: 36%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+  width: 65%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    color-mix(in oklab, var(--ll-sun) 75%, transparent) 0%,
+    color-mix(in oklab, var(--ll-sun) 40%, transparent) 28%,
+    color-mix(in oklab, var(--ll-sun) 14%, transparent) 52%,
+    transparent 72%
+  );
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 1;
+  filter: blur(6px);
 }
 
 /* WP15 — editorial framing: sun-color border + caption pill + corner stamp.
- * Wraps the photo in a thin sun-color frame and overlays a "33771 — Largo
- * central" caption at bottom-left and a small "01" stamp top-right. Reads
- * as intentional brand imagery rather than anonymous stock photography.
+ * Wraps the SVG composition in a thin sun-color frame and overlays a
+ * "Pinellas porch — golden hour" caption at bottom-left and a small "01"
+ * stamp top-right. Reads as intentional brand imagery rather than stock.
  */
 .media::before {
   content: '';
@@ -113,31 +184,212 @@
   border: 1.5px solid color-mix(in oklab, var(--ll-sun) 70%, transparent);
   border-radius: inherit;
   pointer-events: none;
-  z-index: 2;
+  z-index: 4;
   mix-blend-mode: screen;
 }
 
-.mediaInner {
+/* ---------- WP19 SVG composition stage ----------
+ * The right column is a 4-layer hand-authored SVG illustration
+ * (pinellas-palm with its own sun baked in, mower, grass, callout).
+ * Each layer is absolutely positioned inside the rounded `.stage` so
+ * it scales with the panel; ambient motion is CSS-only and gated by
+ * `prefers-reduced-motion: no-preference`.
+ *
+ * WP21 — removed the inline sun-arc layer (the palm SVG already has a
+ * sun baked in; the second sun created "two suns" incoherence above
+ * the fold). The palm is now the single sun source, with the WP20
+ * morning halo glow carrying the warmth.
+ */
+
+.stage {
   position: absolute;
-  inset: -8% 0;
-  width: 100%;
-  height: 116%;
+  inset: 0;
+  pointer-events: none;
 }
 
-.mediaInner img {
+/* WP39 — bottom "ground" anchor. Soft horizontal band that grounds
+ * the grass blades so the panel reads as a Florida porch scene with
+ * a horizon line, not as a stage with abstract vertical strokes
+ * floating in air. Soft color-mix toward the palm-shadow so it
+ * composes naturally with the existing radial gradients in .media. */
+.ground {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 22%;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in oklab, var(--ll-palm-shadow) 60%, transparent) 35%,
+    color-mix(in oklab, var(--ll-palm-shadow) 80%, transparent) 100%
+  );
+  pointer-events: none;
+}
+
+/* Layer 1 — pinellas palm (centered, sway loop). The palm SVG carries
+   its own sun behind the fronds; this is the only sun in the panel. */
+.palmWrap {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 78%;
+  display: flex;
+  justify-content: center;
+}
+
+.palm {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+  height: auto;
+  /* mix-blend-mode: multiply fades the SVG's sand rect (#F4E8D0) into
+   * the deep-green stage (#2d5a3d) so the cream reads as a soft warm
+   * glow behind the palm instead of a hard cream halo. The dark palm
+   * silhouette multiplies darker, painting cleanly against the stage.
+   */
+  mix-blend-mode: multiply;
+  opacity: 0.95;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .palmWrap {
+    animation: heroPalmSway 4.2s ease-in-out infinite;
+    transform-origin: 50% 100%;
+  }
+}
+
+@keyframes heroPalmSway {
+  0%, 100% { transform: translateX(-50%) rotate(-1.5deg); }
+  50% { transform: translateX(-50%) rotate(1.5deg); }
+}
+
+/* Layer 3 — solo mower.
+ * WP34 — dropped `mix-blend-mode: multiply` because the mower's
+ * `#1F4E2C` body multiply-blends to RGB(5, 28, 11) — essentially
+ * invisible against the `#2d5a3d` stage. Normal blend renders the
+ * dark-green silhouette with natural contrast.
+ *
+ * WP39 — repositioned + z-index lifted so the mower reads as the
+ * deliberate focal asset promised by the headline ("Your neighbor's
+ * lawn mower"), not as a sliver behind the callout pill. New
+ * position: bottom 14% (was 16%), left 44% (was 14%, which sat
+ * under the orange callout). Width bumped 38% → 44% so the mower
+ * silhouette carries more visual weight at panel-scale. z-index 4
+ * (above grass at z 1) places the mower in front of the grass
+ * blades so it stays clearly visible.
+ *
+ * WP42 — lift bottom 14% → 18% so the mower sits centered between
+ * the callout pill (mid-bottom) and the panel edge, with the
+ * ground band reading as a clear horizon beneath it. Stronger
+ * drop-shadow (4px 14px at 60% palm-shadow) so the lifted mower
+ * still feels anchored to its ground. */
+.mower {
+  position: absolute;
+  bottom: 18%;
+  left: 44%;
+  width: 44%;
+  height: auto;
+  z-index: 4;
+  filter: drop-shadow(0 4px 14px color-mix(in oklab, var(--ll-palm-shadow) 60%, transparent));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mower {
+    animation: heroMowerDrift 8s ease-in-out infinite;
+  }
+}
+
+@keyframes heroMowerDrift {
+  0%, 100% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+}
+
+/* Layer 4 — foreground grass.
+ * WP34 — `bottom: 0` (was `-2%`) so the grass blade tips sit just
+ * above the panel's bottom edge instead of hanging 12px below it
+ * (clipped). Dropped `mix-blend-mode: multiply` for the same reason
+ * as .mower — multiply on `#1F4E2C` blades against the `#2d5a3d`
+ * stage produces near-black pixels that read as background, not
+ * as a foreground grass layer.
+ *
+ * WP39 — narrowed 90% → 75% and added z-index: 1 so the grass reads
+ * as a foreground frame, not a backdrop dominating 2/3 of the panel.
+ * Composition now leaves the mower visibly clear of the blade
+ * cluster (see .mower reposition above) and the palm/sun have
+ * breathing room in the upper portion of the panel. */
+.grass {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 75%;
+  height: auto;
+  z-index: 1;
+  opacity: 0.95;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .grass {
+    animation: heroGrassSway 5s ease-in-out infinite;
+    transform-origin: 50% 100%;
+  }
+}
+
+@keyframes heroGrassSway {
+  0%, 100% { transform: translateX(-50%) skewX(-1deg); }
+  50% { transform: translateX(-50%) skewX(1deg); }
+}
+
+/* Layer 5 — callout pill */
+.callout {
+  position: absolute;
+  /* Sit above the caption so the two don't overlap. Caption lives
+   * at `bottom: var(--space-4)` per WP15 — callout sits 1 space-step
+   * higher than caption. */
+  bottom: calc(var(--space-4) + 36px + var(--space-2));
+  left: var(--space-4);
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-inter);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in oklab, var(--ll-sun) 92%, transparent);
+  color: var(--ll-palm-bark);
+  text-decoration: none;
+  box-shadow: 0 2px 12px color-mix(in oklab, var(--ll-palm-shadow) 25%, transparent);
+  pointer-events: auto;
+  transition: transform var(--motion-duration-base) var(--motion-easing-default);
+}
+
+.callout:hover,
+.callout:focus-visible {
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.calloutDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ll-clay);
+  flex-shrink: 0;
 }
 
 /* WP15 — corner stamp "01" (mirrors the eyebrow "01 — Lawn care in 33771").
- * Sits top-right of the .media panel on top of the photo, sun-color on a
- * sand-tinted chip, mirrors the eyebrow rhythm visually. */
+ * WP21 — moved from top-right to top-LEFT so the stamp no longer sits on
+ * top of the palm SVG's built-in sun (which lives in the upper-right
+ * quadrant of the panel). Sand-tinted chip still mirrors the eyebrow
+ * rhythm visually. */
 .cornerStamp {
   position: absolute;
   top: var(--space-4);
-  right: var(--space-4);
+  left: var(--space-4);
   z-index: 3;
   font-family: var(--font-inter);
   font-size: 0.6875rem;
@@ -194,6 +446,40 @@
   .media {
     aspect-ratio: 16 / 10;
   }
+
+  /* WP44 — mobile composition polish. Desktop panel is 4:5 (tall); mobile
+   * switches to 16:10 (wide), but the absolute-positioned SVG layers
+   * were tuned for the tall panel. Result on mobile: grass at width:75%
+   * stretched into a tall blade cluster that visually dominated the
+   * panel and hid most of the mower (the focal asset). Constrain grass
+   * to 40% width so it reads as a thin foreground frame, lift the
+   * mower higher + slightly smaller so it clears the grass cleanly,
+   * and widen the palm slightly so it still reads as the panel's
+   * identity anchor in the shorter 16:10 frame. All values are tuned
+   * via re-capture against `_wp44-mobile-hero-media.png`.
+   */
+  .grass {
+    width: 40%;
+    opacity: 0.85;
+  }
+
+  .mower {
+    width: 36%;
+    left: 42%;
+    bottom: 22%;
+  }
+
+  .palmWrap {
+    width: 88%;
+    top: 14%;
+  }
+
+  .callout {
+    font-size: 0.6875rem;
+    padding: 6px 10px;
+    bottom: calc(var(--space-3) + 36px + var(--space-2));
+  }
+
   .caption {
     font-size: 0.75rem;
     padding: 6px 10px;

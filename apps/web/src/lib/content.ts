@@ -38,6 +38,22 @@ export const hero = {
     desktopSlot: '/hero/desktop.webp',
     mobileSlot: '/hero/mobile.webp',
   },
+  /**
+   * WP19 — right-column SVG composition (replaces the photo right column
+   * that was failing to render in <picture>+next/image setups).
+   * WP21 — removed the inline sun arc (the palm SVG has its own sun baked
+   * in; the second sun created "two suns" incoherence). The composition is
+   * now four layers: pinellas-palm (with internal sun), solo mower,
+   * foreground grass, and a 33771 callout pill. Copy tweaks live here so
+   * the steward edits one file, not the component.
+   */
+  composition: {
+    palmAriaLabel: 'Pinellas palm tree against a deep-green Florida stage.',
+    mowerAriaLabel: 'Solo push mower mid-cut on the route.',
+    grassAriaLabel: 'Foreground grass tufts anchoring the composition.',
+    callout: '33771 — Largo central',
+    calloutHref: '/areas/33771',
+  },
 } as const;
 
 export const trustStrip = {

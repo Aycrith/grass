@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  pinellas-palm.svg — Hero decoration (subtle, full Florida identity).
-  Single hand-drawn palm tree with coconuts, sun behind.
+  pinellas-palm.svg — used in:
+    - HeroCinematic right-column composition (on dark green stage)
+    - OperatorStrip signature mark
+    - PricingTiers header ornament
+    - ServiceAreaStats watermark
+    - SiteFooter brand mark
+
+  Hand-drawn palm tree with coconuts and a soft sun behind.
+
+  WP19 — removed the sand surface <rect>, the ground line, and the
+  beach grass tufts. The illustration now paints cleanly against any
+  background without needing per-context mask-image: radial-gradient()
+  workarounds. The dark palm silhouette and the soft sun multiply
+  nicely against the deep-green hero stage, and on the lighter
+  sections (OperatorStrip, PricingTiers, SiteFooter, ServiceAreaStats)
+  the palm reads as a clean ink-style mark on its host surface.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400"
      role="img" aria-label="Illustration — Florida palm tree with sun behind">
   <title>Pinellas palm</title>
-
-  <!-- Sand surface -->
-  <rect width="600" height="400" fill="#F4E8D0"/>
 
   <!-- Sun (large, behind palm) -->
   <circle cx="380" cy="140" r="80" fill="#E8B65A" opacity="0.4"/>
@@ -72,19 +83,5 @@
     <circle cx="220" cy="90" r="6" fill="#5C4A3A" stroke="#1A1F1B" stroke-width="1.5"/>
     <circle cx="228" cy="84" r="5" fill="#5C4A3A" stroke="#1A1F1B" stroke-width="1.5"/>
     <circle cx="234" cy="92" r="5" fill="#5C4A3A" stroke="#1A1F1B" stroke-width="1.5"/>
-  </g>
-
-  <!-- Ground line -->
-  <line x1="40" y1="380" x2="560" y2="380" stroke="#5C4A3A"
-        stroke-width="3" stroke-linecap="round" opacity="0.5"/>
-
-  <!-- Beach grass tufts -->
-  <g stroke="#1F4E2C" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.7">
-    <path d="M 80 380 Q 78 360 76 340"/>
-    <path d="M 80 380 Q 90 360 92 340"/>
-    <path d="M 80 380 Q 70 360 68 345"/>
-    <path d="M 500 380 Q 500 360 498 340"/>
-    <path d="M 500 380 Q 510 360 512 340"/>
-    <path d="M 500 380 Q 490 360 488 345"/>
   </g>
 </svg>

@@ -34,6 +34,19 @@
   overflow: hidden;
 }
 
+/* WP34 — the inner parallaxing layer now absolutely fills the
+ * viewport so absolutely-positioned children (palm, mower, grass,
+ * callout) resolve their `top`/`bottom` percentages against the
+ * panel's actual height. Before this fix, motion.div had `height: 0`
+ * because all its children were absolutely positioned, which made
+ * `bottom: 18%` resolve to `bottom: 0` (against a zero-height
+ * containing block) and shoved every child to the top of the panel. */
+.parallaxLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
 /* PinnedSection — outer spacer is `relative` because the sticky
    child is positioned against it; the inner sticky div fills the
    viewport for the full pin duration. */
