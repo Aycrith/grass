@@ -1,0 +1,94 @@
+{
+  "1": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "sd_xl_base_1.0.safetensors"
+    }
+  },
+  "2": {
+    "class_type": "LoraLoader",
+    "inputs": {
+      "model": ["1", 0],
+      "clip": ["1", 1],
+      "lora_name": "storybook-landscapes-xl.safetensors",
+      "strength_model": 0.9,
+      "strength_clip": 0.9
+    }
+  },
+  "3": {
+    "class_type": "IPAdapterUnifiedLoader",
+    "inputs": {
+      "model": ["2", 0],
+      "preset": "PLUS (high strength)"
+    }
+  },
+  "4": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "ip-style-ref.png"
+    }
+  },
+  "5": {
+    "class_type": "IPAdapter",
+    "inputs": {
+      "ipadapter": ["3", 1],
+      "model": ["3", 0],
+      "image": ["4", 0],
+      "weight": 0.55,
+      "weight_type": "style transfer",
+      "start_at": 0.0,
+      "end_at": 1.0
+    }
+  },
+  "6": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": ["2", 1],
+      "text": "digital storybook illustration, textured brushwork, sharp focus, medium-wide establishing shot of a freshly mowed St Augustine lawn in a Pinellas County residential yard, late afternoon golden hour, single source of warm sun positioned upper-right at 30 degrees above the horizon, soft long shadows cast to the lower-left, FOCAL SUBJECT a single push lawnmower sitting on the lawn at mid-distance three-quarter side profile slightly right of center occupying 4-6% of frame area mower deck visible handle upright two rear wheels distinct, FOREGROUND freshly cut grass with visible blade texture and faint mowing stripes the lower third of the frame deep saturated greens individual blades suggested with short gouache strokes, MIDGROUND the mower on the lawn a clean concrete walkway entering from the lower-left at 30 degrees the edge between grass and concrete is sharp and deliberate, BACKGROUND a modest one-story ranch-style house with a screen porch a Florida live oak at left two cabbage palms at right soft warm cumulus clouds at the upper third, PALETTE deep saturated greens for foliage warm sand-bleached cream for the sky golden-hour sun color in the highlights no new colors painterly gouache hand-drawn linework on the mower and the house eaves, DEPTH clear three-band depth-of-field dark foreground mid midground light background atmospheric perspective on the background trees, 35mm focal length slight wide-angle hand-held warmth mild film grain"
+    }
+  },
+  "7": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": ["2", 1],
+      "text": "smiling family, generic green grass texture, palm tree silhouette decoration, flamingo, sunset as focal point, lawn equipment cutout, AI generated people, human face, detailed facial features, portrait photography of person, lorem ipsum, placeholder, coming soon, photo placeholder, stock photo watermark, shutterstock, istock, getty, blurry phone photo, thumb visible, drone aerial, winter bare trees, snow, watermark, text, signature, logo, AI artifact, oversaturated, neon colors, generic suburb, photo, realistic, photorealistic, 3d render, deformed, black and white, realism, disfigured, low contrast, anime, cel shaded, vector art, flat color"
+    }
+  },
+  "8": {
+    "class_type": "EmptyLatentImage",
+    "inputs": {
+      "width": 2400,
+      "height": 1500,
+      "batch_size": 4
+    }
+  },
+  "9": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": ["5", 0],
+      "positive": ["6", 0],
+      "negative": ["7", 0],
+      "latent_image": ["8", 0],
+      "seed": 4242,
+      "steps": 40,
+      "cfg": 7.5,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 1.0
+    }
+  },
+  "10": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": ["9", 0],
+      "vae": ["1", 2]
+    }
+  },
+  "11": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": ["10", 0],
+      "filename_prefix": "hero_master_v2"
+    }
+  }
+}

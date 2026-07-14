@@ -1,0 +1,94 @@
+{
+  "1": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "sd_xl_base_1.0.safetensors"
+    }
+  },
+  "2": {
+    "class_type": "LoraLoader",
+    "inputs": {
+      "model": ["1", 0],
+      "clip": ["1", 1],
+      "lora_name": "storybook-landscapes-xl.safetensors",
+      "strength_model": 0.8,
+      "strength_clip": 0.8
+    }
+  },
+  "3": {
+    "class_type": "IPAdapterUnifiedLoader",
+    "inputs": {
+      "model": ["2", 0],
+      "preset": "PLUS (high strength)"
+    }
+  },
+  "4": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "ip-style-ref.png"
+    }
+  },
+  "5": {
+    "class_type": "IPAdapter",
+    "inputs": {
+      "ipadapter": ["3", 1],
+      "model": ["3", 0],
+      "image": ["4", 0],
+      "weight": 0.45,
+      "weight_type": "style transfer",
+      "start_at": 0.0,
+      "end_at": 1.0
+    }
+  },
+  "6": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": ["2", 1],
+      "text": "digital storybook illustration, textured brushwork, sharp focus, isolated subject on a solid magenta chroma-key background, the subject is a single residential push lawnmower (NOT a riding mower, NOT a tractor, NOT a zero-turn, NOT a commercial mower), three-quarter side profile facing right, gas-powered, four wheels with two larger rear wheels and two smaller front wheels, grass-catcher bag at the rear, operator handle with curved grips at the top, engine cowl on top of the deck, sharp horizontal mowing-deck line at the base, the deck shows a faint hint of cut grass clippings, the mower fills 80 percent of the frame width and 70 percent of the frame height, the handle is fully visible not cut off at the top of the frame, deck-to-handle joint visible, engine cowl vents visible, grass-catcher mesh texture visible, tire treads visible with three to four lug blocks per tire, --ll-palm-bark for the deck and handle, --ll-clay for the engine cowl accent, --ll-green for the grass-catcher bag, --ll-sun for the wheel hubs, hand-drawn gouache, slight 1-2px offset on the deck line from the handle joint, painterly imperfection, no other colors, magenta background"
+    }
+  },
+  "7": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": ["2", 1],
+      "text": "smiling family, generic green grass texture, palm tree silhouette decoration, flamingo, sunset as focal point, lawn equipment cutout, AI generated people, human face, detailed facial features, portrait photography of person, lorem ipsum, placeholder, coming soon, photo placeholder, stock photo watermark, shutterstock, istock, getty, blurry phone photo, thumb visible, drone aerial, winter bare trees, snow, watermark, text, signature, logo, AI artifact, oversaturated, neon colors, generic suburb, photo, realistic, photorealistic, 3d render, deformed, black and white, realism, disfigured, low contrast, anime, cel shaded, vector art, flat color, natural environment, sky, grass, lawn, house, fence, operator, person, riding mower, lawn tractor, zero turn, commercial mower, robotic mower"
+    }
+  },
+  "8": {
+    "class_type": "EmptyLatentImage",
+    "inputs": {
+      "width": 1000,
+      "height": 600,
+      "batch_size": 4
+    }
+  },
+  "9": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": ["5", 0],
+      "positive": ["6", 0],
+      "negative": ["7", 0],
+      "latent_image": ["8", 0],
+      "seed": 4377,
+      "steps": 40,
+      "cfg": 7.5,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 1.0
+    }
+  },
+  "10": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": ["9", 0],
+      "vae": ["1", 2]
+    }
+  },
+  "11": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": ["10", 0],
+      "filename_prefix": "hero_layer_mower_v2"
+    }
+  }
+}

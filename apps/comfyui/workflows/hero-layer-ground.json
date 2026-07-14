@@ -1,0 +1,94 @@
+{
+  "1": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "sd_xl_base_1.0.safetensors"
+    }
+  },
+  "2": {
+    "class_type": "LoraLoader",
+    "inputs": {
+      "model": ["1", 0],
+      "clip": ["1", 1],
+      "lora_name": "storybook-landscapes-xl.safetensors",
+      "strength_model": 0.8,
+      "strength_clip": 0.8
+    }
+  },
+  "3": {
+    "class_type": "IPAdapterUnifiedLoader",
+    "inputs": {
+      "model": ["2", 0],
+      "preset": "PLUS (high strength)"
+    }
+  },
+  "4": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "ip-style-ref.png"
+    }
+  },
+  "5": {
+    "class_type": "IPAdapter",
+    "inputs": {
+      "ipadapter": ["3", 1],
+      "model": ["3", 0],
+      "image": ["4", 0],
+      "weight": 0.45,
+      "weight_type": "style transfer",
+      "start_at": 0.0,
+      "end_at": 1.0
+    }
+  },
+  "6": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": ["2", 1],
+      "text": "digital storybook illustration, textured brushwork, sharp focus, isolated horizon band on a solid magenta chroma-key background, the subject is a soft horizontal earth-tone band that reads as the horizon or ground line beneath the grass, the band has a grainy texture suggesting cut-grass clippings and warm Florida soil, the band fills the full frame width and the full frame height, the top 30 percent of the band fades from opaque to magenta (blends into whatever sits above it in the composition), the bottom 70 percent of the band is the earth color, a few stray grass clippings scattered in the band (3 to 5 short blade shapes in --ll-green), a faint diagonal mowing stripe pattern very subtle at 5 percent opacity shift across the band, no hard edges top or bottom, --ll-palm-shadow for the band body, --ll-palm-bark for the lower edge shadow, --ll-green for the clippings, magenta background"
+    }
+  },
+  "7": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": ["2", 1],
+      "text": "smiling family, generic green grass texture, palm tree silhouette decoration, flamingo, sunset as focal point, lawn equipment cutout, AI generated people, human face, detailed facial features, portrait photography of person, lorem ipsum, placeholder, coming soon, photo placeholder, stock photo watermark, shutterstock, istock, getty, blurry phone photo, thumb visible, drone aerial, winter bare trees, snow, watermark, text, signature, logo, AI artifact, oversaturated, neon colors, generic suburb, photo, realistic, photorealistic, 3d render, deformed, black and white, realism, disfigured, low contrast, anime, cel shaded, vector art, flat color, natural environment, sky, house, fence, person, operator, mower, tree, multiple subjects, focal subject, action"
+    }
+  },
+  "8": {
+    "class_type": "EmptyLatentImage",
+    "inputs": {
+      "width": 2400,
+      "height": 400,
+      "batch_size": 4
+    }
+  },
+  "9": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": ["5", 0],
+      "positive": ["6", 0],
+      "negative": ["7", 0],
+      "latent_image": ["8", 0],
+      "seed": 4411,
+      "steps": 40,
+      "cfg": 7.5,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 1.0
+    }
+  },
+  "10": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": ["9", 0],
+      "vae": ["1", 2]
+    }
+  },
+  "11": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": ["10", 0],
+      "filename_prefix": "hero_layer_ground_v2"
+    }
+  }
+}

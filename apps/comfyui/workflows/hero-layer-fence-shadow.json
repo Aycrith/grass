@@ -1,0 +1,94 @@
+{
+  "1": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "sd_xl_base_1.0.safetensors"
+    }
+  },
+  "2": {
+    "class_type": "LoraLoader",
+    "inputs": {
+      "model": ["1", 0],
+      "clip": ["1", 1],
+      "lora_name": "storybook-landscapes-xl.safetensors",
+      "strength_model": 0.8,
+      "strength_clip": 0.8
+    }
+  },
+  "3": {
+    "class_type": "IPAdapterUnifiedLoader",
+    "inputs": {
+      "model": ["2", 0],
+      "preset": "PLUS (high strength)"
+    }
+  },
+  "4": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "ip-style-ref.png"
+    }
+  },
+  "5": {
+    "class_type": "IPAdapter",
+    "inputs": {
+      "ipadapter": ["3", 1],
+      "model": ["3", 0],
+      "image": ["4", 0],
+      "weight": 0.45,
+      "weight_type": "style transfer",
+      "start_at": 0.0,
+      "end_at": 1.0
+    }
+  },
+  "6": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": ["2", 1],
+      "text": "digital storybook illustration, textured brushwork, sharp focus, isolated mid-distance subject on a solid magenta chroma-key background, the subject is a soft diagonal fence shadow cast across the lawn at mid-distance, behind where a mower would sit, the shadow implies a wooden picket fence at the property line without drawing the fence itself only the shadow, the shadow enters the frame from the upper-left at 30 degrees below horizontal and exits the lower-right at the same angle, the shadow has soft edges, the shadow occupies 60 percent of the frame width, vertical picket lines visible in the shadow (8 to 12 pickets suggested not drawn), the picket lines are faint and the shadow is the dominant feature and the lines are secondary, --ll-palm-bark at 30 percent opacity for the shadow body, magenta background, NOT a fence NOT fence pickets NOT wood grain ONLY the shadow of a fence"
+    }
+  },
+  "7": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": ["2", 1],
+      "text": "smiling family, generic green grass texture, palm tree silhouette decoration, flamingo, sunset as focal point, lawn equipment cutout, AI generated people, human face, detailed facial features, portrait photography of person, lorem ipsum, placeholder, coming soon, photo placeholder, stock photo watermark, shutterstock, istock, getty, blurry phone photo, thumb visible, drone aerial, winter bare trees, snow, watermark, text, signature, logo, AI artifact, oversaturated, neon colors, generic suburb, photo, realistic, photorealistic, 3d render, deformed, black and white, realism, disfigured, low contrast, anime, cel shaded, vector art, flat color, natural environment, sky, house, fence pickets, wood grain, actual fence, fence posts, person, operator, mower, multiple subjects"
+    }
+  },
+  "8": {
+    "class_type": "EmptyLatentImage",
+    "inputs": {
+      "width": 1600,
+      "height": 600,
+      "batch_size": 4
+    }
+  },
+  "9": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": ["5", 0],
+      "positive": ["6", 0],
+      "negative": ["7", 0],
+      "latent_image": ["8", 0],
+      "seed": 4489,
+      "steps": 40,
+      "cfg": 7.5,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 1.0
+    }
+  },
+  "10": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": ["9", 0],
+      "vae": ["1", 2]
+    }
+  },
+  "11": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": ["10", 0],
+      "filename_prefix": "hero_layer_fence_shadow_v2"
+    }
+  }
+}
