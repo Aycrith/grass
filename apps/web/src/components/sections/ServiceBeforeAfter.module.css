@@ -123,6 +123,15 @@
   object-fit: cover;
 }
 
+/* Synthetic v1: same source for both before/after. Apply the same
+ * "punched-up" filter treatment the live scrub uses (see .imageAfter)
+ * so the static (reduced-motion) grid still reads as a transformation
+ * at a glance — otherwise the before and after tiles look literally
+ * identical and the section reads as a bug. */
+.staticImageAfter {
+  filter: saturate(1.15) brightness(1.05) contrast(0.95);
+}
+
 .staticLabel {
   position: absolute;
   inset-block-start: var(--space-3);

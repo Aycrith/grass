@@ -33,7 +33,7 @@
 
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
-import { type ReactNode, useRef } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 
 import { Eyebrow, Section } from '@/components/site';
 import { cn } from '@/lib/cn';
@@ -56,7 +56,25 @@ interface ServiceBeforeAfterProps {
 }
 
 export function ServiceBeforeAfter({ copy, className }: ServiceBeforeAfterProps): ReactNode | null {
+  // WP30 fix — same hydration-mismatch pattern as MarqueeQuote (WP26).
+  // SSR returns the motion variant (PinnedBeforeAfter + two container divs);
+  // Playwright runs with reducedMotion: 'reduce' so on first client render
+  // `reduced === true` and we want to render the static side-by-side variant.
+  // The two variants have structurally different DOM (different number of
+  // children inside the section, different className, different number of
+  // <figure> blocks). Defer the reduced-motion decision until after mount
+  // so SSR + first client render both render the motion variant. If the
+  // user actually prefers reduced motion, useEffect flips `hydrated` and
+  // the component swaps to the static variant as a normal post-mount
+  // state change (no hydration error). `suppressHydrationWarning` on the
+  // <Section> wrapper is the belt-and-suspenders guard for any remaining
+  // post-swap attribute diff.
   const reduced = useReducedMotion();
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+  const shouldUseStatic = hydrated && reduced === true;
 
   if (!copy) {
     // No before/after copy registered yet — silently skip rather
@@ -64,13 +82,14 @@ export function ServiceBeforeAfter({ copy, className }: ServiceBeforeAfterProps)
     return null;
   }
 
-  if (reduced) {
+  if (shouldUseStatic) {
     return (
       <Section
         rhythm="loose"
         tone="default"
         className={cn(styles.root, styles.staticRoot, className)}
         data-test-section="service-before-after"
+        suppressHydrationWarning
       >
         <div className="container">
           <Eyebrow tone="default" dot className={styles.eyebrow}>
@@ -96,7 +115,7 @@ export function ServiceBeforeAfter({ copy, className }: ServiceBeforeAfterProps)
                 alt={copy.afterAlt}
                 fill
                 sizes="(min-width: 768px) 50vw, 100vw"
-                className={styles.staticImage}
+                className={cn(styles.staticImage, styles.staticImageAfter)}
                 loading="lazy"
                 decoding="async"
               />
@@ -115,6 +134,7 @@ export function ServiceBeforeAfter({ copy, className }: ServiceBeforeAfterProps)
       tone="default"
       className={cn(styles.root, className)}
       data-test-section="service-before-after"
+      suppressHydrationWarning
     >
       <div className="container">
         <Eyebrow tone="default" dot className={styles.eyebrow}>

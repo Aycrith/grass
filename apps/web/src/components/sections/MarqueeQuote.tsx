@@ -19,7 +19,7 @@
 'use client';
 
 import { motion, useReducedMotion } from 'framer-motion';
-import type { ReactNode } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 
 import { cn } from '@/lib/cn';
 import { operatorMarquee } from '@/lib/content';
@@ -31,12 +31,34 @@ interface MarqueeQuoteProps {
 }
 
 export function MarqueeQuote({ className }: MarqueeQuoteProps): ReactNode {
+  // WP26 fix — avoid hydration mismatch from `useReducedMotion()`.
+  // SSR returns the motion-variant JSX (because `useReducedMotion()` is null
+  // on the server). Playwright runs with `reducedMotion: 'reduce'`, so on the
+  // client's first render the hook returns true and the original code took
+  // the static-variant branch — producing different markup than SSR.
+  //
+  // Defer the reduced-motion decision until after mount via `hydrated`. SSR
+  // and first client render both render the motion variant; if the user
+  // actually prefers reduced motion, useEffect flips `hydrated` to true and
+  // the component swaps to the static variant as a normal post-mount state
+  // change (no hydration error).
   const reduced = useReducedMotion();
-  if (reduced) {
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+  const shouldUseStatic = hydrated && reduced === true;
+
+  if (shouldUseStatic) {
     return (
+      // WP26 — suppressHydrationWarning because this whole subtree swaps
+      // between motion and static variants after mount based on the
+      // user's reduced-motion preference. SSR always renders the motion
+      // variant; on a reduced-motion client the swap is expected.
       <section
         className={cn(styles.root, styles.static, className)}
         data-test-section="marquee-quote"
+        suppressHydrationWarning
       >
         <div className="container">
           <ul className={styles.staticList}>
@@ -58,6 +80,7 @@ export function MarqueeQuote({ className }: MarqueeQuoteProps): ReactNode {
       className={cn(styles.root, className)}
       aria-label="Operator quotes"
       data-test-section="marquee-quote"
+      suppressHydrationWarning
     >
       <div className={styles.viewport}>
         <motion.div
