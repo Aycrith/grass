@@ -138,13 +138,26 @@
  * Home-base ZIP (33771) gets sun fill + thicker ring stroke so
  * it reads as the service anchor on the map without an extra
  * label. Composes with the active state below.
+ *
+ * WP23 — priority indication moved from the (now-removed) solid
+ * center dot to the inner ring fill. The inner ring lights up in
+ * sun-color, so 33771 reads as the anchor without obscuring the
+ * label.
  */
-.pin.priority {
-  fill: var(--ll-sun);
-  stroke-width: 2.5;
+.ringInner {
+  fill: color-mix(in oklab, var(--ll-sand-bleached) 10%, transparent);
+  transition: fill var(--motion-duration-base) var(--motion-easing-default),
+    stroke-opacity var(--motion-duration-base) var(--motion-easing-default);
 }
 
-/* Whole-pin group hover: rings + dot scale up slightly when the
+.ringInnerPriority {
+  fill: color-mix(in oklab, var(--ll-sun) 75%, transparent);
+  stroke: var(--ll-sun);
+  stroke-opacity: 0.85;
+  stroke-width: 1.5;
+}
+
+/* Whole-pin group hover: rings + label scale up slightly when the
    user hovers anywhere on the ZIP pin. Origin is the pin center
    so the ring grows around it symmetrically. */
 .pinGroup {
@@ -168,13 +181,13 @@
   transform: scale(1.18);
 }
 
-.pinGroup[data-zip-active='true'] .pin {
-  r: 12;
-}
-
 .pinGroup[data-zip-active='true'] .pinRing {
   stroke-opacity: 1;
   stroke-width: 2;
+}
+
+.pinGroup[data-zip-active='true'] .ringInner {
+  fill: color-mix(in oklab, var(--ll-sun) 45%, transparent);
 }
 
 .pinRing {

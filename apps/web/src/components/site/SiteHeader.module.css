@@ -5,6 +5,21 @@
  * backdrop + shadow after 80px of scroll. Mobile drawer is a
  * Radix Dialog triggered by a hamburger button. Active route
  * gets a 1px underline that slides to the next item on click.
+ *
+ * WP29 — scrolled-state made fully opaque (no transparency, no
+ * blur). The original 88% mix + 10px blur was meant to give a
+ * macOS-style frosted-glass effect, but the hero's giant italic
+ * Fraunces "Your" headline + dense body text underneath the
+ * scroll threshold bled through every iteration (96%, 98%).
+ * Frosted glass works for varied-density photo content (macOS
+ * toolbars over arbitrary app UI); it breaks against high-contrast
+ * text content. The hero copy at this site is too prominent for
+ * any partial-alpha solution to hold up cleanly. Dropped to 100%
+ * shell + no blur. The header is now a solid-cream band with a
+ * 1px border + shadow — same visual language as the Footer.
+ * Trade-off acknowledged: we lost the frosted-glass novelty in
+ * exchange for guaranteed legibility across all 7+ scroll
+ * positions a real visitor reaches.
  * ============================================================ */
 
 .root {
@@ -20,9 +35,11 @@
 }
 
 .scrolled {
-  background: color-mix(in srgb, var(--ll-shell) 88%, transparent);
-  backdrop-filter: saturate(140%) blur(10px);
-  -webkit-backdrop-filter: saturate(140%) blur(10px);
+  /* WP29 — fully opaque shell, no backdrop-filter. The frost effect
+   * tried at 88%→96%→98% couldn't absorb the hero's high-contrast
+   * content (huge italic "Your" word + body-text density). See file
+   * header for rationale + trade-off note. */
+  background: var(--ll-shell);
   border-bottom-color: var(--color-border);
   box-shadow: var(--elevation-1);
 }

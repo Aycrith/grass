@@ -145,13 +145,23 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
                       className={styles.pinGroup}
                       data-zip-active={isActive ? 'true' : undefined}
                     >
+                      {/* WP23 — outer ring + inner ring form a readable badge
+                          with the ZIP label inside. The previous design had a
+                          solid r=10 pin dot at (x, y) sitting on top of the
+                          label center, obscuring the middle digits ("33756"
+                          read as "3∅7∅6"). Removed the dot; priority state
+                          (home-base 33771) is now carried by the inner ring
+                          fill (see .ringInnerPriority). */}
                       <circle className={styles.pinRing} cx={layout.x} cy={layout.y} r="32" />
-                      <circle className={styles.pinRing} cx={layout.x} cy={layout.y} r="20" />
                       <circle
-                        className={cn(styles.pin, isPriority && styles.pinPriority)}
+                        className={cn(
+                          styles.pinRing,
+                          styles.ringInner,
+                          isPriority && styles.ringInnerPriority
+                        )}
                         cx={layout.x}
                         cy={layout.y}
-                        r="10"
+                        r="20"
                       />
                       <text className={styles.pinLabel} x={layout.x} y={layout.y + 4}>
                         {zip}
