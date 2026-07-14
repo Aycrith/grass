@@ -47,7 +47,12 @@ const MOTION_PRIMITIVES: ReadonlyArray<MotionPrimitive> = [
   {
     slug: 'editorial-break',
     path: '/',
-    staticMarker: '[data-test-section="editorial-break"] img',
+    // On desktop the <img> is the visible element; on mobile (≤768px)
+    // the image is intentionally collapsed to display:none and only the
+    // editorial copy remains (per `EditorialBreak.tsx` design doc). The
+    // headline paragraph is visible at every viewport width and is the
+    // semantic anchor of the static fallback — assert on it.
+    staticMarker: '[data-test-section="editorial-break"] p',
   },
   {
     slug: 'equipment-showcase',

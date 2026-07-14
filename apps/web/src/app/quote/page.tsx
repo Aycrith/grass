@@ -20,6 +20,7 @@ export const metadata: Metadata = {
   title: 'Free Quote · Largo Lawn',
   description:
     'Get a free, no-obligation quote for lawn care in Largo FL. Instant estimate, no spam, response within 24 hours.',
+  alternates: { canonical: '/quote' },
 };
 
 export default function QuotePage() {

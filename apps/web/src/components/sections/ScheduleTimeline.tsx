@@ -48,7 +48,12 @@ export function ScheduleTimeline({ className }: ScheduleTimelineProps): ReactNod
   }, []);
 
   return (
-    <Section rhythm="loose" tone="default" className={cn(styles.root, className)}>
+    <Section
+      rhythm="loose"
+      tone="default"
+      className={cn(styles.root, className)}
+      data-test-section="schedule-timeline"
+    >
       <div className="container">
         <header className={styles.header}>
           <Eyebrow tone="default" dot className={styles.eyebrow}>

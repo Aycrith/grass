@@ -23,6 +23,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Pricing',
   description: 'Transparent flat-rate pricing for lawn care and landscaping in Largo, FL.',
+  alternates: { canonical: '/pricing' },
 };
 
 export default function PricingPage() {

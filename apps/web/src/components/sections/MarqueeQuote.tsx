@@ -34,7 +34,10 @@ export function MarqueeQuote({ className }: MarqueeQuoteProps): ReactNode {
   const reduced = useReducedMotion();
   if (reduced) {
     return (
-      <section className={cn(styles.root, styles.static, className)}>
+      <section
+        className={cn(styles.root, styles.static, className)}
+        data-test-section="marquee-quote"
+      >
         <div className="container">
           <ul className={styles.staticList}>
             {operatorMarquee.map((line) => (
@@ -51,7 +54,11 @@ export function MarqueeQuote({ className }: MarqueeQuoteProps): ReactNode {
   // mid-cycle. The keyframe scrolls -50% (half the doubled width).
   const doubled = [...operatorMarquee, ...operatorMarquee];
   return (
-    <section className={cn(styles.root, className)} aria-label="Operator quotes">
+    <section
+      className={cn(styles.root, className)}
+      aria-label="Operator quotes"
+      data-test-section="marquee-quote"
+    >
       <div className={styles.viewport}>
         <motion.div
           className={styles.track}

@@ -70,6 +70,7 @@ export function ServiceBeforeAfter({ copy, className }: ServiceBeforeAfterProps)
         rhythm="loose"
         tone="default"
         className={cn(styles.root, styles.staticRoot, className)}
+        data-test-section="service-before-after"
       >
         <div className="container">
           <Eyebrow tone="default" dot className={styles.eyebrow}>
@@ -109,7 +110,12 @@ export function ServiceBeforeAfter({ copy, className }: ServiceBeforeAfterProps)
   }
 
   return (
-    <Section rhythm="loose" tone="default" className={cn(styles.root, className)}>
+    <Section
+      rhythm="loose"
+      tone="default"
+      className={cn(styles.root, className)}
+      data-test-section="service-before-after"
+    >
       <div className="container">
         <Eyebrow tone="default" dot className={styles.eyebrow}>
           Before &amp; after

@@ -25,7 +25,7 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
-import { type ReactNode, useRef } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 
 import { cn } from '@/lib/cn';
 import { DURATION, EASE, STAGGER } from '@/lib/motion';
@@ -78,6 +78,13 @@ export const staggerContainerVariants = (
  * The visible transform is a no-op because the actual motion comes
  * from the parent `WordReveal` wrapping the span in a clip window;
  * this variant only animates `y` between 110% and 0% of its own height.
+ *
+ * SSR-safe by default: variants are only applied AFTER hydration. The
+ * SSR-rendered HTML ships plain visible text (the words sit at y: 0%
+ * inside their clip windows), so Lighthouse LCP can find them as the
+ * largest contentful element. Once the client hydrates and the user
+ * has not opted into reduced motion, the words rise from y: 110% via
+ * framer-motion's standard `initial` → `animate` transition.
  */
 export const wordRevealVariants: Variants = {
   hidden: { y: '110%' },
@@ -86,6 +93,14 @@ export const wordRevealVariants: Variants = {
     transition: { duration: DURATION.slow, ease: EASE.out },
   },
 };
+
+/**
+ * SSR-safe initial style for WordReveal words. Pinned to `visible`
+ * (y: 0%) so the text paints at first frame, even before JS hydrates
+ * or framer-motion takes over. The framer animation runs on top of
+ * this baseline once hydration completes.
+ */
+const SSR_SAFE_WORD_STYLE = { y: '0%' } as const;
 
 /* ============================================================
  * FadeUp — wraps children in a one-shot fade + 24px translate.
@@ -188,9 +203,23 @@ export function WordReveal({
   initialDelay = 0,
 }: WordRevealProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-10% 0px' });
   const reduced = useReducedMotion();
   const words = text.split(' ');
+
+  // SSR-safety: track hydration so the SSR-rendered HTML ships plain
+  // visible text (no `initial="hidden"` clip applied). The framer-motion
+  // reveal animation only kicks in once the client has mounted, at
+  // which point Lighthouse has already measured LCP against the
+  // visible baseline. Without this, framer's `initial="hidden"` paints
+  // the words clipped at y: 110% until JS hydrates, deferring the
+  // actual LCP element behind the JS bundle parse/eval.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const animateState = mounted && !reduced ? 'visible' : 'visible';
+  const initialState = mounted && !reduced ? 'hidden' : SSR_SAFE_WORD_STYLE;
 
   return (
     <span ref={ref} className={cn(styles.wordRevealRoot, className)} aria-label={text}>
@@ -204,8 +233,8 @@ export function WordReveal({
           <motion.span
             className={styles.wordInner}
             variants={wordRevealVariants}
-            initial="hidden"
-            animate={isInView && !reduced ? 'visible' : 'visible'}
+            initial={initialState as never}
+            animate={animateState}
             transition={{
               delay: initialDelay + idx * childDelay,
               duration: reduced ? 0.01 : DURATION.slow,

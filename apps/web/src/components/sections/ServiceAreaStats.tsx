@@ -34,7 +34,12 @@ interface ServiceAreaStatsProps {
 
 export function ServiceAreaStats({ className }: ServiceAreaStatsProps): ReactNode {
   return (
-    <Section rhythm="loose" tone="warm" className={cn(styles.root, className)}>
+    <Section
+      rhythm="loose"
+      tone="warm"
+      className={cn(styles.root, className)}
+      data-test-section="service-area-stats"
+    >
       <div className="container">
         <header className={styles.header}>
           <Eyebrow tone="default" dot className={styles.eyebrow}>

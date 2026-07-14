@@ -19,6 +19,7 @@ import ContactForm from './ContactForm';
 export const metadata: Metadata = {
   title: 'Contact',
   description: `Get a free lawn-care quote in ${BUSINESS.address.city}, FL. We respond within 24 hours during business days.`,
+  alternates: { canonical: '/contact' },
 };
 
 interface ContactProps {

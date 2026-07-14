@@ -36,7 +36,11 @@ interface EditorialBreakProps {
 
 export function EditorialBreak({ className }: EditorialBreakProps): ReactNode {
   return (
-    <Section rhythm="loose" className={cn(styles.root, className)}>
+    <Section
+      rhythm="loose"
+      className={cn(styles.root, className)}
+      data-test-section="editorial-break"
+    >
       <div className={styles.media} aria-hidden="true">
         <Image
           src={editorialBreak.imageSlot}

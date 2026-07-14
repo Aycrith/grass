@@ -48,7 +48,12 @@ const EQUIPMENT_ALT = [
 
 export function EquipmentShowcase({ className }: EquipmentShowcaseProps): ReactNode {
   return (
-    <Section rhythm="loose" tone="default" className={cn(styles.root, className)}>
+    <Section
+      rhythm="loose"
+      tone="default"
+      className={cn(styles.root, className)}
+      data-test-section="equipment-showcase"
+    >
       <div className="container">
         <FadeUp>
           <Eyebrow tone="default" dot className={styles.eyebrow}>

@@ -12,6 +12,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'About',
   description: `About ${BUSINESS.name} — solo-founder lawn care business serving Largo, FL.`,
+  alternates: { canonical: '/about' },
 };
 
 export default function AboutPage() {
