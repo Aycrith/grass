@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-14 (Day 21 — production-mode Lighthouse; mobile regression + D-0010 follow-up)
+# Last updated: 2026-07-14 (Day 21 — D-0009 grass v3 shipped + Lighthouse + D-0010 queued)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-14 (Day 21 — production Lighthouse re-run: desktop 100/100 clean, mobile 80/100 regression; D-0009 done; D-0010 queued)
+# Last updated: 2026-07-14 (Day 21 — D-0009 closed (grass v3 img2img, desktop Lighthouse 100/100, mobile 80/100 regression with D-0010 queued))
 # ===================================================================
 
 schema_version: 0.1.0
@@ -534,6 +534,41 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-14"
+    day: 21
+    change: >
+      D-0009 grass asset v3 shipped (Path 3 of 3 from D-0008 §D-0009
+      follow-up). The img2img approach at denoise 0.35 sidesteps the
+      LoRA bias toward purple fountain grass / magenta blades /
+      wildflower meadow that caused the v2 txt2img approach
+      (hero-layer-grass.json) to fail 4-of-4 (commit e57c7a7). The
+      v3 generation: rasterizes grass-blade-cluster-xl.svg to
+      1024×1024 RGB PNG, runs the new hero-grass-v3-img2img.json
+      workflow (SDXL+LoRA 0.55+IPAdapter 0.40+denoise 0.35), 4
+      candidates at seeds 5701-5704 all curate as keepers (low
+      denoise produces very stable output; all 4 nearly identical).
+      Seed 5701 selected as canonical. Shipped at 4 sizes (100/150/
+      200/300 webp, 1-5KB each — webp compresses solid-color
+      backgrounds extremely well) as
+      apps/web/public/illustrations/grass-blade-cluster-v3-{100,150,
+      200,300}.webp. The v1 SVG is kept for fallback + diff
+      traceability. The v3 webp is currently unreferenced in the
+      app source (grep confirms no /illustrations/grass references
+      in apps/web/src) — the v1 SVG was also unreferenced, so the
+      v3 ships as an "available for use" upgrade rather than a
+      forced swap. New `apps/comfyui/scripts/run-img2img.py` driver
+      authored for the experiment (one-off, not a general-purpose
+      driver — generate.py is still the txt2img surface). New
+      `apps/comfyui/workflows/hero-grass-v3-img2img.json` workflow
+      documents the recipe. New
+      `apps/comfyui/prompts/grass-v3-img2img.md` brief documents
+      the why-this-approach and how-to-regenerate. D-0009 grass
+      path CLOSED (Path 3 of 3 successful); D-0010 mobile perf
+      still queued. Verification: all 4 candidates visually
+      curated, webp sizes verified, charter compliance 3/3 green
+      (no charter-tracked changes this turn — assets only).
+    by: "Mavis (autonomous, 2026-07-14)"
+
   - date: "2026-07-14"
     day: 21
     change: >
