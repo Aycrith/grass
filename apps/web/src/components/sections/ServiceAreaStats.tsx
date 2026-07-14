@@ -13,6 +13,11 @@
  * Layout: 4-column grid on desktop, 2-column on mobile. Numbers in
  * clamp(3.5rem, 6vw, 5rem) Fraunces, label in Inter caption.
  *
+ * WP15 — adds a subtle Pinellas palm SVG watermark behind the grid
+ * (right side, 4% opacity, mix-blend-mode multiply). Anchors the
+ * brand's Florida identity to the all-type section without competing
+ * with the numbers.
+ *
  * Reduced-motion: numbers still appear — this section has no
  * triggered animation, just a static fade-up via the parent
  * <Section> rhythm. The stagger from `StaggerGroup` is the only
@@ -23,6 +28,7 @@ import type { ReactNode } from 'react';
 
 import { StaggerGroup } from '@/components/motion';
 import { Eyebrow, Section } from '@/components/site';
+import { Illustration } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { areaStats } from '@/lib/content';
 
@@ -40,6 +46,13 @@ export function ServiceAreaStats({ className }: ServiceAreaStatsProps): ReactNod
       className={cn(styles.root, className)}
       data-test-section="service-area-stats"
     >
+      <Illustration
+        src="/illustrations/pinellas-palm.svg"
+        alt=""
+        width={600}
+        height={400}
+        className={styles.watermark}
+      />
       <div className="container">
         <header className={styles.header}>
           <Eyebrow tone="default" dot className={styles.eyebrow}>

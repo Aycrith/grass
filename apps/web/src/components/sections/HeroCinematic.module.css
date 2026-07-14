@@ -101,6 +101,22 @@
   background: var(--ll-palm-shadow);
 }
 
+/* WP15 — editorial framing: sun-color border + caption pill + corner stamp.
+ * Wraps the photo in a thin sun-color frame and overlays a "33771 — Largo
+ * central" caption at bottom-left and a small "01" stamp top-right. Reads
+ * as intentional brand imagery rather than anonymous stock photography.
+ */
+.media::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1.5px solid color-mix(in oklab, var(--ll-sun) 70%, transparent);
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+  mix-blend-mode: screen;
+}
+
 .mediaInner {
   position: absolute;
   inset: -8% 0;
@@ -115,9 +131,75 @@
   display: block;
 }
 
+/* WP15 — corner stamp "01" (mirrors the eyebrow "01 — Lawn care in 33771").
+ * Sits top-right of the .media panel on top of the photo, sun-color on a
+ * sand-tinted chip, mirrors the eyebrow rhythm visually. */
+.cornerStamp {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  z-index: 3;
+  font-family: var(--font-inter);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in oklab, var(--ll-sand-bleached) 88%, transparent);
+  color: var(--ll-clay);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+}
+
+/* WP15 — editorial caption pill bottom-left of the photo. Sun-color text on
+ * a sand-tinted translucent chip, mirrors the OperatorNote / EditorialBreak
+ * caption idiom. Anchors the photo to the brand's Pinellas-FL voice. */
+.caption {
+  position: absolute;
+  bottom: var(--space-4);
+  left: var(--space-4);
+  right: var(--space-4);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-inter);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in oklab, var(--ll-sand-bleached) 88%, transparent);
+  color: var(--ll-palm-bark);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+}
+
+.captionMark {
+  font-family: var(--font-fraunces), serif;
+  font-style: italic;
+  font-size: 1.125rem;
+  font-weight: 400;
+  color: var(--ll-clay);
+  line-height: 1;
+}
+
+.captionText {
+  flex: 1;
+  min-width: 0;
+}
+
 @media (max-width: 900px) {
   .media {
     aspect-ratio: 16 / 10;
+  }
+  .caption {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+  }
+  .captionMark {
+    font-size: 1rem;
   }
 }
 

@@ -28,6 +28,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
 import { Eyebrow, Section } from '@/components/site';
+import { Illustration } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { weeklySchedule } from '@/lib/content';
 
@@ -68,36 +69,53 @@ export function ScheduleTimeline({ className }: ScheduleTimelineProps): ReactNod
 
         <FadeUp>
           <ol className={styles.strip} aria-label="Weekly mowing schedule">
-            {weeklySchedule.map((day) => (
-              <li
-                key={day.day}
-                className={styles.day}
-                data-day={day.day}
-                data-today={todayKey === day.day ? 'true' : undefined}
-              >
-                <div className={styles.dayHead}>
-                  <span className={styles.dayDot} aria-hidden="true" />
-                  <span className={styles.dayName}>{day.day}</span>
-                  {day.closed ? (
-                    <span className={styles.dayMeta}>Closed</span>
-                  ) : (
-                    <span className={styles.dayMeta}>{day.yards} yards</span>
-                  )}
-                </div>
-                {!day.closed && (
-                  <div className={styles.dayBody}>
-                    <span className={styles.zipLabel}>ZIPs on route</span>
-                    <ul className={styles.zipList}>
-                      {day.zips.map((zip) => (
-                        <li key={zip} className={styles.zip}>
-                          {zip}
-                        </li>
-                      ))}
-                    </ul>
+            {weeklySchedule.map((day) => {
+              const isToday = todayKey === day.day;
+              return (
+                <li
+                  key={day.day}
+                  className={styles.day}
+                  data-day={day.day}
+                  data-today={isToday ? 'true' : undefined}
+                >
+                  <div className={styles.dayHead}>
+                    <span className={styles.dayDot} aria-hidden="true" />
+                    <span className={styles.dayName}>{day.day}</span>
+                    {day.closed ? (
+                      <span className={styles.dayMeta}>Closed</span>
+                    ) : (
+                      <span className={styles.dayMeta}>{day.yards} yards</span>
+                    )}
                   </div>
-                )}
-              </li>
-            ))}
+                  {!day.closed && (
+                    <div className={styles.dayBody}>
+                      <span className={styles.zipLabel}>ZIPs on route</span>
+                      <ul className={styles.zipList}>
+                        {day.zips.map((zip) => (
+                          <li key={zip} className={styles.zip}>
+                            {zip}
+                          </li>
+                        ))}
+                      </ul>
+                      {isToday && (
+                        <>
+                          <span className={styles.todayBadge} aria-label="Today's route">
+                            Today
+                          </span>
+                          <Illustration
+                            src="/illustrations/mower-side-profile.svg"
+                            alt=""
+                            width={120}
+                            height={80}
+                            className={styles.todayMower}
+                          />
+                        </>
+                      )}
+                    </div>
+                  )}
+                </li>
+              );
+            })}
           </ol>
         </FadeUp>
       </div>

@@ -110,6 +110,16 @@ export function HeroCinematic({ className }: HeroCinematicProps): ReactNode {
                 />
               </picture>
             </div>
+            {/* WP15 — editorial framing siblings of .mediaInner so they
+             *  position against .media (overflow: hidden) instead of the
+             *  inflated .mediaInner. */}
+            <span className={styles.cornerStamp} aria-hidden="true">
+              01
+            </span>
+            <span className={styles.caption} aria-hidden="true">
+              <span className={styles.captionMark}>“</span>
+              <span className={styles.captionText}>Pinellas porch — golden hour</span>
+            </span>
           </ParallaxImage>
         </div>
       </div>

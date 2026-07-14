@@ -36,7 +36,7 @@ interface IllustrationProps {
   /** Tone switch for dark backgrounds. */
   tone?: IllustrationTone;
   /** Optional additional className. */
-  className?: string;
+  className?: string | undefined;
 }
 
 export function Illustration({

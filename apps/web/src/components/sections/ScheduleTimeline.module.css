@@ -195,3 +195,37 @@
     box-shadow: 0 0 0 8px transparent;
   }
 }
+
+/* WP15 — mower anchor on the today card. Small illustration sits at
+ * the bottom of the today card, reading as "this is the day the mower
+ * shows up." Uses mix-blend-mode: multiply to fade the SVG's sand
+ * background into the card's shell color so the mower silhouette
+ * reads as the focal element.
+ */
+
+.todayMower {
+  display: block;
+  width: 100%;
+  max-width: 7.5rem;
+  height: auto;
+  margin-block-start: auto;
+  align-self: center;
+  mix-blend-mode: multiply;
+  opacity: 0.92;
+}
+
+.todayBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-inter);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--ll-sun);
+  color: var(--ll-palm-bark);
+  width: fit-content;
+}
