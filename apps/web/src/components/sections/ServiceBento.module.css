@@ -227,6 +227,18 @@
   line-height: 1.15;
   letter-spacing: -0.01em;
   margin: 0;
+  /* WP27 — explicit color overrides the global `h3 { color: var(--ll-green) }`
+   * rule from src/styles/typography.css, which would otherwise render the
+   * mulching (deep-green card) and hurricane (clay card) titles in
+   * dark-green-on-dark-background — near-zero contrast. The .cardMulching
+   * and .cardHurricane selectors below switch to cream on those darker
+   * surfaces, matching the eyebrow + body color treatment on those cards. */
+  color: var(--ll-green);
+}
+
+.cardMulching .title,
+.cardHurricane .title {
+  color: var(--ll-sand-bleached);
 }
 
 .summary {

@@ -156,6 +156,16 @@
   line-height: 1.2;
   letter-spacing: -0.01em;
   margin: 0;
+  /* WP25 — explicit color overrides the global `h3 { color: var(--ll-green) }`
+   * rule from src/styles/typography.css, which would otherwise render the
+   * featured-card title in green-on-green (near-zero contrast). The
+   * `.cardFeatured .title` selector below switches to cream on the deep-green
+   * "MOST BOOKED" card. */
+  color: var(--ll-green);
+}
+
+.cardFeatured .title {
+  color: var(--ll-sand-bleached);
 }
 
 .price {
