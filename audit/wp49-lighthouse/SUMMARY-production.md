@@ -110,8 +110,20 @@ into CI) is now partially obsolete:
 - Drop `priority` was tried; had no measurable effect (mobile
   LCP unchanged at ~4s; LCP element is the subhead text, not
   the image, so image priority doesn't help).
-- Re-encode mobile.webp + AVIF are still valid for LCP
-  improvement (~300-500ms potential savings on simulated 4G).
+- Re-encode mobile.webp at quality=70 was tried; saves ~40KB
+  but doesn't help LCP (the LCP element is text, not image).
+  Trims ~200ms off simulated 4G transfer for non-LCP benefits.
+- AVIF source via `<picture>` was tried (WP50 experiment,
+  2026-07-14). Lighthouse headless Chrome's software AVIF
+  decoder eats the transfer savings with extra decode time:
+  mobile Perf 80 → 77 (regression), LCP 3.9s → 4.3s, TBT
+  240ms → 280ms; desktop Perf 100 → 99, LCP 0.7s → 0.9s.
+  The AVIF files are KEPT at
+  `apps/web/public/hero/{mobile,desktop}.avif` as documented
+  artifacts in case the decoder landscape shifts or for use
+  on a real-device CDN where hardware AVIF decoders are
+  available. The HeroCinematic currently uses the webp via
+  `next/image` with `priority` (no `<picture>` element).
 - Lazy-load the hero is the real win, but the server-component
   conversion already does most of this (the static text
   renders without JS; only the motion parts need JS).

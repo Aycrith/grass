@@ -138,12 +138,18 @@ export function HeroCinematic({ className }: HeroCinematicProps): ReactNode {
               </>
             }
           >
-            {/* WP49 — replaced WP19-WP48 layered SVG composition with a
-             * single SDXL-generated painterly image. The image carries
-             * its own warm light, so the WP20 morning halo glow is no
-             * longer needed (and is dropped from the CSS as part of
-             * this change). The image is 4:5 (1200×1500) at 4:5 panel
-             * ratio. Next/Image with `priority` for LCP. */}
+            {/* WP49 / WP50 — v2 hero asset is the single SDXL-generated
+             * painterly image. Originally paired with an AVIF <picture>
+             * source for a 50% file-size reduction (mobile.avif 93KB vs
+             * mobile.webp 186KB), but Lighthouse headless Chrome's
+             * software AVIF decoder eats the transfer savings with
+             * extra decode time (mobile LCP 3.8s → 4.3s, TBT 240ms →
+             * 280ms; desktop LCP 0.7s → 0.9s). The AVIF files are
+             * retained at apps/web/public/hero/{mobile,desktop}.avif
+             * as documented artifacts (see audit/wp49-lighthouse/
+             * SUMMARY-production.md §WP50) for future use when the
+             * decoder landscape shifts. The webp via next/image with
+             * `priority` is the active path. */}
             <Image
               src="/hero/mobile.webp"
               alt="A freshly mowed St Augustine lawn in front of a Pinellas ranch home at golden hour"
