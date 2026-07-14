@@ -17,6 +17,7 @@
 
 import {
   type MotionProps,
+  type MotionStyle,
   type Variants,
   motion,
   useInView,
