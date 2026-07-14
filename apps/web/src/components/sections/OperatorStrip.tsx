@@ -28,6 +28,7 @@ import type { ReactNode } from 'react';
 
 import { FadeUp, ParallaxImage } from '@/components/motion';
 import { Eyebrow, Section } from '@/components/site';
+import { Illustration } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { operator } from '@/lib/content';
 
@@ -66,6 +67,22 @@ export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
               {operator.yearsMowing} years cutting grass in 33771
             </span>
             <p className={styles.bioBody}>{operator.bio}</p>
+
+            {/* WP15 — editorial "operator signature mark" closing the bio.
+             * A sun-color rule + centered pinellas-palm + city caption,
+             * reading as the operator's signed mark. Florida identity
+             * is the operator identity. */}
+            <div className={styles.bioSignature} aria-hidden="true">
+              <span className={styles.bioSignatureRule} />
+              <Illustration
+                src="/illustrations/pinellas-palm.svg"
+                alt=""
+                width={72}
+                height={48}
+                className={styles.bioSignatureMark}
+              />
+              <p className={styles.bioSignatureCity}>Largo · Florida</p>
+            </div>
           </div>
 
           <div className={styles.equipment}>

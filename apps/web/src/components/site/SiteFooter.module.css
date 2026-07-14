@@ -37,12 +37,27 @@
 .brand {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-3);
   font-weight: 700;
   font-size: 1.2rem;
   color: var(--ll-palm-shadow);
   text-decoration: none;
   letter-spacing: -0.02em;
+}
+
+/* WP15 — small pinellas-palm mark sitting next to the brand name.
+ * Acts as the closing Florida brand signature on the page — same
+ * SVG used as hero decoration, footer signature, and operator mark.
+ * Mask fades the SVG's sand background into the cream footer surface
+ * so only the palm silhouette shows. */
+.brandMark {
+  width: clamp(28px, 3vw, 36px);
+  height: auto;
+  flex-shrink: 0;
+  opacity: 0.85;
+  mix-blend-mode: multiply;
+  mask-image: radial-gradient(circle at 50% 65%, black 0%, black 38%, transparent 62%);
+  -webkit-mask-image: radial-gradient(circle at 50% 65%, black 0%, black 38%, transparent 62%);
 }
 
 .brandLine {

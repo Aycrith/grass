@@ -15,7 +15,7 @@ import { Mail, Phone } from 'lucide-react';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
-import { Pill } from '@/components/ui';
+import { Illustration, Pill } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
 
@@ -57,6 +57,13 @@ export function SiteFooter({ className }: SiteFooterProps): ReactNode {
         <div className={styles.grid}>
           <div className={styles.brandCol}>
             <Link href="/" className={styles.brand}>
+              <Illustration
+                src="/illustrations/pinellas-palm.svg"
+                alt=""
+                width={36}
+                height={24}
+                className={styles.brandMark}
+              />
               {BUSINESS.name}
             </Link>
             <div className={styles.brandLine}>

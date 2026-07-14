@@ -16,7 +16,7 @@ import type { ReactNode } from 'react';
 
 import { StaggerGroup } from '@/components/motion';
 import { Eyebrow, Section } from '@/components/site';
-import { Button } from '@/components/ui';
+import { Button, Illustration } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { pricingHeader, pricingTiers } from '@/lib/content';
 
@@ -37,6 +37,21 @@ export function PricingTiers({ className }: PricingTiersProps): ReactNode {
           <h2 className={styles.headerHeading}>{pricingHeader.heading}</h2>
           <p className={styles.headerSub}>{pricingHeader.subhead}</p>
         </header>
+
+        {/* WP15 — sun-color rule + pinellas-palm ornament between the
+         * header and the tier cards. Brand-anchors the all-type
+         * pricing block with editorial polish. */}
+        <div className={styles.headerOrnament} aria-hidden="true">
+          <span className={styles.headerOrnamentRule} />
+          <Illustration
+            src="/illustrations/pinellas-palm.svg"
+            alt=""
+            width={120}
+            height={80}
+            className={styles.headerOrnamentMark}
+          />
+          <span className={styles.headerOrnamentRule} />
+        </div>
 
         <StaggerGroup as="div" className={styles.grid} childDelay={0.1}>
           {pricingTiers.map((tier) => (

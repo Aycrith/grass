@@ -43,6 +43,43 @@
   margin: 0;
 }
 
+/* WP15 — decorative ornament between header and grid.
+ * A thin sun-color rule with a centered pinellas-palm silhouette
+ * sitting on top of it. Adds editorial brand polish to the all-type
+ * pricing section header without competing with the cards.
+ */
+.headerOrnament {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-block: var(--space-8) var(--space-7);
+}
+
+.headerOrnamentRule {
+  flex: 1;
+  height: 1.5px;
+  background: color-mix(in oklab, var(--ll-sun) 65%, transparent);
+  border-radius: 1px;
+}
+
+.headerOrnamentMark {
+  width: clamp(80px, 10vw, 120px);
+  height: auto;
+  flex-shrink: 0;
+  opacity: 0.75;
+  /* The SVG's sand bg multiplies cleanly into the section surface. */
+  mix-blend-mode: multiply;
+}
+
+@media (max-width: 640px) {
+  .headerOrnament {
+    margin-block: var(--space-6) var(--space-5);
+  }
+  .headerOrnamentMark {
+    width: clamp(64px, 14vw, 80px);
+  }
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

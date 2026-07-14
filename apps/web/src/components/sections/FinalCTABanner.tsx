@@ -9,7 +9,7 @@
  * default "09 — Ready when you are".
  */
 
-import { Button } from '@/components/ui';
+import { Button, Illustration } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { finalCta } from '@/lib/content';
 
@@ -27,6 +27,16 @@ export function FinalCTABanner({ className, eyebrow, href }: FinalCTABannerProps
       <div className="container">
         <div className={styles.inner}>
           <span className={styles.eyebrow}>{eyebrow ?? '09 — Ready when you are'}</span>
+          {/* WP15 — opening quote-mark ornament, sun-color paired glyphs
+           * lifted from the quote-mark illustration. Magazine-style drop
+           * accent above the headline; reads as a closed-quote seal. */}
+          <Illustration
+            src="/illustrations/quote-mark.svg"
+            alt=""
+            width={56}
+            height={45}
+            className={styles.openingMark}
+          />
           <h2 className={styles.headline}>{finalCta.headline}</h2>
           <p className={styles.micro}>{finalCta.micro}</p>
           <div className={styles.actions}>

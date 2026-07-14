@@ -94,6 +94,48 @@
   margin: 0;
 }
 
+/* WP15 — editorial "operator signature mark" closing the bio block.
+ * A small pinellas-palm centered under the bio paragraph, with a
+ * thin sun-color rule above it. Acts as the operator's signed
+ * signature line — Florida identity is the operator identity. */
+.bioSignature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block-start: var(--space-4);
+}
+
+.bioSignatureRule {
+  width: clamp(48px, 8vw, 72px);
+  height: 1.5px;
+  background: color-mix(in oklab, var(--ll-sun) 65%, transparent);
+  border-radius: 1px;
+}
+
+.bioSignatureMark {
+  width: clamp(56px, 7vw, 72px);
+  height: auto;
+  opacity: 0.85;
+  mix-blend-mode: multiply;
+  /* Mask away the SVG's 600x400 sand background rect, keeping only
+   * the palm silhouette. The radial mask fades the SVG edges into
+   * transparent so the section surface shows through, so we get a
+   * floating palm mark instead of a cream box with a palm in it. */
+  mask-image: radial-gradient(circle at 50% 65%, black 0%, black 38%, transparent 62%);
+  -webkit-mask-image: radial-gradient(circle at 50% 65%, black 0%, black 38%, transparent 62%);
+}
+
+.bioSignatureCity {
+  font-family: var(--font-inter);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ll-clay);
+  margin: 0;
+}
+
 .bioMeta {
   display: inline-flex;
   align-items: center;

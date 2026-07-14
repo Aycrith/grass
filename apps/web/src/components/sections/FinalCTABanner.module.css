@@ -58,6 +58,19 @@
   color: var(--ll-sun);
 }
 
+/* WP15 — editorial opening quote-mark ornament between eyebrow and
+ * headline. Two paired sun-color glyphs lifted from the quote-mark
+ * illustration, scaled small. Acts as a magazine-style drop accent
+ * for the dark green CTA band — no sand background on this SVG,
+ * so it pops cleanly against palm-shadow without any blending. */
+.openingMark {
+  display: block;
+  width: clamp(36px, 5vw, 56px);
+  height: auto;
+  margin: var(--space-3) auto 0;
+  opacity: 0.72;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .eyebrow {
     animation: finalCtaEyebrowPulse 3s ease-in-out infinite;
