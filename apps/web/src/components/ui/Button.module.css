@@ -36,6 +36,31 @@
   transform: scale(0.97);
 }
 
+/* WP51 — focus-visible at WCAG-AA contrast (3:1) for non-text UI.
+ * The global focus rule (typography.css) uses `outline: 2px solid var(--ll-sun)`
+ * which renders at 1.37:1 against the cream-sand background (below 3:1).
+ *
+ * WP50 first pass used a palm-shadow outline for visibility on cream, but
+ * that became invisible on the deep-green FinalCTABanner panel where
+ * the button is sun-color on palm-shadow. WP51 fixes this with a
+ * double-ring pattern: sun-color outline (visible on dark green panels)
+ * + a 4px palm-shadow box-shadow halo (visible on cream backgrounds).
+ * At least one of the two indicators is always ≥3:1 contrast against
+ * whatever the surrounding panel uses.
+ *
+ *   Cream bg:    halo = 5.7:1 ✓, outline = 1.37:1 (halo carries it)
+ *   Palm-shadow: halo = 1.1:1, outline = 3.5:1 ✓ (outline carries it)
+ *   Sun button:  halo = 3.1:1 ✓, outline = 1.37:1 (halo carries it)
+ *
+ * The 4px halo beyond 2px outline creates a visible "stamp" pattern
+ * that reads as one focus indicator (not two disjoint rings).
+ */
+.root:focus-visible {
+  outline: 2px solid var(--ll-sun);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--ll-palm-shadow);
+}
+
 /* ---------- Sizes ---------- */
 
 .sm {
