@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  mower-side-profile.svg — hero decoration for /services/mowing.
+  mower-side-profile.svg — solo operator visual used in:
+    - ScheduleTimeline todayMower (on cream card, no bg needed)
+    - reserved for future composition use
+
   Hand-drawn side profile of a self-propelled push mower.
   600×400 viewBox matches the existing illustration kit.
+
+  WP18 — removed the sand surface <rect> and ground line so the
+  illustration composes cleanly on any background (the SVG is no
+  longer tied to a sand-colored stage). The dark mower silhouette
+  and the foreground grass tufts paint against whatever the parent
+  surface is, which keeps the ScheduleTimeline's today-card cream
+  shell from showing a darker cream rect around the mower.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400"
      role="img" aria-label="Illustration — self-propelled push mower, side profile">
   <title>Mower — side profile</title>
-
-  <!-- Sand surface -->
-  <rect width="600" height="400" fill="#F4E8D0"/>
-
-  <!-- Ground line -->
-  <line x1="40" y1="320" x2="560" y2="320" stroke="#5C4A3A"
-        stroke-width="3" stroke-linecap="round" opacity="0.5"/>
 
   <!-- Mower deck (rounded body) -->
   <path d="M 180 260 Q 180 220 220 220 L 380 220 Q 420 220 420 260 L 420 300 Q 420 320 400 320 L 200 320 Q 180 320 180 300 Z"
