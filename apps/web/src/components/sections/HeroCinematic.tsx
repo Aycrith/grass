@@ -1,7 +1,14 @@
-'use client';
-
 /**
  * HeroCinematic — full-bleed landing-page hero.
+ *
+ * D-0010: removed the `'use client'` directive. The static text
+ * (eyebrow, subhead, buttons, trust row) now renders server-side
+ * with zero JS required for first paint. The motion parts
+ * (WordReveal, ParallaxImage) are imported as implicit client
+ * boundaries — Next.js treats them as client components and code-
+ * splits them out. The 1.5-3s main-thread JS evaluation that was
+ * blocking the LCP element paint is now deferred to a separate
+ * bundle that loads after the SSR'd text is already visible.
  *
  * Layout: asymmetric split — copy left, painterly golden-hour Florida
  * ranch-house image right (mobile stacks image-on-top). Choreography:

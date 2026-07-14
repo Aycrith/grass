@@ -21,6 +21,12 @@ html {
   text-size-adjust: 100%;
   scroll-behavior: smooth;
   /* Lenis overrides this; the override is added by LenisProvider at runtime. */
+  /* D-0010 — reserve scrollbar gutter so Lenis's runtime `overflow: hidden`
+   * doesn't shift the page layout when it activates. Without this, the
+   * desktop CLS jumps to 0.7+ as Lenis swaps the native scrollbar for its
+   * custom one (Lighthouse `layout-shifts` audit). With this, the gutter
+   * is reserved from first paint and Lenis's activation is shift-free. */
+  scrollbar-gutter: stable;
 }
 
 body {
