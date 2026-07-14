@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-14 (Day 18 — WP49 hero v2 + D-0008 ratified)
+# Last updated: 2026-07-14 (Day 20 — GBP asset crops + phase 2 marker + D-0009)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-14 (Day 18 — hero v2 redo; WP49 swap shipped; D-0008 ratified)
+# Last updated: 2026-07-14 (Day 20 — phase 2 marker; GBP crops shipped; D-0008 ratified; hero.md deprecated)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -20,34 +20,51 @@ schema_version: 0.1.0
 # -------------------------------------------------------------------
 # Phase tracking
 # -------------------------------------------------------------------
-phase: 1
-phase_name: "Mission 1 research (Largo FL landscaping)"
+# Schema: 08-state-ledger-spec.md (phase + objectives + blockers)
+# Current phase: 2 — Landscaping MVP launch (cash-min mode)
+# See phase_history below for the closed Phase 0 + Phase 1 records.
+phase: 2
+phase_name: "Landscaping MVP launch (cash-min mode)"
+phase_day: 5   # Day 5 of Phase 2 (Phase 2 began Day 16; today is Day 20)
+phase_day_of: 30  # OBJ-M2-006 spans Days 20-30; Phase 2 ~30 days total
 phase_exit_criteria:
-  - "research/regulatory/largo-licensing-map.yaml authored and steward sign-off recorded ✓"
-  - "research/market/largo-market-size.md authored with TAM/SAM/SOM ✓"
-  - "research/competitors/largo-33771.csv with ≥10 competitor entries ✓"
-  - "research/pricing/price-book.yaml with full pricing ladder ✓"
-  - "research/seo/largo-keyword-map.md with 100-keyword universe ✓"
-  - "research/suppliers/largo.yaml with Pinellas supplier ecosystem ✓"
-  - "All 6 governance decisions (D-0001 through D-0007) have ADR files in governance/decisions/ ✓"
+  - "OBJ-M2-004 — Brand + domain acquisition (D-0007 phase B) complete"
+  - "OBJ-M2-006 — GBP profile + 25-citation build + 5 paid pilot jobs"
+  - "OBJ-DEBT-DECISIONS-002 — Re-verify D-0002/D-0003/D-0004 ADRs (review Oct 2026)"
+phase_exit_status: "IN PROGRESS — see objectives.active"
 
-phase_exit_status: "MET — all 7 exit criteria satisfied; ready for Phase 2 entry."
-phase_exit_criteria:
-  - "audit/phase-0/architecture-gap.md exists with concrete gap list ✓"
-  - "audit/phase-0/tech-debt.md exists (likely near-empty for Day 1 repo) ✓"
-  - "audit/phase-0/6-month-roadmap.md exists with KPIs and exit criteria ✓"
-  - "Pre-commit hooks green on the Phase-0 exit commit ✓"
-  - "First MCP smoke test passes (Day 5 protocol) ✓ — see scripts/smoke-test.md"
-  - "13 agent specs authored and lint-clean (Day 3-4) ✓"
-  - "5 landscaping capabilities registered (Day 3) ✓"
-  - "Tier-1 MCP filesystem server installed (.mcp.json) ✓"
-  - "scripts/check-ledger-freshness.ts added and live ✓"
-  - "scripts/charter-compliance.ts aggregator added and live ✓"
-
-phase_day: 5
-phase_day_of: 5
-
-phase_exit_status: "MET — Phase 0 + Phase 1 exit criteria simultaneously satisfied."
+# Historical record of completed phases. Preserved for traceability.
+# Phase 0 (Days 1-5) and Phase 1 (Days 6-15) are both MET.
+phase_history:
+  - phase: 1
+    name: "Mission 1 research (Largo FL landscaping)"
+    span: "Days 6-15"
+    closed_on: "2026-07-10"
+    status: "MET — all 7 exit criteria satisfied; ready for Phase 2 entry."
+    exit_criteria:
+      - "research/regulatory/largo-licensing-map.yaml authored and steward sign-off recorded ✓"
+      - "research/market/largo-market-size.md authored with TAM/SAM/SOM ✓"
+      - "research/competitors/largo-33771.csv with ≥10 competitor entries ✓"
+      - "research/pricing/price-book.yaml with full pricing ladder ✓"
+      - "research/seo/largo-keyword-map.md with 100-keyword universe ✓"
+      - "research/suppliers/largo.yaml with Pinellas supplier ecosystem ✓"
+      - "All 6 governance decisions (D-0001 through D-0007) have ADR files in governance/decisions/ ✓"
+  - phase: 0
+    name: "Repository audit and baseline"
+    span: "Days 1-5"
+    closed_on: "2026-07-10"
+    status: "MET — all 10 exit criteria satisfied; satisfied simultaneously with Phase 1."
+    exit_criteria:
+      - "audit/phase-0/architecture-gap.md exists with concrete gap list ✓"
+      - "audit/phase-0/tech-debt.md exists (likely near-empty for Day 1 repo) ✓"
+      - "audit/phase-0/6-month-roadmap.md exists with KPIs and exit criteria ✓"
+      - "Pre-commit hooks green on the Phase-0 exit commit ✓"
+      - "First MCP smoke test passes (Day 5 protocol) ✓ — see scripts/smoke-test.md"
+      - "13 agent specs authored and lint-clean (Day 3-4) ✓"
+      - "5 landscaping capabilities registered (Day 3) ✓"
+      - "Tier-1 MCP filesystem server installed (.mcp.json) ✓"
+      - "scripts/check-ledger-freshness.ts added and live ✓"
+      - "scripts/charter-compliance.ts aggregator added and live ✓"
 
 # Pending phase-exit flag (Pilot Exception, see constitution/charter-amendments/pilot-exception.md)
 # Schema: list of phase objects with pilot identifier, decision_id, and review date.
@@ -517,6 +534,38 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-14"
+    day: 20
+    change: >
+      Phase 2 marker + OBJ-M2-006 GBP asset crops shipped.
+      (a) state/ledger.yaml top-of-file phase tracking block
+      refactored: `phase: 1` → `phase: 2`; `phase_name` updated
+      to "Landscaping MVP launch (cash-min mode)"; `phase_day: 5/30`;
+      active phase_exit_criteria lists OBJ-M2-004, OBJ-M2-006,
+      OBJ-DEBT-DECISIONS-002. Phase 0 and Phase 1 records moved
+      into a `phase_history` array for traceability. Closes the
+      `phase: 1` field-staleness drift identified in the WP49
+      handoff review. (b) `apps/comfyui/prompts/hero.md` deprecated
+      in place — added SUPERSEDED header pointing to hero-v2.md
+      and D-0008; frontmatter now declares `status: deprecated`,
+      `supersedes: hero.md`, `deprecated_on: 2026-07-14`. Body
+      content retained for diff traceability. Future agent
+      invocations of hero.md will see the deprecation banner
+      before running. (c) `scripts/crop-hero-for-gbp.ts` authored
+      — sharp-based pipeline that produces 3 GBP-ready assets from
+      the v2 hero master + brand logo-mark SVG: cover photo
+      (1024×576, 16:9, 86 KB from desktop.webp center-crop);
+      profile photo (720×720, 1:1, 67 KB); small logo (250×250,
+      1:1, 2 KB). All three written to `drafts/gbp/assets/` for
+      steward upload to business.google.com. (d) Outputs verified
+      via sharp metadata readback: dimensions exact, webp valid,
+      file sizes within GBP's 5 MB cap. No regression on the v2
+      hero source. D-0009 follow-ups (img2img grass experiment +
+      production-mode Lighthouse re-run) remain queued for the
+      next autonomous session. Charter compliance: 3/3 checks
+      green after the change. Typecheck green.
+    by: "Mavis (autonomous, 2026-07-14)"
+
   - date: "2026-07-14"
     day: 20
     change: >
