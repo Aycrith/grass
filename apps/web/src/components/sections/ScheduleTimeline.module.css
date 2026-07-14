@@ -198,9 +198,12 @@
 
 /* WP15 — mower anchor on the today card. Small illustration sits at
  * the bottom of the today card, reading as "this is the day the mower
- * shows up." Uses mix-blend-mode: multiply to fade the SVG's sand
- * background into the card's shell color so the mower silhouette
- * reads as the focal element.
+ * shows up." mix-blend-mode: multiply fades the SVG's sand into the
+ * card's shell color so only the dark mower silhouette reads.
+ *
+ * WP17 — also clip-path the top portion of the SVG to remove the sand
+ * rect that surrounds the mower. The mower sits in the bottom-half of
+ * the 600x400 viewBox; cropping the top half hides the sand rect.
  */
 
 .todayMower {
@@ -210,8 +213,12 @@
   height: auto;
   margin-block-start: auto;
   align-self: center;
+  opacity: 0.95;
   mix-blend-mode: multiply;
-  opacity: 0.92;
+  /* clip-path crops the SVG to the mower bounding box, removing the
+   * sand rect that surrounds the mower body (the mower sits at y=178-360
+   * and x=80-540 in the 600x400 viewBox). */
+  clip-path: inset(45% 10% 10% 10%);
 }
 
 .todayBadge {
