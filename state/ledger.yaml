@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 - D-0014 hero h1 painted brushstroke accent)
+# Last updated: 2026-07-15 (Day 22 — D-0013b section dividers expanded)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 - D-0014 hero h1 painted brushstroke accent)
+# Last updated: 2026-07-15 (Day 22 — D-0013b section dividers expanded)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -534,6 +534,21 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      D-0013b — Expanded the D-0013 painted section divider
+      pattern. After the D-0013 ship the page had 7 dividers;
+      2 more were added at: (a) Hero→TrustStrip (sand-bleached
+      to sand-bleached — the divider gives the typographic
+      trust strip a clear "and now we begin" anchor instead of
+      floating in the same color context as the hero), and
+      (b) EditorialBreak→ServiceAreaStats (both are full-bleed
+      image/text sandwiches — the divider keeps the rhythm
+      consistent with the rest of the painted chapter breaks).
+      Page now has 9 dividers across 14 sections. Charter 3/3
+      green, prod build clean (First Load JS unchanged at
+      212 kB).
   - date: "2026-07-15"
     day: 22
     change: >

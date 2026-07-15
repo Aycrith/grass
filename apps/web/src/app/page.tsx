@@ -62,6 +62,12 @@ export default function HomePage() {
     <>
       {/* 01 — Hero */}
       <HeroCinematic />
+
+      {/* D-0013 — chapter break before the trust strip (sand-bleached to
+       * sand-bleached; the painted ornament gives the typographic strip
+       * a clear "and now we begin" feel) */}
+      <SectionDivider />
+
       <TrustStrip />
 
       {/* 02 — Operator intro */}
@@ -81,6 +87,11 @@ export default function HomePage() {
 
       {/* 04.5 — Editorial break (full-bleed image pause) */}
       <EditorialBreak />
+
+      {/* D-0013 — chapter break after the editorial break before the
+       * stat panel (both are full-bleed image/text sandwiches, divider
+       * keeps the rhythm consistent) */}
+      <SectionDivider />
 
       {/* 04.7 — By the numbers (sand-bleached stat panel) */}
       <ServiceAreaStats />
