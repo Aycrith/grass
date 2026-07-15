@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 — D-0018b partial-fix cleanup)
+# Last updated: 2026-07-15 (Day 22 — D-0019 typography & padding refresh)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 — D-0018b partial-fix cleanup)
+# Last updated: 2026-07-15 (Day 22 — D-0019 typography & padding refresh)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -534,6 +534,38 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      D-0019 — Typography & padding refresh. The site had strong
+      typography foundation (Inter + Fraunces, 2-font pairing per
+      the pre-flight audit) but the heading rhythm and section
+      padding were inconsistent. This commit polishes the
+      foundation: (a) apps/web/src/styles/typography.css — bumped
+      body line-height from 1.5 to 1.6 (better readability on the
+      cream background); added text-wrap: balance to h1 and
+      .display-xl (avoids ugly line-break on the hero h1);
+      added text-wrap: pretty to h2 and h3 (avoids orphans on
+      the last line); tightened h1 letter-spacing from -0.02em
+      to -0.025em (editorial weight); tightened h2 letter-spacing
+      from -0.01em to -0.015em; widened eyebrow tracking from
+      0.12em to 0.16em (more editorial small-caps feel); added
+      text-rendering: optimizeLegibility, antialiased font
+      smoothing, and font-variant-numeric: lining-nums for
+      consistent number rendering. (b) apps/web/src/components/
+      sections/HeroCinematic.module.css — bumped h1 letter-
+      spacing to -0.025em (matches the new global h1) and added
+      text-wrap: balance. (c) apps/web/src/components/sections/
+      MarqueeQuote.module.css — bumped padding-block from
+      --space-8 (40px) to --space-10 (64px) to match the body
+      section rhythm. (d) apps/web/src/components/sections/
+      FinalCTABanner.module.css — bumped padding-block to
+      --space-10 (64px) symmetric (was 32px + 40px asymmetric)
+      so the page closer sits in the same vertical pocket as
+      the surrounding content. Charter 3/3 green, prod build
+      clean, First Load JS unchanged at 212 kB. Net result:
+      2 places where section padding was inconsistent are now
+      consistent; 5 typography refinements applied globally.
   - date: "2026-07-15"
     day: 22
     change: >

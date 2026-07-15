@@ -82,9 +82,10 @@
    * in a 42rem column. */
   font-size: clamp(2.5rem, 6vw, 5rem);
   line-height: 1.04;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   color: var(--ll-palm-bark);
   margin: 0;
+  text-wrap: balance;
 }
 
 .headlineLine {

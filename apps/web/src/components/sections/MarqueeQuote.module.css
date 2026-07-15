@@ -14,7 +14,11 @@
 
 .root {
   background: var(--ll-sand-bleached);
-  padding-block: var(--space-8);
+  /* D-0019 — standardized to the body section rhythm (64px) so the
+   * marquee sits in the same vertical pocket as the surrounding
+   * content. Was 40px, which read as too thin against the
+   * 128px-loose sections above and below. */
+  padding-block: var(--space-10);
   overflow: hidden;
 }
 
