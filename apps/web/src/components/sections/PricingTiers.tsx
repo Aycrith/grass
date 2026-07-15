@@ -61,7 +61,6 @@ export function PricingTiers({ className }: PricingTiersProps): ReactNode {
                   {pricingHeader.ribbon}
                 </span>
               ) : null}
-              <p className={styles.eyebrow}>{tier.eyebrow}</p>
               <h3 className={styles.title}>{tier.title}</h3>
               <p className={styles.price}>
                 {tier.price}

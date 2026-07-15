@@ -102,7 +102,7 @@ export function ServiceBento({ className }: ServiceBentoProps): ReactNode {
           </Eyebrow>
           <h2 className={styles.headerHeading}>Six things, done well.</h2>
           <p className={styles.headerSub}>
-            I keep the service list short on purpose — six things, no crew swap, no upsell. If you
+            I keep the service list short on purpose. Six things, no crew swap, no upsell. If you
             need something not listed, ask. Half of what I do is the stuff nobody else lists.
           </p>
         </header>
@@ -128,9 +128,6 @@ export function ServiceBento({ className }: ServiceBentoProps): ReactNode {
                     />
                   </div>
                   <div className={styles.body}>
-                    <span className={styles.eyebrow}>
-                      {svc.eyebrow} — {svc.title}
-                    </span>
                     <ServiceBentoIcon service={key} className={styles.icon} />
                     <h3 className={styles.title}>{svc.title}</h3>
                     <p className={styles.summary}>{svc.summary}</p>

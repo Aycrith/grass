@@ -186,14 +186,6 @@
   text-decoration: none;
 }
 
-.calloutDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--ll-clay);
-  flex-shrink: 0;
-}
-
 /* WP15 — corner stamp "01" (mirrors the eyebrow "01 — Lawn care in 33771").
  * WP21 — moved from top-right to top-LEFT so the stamp no longer sits on
  * top of the palm SVG's built-in sun (which lives in the upper-right

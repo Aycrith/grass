@@ -792,7 +792,7 @@ export const processSteps = [
 ] as const;
 
 export const pricingHeader = {
-  eyebrow: '04 - Pricing',
+  eyebrow: 'Pricing',
   heading: 'What it costs.',
   subhead:
     'Floor pricing, per visit or per project. Most lawns fall inside the floor; bigger yards, slopes, and gated back-fences bump the price. No subscription, no contract, no surprise fees.',

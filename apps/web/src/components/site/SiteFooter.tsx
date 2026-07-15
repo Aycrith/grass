@@ -34,7 +34,7 @@ const COMPANY_HREFS: ReadonlyArray<{ href: string; label: string }> = [
   { href: '/about', label: 'About' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/contact', label: 'Contact' },
-  { href: '/quote', label: 'Get a quote' },
+  { href: '/quote', label: 'Get a free quote' },
   { href: '/review', label: 'Leave a review' },
 ];
 
@@ -86,7 +86,7 @@ export function SiteFooter({ className }: SiteFooterProps): ReactNode {
             </div>
             <dl className={styles.hours} aria-label="Business hours">
               <div className={styles.hoursRow}>
-                <dt>Mon–Fri</dt>
+                <dt>Mon to Fri</dt>
                 <dd>{hours.weekdays}</dd>
               </div>
               <div className={styles.hoursRow}>

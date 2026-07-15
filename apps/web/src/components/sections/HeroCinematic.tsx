@@ -98,7 +98,6 @@ export function HeroCinematic({ className }: HeroCinematicProps): ReactNode {
                 className={styles.callout}
                 aria-label={`${composition.callout}: open area page`}
               >
-                <span className={styles.calloutDot} aria-hidden="true" />
                 {composition.callout}
               </a>
             }

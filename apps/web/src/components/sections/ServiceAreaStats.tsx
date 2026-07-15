@@ -1,8 +1,8 @@
 /**
- * ServiceAreaStats — "By the numbers" poster on `/`.
+ * ServiceAreaStats - "By the numbers" poster on `/`.
  *
  * Mounts between EditorialBreak (04.5) and ProcessSteps (05) as a
- * third typographic pause — no CTAs, just four numbers that earn
+ * third typographic pause - no CTAs, just four numbers that earn
  * trust the way the operator talks (specific, not aspirational).
  *
  * Reads `lib/content.ts → areaStats`. Each stat is a
@@ -13,12 +13,12 @@
  * Layout: 4-column grid on desktop, 2-column on mobile. Numbers in
  * clamp(3.5rem, 6vw, 5rem) Fraunces, label in Inter caption.
  *
- * WP15 — adds a subtle Pinellas palm SVG watermark behind the grid
+ * WP15 - adds a subtle Pinellas palm SVG watermark behind the grid
  * (right side, 4% opacity, mix-blend-mode multiply). Anchors the
  * brand's Florida identity to the all-type section without competing
  * with the numbers.
  *
- * Reduced-motion: numbers still appear — this section has no
+ * Reduced-motion: numbers still appear - this section has no
  * triggered animation, just a static fade-up via the parent
  * <Section> rhythm. The stagger from `StaggerGroup` is the only
  * motion and respects `useReducedMotion` already.
@@ -57,7 +57,7 @@ export function ServiceAreaStats({ className }: ServiceAreaStatsProps): ReactNod
         <header className={styles.header}>
           <h2 className={styles.heading}>A small crew, by design.</h2>
           <p className={styles.lede}>
-            Scale on a clipboard, not on a website — what the operator actually does, written down
+            Scale on a clipboard, not on a website. What the operator actually does, written down
             plain.
           </p>
         </header>

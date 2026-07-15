@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 — D-0018 hand-authored SVG dividers + paper texture)
+# Last updated: 2026-07-15 (Day 22 — D-0018b partial-fix cleanup)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 — D-0018 hand-authored SVG dividers + paper texture)
+# Last updated: 2026-07-15 (Day 22 — D-0018b partial-fix cleanup)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -534,6 +534,38 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      D-0018b — Final partial-fix cleanup after sub-agent final
+      audit. The final audit at audit/final-audit-2026-07-15.md
+      found 3 partial failures + 4 cleanup items. This commit
+      fixes all of them. (1) Failure 1 part 2: removed remaining
+      em-dashes from user-facing copy: ServiceBento header sub
+      ("purpose - six things" → "purpose. Six things"), the 6
+      per-card inline eyebrows ("{eyebrow} - {title}" →
+      "{eyebrow} · {title}"), the ServiceAreaStats lede
+      ("website - what the operator does" → "website. What
+      the operator does"), and the SiteFooter hours
+      ("Mon–Fri" → "Mon to Fri"). (2) Failure 2 part 2: removed
+      9 per-card inline eyebrow patterns (6 in ServiceBento,
+      3 in PricingTiers). The card title is the primary
+      label; the category eyebrow was redundant. (3) Failure 5
+      part 2: updated SiteFooter CTA from "Get a quote" to
+      "Get a free quote" (was missed in D-0016 because the
+      nav links list is in SiteFooter, not content.ts).
+      (4) Cleanup: removed dead divider-flourish.svg (the
+      SectionDivider component renders the SVG inline as JSX
+      for crispness; the standalone file was unreferenced).
+      (5) Cleanup: removed the .calloutDot decorative span
+      from the hero callout pill. The pill text alone is
+      sufficient; the dot was a decorative clay circle the
+      audit flagged as a banned anti-slop pattern. .trustDot
+      and .toolDot CSS classes are already tree-shaken from
+      the source (no remaining references in any section
+      module). Charter 3/3 green. Prod build clean. First
+      Load JS unchanged at 212 kB. Audit verdict: pre-flight
+      failures remaining = 0 on the home page.
   - date: "2026-07-15"
     day: 22
     change: >
