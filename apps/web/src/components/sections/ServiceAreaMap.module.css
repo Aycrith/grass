@@ -1,16 +1,17 @@
 /* ============================================================
  * ServiceAreaMap — Mission 1 service-area illustration.
  *
- * D-0025 — real OSM-based line-art map. The .mapWrap is a
- * positioned container holding two layers:
- *   1. The OSM map image (fills the container, 5:4 aspect)
- *   2. An SVG overlay with the 6 service-area ZIP pins
- *      (positioned at real-world relative positions on top of
- *      the map)
+ * D-0026 (final) — custom-composed editorial map. The .mapWrap
+ * is a positioned 4:3 container that holds the finished image
+ * edge-to-edge. The 6 ZIP badges are baked into the image (no
+ * separate SVG overlay), so the .mapWrap just needs to size and
+ * frame the image cleanly.
  *
- * The 6 ZIPs are clickable, the side rail below is also
- * clickable, and the two surfaces share hover/focus state via
- * data-zip-active attributes (WP14 pattern).
+ * Layout (D-0026):
+ *   .inner is a 2-column grid on desktop:
+ *     - col 1 (1fr): header (heading + body) + side rail
+ *     - col 2 (1.4fr): map (the visual focal point)
+ *   On mobile (<980px), everything stacks in 1 column.
  * ============================================================ */
 
 .root {
@@ -22,6 +23,9 @@
 .inner {
   display: grid;
   grid-template-columns: 1fr minmax(0, 1.4fr);
+  grid-template-areas:
+    'header map'
+    'rail    map';
   gap: var(--space-8);
   align-items: start;
 }
@@ -29,11 +33,16 @@
 @media (max-width: 980px) {
   .inner {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      'header'
+      'map'
+      'rail';
     gap: var(--space-6);
   }
 }
 
 .header {
+  grid-area: header;
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
@@ -63,113 +72,41 @@
   margin: 0;
 }
 
-/* ---------- Map container (D-0025) ----------
- * Positioned container holding the OSM image + the SVG pin
- * overlay. The container is 5:4 to match the OSM map's
- * map-area aspect ratio (the bottom typography strip is part
- * of the image, so the visible aspect is 1272:1032 ≈ 1.23). */
+/* ---------- Map container (D-0026 final) ----------
+ * Positioned 4:3 container holding the finished editorial map.
+ * The 6 ZIP badges are baked into the image, so the container
+ * just needs to size and frame the image cleanly — no SVG
+ * overlay layer, no separate pin math.
+ *
+ * The container is sized to a 4:3 aspect ratio to match the
+ * image exactly. The image fills the container edge-to-edge
+ * (no letterboxing). A subtle drop shadow lifts the map off
+ * the dark palm-bark background. */
 .mapWrap {
+  grid-area: map;
   position: relative;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background: color-mix(in srgb, var(--ll-palm-shadow) 40%, var(--ll-palm-bark));
+  background: #FAF6F0; /* matches the map's white field */
   border: 1px solid color-mix(in srgb, var(--ll-sand) 25%, transparent);
-  padding: var(--space-2);
-  aspect-ratio: 1272 / 1162;
+  aspect-ratio: 4 / 3;
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--ll-sand-bleached) 8%, transparent),
+    0 22px 48px -28px rgba(0, 0, 0, 0.55);
 }
 
-/* The OSM map image fills the container. */
+/* The map image fills the container. object-fit: cover ensures
+ * the image always fills the 4:3 frame, even at the tiniest
+ * viewport where the rendered aspect might drift. */
 .mapImage {
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
 }
 
-/* The SVG pin overlay sits on top of the image, with the same
- * 1000x800 viewBox as before (so the pin coordinates are stable
- * across component versions). It does not draw the coastline
- * (the OSM image already has the real coastline) — just the
- * 6 service-area ZIP pins with rings + labels. */
-.pinOverlay {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  /* Slight inset to match the inner padding of .mapWrap. */
-  padding: 6px;
-}
-
-.pinOverlay > * {
-  pointer-events: auto;
-}
-
-/* ---------- Interactive ZIP pins (unchanged from D-0024) ---------- */
-
-.pinGroup {
-  transform-origin: center;
-  transform-box: fill-box;
-  transition: transform var(--motion-duration-base) var(--motion-easing-default);
-  cursor: pointer;
-}
-
-.pinGroup:hover,
-.pinGroup:focus-within {
-  transform: scale(1.08);
-}
-
-.pinGroup[data-zip-active='true'] {
-  transform: scale(1.18);
-}
-
-.pinGroup[data-zip-active='true'] .pinRing {
-  stroke-opacity: 1;
-  stroke-width: 2;
-}
-
-.pinGroup[data-zip-active='true'] .ringInner {
-  fill: color-mix(in oklab, var(--ll-sun) 45%, transparent);
-}
-
-.pinRing {
-  fill: none;
-  stroke: var(--ll-sand-bleached);
-  stroke-opacity: 0.6;
-  stroke-width: 1.4;
-  transition: stroke-opacity var(--motion-duration-base) var(--motion-easing-default);
-}
-
-.pinGroup:hover .pinRing {
-  stroke-opacity: 0.95;
-}
-
-.ringInner {
-  fill: color-mix(in oklab, var(--ll-sand-bleached) 12%, transparent);
-  transition: fill var(--motion-duration-base) var(--motion-easing-default),
-    stroke-opacity var(--motion-duration-base) var(--motion-easing-default);
-}
-
-.ringInnerPriority {
-  fill: color-mix(in oklab, var(--ll-sun) 75%, transparent);
-  stroke: var(--ll-sun);
-  stroke-opacity: 0.9;
-  stroke-width: 1.6;
-}
-
-.pinLabel {
-  font-family: var(--font-inter);
-  font-size: 14px;
-  font-weight: 700;
-  /* D-0024 — switched to palm-bark (dark) for high contrast on
-   * the cream-stroked map. (Was sand-bleached, invisible on
-   * the cream land in the D-0024 SVG.) */
-  fill: var(--ll-palm-bark);
-  pointer-events: none;
-  text-anchor: middle;
-}
-
-/* ---------- Side rail (unchanged) ---------- */
+/* ---------- Side rail (navigation, since the map pins are baked) ---------- */
 
 .rail {
+  grid-area: rail;
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
@@ -202,18 +139,6 @@
 .railItem:focus {
   color: var(--ll-sun);
   outline: none;
-}
-
-.railItem[data-zip-active='true'] {
-  background: color-mix(in oklab, var(--ll-sun) 22%, transparent);
-  color: var(--ll-sand-bleached);
-  padding-inline: var(--space-3);
-  border-radius: var(--radius);
-  border-bottom-color: transparent;
-}
-
-.railItem[data-zip-active='true'] .railItemZip {
-  opacity: 1;
 }
 
 .railItemThumb {
