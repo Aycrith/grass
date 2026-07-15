@@ -27,11 +27,14 @@ export function FinalCTABanner({ className, eyebrow, href }: FinalCTABannerProps
       <div className="container">
         <div className={styles.inner}>
           <span className={styles.eyebrow}>{eyebrow ?? '09 — Ready when you are'}</span>
-          {/* WP15 — opening quote-mark ornament, sun-color paired glyphs
-           * lifted from the quote-mark illustration. Magazine-style drop
-           * accent above the headline; reads as a closed-quote seal. */}
+          {/* D-0011 — opening quote-mark ornament, v3 painted storybook.
+           * Pairs with the painted v3 logo mark + Fraunces wordmark in
+           * the SiteHeader so the page closer joins the painted storybook
+           * language that the rest of the homepage already uses. The
+           * original v1 quote-mark.svg remains on disk as a fallback
+           * variant (see LogoMark.tsx comment). */}
           <Illustration
-            src="/illustrations/quote-mark.svg"
+            src="/illustrations/quote-mark-v3-56.webp"
             alt=""
             width={56}
             height={45}

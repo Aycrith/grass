@@ -86,6 +86,44 @@ export default async function PreviewBrand() {
         />
       </div>
 
+      <h2>Quote Mark — v3 (painted storybook, default in FinalCTABanner)</h2>
+      <div
+        style={{
+          background: 'var(--ll-palm-shadow)',
+          padding: '2rem',
+          borderRadius: 'var(--radius)',
+          textAlign: 'center',
+        }}
+      >
+        <img
+          src="/illustrations/quote-mark-v3-56.webp"
+          srcSet="/illustrations/quote-mark-v3-56.webp 56w, /illustrations/quote-mark-v3-120.webp 120w, /illustrations/quote-mark-v3-240.webp 240w, /illustrations/quote-mark-v3-480.webp 480w"
+          sizes="56px"
+          alt="Largo Lawn quote mark — painted storybook v3"
+          width={56}
+          height={45}
+          style={{ display: 'inline-block' }}
+        />
+      </div>
+
+      <h3>Quote Mark — v1 (line art, legacy)</h3>
+      <div
+        style={{
+          background: 'var(--ll-palm-shadow)',
+          padding: '2rem',
+          borderRadius: 'var(--radius)',
+          textAlign: 'center',
+        }}
+      >
+        <Image
+          src="/illustrations/quote-mark.svg"
+          alt="Largo Lawn quote mark — line art v1"
+          width={56}
+          height={45}
+          style={{ display: 'inline-block' }}
+        />
+      </div>
+
       <h2>Brand Guidelines (full document)</h2>
       <MarkdownPreview content={html} />
 

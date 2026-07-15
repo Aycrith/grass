@@ -41,7 +41,6 @@
  * are all preserved as editorial framing overlays on the new image.
  */
 
-import { Clock, MapPin, Phone } from 'lucide-react';
 import Image from 'next/image';
 import type { ReactNode } from 'react';
 
@@ -94,15 +93,15 @@ export function HeroCinematic({ className }: HeroCinematicProps): ReactNode {
 
             <div className={styles.trustRow}>
               <span className={styles.trustItem}>
-                <MapPin size={16} aria-hidden="true" />
+                <span className={styles.trustDot} aria-hidden="true" />
                 Serving {BUSINESS.service_area_zips.length} Pinellas ZIPs
               </span>
               <span className={styles.trustItem}>
-                <Clock size={16} aria-hidden="true" />
+                <span className={styles.trustDot} aria-hidden="true" />
                 24-hour quote turnaround
               </span>
               <span className={styles.trustItem}>
-                <Phone size={16} aria-hidden="true" />
+                <span className={styles.trustDot} aria-hidden="true" />
                 Reply by phone, not a portal
               </span>
             </div>

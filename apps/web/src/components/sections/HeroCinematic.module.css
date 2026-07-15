@@ -312,3 +312,16 @@
   color: var(--ll-palm-shadow);
   flex-shrink: 0;
 }
+
+/* D-0011 — trust row uses the same clay-bullet idiom as
+ * OperatorStrip.toolBar (8px sun dot + outer halo). Removes
+ * the lucide-react MapPin/Clock/Phone thin-stroke modern icons
+ * that broke the painted storybook language above-the-fold. */
+.trustDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ll-sun);
+  flex-shrink: 0;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ll-sun) 22%, transparent);
+}

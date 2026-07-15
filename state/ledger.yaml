@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-14 (Day 21 — logo-mark v3 painted storybook; SiteHeader now renders v3 by default)
+# Last updated: 2026-07-15 (Day 22 — D-0011 hero trust row clay bullets + quote-mark v3 painted + 21 dead-asset cleanup)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-14 (Day 21 — logo-mark v3 painted storybook; SiteHeader now renders v3 by default)
+# Last updated: 2026-07-15 (Day 22 — D-0011 hero trust row clay bullets + quote-mark v3 painted + 21 dead-asset cleanup)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -25,7 +25,7 @@ schema_version: 0.1.0
 # See phase_history below for the closed Phase 0 + Phase 1 records.
 phase: 2
 phase_name: "Landscaping MVP launch (cash-min mode)"
-phase_day: 6   # Day 6 of Phase 2 (Phase 2 began Day 16; today is Day 21)
+phase_day: 7   # Day 7 of Phase 2 (Phase 2 began Day 16; today is Day 22)
 phase_day_of: 30  # OBJ-M2-006 spans Days 20-30; Phase 2 ~30 days total
 phase_exit_criteria:
   - "OBJ-M2-004 — Brand + domain acquisition (D-0007 phase B) complete"
@@ -534,6 +534,92 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      D-0011 — Hero trust row uses clay bullets (visual audit §1.4).
+      The three lucide-react icons (MapPin / Clock / Phone) in the
+      above-the-fold trust row were the only modern-generic thin-stroke
+      stock icons on the entire painted homepage. They read as
+      "painted hero + 3 stock icons" — mixed signal. Replaced with
+      the same clay-bullet idiom used in OperatorStrip.toolBar:
+      8px sun dot with 3px sun halo, no SVG icon. Trust row now
+      reads continuously as painted storybook above the fold.
+
+      App.jsx change: removed `Clock`, `MapPin`, `Phone` from
+      `import { ... } from 'lucide-react'` in HeroCinematic.tsx
+      (now empty — that import line is deleted entirely).
+
+      CSS change: added `.trustDot` to HeroCinematic.module.css
+      matching OperatorStrip `.toolDot` (8px sun + 3px halo via
+      `box-shadow: 0 0 0 3px color-mix(in oklab, var(--ll-sun) 22%, transparent)`).
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      Quote-mark v3 painted storybook (visual audit §1.2).
+      The opening quote-mark in FinalCTABanner was the last
+      file-type-SVG used as a section ornament on the homepage.
+      A line-art quote after a journey of painted storybook
+      imagery registered as "templates ran out." Generated a
+      v3 painted version that joins the painted family.
+
+      Generated via the SDXL+LoRA+IP-Adapter pipeline at:
+      - LoRA strength 0.45 (down from 0.55 — paired glyphs at
+        higher LoRA trigger the leaves bias)
+      - IP-Adapter weight 0.20 (down from 0.40 — the clean SVG
+        input didn't need style anchoring)
+      - denoise 0.55 (up from 0.35 — needed freedom to add
+        brushwork on the edges)
+      - 4 candidates at seeds 7001-7004, all 4 keepers (paired
+        glyphs + clean brushy tails, no LoRA bias). Seed 7004
+        canonical (cleanest brushwork).
+
+      4 webp files at 56 / 120 / 240 / 480 px, transparent
+      background, alpha-verified (12,939 transparent + 1,461
+      opaque + 0 partial at 120px).
+
+      FinalCTABanner.tsx now renders quote-mark-v3-56.webp
+      (the actual component usage size). The v1 quote-mark.svg
+      remains on disk as a fallback variant.
+
+      Also added: apps/comfyui/scripts/make-quote-mark-input.ts
+      (input generator), apps/comfyui/scripts/make-quote-mark-v3-webp.ts
+      (output encoder with content crop + chroma key).
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      Cleanup PR — removed 21 dead asset files (visual audit §3).
+      All unreferenced per grep across apps/web/src:
+      - 10 decorative SVGs: compass-dial, edge-blade-detail,
+        hedge-line, leaf-pile, mulch-pile, pack-mule,
+        phone-ringing, pin-on-map, storm-front, wind-direction
+      - 5 byte-identical grass-blade-cluster.svg variants (all
+        1453 bytes, superseded by the v3 webp set — but the v3
+        webp set was also unreferenced, so all 4 v3 sizes and all
+        5 SVGs gone)
+      - 2 superseded line-art SVGs: pinellas-palm.svg (v1, kept
+        as fallback per component comment but actually unused),
+        mower-side-profile.svg (v1, same)
+      All removed via mavis-trash (recoverable). Saves ~25 KB
+      of dead bytes and clears confusion for the next SDXL
+      prompt author.
+
+      Kept (in active use, verified by grep): the 3 empty-state
+      SVGs referenced by EmptyState.tsx (which mounts on
+      /services/[slug] zero-data states, not the homepage).
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      Sub-agent visual audit (read-only) — comprehensive
+      report at audit/visual-audit-2026-07-15.md (18.8 KB).
+      Identified 5 ranked visual improvements + 1 dead-asset
+      cleanup + 5 "don't bother" confirmations + accessibility
+      check. Items §1.1 (painted bento icons), §1.2 (painted
+      quote-mark — DONE this commit), §1.3 (painted Pinellas
+      map), §1.4 (clay-bullet trust row — DONE this commit)
+      are the active roadmap. §2 do-later v3 wordmark +
+      logo-mark-inverse + apple-touch-icon + favicon is
+      queued. §3 dead-asset cleanup is DONE this commit.
   - date: "2026-07-14"
     day: 21
     change: >
