@@ -27,7 +27,7 @@ import Image from 'next/image';
 import type { ReactNode } from 'react';
 
 import { FadeUp, ParallaxImage } from '@/components/motion';
-import { Eyebrow, Section } from '@/components/site';
+import { Section } from '@/components/site';
 import { Illustration } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { operator } from '@/lib/content';
@@ -57,9 +57,6 @@ export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
           </FadeUp>
 
           <div className={styles.bio}>
-            <Eyebrow tone="default" className={styles.bioEyebrow}>
-              02 — The operator
-            </Eyebrow>
             <h2 className={styles.bioHeading}>
               Hi, I'm <em>{operator.name}</em>.
             </h2>

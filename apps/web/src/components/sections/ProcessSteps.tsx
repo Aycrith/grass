@@ -12,7 +12,7 @@
 import type { ReactNode } from 'react';
 
 import { StaggerGroup } from '@/components/motion';
-import { Eyebrow, Section } from '@/components/site';
+import { Section } from '@/components/site';
 import { cn } from '@/lib/cn';
 import { processSteps, services } from '@/lib/content';
 
@@ -29,9 +29,6 @@ export function ProcessSteps({ className }: ProcessStepsProps): ReactNode {
       <div className="container">
         <header className={styles.header}>
           <div className={styles.headerText}>
-            <Eyebrow tone="default" className={styles.headerEyebrow}>
-              05 — How it works
-            </Eyebrow>
             <h2 className={styles.headerHeading}>Four steps, no portal.</h2>
           </div>
           <div className={styles.headerMedia}>

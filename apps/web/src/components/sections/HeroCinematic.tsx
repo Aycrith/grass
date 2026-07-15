@@ -46,7 +46,6 @@ import type { ReactNode } from 'react';
 
 import { Eyebrow } from '@/components/site';
 import { Button } from '@/components/ui';
-import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
 import { hero } from '@/lib/content';
 
@@ -80,8 +79,6 @@ export function HeroCinematic({ className }: HeroCinematicProps): ReactNode {
 
             <p className={styles.subhead}>{hero.subhead}</p>
 
-            <div className={styles.rule} aria-hidden="true" />
-
             <div className={styles.actions}>
               <Button as="link" href={hero.primaryCta.href} variant="sun" size="lg">
                 {hero.primaryCta.label}
@@ -90,44 +87,20 @@ export function HeroCinematic({ className }: HeroCinematicProps): ReactNode {
                 {hero.secondaryCta.label}
               </Button>
             </div>
-
-            <div className={styles.trustRow}>
-              <span className={styles.trustItem}>
-                Serving {BUSINESS.service_area_zips.length} Pinellas ZIPs
-              </span>
-              <span className={styles.trustItem}>24-hour quote turnaround</span>
-              <span className={styles.trustItem}>Reply by phone, not a portal</span>
-            </div>
           </div>
 
           <ParallaxImage
             offset={60}
             className={styles.media}
             overlay={
-              <>
-                {/* WP15 — editorial framing. Rendered via the overlay slot so
-                 * they position against the panel (height = 4:5 of the panel
-                 * width) rather than against the parallaxing motion.div
-                 * which has `height: 0` and a transform creating its own
-                 * positioning context. The callout pill is also in the
-                 * overlay so its click target stays anchored to the panel
-                 * bottom-left even while the palm/sun parallax scrolls. */}
-                <span className={styles.cornerStamp} aria-hidden="true">
-                  01
-                </span>
-                <a
-                  href={composition.calloutHref}
-                  className={styles.callout}
-                  aria-label={`${composition.callout} — open area page`}
-                >
-                  <span className={styles.calloutDot} aria-hidden="true" />
-                  {composition.callout}
-                </a>
-                <span className={styles.caption} aria-hidden="true">
-                  <span className={styles.captionMark}>“</span>
-                  <span className={styles.captionText}>Pinellas porch — golden hour</span>
-                </span>
-              </>
+              <a
+                href={composition.calloutHref}
+                className={styles.callout}
+                aria-label={`${composition.callout}: open area page`}
+              >
+                <span className={styles.calloutDot} aria-hidden="true" />
+                {composition.callout}
+              </a>
             }
           >
             {/* WP49 / WP50 — v2 hero asset is the single SDXL-generated

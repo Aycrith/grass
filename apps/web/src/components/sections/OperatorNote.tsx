@@ -23,7 +23,7 @@ import Image from 'next/image';
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Eyebrow, Section } from '@/components/site';
+import { Section } from '@/components/site';
 import { cn } from '@/lib/cn';
 import { operator, operatorNote } from '@/lib/content';
 
@@ -39,9 +39,6 @@ export function OperatorNote({ className }: OperatorNoteProps): ReactNode {
       <div className="container">
         <div className={styles.inner}>
           <div className={styles.copy}>
-            <Eyebrow tone="default" className={styles.eyebrow}>
-              {operatorNote.eyebrow}
-            </Eyebrow>
             <FadeUp>
               <blockquote className={styles.quote}>{operatorNote.quote}</blockquote>
             </FadeUp>

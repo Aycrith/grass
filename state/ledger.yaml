@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 — D-0016 pre-flight copy + structure pass)
+# Last updated: 2026-07-15 (Day 22 — D-0017 pre-flight structural pass)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 — D-0016 pre-flight copy + structure pass)
+# Last updated: 2026-07-15 (Day 22 — D-0017 pre-flight structural pass)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -534,6 +534,39 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      D-0017 — Pre-Flight structural pass (failures 2, 4, 6).
+      (a) Failure 2: cut eyebrows from 12 to 5 on the home page
+      (the audit's max-allowable for 14 sections). Removed
+      from: OperatorStrip, EditorialBreak, ServiceAreaStats,
+      ProcessSteps, ScheduleTimeline, OperatorNote, FAQAccordion.
+      Surviving eyebrows: Hero, ServiceBento, Pricing, ServiceAreaMap,
+      FinalCTA. Dropped the "NN - " numbering prefix on the
+      survivors ("Lawn care in 33771", "What I do", "Pricing",
+      "Where I mow", "Ready when you are"). Cleaned up unused
+      Eyebrow imports from the 7 removed sections. (b) Failure 4:
+      collapsed the hero stack from 8 text elements to 4 (the
+      audit's max). Removed: trustRow (3 trust items, dot-
+      decorated, redundant with the subhead), cornerStamp
+      (decorative "01" chip on the image), caption (the
+      "Pinellas porch — golden hour" pill, was the last visible
+      em-dash on the home page). Kept the callout pill on the
+      image (single, edited the em-dash to a colon). (c) Failure 6:
+      refactored PricingTiers from the 3-equal-card banned
+      default to a true bento: 1 anchor card (Mowing, the most-
+      booked service, takes 1.6fr + spans 2 rows) + 2 stacked
+      compact cards (Mulching, Hurricane prep, share 1fr as
+      2 rows). Updated content.ts to mark Mowing as `featured:
+      true`. The card body for Mowing is now longer (it sets
+      the bread-and-butter context for the two upsells next to
+      it). All CTA labels already standardized in D-0016.
+      Charter 3/3 green, prod build clean, First Load JS
+      unchanged at 212 kB. Net result: home page now passes
+      5 of 6 Pre-Flight Failures. Failure 2 (decorative SVGs
+      categorization) and the typography refresh + hand-authored
+      section dividers + paper texture are queued for D-0018.
   - date: "2026-07-15"
     day: 22
     change: >

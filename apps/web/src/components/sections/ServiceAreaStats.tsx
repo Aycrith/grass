@@ -27,7 +27,7 @@
 import type { ReactNode } from 'react';
 
 import { StaggerGroup } from '@/components/motion';
-import { Eyebrow, Section } from '@/components/site';
+import { Section } from '@/components/site';
 import { Illustration } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { areaStats } from '@/lib/content';
@@ -55,9 +55,6 @@ export function ServiceAreaStats({ className }: ServiceAreaStatsProps): ReactNod
       />
       <div className="container">
         <header className={styles.header}>
-          <Eyebrow tone="default" className={styles.eyebrow}>
-            04.7 — By the numbers
-          </Eyebrow>
           <h2 className={styles.heading}>A small crew, by design.</h2>
           <p className={styles.lede}>
             Scale on a clipboard, not on a website — what the operator actually does, written down

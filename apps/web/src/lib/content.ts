@@ -27,7 +27,7 @@ export const operator = {
 } as const;
 
 export const hero = {
-  eyebrow: '01 - Lawn care in 33771',
+  eyebrow: 'Lawn care in 33771',
   headline: "Your neighbor's lawn mower.",
   subhead:
     'Local, solo-operator lawn care in Largo and the five adjacent Pinellas ZIPs. Free quotes within 24 hours. No contract, no franchise markup.',
@@ -75,7 +75,7 @@ export const trustStrip = {
  *   2. Add the matching label here.
  */
 export const serviceAreaMap = {
-  eyebrow: '06 - Where I mow',
+  eyebrow: 'Where I mow',
   heading: 'Six ZIPs, one route.',
   subhead:
     'We keep the service area tight on purpose: six ZIPs across Largo and the adjacent Pinellas neighborhoods. If you are right outside one of these, ask; I sometimes make exceptions for yards next door.',
@@ -604,7 +604,7 @@ export interface AreaDetailCopy {
  * time: this const carries only the human-readable labels.
  */
 export const pricingPage = {
-  eyebrow: '01 - Pricing',
+  eyebrow: 'Pricing',
   heading: 'What it costs.',
   tagline:
     'Floor pricing, per visit or per project. Most lawns fall inside the floor; bigger yards, slopes, and gated back-fences bump the price. No subscription, no contract, no surprise fees.',
@@ -824,8 +824,8 @@ export const pricingTiers = [
     title: 'Most yards, most weeks',
     price: '$48',
     cadence: 'starting price',
-    body: 'Mow, edge, blow. About a third of an acre or less. Recurring weekly or biweekly.',
-    featured: false,
+    body: 'Mow, edge, blow. About a third of an acre or less. Recurring weekly or biweekly. The bread and butter of the route; everything else is the upsell.',
+    featured: true,
   },
   {
     eyebrow: 'Mulching',
@@ -833,7 +833,7 @@ export const pricingTiers = [
     price: '$185',
     cadence: 'average yard',
     body: 'Pull the old, lay the new. Two cubic yards of hardwood or cypress, hauled away.',
-    featured: true,
+    featured: false,
   },
   {
     eyebrow: 'Hurricane prep',

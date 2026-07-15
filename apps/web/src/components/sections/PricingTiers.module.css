@@ -1,10 +1,22 @@
 /* ============================================================
- * PricingTiers — 3-card pricing row with middle elevation.
+ * PricingTiers — bento layout: 1 anchor card + 2 stacked tiers.
  *
- * Read from `lib/content.ts → pricingTiers`. Middle card gets a
- * sun-colored ribbon and shadow-3 elevation. Cards fade-up
- * stagger on enter. Numbers stay static (no animated count-up
- * to avoid lying about pricing precision).
+ * D-0017 refactor: replaced the 3-equal-card row (banned default per
+ * the design-taste-frontend skill §4.7) with an asymmetric bento.
+ * Mowing is the most-booked service, so it takes the full-width
+ * anchor position with the larger price, the wider body, and the
+ * dark elevated card treatment. Mulching and Hurricane prep sit in
+ * a 2-row stack on the right at half-width each. This matches the
+ * editorial weight of ServiceBento's asymmetric bento (6 cards,
+ * 1 hero + 5 secondary) and avoids the generic SaaS pricing table
+ * look.
+ *
+ * Read from `lib/content.ts -> pricingTiers`. The first tier in the
+ * array is the anchor (Mowing, featured: true). The remaining two
+ * are stacked on the right. The data model is unchanged.
+ *
+ * Mobile (<900px): all 3 cards stack to 1 column with the anchor
+ * card first.
  * ============================================================ */
 
 .root {
@@ -43,7 +55,7 @@
   margin: 0;
 }
 
-/* WP15 — decorative ornament between header and grid.
+/* WP15 - decorative ornament between header and grid.
  * A thin sun-color rule with a centered pinellas-palm silhouette
  * sitting on top of it. Adds editorial brand polish to the all-type
  * pricing section header without competing with the cards.
@@ -67,7 +79,6 @@
   height: auto;
   flex-shrink: 0;
   opacity: 0.75;
-  /* The SVG's sand bg multiplies cleanly into the section surface. */
   mix-blend-mode: multiply;
 }
 
@@ -80,17 +91,30 @@
   }
 }
 
+/* D-0017 — bento grid. Anchor card (Mowing, first in the array)
+ * takes a 1.6fr column; the two stacked tiers (Mulching, Hurricane)
+ * share the 1fr column as 2 rows. On mobile, all 3 stack. */
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1.6fr 1fr;
+  grid-template-rows: auto auto;
   gap: var(--space-4);
   align-items: stretch;
+}
+
+.grid > .card:first-child {
+  grid-column: 1;
+  grid-row: 1 / span 2;
 }
 
 @media (max-width: 900px) {
   .grid {
     grid-template-columns: 1fr;
-    gap: var(--space-4);
+    grid-template-rows: auto;
+  }
+  .grid > .card:first-child {
+    grid-column: 1;
+    grid-row: auto;
   }
 }
 
@@ -117,16 +141,26 @@
   color: var(--ll-sand-bleached);
   border: none;
   box-shadow: var(--elevation-3);
-  transform: translateY(-8px);
 }
 
 .cardFeatured:hover {
-  transform: translateY(-12px);
+  transform: translateY(-4px);
+  box-shadow: var(--elevation-4);
+}
+
+/* Anchor card gets a more substantial layout to fill the left
+ * column vertically. Slightly larger price + body, more padding. */
+.cardFeatured .price {
+  font-size: clamp(2.75rem, 4vw, 3.5rem);
+}
+
+.cardFeatured .body {
+  font-size: 1rem;
 }
 
 .ribbon {
   position: absolute;
-  top: -14px;
+  top: var(--space-4);
   right: var(--space-5);
   background: var(--ll-sun);
   color: var(--ll-palm-bark);
@@ -135,7 +169,7 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-weight: 700;
-  padding: var(--space-2) var(--space-3);
+  padding: 6px var(--space-3);
   border-radius: var(--radius-pill);
 }
 
@@ -156,25 +190,26 @@
   line-height: 1.2;
   letter-spacing: -0.01em;
   margin: 0;
-  /* WP25 — explicit color overrides the global `h3 { color: var(--ll-green) }`
-   * rule from src/styles/typography.css, which would otherwise render the
-   * featured-card title in green-on-green (near-zero contrast). The
-   * `.cardFeatured .title` selector below switches to cream on the deep-green
-   * "MOST BOOKED" card. */
   color: var(--ll-green);
 }
 
 .cardFeatured .title {
   color: var(--ll-sand-bleached);
+  font-size: clamp(1.75rem, 2.5vw, 2.25rem);
 }
 
 .price {
   font-family: var(--font-fraunces), serif;
   font-weight: 700;
-  font-size: 3rem;
+  font-size: 2.5rem;
   line-height: 1;
   letter-spacing: -0.02em;
   margin: 0;
+  color: var(--ll-palm-bark);
+}
+
+.cardFeatured .price {
+  color: var(--ll-sand-bleached);
 }
 
 .priceCadence {
@@ -195,6 +230,7 @@
   flex: 1;
 }
 
-/* CTA styles live in ui/Button.module.css since WP14 — every
- * conversion point on the site now uses the same shutter-button
- * shape (sun on dark, primary on light). */
+.cardFeatured .body {
+  color: var(--ll-sand-bleached);
+  opacity: 0.9;
+}

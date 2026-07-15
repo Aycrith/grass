@@ -24,7 +24,7 @@ import Image from 'next/image';
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Eyebrow, Section } from '@/components/site';
+import { Section } from '@/components/site';
 import { cn } from '@/lib/cn';
 import { editorialBreak } from '@/lib/content';
 
@@ -56,9 +56,6 @@ export function EditorialBreak({ className }: EditorialBreakProps): ReactNode {
       </div>
       <div className={styles.copy}>
         <FadeUp>
-          <Eyebrow tone="dark" className={styles.eyebrow}>
-            {editorialBreak.eyebrow}
-          </Eyebrow>
           <p className={styles.headline}>{editorialBreak.headline}</p>
         </FadeUp>
       </div>

@@ -26,7 +26,7 @@ export function FinalCTABanner({ className, eyebrow, href }: FinalCTABannerProps
     <section className={cn(styles.root, className)}>
       <div className="container">
         <div className={styles.inner}>
-          <span className={styles.eyebrow}>{eyebrow ?? '09 — Ready when you are'}</span>
+          <span className={styles.eyebrow}>{eyebrow ?? 'Ready when you are'}</span>
           {/* D-0011 — opening quote-mark ornament, v3 painted storybook.
            * Pairs with the painted v3 logo mark + Fraunces wordmark in
            * the SiteHeader so the page closer joins the painted storybook

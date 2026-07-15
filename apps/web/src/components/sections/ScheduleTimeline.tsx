@@ -27,7 +27,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Eyebrow, Section } from '@/components/site';
+import { Section } from '@/components/site';
 import { Illustration } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { weeklySchedule } from '@/lib/content';
@@ -57,9 +57,6 @@ export function ScheduleTimeline({ className }: ScheduleTimelineProps): ReactNod
     >
       <div className="container">
         <header className={styles.header}>
-          <Eyebrow tone="default" className={styles.eyebrow}>
-            06.5 — On the route this week
-          </Eyebrow>
           <h2 className={styles.heading}>Which day the mower shows up.</h2>
           <p className={styles.lede}>
             A static snapshot for the current week. If a holiday shifts the route, you'll see a
