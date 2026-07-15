@@ -1,0 +1,57 @@
+/* ============================================================
+ * SectionDivider — D-0018 hand-authored chapter break.
+ *
+ * Renders an SVG with intentional 4px stroke weight in the
+ * 1200x80 viewBox. At max-width 720px on desktop, the rendered
+ * stroke is 3.6px (crisp, intentional). The transparent
+ * background means the divider floats on any sand-bleached
+ * section. A small sun-gold filled dot with a clay-color
+ * outer ring sits in the center as the brand mark.
+ *
+ * Decorative: aria-hidden on the wrapper, decorative SVG.
+ * ============================================================ */
+
+.root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-block: var(--space-6);
+  padding-inline: var(--space-4);
+  pointer-events: none;
+  background: transparent;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  max-width: 720px;
+  height: auto;
+}
+
+.wave {
+  fill: none;
+  stroke: var(--ll-sun);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.dot {
+  fill: var(--ll-sun);
+  stroke: none;
+}
+
+.ring {
+  fill: none;
+  stroke: var(--ll-clay);
+  stroke-width: 1.5;
+  opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+  .root {
+    padding-block: var(--space-5);
+  }
+  .svg {
+    max-width: 540px;
+  }
+}

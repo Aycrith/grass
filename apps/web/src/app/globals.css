@@ -532,3 +532,43 @@ th {
     font-size: 0.9rem;
   }
 }
+
+/* ----- D-0018b paper-grain texture overlay -----
+ *
+ * A subtle SVG `feTurbulence` noise pattern is applied across the
+ * entire page via a `body::before` pseudo-element with
+ * `mix-blend-mode: multiply` and `pointer-events: none`. The 5%
+ * opacity is calibrated so the grain is barely perceptible at
+ * normal reading distance but adds a "printed on paper" feel
+ * to the painted storybook imagery. `fixed` positioning + a
+ * `z-index` below the page content ensures no interaction
+ * blocking and no scroll-driven repaint (per skill §6.E).
+ *
+ * The texture is visible on light backgrounds (cream, sand-
+ * bleached) and invisible on the dark sections (ServiceAreaMap,
+ * FinalCTABanner) where `mix-blend-mode: multiply` on dark
+ * backgrounds produces no visible effect.
+ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("/illustrations/paper-grain.svg");
+  background-size: 200px 200px;
+  background-repeat: repeat;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+}
+
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    /* static, no motion to disable */
+  }
+}

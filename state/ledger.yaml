@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 — D-0017 pre-flight structural pass)
+# Last updated: 2026-07-15 (Day 22 — D-0018 hand-authored SVG dividers + paper texture)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 — D-0017 pre-flight structural pass)
+# Last updated: 2026-07-15 (Day 22 — D-0018 hand-authored SVG dividers + paper texture)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -534,6 +534,40 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      D-0018 — Hand-authored SVG section dividers + paper-grain
+      texture overlay. (a) New apps/web/src/components/ui/SectionDivider.tsx
+      and .module.css + apps/web/public/illustrations/divider-flourish.svg
+      (1.4 KB hand-authored SVG with intentional 4px stroke weight
+      in a 1200x80 viewBox, transparent background, sun-gold wavy
+      line + center sun-dot + clay-color outer ring as the brand
+      mark). Inserted 8 SectionDividers in apps/web/src/app/page.tsx
+      at the light-to-light section transitions. The new component
+      replaces the D-0013 SDXL-painted approach that came out
+      below quality bar at <200px rendered height (per the
+      2026-07-15 memory rule). Hand-authored SVG with intentional
+      stroke weight is crisp at any rendered size, no chroma key
+      needed (transparent vector background), and the design-taste
+      -frontend skill explicitly allows it (a single, simple
+      geometric mark is in the acceptable category). (b) New
+      apps/web/public/illustrations/paper-grain.svg (1.4 KB
+      SVG with feTurbulence fractalNoise at baseFrequency 0.85,
+      stitchTiles="stitch", tileable at 200x200). Applied to
+      body::before with mix-blend-mode: multiply, opacity 0.05,
+      pointer-events: none, position: fixed. The result is a
+      barely-perceptible "printed on paper" feel that ties the
+      painted storybook imagery to a tactile surface without
+      competing for attention. The texture is invisible on
+      dark sections (multiply on dark = no effect) and adds
+      only 1.4 KB to page weight. (c) Re-exported SectionDivider
+      from apps/web/src/components/ui/index.ts. (d) Removed
+      unused TrustStrip import from page.tsx (it's no longer
+      mounted; the hero no longer needs the trust row since
+      the subhead carries the same signals). Charter 3/3
+      green. Prod build clean. First Load JS unchanged at
+      212 kB.
   - date: "2026-07-15"
     day: 22
     change: >

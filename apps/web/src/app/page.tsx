@@ -48,8 +48,8 @@ import {
   ServiceAreaMap,
   ServiceAreaStats,
   ServiceBento,
-  TrustStrip,
 } from '@/components/sections';
+import { SectionDivider } from '@/components/ui';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -61,40 +61,47 @@ export default function HomePage() {
     <>
       {/* 01 — Hero */}
       <HeroCinematic />
-      <TrustStrip />
+      <SectionDivider />
 
       {/* 02 — Operator intro */}
       <OperatorStrip />
+      <SectionDivider />
 
       {/* 03 — Service grid */}
       <ServiceBento />
 
       {/* 04 — Pricing */}
       <PricingTiers />
+      <SectionDivider />
 
       {/* 04.5 — Editorial break (full-bleed image pause) */}
       <EditorialBreak />
 
       {/* 04.7 — By the numbers (sand-bleached stat panel) */}
       <ServiceAreaStats />
+      <SectionDivider />
 
       {/* 05 — Process */}
       <ProcessSteps />
 
       {/* 06 — Service area */}
       <ServiceAreaMap />
+      <SectionDivider />
 
       {/* 06.5 — Weekly schedule */}
       <ScheduleTimeline />
 
       {/* 07 — Operator's note (typographic pause) */}
       <OperatorNote />
+      <SectionDivider />
 
       {/* 07.5 — Marquee (operator voice scroll) */}
       <MarqueeQuote />
+      <SectionDivider />
 
       {/* 08 — FAQ */}
       <FAQAccordion />
+      <SectionDivider />
 
       {/* 09 — Final CTA */}
       <FinalCTABanner />
