@@ -46,7 +46,29 @@ export default async function PreviewBrand() {
         />
       </div>
 
-      <h2>Logo Mark (favicon / app icon)</h2>
+      <h2>Logo Mark — v3 (painted storybook, default)</h2>
+      <div
+        style={{
+          background: 'var(--ll-cream)',
+          padding: '2rem',
+          borderRadius: 'var(--radius)',
+          textAlign: 'center',
+        }}
+      >
+        {/* Plain <img> on purpose: srcSet drives the responsive webp. */}
+        {/* biome-ignore lint/performance/noImgElement: srcSet is a feature here */}
+        <img
+          src="/illustrations/logo-mark-v3-128.webp"
+          srcSet="/illustrations/logo-mark-v3-32.webp 32w, /illustrations/logo-mark-v3-64.webp 64w, /illustrations/logo-mark-v3-128.webp 128w, /illustrations/logo-mark-v3-256.webp 256w, /illustrations/logo-mark-v3-1024.webp 1024w"
+          sizes="120px"
+          alt="Largo Lawn mark — painted storybook v3"
+          width={120}
+          height={120}
+          style={{ display: 'inline-block' }}
+        />
+      </div>
+
+      <h3>Logo Mark — v1 (line art, legacy / favicon)</h3>
       <div
         style={{
           background: 'var(--ll-cream)',
@@ -57,7 +79,7 @@ export default async function PreviewBrand() {
       >
         <Image
           src="/logo-mark.svg"
-          alt="Largo Lawn mark"
+          alt="Largo Lawn mark — line art v1"
           width={120}
           height={120}
           style={{ display: 'inline-block' }}

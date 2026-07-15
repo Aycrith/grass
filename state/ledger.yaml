@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-14 (Day 21 — pinellas-palm v3 cross-cutting visual upgrade; 4 components swapped)
+# Last updated: 2026-07-14 (Day 21 — logo-mark v3 painted storybook; SiteHeader now renders v3 by default)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-14 (Day 21 — pinellas-palm v3 img2img shipped; 4 component swaps; visual baselines need steward regen)
+# Last updated: 2026-07-14 (Day 21 — logo-mark v3 painted storybook; SiteHeader now renders v3 by default)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -534,6 +534,92 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-14"
+    day: 21
+    change: >
+      Logo-mark v3 painted storybook — the most-seen brand asset
+      on the site (every page header, every navigation bar, every
+      /preview/brand page) is now rendered as a hand-painted
+      storybook mark matching the rest of the homepage illustration
+      family (palm v3, mower v3, grass v3, hero v2).
+
+      Generated via the same SDXL+LoRA+IP-Adapter pipeline used
+      for palm v3 and mower v3, but with a denoise=0.75 final
+      setting (vs. 0.35 for the bulkier illustrations) and a NEW
+      pre-rasterization step to fix a known SVG geometry bug.
+
+      THE BUG: apps/web/public/logo-mark.svg has a center blade
+      path that's mathematically zero-width
+      (M 50 78 Q 50 25 50 8 — all x-coords = 50). When rasterized
+      to 1024x1024, the center blade becomes a single pixel wide
+      and the img2img model treats it as noise, erasing it. This
+      was discovered on the FIRST seed 6001 candidate at denoise
+      0.35 (the model produced only 2 outer blades + the base
+      line, no center blade). Lowering denoise to 0.20 made no
+      difference — the model had nothing to preserve.
+
+      THE FIX: apps/comfyui/scripts/make-logo-input.ts generates
+      a new 1024x1024 cream-background PNG that depicts the
+      3-blade mark with ACTUAL visible widths (3 filled teardrop
+      shapes with ~5px width + a 4px base line). The new input
+      gives the model a clear shape to paint over, and at
+      denoise=0.75 the model produced a beautiful painted mark:
+      3 visible blades preserved, brushwork on the edges, subtle
+      cream highlights in the silhouette (the "sunlit" highlights
+      called for in the prompt), no LoRA bias, brand green dominant.
+
+      4 candidates generated at seeds 6001-6004:
+      - 6001 (CANONICAL): clean storybook icon style, 3 blades +
+        tapered base line, no artifacts
+      - 6002: more angular, ink-wash feel, base has tapered ends
+      - 6003: clean blades but drippy paint drips on the base
+      - 6004: very painterly but a weird gold "sword hilt" element
+        at the base center (LoRA bias artifact)
+
+      SHIPPED: 5 transparent-background webp files generated via
+      apps/comfyui/scripts/make-logo-v3-webp.ts (trim cream +
+      chroma key to alpha + webp encode at quality 92):
+      - logo-mark-v3-32.webp     680 B   (favicon 1x, hi-dpi 1x)
+      - logo-mark-v3-64.webp   1.4 KB   (SiteHeader default 2x)
+      - logo-mark-v3-128.webp  3.0 KB   (preview page hero)
+      - logo-mark-v3-256.webp  6.0 KB   (OG / GBP profile fallback)
+      - logo-mark-v3-1024.webp 30 KB    (high-res fallback)
+
+      Alpha channel verification: 1024px webp has 881,780 fully
+      transparent pixels + 166,796 fully opaque pixels + 0 partial.
+      Cream chroma-keyed to true alpha=0 (hard edge, no halo).
+
+      COMPONENT SWAPS (1 file):
+      - apps/web/src/components/ui/LogoMark.tsx
+        Default src now /illustrations/logo-mark-v3-64.webp.
+        Added srcSet (32w/64w/128w/256w) + sizes prop driven
+        from the size prop, so hi-DPR displays pick up the right
+        source automatically. Added variant="line" escape hatch
+        for places that need the SVG (no current consumer, but
+        GBP asset generation could use it later).
+
+      Also: apps/web/src/app/preview/brand/page.tsx now shows
+      BOTH the v3 painted mark and the v1 line-art mark so the
+      steward can A/B compare during visual review.
+
+      KEPT AS-IS (intentional):
+      - apps/web/public/logo-mark.svg           (v1 line art, still ships as a fallback variant)
+      - apps/web/public/icon.svg                (favicon SVG — line art scales cleaner at 16-32px than painted)
+      - apps/web/public/apple-touch-icon.svg    (iOS home screen — line art, never repaints on iOS)
+      - apps/web/public/manifest.webmanifest    (unchanged — icons array still references the SVGs)
+      - apps/web/public/logo-mark-inverse.svg   (light-on-dark variant, not in use today)
+      - apps/web/public/logo-mark-mono.svg      (currentColor variant, not in use today)
+
+      VISUAL REGRESSION: the SiteHeader now renders a 3-blade
+      painted mark instead of a 3-line line-art mark. The Playwright
+      baselines at apps/web/visual/baselines/ will diff for the
+      header on every route. Steward should run
+      `cd apps/web && bunx playwright test --update-snapshots &&
+      git add visual/baselines/` to regenerate the baselines.
+
+      Follows the proven palm v3 + mower v3 pattern exactly:
+      the v3 painted mark is now the third piece of the
+      storybook-consistent homepage illustration family.
   - date: "2026-07-14"
     day: 21
     change: >
