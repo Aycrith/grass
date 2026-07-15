@@ -182,17 +182,19 @@
   opacity: 0.75;
 }
 
-/* ---------- Brand mark (WP14) ----------
- * Small inline SVG sits between the eyebrow and the title. Clay
- * at rest, lifts to sun + tilts -3° on card hover/focus. Same
- * idiom as the hero trust-row icons — a quiet editorial mark
- * that reads as hand-set type, not a stock illustration. */
+/* ---------- Brand mark (WP14, D-0021 upgraded) ----------
+ * Inline SVG sits between the image and the title. Clay at
+ * rest, lifts to sun + tilts -3° on card hover/focus. D-0021
+ * bumped from 28x28 / 1.6px to 40x40 / 2px (in the design
+ * viewBox) for more hand-painted presence on the cards. The
+ * heavier stroke weight reads as a hand-drawn mark, not an
+ * iconographic glyph. */
 .icon {
-  width: 28px;
-  height: 28px;
+  width: 40px;
+  height: 40px;
   color: var(--ll-clay);
-  margin-top: calc(var(--space-1) * -1);
-  margin-bottom: calc(var(--space-1) * -1);
+  margin-top: calc(var(--space-2) * -1);
+  margin-bottom: calc(var(--space-2) * -1);
   transition:
     color var(--motion-duration-base) var(--motion-easing-default),
     transform var(--motion-duration-base) var(--motion-easing-default);

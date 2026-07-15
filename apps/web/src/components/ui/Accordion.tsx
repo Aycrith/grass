@@ -5,17 +5,24 @@
  *
  * Thin wrapper over @radix-ui/react-accordion. Renders a list of
  * {q, a} items as a disclosure stack. Keyboard accessible by Radix
- * defaults; chevron rotates 180° when open.
+ * defaults.
+ *
+ * D-0022: replaced the stock ChevronDown lucide icon with a
+ * hand-authored sun-burst toggle (AccordionSun). The sun rotates
+ * 45° when the row is open — same state-change semantic as the
+ * previous chevron, but visually a hand-drawn mark instead of a
+ * stock glyph. Matches the corner-stamp + section-divider pattern
+ * from D-0018 / D-0020.
  *
  * Used by FAQAccordion in Phase G.
  */
 
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
-import { ChevronDown } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 import { cn } from '@/lib/cn';
 
+import { AccordionSun } from './AccordionSun';
 import styles from './Accordion.module.css';
 
 export interface AccordionItem {
@@ -46,7 +53,7 @@ export function Accordion({ items, id = 'faq', className }: AccordionProps) {
               <h3>
                 <AccordionPrimitive.Trigger className={styles.trigger}>
                   <span>{item.q}</span>
-                  <ChevronDown className={styles.chevron} aria-hidden="true" />
+                  <AccordionSun className={styles.sun} />
                 </AccordionPrimitive.Trigger>
               </h3>
             </AccordionPrimitive.Header>

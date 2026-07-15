@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  D-0023 hand-drawn passport stamp — circular editorial mark.
+
+  Used as an editorial "passport / postage stamp" accent in the
+  hero image. The mark reads as a hand-stamped seal because of:
+    (a) slightly-imperfect concentric ring spacing,
+    (b) curved serif text "EST · 2026 · LARGO · FL" along the top rim,
+    (c) 3-ray sun-burst at center (asymmetric, more hand-drawn than
+        a full 6/8-ray sun),
+    (d) a CSS-applied -8° rotation in the consuming component to
+        read as a stamp that was pressed at a slight angle.
+
+  Authored as SVG (not raster) so the curved text stays crisp at
+  any rendered size. 80x80 viewBox, 1.5px outer ring stroke,
+  2px ray stroke. Renders cleanly at 60-80px display size.
+
+  Brand colors: sun-gold #E8B65A (rings + rays), clay #C66B3A
+  (curved text + center dot). The curved text uses a Georgia-
+  style serif via system fonts since the consuming CSS specifies
+  the brand font (Fraunces) which falls back to a serif.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <defs>
+    <!-- Path the curved text follows. Top-half arc, slightly above center. -->
+    <path id="d0023-stamp-curve" d="M 12 40 A 28 28 0 0 1 68 40" fill="none" />
+  </defs>
+
+  <!-- Outer ring (sun-gold) -->
+  <circle cx="40" cy="40" r="36" fill="none" stroke="#E8B65A" stroke-width="1.5" opacity="0.75" />
+  <!-- Mid ring (sun-gold, thinner) — adds a "double-line" passport feel -->
+  <circle cx="40" cy="40" r="32" fill="none" stroke="#E8B65A" stroke-width="0.8" opacity="0.45" />
+  <!-- Inner ring (sun-gold, very thin) — frames the center sun-burst -->
+  <circle cx="40" cy="40" r="15" fill="none" stroke="#E8B65A" stroke-width="0.8" opacity="0.4" />
+
+  <!-- Curved "EST · 2026 · LARGO · FL" text along the top arc -->
+  <text fill="#C66B3A" font-family="Georgia, 'Times New Roman', serif" font-size="6.2" font-weight="700" letter-spacing="1.4">
+    <textPath href="#d0023-stamp-curve" startOffset="50%" text-anchor="middle">
+      EST · 2026 · LARGO · FL
+    </textPath>
+  </text>
+
+  <!-- 3-ray sun-burst at center — asymmetric, hand-drawn feel.
+       Top ray is longest (anchors the eye), lower-left + lower-right
+       rays are shorter and angled slightly inward. -->
+  <g stroke="#E8B65A" stroke-width="2" stroke-linecap="round">
+    <line x1="40" y1="22" x2="40" y2="32" />
+    <line x1="27" y1="50" x2="33" y2="44" />
+    <line x1="53" y1="50" x2="47" y2="44" />
+  </g>
+  <!-- Center clay dot — the "sun" of the stamp -->
+  <circle cx="40" cy="40" r="3.2" fill="#C66B3A" stroke="none" />
+  <!-- Tiny sun-gold inner dot inside the clay dot — depth -->
+  <circle cx="40" cy="40" r="1" fill="#E8B65A" stroke="none" />
+</svg>

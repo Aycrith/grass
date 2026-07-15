@@ -12,7 +12,7 @@
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 — D-0020 hand-painted corner stamps)
+# Last updated: 2026-07-15 (Day 22 — D-0021/22/23 visual refinement batch)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -534,6 +534,54 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      D-0023 — Hand-drawn "EST · 2026 · LARGO · FL" passport stamp on the hero. New apps/web/public/illustrations/passport-stamp.svg (2.8 KB, hand-authored circular stamp: 3 concentric sun-gold rings at 36/32/15 radius with 1.5/0.8/0.8px stroke, curved serif text "EST · 2026 · LARGO · FL" via SVG textPath along the top arc, 3-ray asymmetric sun-burst at center with clay-color filled center dot, 80x80 viewBox). Added to HeroCinematic as a new bottom-right overlay on the parallax image, paired with the existing bottom-left "33771" callout pill so the two bottom marks bracket the photo like a stamped postcard. Sized 72px (56px on mobile) with a sand-bleached background panel + clay-color hairline outline ring + -8deg rotation for the hand-pressed feel. The stamp sits at z-index 4 above the photo but below the corner-stamp "01" pill. Charter 3/3 green, prod build clean, 2 passport-stamp references in HTML (1 className + 1 Image src), SVG serves at 200 status 2776 bytes. The textPath renders the curved text crisply at any size since the SVG is vector — the same hand-authored-SVG pattern that worked for the corner stamps and section dividers.
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      D-0022 — Hand-drawn sun-burst FAQ toggle. Replaced the stock
+      lucide ChevronDown icon in the <Accordion> primitive (used
+      by the FAQ section) with a hand-authored 4-ray sun-burst +
+      center dot. New apps/web/src/components/ui/AccordionSun.tsx
+      + .module.css (24x24 viewBox, 2px stroke on 4 main rays at
+      compass points, 1.5px stroke on 4 short diagonal rays at
+      0.7 opacity for "filler" sun presence, 3.2px-radius sun
+      filled with currentColor at 18% opacity + 1.4px inner
+      clay-colored sun dot). At rest the rays point N/S/E/W
+      (a "plus" shape); on open the entire icon rotates 45deg
+      so the rays point NE/SE/SW/NW (an "X" shape) — same
+      state-change semantic as the previous chevron's 180deg
+      rotation, but visually a hand-drawn mark instead of a
+      stock glyph. 6 FAQ rows on the home page, all using the
+      new toggle. 0 references to the old chevron icon in the
+      HTML. Charter 3/3 green, prod build clean.
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      D-0021 — ServiceBento icon upgrade (28x28 → 40x40, hand-drawn
+      character). The 6 service cards on the home page each have
+      an inline SVG icon between the image and the title. The
+      pre-D-0021 icons were 28x28 with 1.6px stroke — they read
+      as thin/iconographic. This commit redesigns all 6 icons at
+      40x40 viewBox with 2px stroke and much more hand-drawn
+      character: (a) Mowing: side-profile push mower (deck +
+      engine bump + 2 wheels + angled handle + grip bar + 3
+      grass tufts below). (b) Edging: L-shape showing the fresh
+      cut (vertical line on left + scalloped grass edge on right
+      + 3 grass ticks). (c) Mulching: rounded mulch pile with
+      4 texture marks + 2 oval leaves resting on top. (d) Hedge
+      trimming: rounded-top hedge silhouette with 3 horizontal
+      trim lines + 3 leaf tufts poking up above the trim line.
+      (e) Hurricane prep: hurricane spiral on top + small palm
+      below (curved trunk + 3 fronds) + 2 wind streaks. (f)
+      Seasonal cleanup: rake (angled handle + head + 3 tines) +
+      2 leaves being raked up. CSS bumped .icon width/height
+      from 28px → 40px and the negative margins were widened to
+      keep the visual rhythm with the larger icons. Charter 3/3
+      green, prod build clean, all 6 new icons render in HTML
+      (verified via unique path signatures per service).
   - date: "2026-07-15"
     day: 22
     change: >

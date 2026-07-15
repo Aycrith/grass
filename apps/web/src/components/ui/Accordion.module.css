@@ -42,14 +42,14 @@
   color: var(--ll-palm-shadow);
 }
 
-.trigger[data-state="open"] .chevron {
-  transform: rotate(180deg);
+.trigger[data-state="open"] .sun {
+  transform: rotate(45deg);
 }
 
-.chevron {
+.sun {
   flex-shrink: 0;
-  width: 1.1em;
-  height: 1.1em;
+  width: 1.25em;
+  height: 1.25em;
   color: var(--ll-clay);
   transition: transform var(--motion-duration-base) var(--motion-easing-default);
 }
@@ -102,7 +102,7 @@
   .content[data-state="closed"] {
     animation: none;
   }
-  .chevron {
+  .sun {
     transition: none;
   }
 }

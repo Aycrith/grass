@@ -93,13 +93,29 @@ export function HeroCinematic({ className }: HeroCinematicProps): ReactNode {
             offset={60}
             className={styles.media}
             overlay={
-              <a
-                href={composition.calloutHref}
-                className={styles.callout}
-                aria-label={`${composition.callout}: open area page`}
-              >
-                {composition.callout}
-              </a>
+              <>
+                <a
+                  href={composition.calloutHref}
+                  className={styles.callout}
+                  aria-label={`${composition.callout}: open area page`}
+                >
+                  {composition.callout}
+                </a>
+                {/* D-0023 — hand-drawn "EST · 2026 · LARGO · FL" passport
+                 * stamp at the bottom-right of the hero image. Pairs with
+                 * the callout pill at the bottom-left so the two bottom
+                 * marks bracket the photo like a stamped postcard. Tilted
+                 * -8° via CSS for the hand-pressed feel. */}
+                <span className={styles.passportStamp} aria-hidden="true">
+                  <Image
+                    src="/illustrations/passport-stamp.svg"
+                    alt=""
+                    width={80}
+                    height={80}
+                    className={styles.passportStampImage}
+                  />
+                </span>
+              </>
             }
           >
             {/* WP49 / WP50 — v2 hero asset is the single SDXL-generated
