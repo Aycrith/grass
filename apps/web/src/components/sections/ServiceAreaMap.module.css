@@ -1,18 +1,16 @@
 /* ============================================================
  * ServiceAreaMap — Mission 1 service-area illustration.
  *
- * D-0024 — full visual rebuild. The previous version used an
- * SDXL-painted image of a fictional "Pinellas-shaped" peninsula
- * (long thin sliver, no bridges, no mainland, ZIPs stacked
- * vertically). The new version is a hand-authored SVG with the
- * actual Pinellas County coastline: wide rectangular peninsula,
- * NE mainland connection, four water bodies, three bridges, and
- * 6 ZIPs in their real relative positions (horizontal band in
- * the west-central portion of the peninsula).
+ * D-0025 — real OSM-based line-art map. The .mapWrap is a
+ * positioned container holding two layers:
+ *   1. The OSM map image (fills the container, 5:4 aspect)
+ *   2. An SVG overlay with the 6 service-area ZIP pins
+ *      (positioned at real-world relative positions on top of
+ *      the map)
  *
- * Same bidir hover/focus sync as before. Same PRIORITY_ZIPS
- * treatment for 33771. Wider aspect ratio (5/4) to match the
- * real Pinellas shape.
+ * The 6 ZIPs are clickable, the side rail below is also
+ * clickable, and the two surfaces share hover/focus state via
+ * data-zip-active attributes (WP14 pattern).
  * ============================================================ */
 
 .root {
@@ -65,110 +63,47 @@
   margin: 0;
 }
 
-/* ---------- SVG map container ----------
-   D-0024: aspect ratio flipped from 4/5 (tall) to 5/4 (wide)
-   to match the real Pinellas County shape. The peninsula is
-   wider east-west than it is tall north-south. */
+/* ---------- Map container (D-0025) ----------
+ * Positioned container holding the OSM image + the SVG pin
+ * overlay. The container is 5:4 to match the OSM map's
+ * map-area aspect ratio (the bottom typography strip is part
+ * of the image, so the visible aspect is 1272:1032 ≈ 1.23). */
 .mapWrap {
   position: relative;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background: var(--ll-palm-shadow);
+  background: color-mix(in srgb, var(--ll-palm-shadow) 40%, var(--ll-palm-bark));
   border: 1px solid color-mix(in srgb, var(--ll-sand) 25%, transparent);
-  padding: var(--space-3);
-  aspect-ratio: 5 / 4;
+  padding: var(--space-2);
+  aspect-ratio: 1272 / 1162;
 }
 
-.svg {
+/* The OSM map image fills the container. */
+.mapImage {
+  object-fit: contain;
+  object-position: center;
+}
+
+/* The SVG pin overlay sits on top of the image, with the same
+ * 1000x800 viewBox as before (so the pin coordinates are stable
+ * across component versions). It does not draw the coastline
+ * (the OSM image already has the real coastline) — just the
+ * 6 service-area ZIP pins with rings + labels. */
+.pinOverlay {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  display: block;
+  pointer-events: none;
+  /* Slight inset to match the inner padding of .mapWrap. */
+  padding: 6px;
 }
 
-/* ---------- SVG paint tokens ----------
-   All in the inner SVG. Brand updates land in one place. */
-
-/* D-0024 — water background. Gulf-blue at reduced opacity so
-   the dark section background still shows through, giving a
-   "deep water" feel without overpowering the dark surface. */
-.water {
-  fill: #5B89A8;
-  fill-opacity: 0.55;
+.pinOverlay > * {
+  pointer-events: auto;
 }
 
-/* D-0024 — land mass. Warm sand color with a clay outline.
-   The outline is what makes the coastline read clearly at
-   small sizes; the fill alone blends into the water at low
-   opacity. */
-.land {
-  fill: #E8DCC4;
-  stroke: #C66B3A;
-  stroke-width: 1.5;
-  stroke-linejoin: round;
-}
-
-/* D-0024 — bridges. Short clay-colored lines crossing the
-   water between Pinellas and the mainland. Slightly thicker
-   stroke + dashed pattern to read as "bridge" not "coast". */
-.bridges line {
-  stroke: #C66B3A;
-  stroke-width: 2;
-  stroke-dasharray: 6 4;
-  fill: none;
-  stroke-linecap: round;
-}
-
-/* D-0024 — city labels. Italic Fraunces serif, palm-bark at
-   75% opacity for orientation without competing with the
-   ZIP pins. (Was sand-bleached at 70%, which was invisible
-   on the cream land — fixed.) */
-.cityLabels text {
-  font-family: var(--font-fraunces), serif;
-  font-style: italic;
-  font-weight: 400;
-  font-size: 18px;
-  fill: var(--ll-palm-bark);
-  fill-opacity: 0.75;
-  letter-spacing: 0.02em;
-}
-
-/* D-0024 — water labels. Italic Inter, even lower opacity
-   (the bay names are reference only, not focal). */
-.waterLabels text {
-  font-family: var(--font-inter), system-ui, sans-serif;
-  font-style: italic;
-  font-weight: 400;
-  font-size: 20px;
-  fill: var(--ll-sand-bleached);
-  fill-opacity: 0.55;
-  letter-spacing: 0.04em;
-}
-
-/* D-0024 — compass rose. Small N indicator in the top-right
-   corner. Cream circle outline + bold N + small S for axis
-   orientation. */
-.compass circle {
-  fill: color-mix(in oklab, var(--ll-palm-bark) 75%, transparent);
-  stroke: var(--ll-sand-bleached);
-  stroke-opacity: 0.4;
-  stroke-width: 1;
-}
-
-.compass text {
-  font-family: var(--font-inter);
-  font-weight: 700;
-  font-size: 13px;
-  fill: var(--ll-sand-bleached);
-  fill-opacity: 0.85;
-  letter-spacing: 0.05em;
-}
-
-.compassS {
-  fill-opacity: 0.4 !important;
-  font-size: 9px !important;
-}
-
-/* ---------- Interactive ZIP pins (unchanged) ---------- */
+/* ---------- Interactive ZIP pins (unchanged from D-0024) ---------- */
 
 .pinGroup {
   transform-origin: center;
@@ -182,11 +117,6 @@
   transform: scale(1.08);
 }
 
-/* ---------- Active state (WP14) ----------
- * When a pin is hovered or focused (or its matching rail row
- * is), the whole pin group scales up more + ring strokes
- * brighten. JS sets data-zip-active on the <g>; CSS paints.
- */
 .pinGroup[data-zip-active='true'] {
   transform: scale(1.18);
 }
@@ -203,38 +133,35 @@
 .pinRing {
   fill: none;
   stroke: var(--ll-sand-bleached);
-  stroke-opacity: 0.4;
-  stroke-width: 1;
+  stroke-opacity: 0.6;
+  stroke-width: 1.4;
   transition: stroke-opacity var(--motion-duration-base) var(--motion-easing-default);
 }
 
 .pinGroup:hover .pinRing {
-  stroke-opacity: 0.85;
+  stroke-opacity: 0.95;
 }
 
 .ringInner {
-  fill: color-mix(in oklab, var(--ll-sand-bleached) 10%, transparent);
+  fill: color-mix(in oklab, var(--ll-sand-bleached) 12%, transparent);
   transition: fill var(--motion-duration-base) var(--motion-easing-default),
     stroke-opacity var(--motion-duration-base) var(--motion-easing-default);
 }
 
-/* WP14 + D-0024 — home-base ZIP (33771) renders with sun fill.
- * Reads as the service anchor on the map without an extra
- * label. */
 .ringInnerPriority {
   fill: color-mix(in oklab, var(--ll-sun) 75%, transparent);
   stroke: var(--ll-sun);
-  stroke-opacity: 0.85;
-  stroke-width: 1.5;
+  stroke-opacity: 0.9;
+  stroke-width: 1.6;
 }
 
 .pinLabel {
   font-family: var(--font-inter);
   font-size: 14px;
   font-weight: 700;
-  /* D-0024 — was sand-bleached (cream) which was invisible on
-   * the cream land. Switched to palm-bark (dark brown) for
-   * high contrast on the cream peninsula surface. */
+  /* D-0024 — switched to palm-bark (dark) for high contrast on
+   * the cream-stroked map. (Was sand-bleached, invisible on
+   * the cream land in the D-0024 SVG.) */
   fill: var(--ll-palm-bark);
   pointer-events: none;
   text-anchor: middle;
@@ -277,11 +204,6 @@
   outline: none;
 }
 
-/* ---------- Active state (WP14) ----------
- * When a rail row is hovered/focused OR its matching pin is, the
- * row lights up in sun-tinted glass. Padding compensates for the
- * added background so the rail doesn't shift on activation.
- */
 .railItem[data-zip-active='true'] {
   background: color-mix(in oklab, var(--ll-sun) 22%, transparent);
   color: var(--ll-sand-bleached);

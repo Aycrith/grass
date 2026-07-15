@@ -27,6 +27,14 @@ html {
    * custom one (Lighthouse `layout-shifts` audit). With this, the gutter
    * is reserved from first paint and Lenis's activation is shift-free. */
   scrollbar-gutter: stable;
+  /* D-0025 — framer-motion's useScroll (used by ParallaxImage
+   * on the hero + operator portrait) reads the scroll container's
+   * position to compute offsets. With no explicit container prop,
+   * the scroll container is the document scrollingElement (the
+   * <html> element in standards mode). Setting html to position:
+   * relative is a no-op for layout but resolves the
+   * "non-static position" dev warning. */
+  position: relative;
 }
 
 body {
@@ -34,6 +42,13 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  /* D-0025 — framer-motion's useScroll (used by ParallaxImage
+   * on the hero + operator portrait) warns in dev mode if the
+   * scroll container has position: static. Setting the body
+   * to relative is a no-op for layout but silences the
+   * "Please ensure that the container has a non-static
+   * position" warning. */
+  position: relative;
 }
 
 img,

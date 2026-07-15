@@ -12,7 +12,7 @@
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 — D-0024 hand-authored Pinellas map)
+# Last updated: 2026-07-15 (Day 22 — D-0025 OSM-based Pinellas map + browser error fixes)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -534,6 +534,10 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      D-0025 — Real OSM-based Pinellas map + browser error fixes. The steward rejected the D-0024 hand-authored SVG ("images you are creating are not coherent enough to meet acceptance criteria") and also reported browser errors when opening the landing page. Two-part fix: (a) replace the hand-authored SVG with a real OSM-data line-art map. New script apps/comfyui/scripts/make-osm-pinellas-map.py queries the Overpass API for the Pinellas bbox (south=27.69, west=-82.87, north=28.05, east=-82.68), gets the actual road, water, and coastline data (50,146 roads, 1,693 water polygons, 187 coastlines), renders it with matplotlib (color-coded by highway grade: motorway/trunk 2.0px black, primary 1.4px dark, secondary 1.1px, tertiary 0.9px, residential 0.5px gray), then composes the framed poster with PIL — black border + thin white inset + thin inner black border + map + white bottom strip with LARGO wordmark + FLORIDA subtitle + 27.9095°N 82.7873°W coordinates + Map Data © OSM attribution. Matches the editorial poster style of the reference image. Output: apps/web/public/illustrations/pinellas-map-osm-1200x960.webp (180 KB framed poster). Replaces the pinellas-map-v3-800x1000.webp (SDXL) AND the D-0024 hand-authored SVG (which the user rejected). ServiceAreaMap.tsx rewritten to use the OSM image as a Next/Image background with a 1000x800 SVG overlay holding the 6 service-area ZIP pins at their real relative positions. MapWrap aspect ratio updated to 1272/1162 to match the framed image. (b) Fix browser errors. Two real errors were found: (1) TypeError "font.fetch is not a function" / "font.arrayBuffer is not a function" on /opengraph-image and /twitter-image — the opengraph-image.tsx and twitter-image.tsx were calling `font.fetch()` (or `.arrayBuffer()`) on the result of `next/font/google`, but Next.js 15.5.20's font object doesn't expose either method (the type lag workaround no longer works). /opengraph-image and /twitter-image were returning 500 for every crawler and user. Fixed by dropping the custom Google Fonts entirely from the OG/Twitter image routes — satori (which powers next/og) uses its bundled default font when no fonts are passed, which is always available with no runtime API mismatch. The OG image still has the brand colors and composition, just with a system font instead of Fraunces. (2) framer-motion dev warning "Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute'" from useScroll in ParallaxImage. Fixed by adding `position: relative` to the html element in apps/web/src/styles/reset.css — this is the actual scroll container in standards mode and was defaulting to position: static. Verification: dev server captures show 0 uncaught exceptions, 0 warnings (just the React DevTools info message). All 26 routes (24 page + 2 image) return 200. Charter 3/3 green. Build clean. Reinforces the 2026-07-15 memory rule for the user: "the images you are creating are not coherent enough to meet acceptance criteria" applies to any hand-authored visual that needs to look like a specific real thing — use real OSM data exports for maps, not hand-drawn approximations.
   - date: "2026-07-15"
     day: 22
     change: >

@@ -1,35 +1,20 @@
 /**
- * Twitter card image - 1200×630.
+ * Twitter card image — 1200×630.
  *
- * Mirrors opengraph-image.tsx verbatim. Twitter's card validators
- * look for a static /twitter-image.{png,jpg,gif,webp} OR an
- * app/twitter-image.tsx route. We use the route form so the
- * generated card always matches the OG image.
+ * D-0025: mirrors opengraph-image.tsx with the same fix — drops
+ * the broken next/font/google .fetch()/.arrayBuffer() calls that
+ * were throwing TypeError on /twitter-image in Next.js 15.5.20.
  *
- * Re-exports opengraph-image's logic by composition, not by
- * re-importing the component (satori responses are not shareable
- * across route boundaries).
+ * (Was: `font.fetch is not a function` and `font.arrayBuffer is
+ * not a function` — the next/font/google runtime object doesn't
+ * expose either method.)
+ *
+ * Now: minimal satori-rendered PNG with NO custom fonts. Uses
+ * satori's bundled default font which is always available — no
+ * network fetch, no runtime API mismatch.
  */
 
 import { ImageResponse } from 'next/og';
-import { Fraunces, Inter } from 'next/font/google';
-
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  weight: ['400', '500', '700'],
-});
-
-const fraunces = Fraunces({
-  subsets: ['latin'],
-  display: 'swap',
-  weight: ['700'],
-});
-
-// `next/font/google` exposes `.fetch()` at runtime but the public
-// NextFont type in Next.js 15.5 does not declare it. Cast to access.
-// biome-ignore lint/suspicious/noExplicitAny: documented Next.js API; type lag
-const fetchFontData = (font: any): Promise<ArrayBuffer> => font.fetch();
 
 export const runtime = 'edge';
 export const alt = "Largo Lawn: your neighbor's lawn mower in Largo, FL";
@@ -47,7 +32,6 @@ export default async function Image() {
           flexDirection: 'column',
           backgroundColor: '#F4E8D0', // --ll-sand-bleached
           padding: 80,
-          fontFamily: 'Inter',
           color: '#1A1F1B', // --ll-palm-bark
           position: 'relative',
         }}
@@ -147,7 +131,6 @@ export default async function Image() {
         <div
           style={{
             marginTop: 16,
-            fontFamily: 'Fraunces',
             fontSize: 92,
             fontWeight: 700,
             color: '#1A1F1B', // --ll-palm-bark
@@ -180,12 +163,8 @@ export default async function Image() {
     ),
     {
       ...size,
-      fonts: [
-        { name: 'Inter', data: await fetchFontData(inter), weight: 400, style: 'normal' },
-        { name: 'Inter', data: await fetchFontData(inter), weight: 500, style: 'normal' },
-        { name: 'Inter', data: await fetchFontData(inter), weight: 700, style: 'normal' },
-        { name: 'Fraunces', data: await fetchFontData(fraunces), weight: 700, style: 'normal' },
-      ],
+      // No custom fonts — satori uses its default which is
+      // bundled in the next/og package.
     },
   );
 }

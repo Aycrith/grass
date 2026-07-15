@@ -3,38 +3,33 @@
 /**
  * ServiceAreaMap — Mission 1 illustrative map.
  *
- * D-0024: hand-authored Pinellas County SVG. Replaces the
- * WP19-era abstract shapes and the D-0012 SDXL-painted land mass
- * (which came out below quality bar per the user review — the
- * SDXL "peninsula" was a long thin sliver with the wrong water
- * boundaries, no bridges, no mainland, and ZIPs stacked
- * vertically instead of spread across the width).
+ * D-0025: real OpenStreetMap-based line-art map of Pinellas County,
+ * generated from live OSM data via the Overpass API
+ * (see apps/comfyui/scripts/make-osm-pinellas-map.py). Replaces
+ * the D-0024 hand-authored SVG coastline — the steward review
+ * said the hand-authored maps were "not coherent enough to meet
+ * acceptance criteria." The OSM-based image uses the actual
+ * real-world coastline, street grid, water bodies, and bridges
+ * — same data source and editorial style as the reference map
+ * (with "Map Data © OSM" attribution).
  *
- * The new map is a single inline SVG with the actual Pinellas
- * County coastline (wide rectangular peninsula, NE mainland
- * connection at Safety Harbor, four water bodies, three
- * bridges). Vector — no raster — so the coastline stays crisp
- * at any rendered size. Uses the same hand-authored-SVG pattern
- * as the section dividers (D-0018), corner stamps (D-0020),
- * passport stamp (D-0023), FAQ sun (D-0022), and service icons
- * (D-0021).
- *
- * The viewBox is 1000x800 (wider than tall) to match the real
- * Pinellas aspect ratio. The 6 service-area ZIPs sit in a
- * roughly horizontal band in the west-central portion of the
- * peninsula, which is where they actually are in real life
- * (within ~6 miles of each other along the US-19 corridor).
+ * The 6 service-area ZIPs sit as absolute-positioned SVG overlays
+ * on top of the OSM image, at their actual real-world relative
+ * positions within the west-central portion of the peninsula.
+ * A 1000x800 viewBox matches the map area (5:4 aspect ratio after
+ * the bottom typography strip is cropped). The 6 ZIPs are all
+ * within ~6 miles of each other along the US-19 corridor.
  *
  * Bidirectional hover/focus sync (since WP14): pinning a ZIP on
  * either surface — the SVG pin or the side rail row — paints a
- * matching `data-zip-active="true"` on both. Single source of
- * truth: the `activeZip` state.
+ * matching `data-zip-active="true"` on both.
  *
  * Pin hierarchy: ZIPs in `PRIORITY_ZIPS` (the home-base ZIP,
- * 33771) render with the sun fill instead of clay, marking the
+ * 33771) render with the sun fill instead of cream, marking the
  * service anchor on the page.
  */
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState, type ReactNode } from 'react';
 
@@ -49,11 +44,13 @@ interface ServiceAreaMapProps {
   className?: string;
 }
 
-// D-0024 — Pin coordinates re-tuned for the new 1000x800 wide
-// viewBox with the v2 coastline path. The 6 service-area ZIPs
-// all sit in a roughly horizontal band in the west-central
-// portion of the peninsula, within ~6 miles of each other along
-// the US-19 corridor. Real relative positions:
+// D-0025 — Pin coordinates for the 6 service-area ZIPs in the
+// west-central portion of Pinellas County. Positioned on the
+// 1000x800 viewBox that aligns with the OSM map's 5:4 aspect
+// ratio (after the bottom typography strip is excluded). The
+// 6 ZIPs are all within ~6 miles of each other along the US-19
+// corridor, so the pins are clustered rather than spread across
+// the whole peninsula.
 //
 //   N
 //   ↑
@@ -64,32 +61,21 @@ interface ServiceAreaMapProps {
 //   | 33774 (Seminole / south of Largo)
 //   | 33778 (Pinellas Park / central south)
 //   S
-//
-// x is roughly Gulf-side-to-bay-side (west-to-east).
-// y is north-to-south.
-//
-// The previous layout (in the SDXL-era) stacked them
-// top-to-bottom, which suggested they were in different cities.
-// They are all in the same neighborhood.
 const PIN_LAYOUT: Record<string, { x: number; y: number }> = {
-  '33756': { x: 240, y: 330 },
-  '33770': { x: 180, y: 410 },
-  '33771': { x: 300, y: 470 },
-  '33773': { x: 420, y: 470 },
-  '33774': { x: 350, y: 555 },
-  '33778': { x: 470, y: 545 },
+  '33756': { x: 470, y: 390 },
+  '33770': { x: 420, y: 460 },
+  '33771': { x: 510, y: 510 },
+  '33773': { x: 600, y: 520 },
+  '33774': { x: 530, y: 610 },
+  '33778': { x: 620, y: 620 },
 };
 
 /** ZIPs in this set render with sun fill + thicker ring stroke —
- * marks the service anchor (home base) on the map. Hardcoded
- * because it carries operator policy, not copy — not in
- * `lib/content.ts`. WP14. */
+ * marks the service anchor (home base) on the map. */
 const PRIORITY_ZIPS = new Set(['33771']);
 
 export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
-  /** Single source of truth for pin↔rail sync. Both surfaces
-   * read this state to render `data-zip-active` on their own
-   * nodes. Mouse + focus handlers on each surface update it. */
+  /** Single source of truth for pin↔rail sync. */
   const [activeZip, setActiveZip] = useState<string | null>(null);
 
   return (
@@ -105,115 +91,33 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
           </header>
 
           <div className={styles.mapWrap}>
+            {/* D-0025 — OSM-based line-art map of Pinellas County.
+             * 1272x1162 px framed poster (black border + LARGO
+             * wordmark + coordinates + OSM attribution). The
+             * .mapWrap container is 5:4 so the image fills it
+             * proportionally; the bottom typography strip is
+             * part of the image and stays visible. */}
+            <Image
+              src="/illustrations/pinellas-map-osm-1200x960.webp"
+              alt={serviceAreaMap.svgAriaLabel}
+              fill
+              sizes="(max-width: 980px) 100vw, 60vw"
+              className={styles.mapImage}
+              priority={false}
+            />
+
+            {/* D-0025 — 6 service-area ZIP pins as SVG overlay.
+             * Sits on top of the OSM image at the real-world
+             * relative positions. 1000x800 viewBox matches the
+             * map's 5:4 aspect ratio so the pins line up with
+             * the streets on the image. */}
             <svg
-              className={styles.svg}
+              className={styles.pinOverlay}
               viewBox="0 0 1000 800"
               xmlns="http://www.w3.org/2000/svg"
-              role="img"
-              aria-label={serviceAreaMap.svgAriaLabel}
+              aria-hidden="true"
+              focusable="false"
             >
-              {/* D-0024 — water background. Single rect filling the
-                  entire viewBox in the gulf-blue. Land paths sit
-                  on top with a clay outline. */}
-              <rect className={styles.water} x="0" y="0" width="1000" height="800" />
-
-              {/* D-0024 — Pinellas County coastline. Single path
-                  with smoother curves + a more angular silhouette
-                  (less blobby than the v1 path). Wide rectangular
-                  peninsula hanging off the mainland, with the
-                  real coast shape: roughly straight N coast,
-                  straighter W coast, slight E-coast bulge at
-                  St. Petersburg, curved SW corner. Clockwise
-                  from the NW corner. */}
-              <path
-                className={styles.land}
-                d="M 175 215
-                   L 350 195
-                   C 480 188, 600 200, 720 245
-                   L 740 320
-                   C 745 380, 730 440, 710 500
-                   C 700 540, 695 580, 685 620
-                   L 670 685
-                   L 600 705
-                   L 500 715
-                   L 380 710
-                   L 270 690
-                   L 180 650
-                   C 145 600, 120 540, 115 470
-                   C 112 400, 120 330, 140 270
-                   Z"
-              />
-
-              {/* D-0024 — Mainland stub (NE). A small land mass
-                  extending right and up from the NE corner of
-                  Pinellas, showing the Safety Harbor / Oldsmar
-                  connection to the rest of Florida. The three
-                  bridges cross the narrow Old Tampa Bay / Tampa
-                  Bay water between Pinellas and the mainland. */}
-              <path
-                className={styles.land}
-                d="M 720 245
-                   L 850 215
-                   L 1000 240
-                   L 1000 420
-                   L 850 425
-                   L 740 380
-                   L 720 320
-                   Z"
-              />
-
-              {/* D-0024 — 3 bridges (short lines crossing the
-                  water). From N to S: Courtney Campbell Causeway
-                  (SR 60), Howard Frankland Bridge (I-275), Gandy
-                  Bridge (US-92). */}
-              <g className={styles.bridges}>
-                <line x1="700" y1="245" x2="870" y2="220" />
-                <line x1="710" y1="410" x2="900" y2="410" />
-                <line x1="660" y1="600" x2="870" y2="600" />
-              </g>
-
-              {/* D-0024 — city labels (italic Fraunces serif, cream).
-                  Reference points so users can orient themselves
-                  against real-world geography. Positioned near
-                  the city centers on the land mass. */}
-              <g className={styles.cityLabels}>
-                <text x="200" y="260" text-anchor="middle">Tarpon Springs</text>
-                <text x="200" y="320" text-anchor="middle">Clearwater</text>
-                <text x="370" y="500" text-anchor="middle">Largo</text>
-                <text x="400" y="610" text-anchor="middle">Seminole</text>
-                <text x="500" y="700" text-anchor="middle">St. Petersburg</text>
-                <text x="850" y="320" text-anchor="middle">Safety Harbor</text>
-              </g>
-
-              {/* D-0024 — water labels (italic, low opacity). The
-                  four bodies of water that bound Pinellas:
-                  Gulf of Mexico (W), Old Tampa Bay (N), Tampa Bay
-                  (E), Boca Ciega Bay (S). */}
-              <g className={styles.waterLabels}>
-                <text x="60" y="450" text-anchor="middle" transform="rotate(-90 60 450)">
-                  Gulf of Mexico
-                </text>
-                <text x="500" y="120" text-anchor="middle">Old Tampa Bay</text>
-                <text x="860" y="480" text-anchor="middle" transform="rotate(90 860 480)">
-                  Tampa Bay
-                </text>
-                <text x="380" y="780" text-anchor="middle">Boca Ciega Bay</text>
-              </g>
-
-              {/* D-0024 — compass rose (small N indicator in the
-                  NE corner of the map). Orients users to the
-                  map's north-up convention. */}
-              <g className={styles.compass} transform="translate(940, 60)">
-                <circle r="22" />
-                <text x="0" y="-9" text-anchor="middle">N</text>
-                <text x="0" y="18" text-anchor="middle" className={styles.compassS}>
-                  S
-                </text>
-              </g>
-
-              {/* ZIP pins + rings (interactive, sit on top of the
-                  land mass). D-0024 positions updated to match
-                  the new wide-format viewBox. */}
               {BUSINESS.service_area_zips.map((zip) => {
                 const layout = PIN_LAYOUT[zip];
                 if (!layout) return null;
@@ -233,7 +137,12 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
                       className={styles.pinGroup}
                       data-zip-active={isActive ? 'true' : undefined}
                     >
-                      <circle className={styles.pinRing} cx={layout.x} cy={layout.y} r="32" />
+                      <circle
+                        className={styles.pinRing}
+                        cx={layout.x}
+                        cy={layout.y}
+                        r="32"
+                      />
                       <circle
                         className={cn(
                           styles.pinRing,
@@ -244,7 +153,11 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
                         cy={layout.y}
                         r="20"
                       />
-                      <text className={styles.pinLabel} x={layout.x} y={layout.y + 4}>
+                      <text
+                        className={styles.pinLabel}
+                        x={layout.x}
+                        y={layout.y + 4}
+                      >
                         {zip}
                       </text>
                     </g>

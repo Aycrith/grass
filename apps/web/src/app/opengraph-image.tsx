@@ -1,39 +1,24 @@
 /**
  * Open Graph image — 1200×630.
  *
- * Replaces the static apps/web/public/og-image.svg (which had a
- * `font-family: 'Fraunces', Georgia, serif` fallback chain that
- * rendered in Georgia on every social-share crawler, since crawlers
- * don't load Google Fonts).
+ * D-0025: replaced the broken next/font/google .fetch()/.arrayBuffer()
+ * approach (was throwing TypeError "font.fetch is not a function" /
+ * "font.arrayBuffer is not a function" in Next.js 15.5.20 — neither
+ * method is exposed on the font runtime object, so /opengraph-image
+ * was returning 500 for every crawler and user).
  *
- * Now: satori-rendered PNG via next/og, with the same Fraunces+Inter
- * fonts as layout.tsx. Auto-discovered by Next.js; metadata.openGraph.images
- * no longer needs to point at a static file.
+ * Now: minimal satori-rendered PNG with NO custom fonts (uses
+ * satori's default font, which is always available — no network
+ * fetch, no runtime API mismatch). Composition matches the brand:
+ * sand-bleached field, sun accent top-right, grass-blade mark +
+ * Largo Lawn wordmark on left, eyebrow + headline + body on right.
  *
- * Composition matches the prior og-image.svg: sand-bleached field,
- * sun accent top-right, grass-blade mark + Largo Lawn wordmark on left,
- * eyebrow + Fraunces headline + Inter body on right.
+ * The og-image is also exposed as a static apps/web/public/
+ * og-image.png as a fallback (for crawlers that don't run
+ * edge functions).
  */
 
 import { ImageResponse } from 'next/og';
-import { Fraunces, Inter } from 'next/font/google';
-
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  weight: ['400', '500', '700'],
-});
-
-const fraunces = Fraunces({
-  subsets: ['latin'],
-  display: 'swap',
-  weight: ['700'],
-});
-
-// `next/font/google` exposes `.fetch()` at runtime but the public
-// NextFont type in Next.js 15.5 does not declare it. Cast to access.
-// biome-ignore lint/suspicious/noExplicitAny: documented Next.js API; type lag
-const fetchFontData = (font: any): Promise<ArrayBuffer> => font.fetch();
 
 export const runtime = 'edge';
 export const alt = "Largo Lawn: your neighbor's lawn mower in Largo, FL";
@@ -51,7 +36,6 @@ export default async function Image() {
           flexDirection: 'column',
           backgroundColor: '#F4E8D0', // --ll-sand-bleached
           padding: 80,
-          fontFamily: 'Inter',
           color: '#1A1F1B', // --ll-palm-bark
           position: 'relative',
         }}
@@ -150,11 +134,11 @@ export default async function Image() {
           LAWN CARE IN 33771
         </div>
 
-        {/* Headline — Fraunces */}
+        {/* Headline — satori default font (replaces broken Fraunces
+         * via next/font/google which was throwing TypeError). */}
         <div
           style={{
             marginTop: 16,
-            fontFamily: 'Fraunces',
             fontSize: 92,
             fontWeight: 700,
             color: '#1A1F1B', // --ll-palm-bark
@@ -168,7 +152,7 @@ export default async function Image() {
           <span>lawn mower.</span>
         </div>
 
-        {/* Body — Inter */}
+        {/* Body — satori default font (replaces broken Inter). */}
         <div
           style={{
             marginTop: 32,
@@ -188,12 +172,10 @@ export default async function Image() {
     ),
     {
       ...size,
-      fonts: [
-        { name: 'Inter', data: await fetchFontData(inter), weight: 400, style: 'normal' },
-        { name: 'Inter', data: await fetchFontData(inter), weight: 500, style: 'normal' },
-        { name: 'Inter', data: await fetchFontData(inter), weight: 700, style: 'normal' },
-        { name: 'Fraunces', data: await fetchFontData(fraunces), weight: 700, style: 'normal' },
-      ],
+      // No custom fonts — satori uses its default which is
+      // bundled in the next/og package. This avoids the
+      // font.fetch / font.arrayBuffer TypeError that broke
+      // /opengraph-image in Next 15.5.20.
     },
   );
 }
