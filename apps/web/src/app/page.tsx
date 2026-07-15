@@ -50,7 +50,6 @@ import {
   ServiceBento,
   TrustStrip,
 } from '@/components/sections';
-import { SectionDivider } from '@/components/ui';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -62,25 +61,13 @@ export default function HomePage() {
     <>
       {/* 01 — Hero */}
       <HeroCinematic />
-
-      {/* D-0013 — chapter break before the trust strip (sand-bleached to
-       * sand-bleached; the painted ornament gives the typographic strip
-       * a clear "and now we begin" feel) */}
-      <SectionDivider />
-
       <TrustStrip />
 
       {/* 02 — Operator intro */}
       <OperatorStrip />
 
-      {/* D-0013 — painted storybook chapter break before the service grid */}
-      <SectionDivider />
-
       {/* 03 — Service grid */}
       <ServiceBento />
-
-      {/* D-0013 — chapter break before pricing */}
-      <SectionDivider />
 
       {/* 04 — Pricing */}
       <PricingTiers />
@@ -88,22 +75,11 @@ export default function HomePage() {
       {/* 04.5 — Editorial break (full-bleed image pause) */}
       <EditorialBreak />
 
-      {/* D-0013 — chapter break after the editorial break before the
-       * stat panel (both are full-bleed image/text sandwiches, divider
-       * keeps the rhythm consistent) */}
-      <SectionDivider />
-
       {/* 04.7 — By the numbers (sand-bleached stat panel) */}
       <ServiceAreaStats />
 
-      {/* D-0013 — chapter break before the process steps */}
-      <SectionDivider />
-
       {/* 05 — Process */}
       <ProcessSteps />
-
-      {/* D-0013 — chapter break before the service area map */}
-      <SectionDivider />
 
       {/* 06 — Service area */}
       <ServiceAreaMap />
@@ -111,23 +87,14 @@ export default function HomePage() {
       {/* 06.5 — Weekly schedule */}
       <ScheduleTimeline />
 
-      {/* D-0013 — chapter break before the operator's note */}
-      <SectionDivider />
-
       {/* 07 — Operator's note (typographic pause) */}
       <OperatorNote />
 
       {/* 07.5 — Marquee (operator voice scroll) */}
       <MarqueeQuote />
 
-      {/* D-0013 — chapter break before the FAQ */}
-      <SectionDivider />
-
       {/* 08 — FAQ */}
       <FAQAccordion />
-
-      {/* D-0013 — chapter break before the final CTA */}
-      <SectionDivider />
 
       {/* 09 — Final CTA */}
       <FinalCTABanner />
