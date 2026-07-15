@@ -12,7 +12,7 @@
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 — D-0021/22/23 visual refinement batch)
+# Last updated: 2026-07-15 (Day 22 — D-0024 hand-authored Pinellas map)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -534,6 +534,10 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      D-0024 — Hand-authored Pinellas County SVG (replaces SDXL map). The previous map (D-0012 + WP19-era) used an SDXL-generated image that came out below quality bar: long thin sliver shape (Pinellas is a wide rectangular peninsula, not a banana), no water boundaries on north/south (Pinellas is bounded by 4 water bodies, not 2), no mainland connection (Pinellas is a peninsula, not an island), no bridges, ZIPs stacked vertically instead of spread across the width, and decorative "tree" dots that didn't represent any real feature. Same root cause as the D-0013/14/13b ornament failures — SDXL improvises plausible-looking-but-fictional shapes when the prompt doesn't constrain the actual silhouette. The new map is a single inline SVG component (~3 KB total paths + labels) with: (a) real Pinellas coastline — wide rectangular peninsula with the actual N, W, S, E coast segments + a NE mainland stub for the Safety Harbor / Oldsmar connection. (b) 4 water labels: Gulf of Mexico (W, rotated -90), Old Tampa Bay (N), Tampa Bay (E, rotated 90), Boca Ciega Bay (S). (c) 3 bridges: Courtney Campbell (N), Howard Frankland (middle), Gandy (S) — short dashed clay-colored lines crossing the narrow water between peninsula and mainland. (d) 6 city labels: Tarpon Springs, Clearwater, Largo, Seminole, St. Petersburg, Safety Harbor — italic Fraunces serif for orientation. (e) 6 ZIP pins in their real relative positions (horizontal band in the west-central portion of the peninsula, within ~6 miles of each other along the US-19 corridor), with 33771 marked as the home base via the existing PRIORITY_ZIPS sun-fill treatment. (f) N compass rose in the top-right. (g) ViewBox 1000x800 (wide format, matching the real aspect ratio) — was 800x1000 (tall) in the SDXL version. (h) Map aspect ratio CSS flipped from 4/5 to 5/4. ZIP labels and city labels were initially sand-bleached (cream) which was invisible on the cream land; switched to palm-bark (dark brown) at 75% opacity for high contrast. The old pinellas-map-v3-800x1000.webp (11.6 KB) is deleted. Charter 3/3 green, prod build clean at / 410 B / 213 kB, all 6 ZIPs render, all 4 water labels render, all 3 bridges render, mainland stub visible, 6 city labels visible, compass rose visible. Visual verified via Chrome headless screenshot at audit/d0024-map-only.png. Audit verdict: this is the same pattern as the corner stamps (D-0020), passport stamp (D-0023), FAQ sun (D-0022), and service icons (D-0021) — hand-authored SVG with intentional stroke weight, deterministic, no AI risk. Reinforces the 2026-07-15 memory rule: SDXL-painted geographic features (maps, coastlines, anything with a specific real-world shape) are below quality bar.
   - date: "2026-07-15"
     day: 22
     change: >

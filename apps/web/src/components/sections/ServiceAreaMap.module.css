@@ -1,10 +1,18 @@
 /* ============================================================
  * ServiceAreaMap — Mission 1 service-area illustration.
  *
- * Schematic Pinellas peninsula outline (intentionally abstract
- * — this is not a survey-grade map) with 6 ZIP pins. Each pin
- * links to `/areas/[zip]`. Hover/focus highlights the matching
- * ZIP in the side rail.
+ * D-0024 — full visual rebuild. The previous version used an
+ * SDXL-painted image of a fictional "Pinellas-shaped" peninsula
+ * (long thin sliver, no bridges, no mainland, ZIPs stacked
+ * vertically). The new version is a hand-authored SVG with the
+ * actual Pinellas County coastline: wide rectangular peninsula,
+ * NE mainland connection, four water bodies, three bridges, and
+ * 6 ZIPs in their real relative positions (horizontal band in
+ * the west-central portion of the peninsula).
+ *
+ * Same bidir hover/focus sync as before. Same PRIORITY_ZIPS
+ * treatment for 33771. Wider aspect ratio (5/4) to match the
+ * real Pinellas shape.
  * ============================================================ */
 
 .root {
@@ -15,7 +23,7 @@
 
 .inner {
   display: grid;
-  grid-template-columns: 1fr minmax(0, 1.2fr);
+  grid-template-columns: 1fr minmax(0, 1.4fr);
   gap: var(--space-8);
   align-items: start;
 }
@@ -57,74 +65,18 @@
   margin: 0;
 }
 
-/* ---------- SVG map ---------- */
-
+/* ---------- SVG map container ----------
+   D-0024: aspect ratio flipped from 4/5 (tall) to 5/4 (wide)
+   to match the real Pinellas County shape. The peninsula is
+   wider east-west than it is tall north-south. */
 .mapWrap {
   position: relative;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background: color-mix(in srgb, var(--ll-palm-shadow) 40%, var(--ll-palm-bark));
+  background: var(--ll-palm-shadow);
   border: 1px solid color-mix(in srgb, var(--ll-sand) 25%, transparent);
-  padding: var(--space-4);
-  aspect-ratio: 4 / 5;
-}
-
-/* ---------- SVG paint tokens ----------
-   The inner SVG uses semantic classes for fills and strokes so
-   brand updates land in one place. */
-
-/* D-0012 — the painted storybook Pinellas map renders as a
- * single 800x1000 webp image at the bottom of the SVG, behind the
- * grid lines, labels, and interactive pins. Sits at opacity 0.95
- * so the cream-rim outline of the .mapWrap container reads through. */
-.paintedMap {
-  width: 100%;
-  height: 100%;
-  display: block;
-  opacity: 0.95;
-  /* Match the dark surface of the section so the gulf-blue water
-   * reads correctly instead of the lighter cream rim bleeding. */
-  mix-blend-mode: normal;
-}
-
-.water {
-  fill: var(--ll-gulf);
-  fill-opacity: 0.4;
-}
-
-.peninsula {
-  fill: var(--ll-sand);
-  fill-opacity: 0.85;
-}
-
-.label {
-  font-family: var(--font-inter), system-ui, sans-serif;
-  font-style: italic;
-  fill: var(--ll-sand-bleached);
-}
-
-.labelPrimary {
-  font-family: var(--font-inter), system-ui, sans-serif;
-  font-style: italic;
-  fill: var(--ll-sand-bleached);
-  font-size: 32px;
-  fill-opacity: 0.7;
-  text-anchor: middle;
-}
-
-.labelSecondary {
-  font-family: var(--font-inter), system-ui, sans-serif;
-  font-style: italic;
-  fill: var(--ll-sand-bleached);
-  font-size: 28px;
-  fill-opacity: 0.55;
-  text-anchor: middle;
-}
-
-.gridLine {
-  stroke: var(--ll-sand-bleached);
-  stroke-opacity: 0.1;
-  stroke-width: 1;
+  padding: var(--space-3);
+  aspect-ratio: 5 / 4;
 }
 
 .svg {
@@ -133,47 +85,91 @@
   display: block;
 }
 
-.pin {
-  cursor: pointer;
-  fill: var(--ll-clay);
-  stroke: var(--ll-sand-bleached);
-  stroke-width: 2;
-  transition: fill var(--motion-duration-base) var(--motion-easing-default), r
-    var(--motion-duration-base) var(--motion-easing-default);
+/* ---------- SVG paint tokens ----------
+   All in the inner SVG. Brand updates land in one place. */
+
+/* D-0024 — water background. Gulf-blue at reduced opacity so
+   the dark section background still shows through, giving a
+   "deep water" feel without overpowering the dark surface. */
+.water {
+  fill: #5B89A8;
+  fill-opacity: 0.55;
 }
 
-.pin:hover,
-.pin:focus {
-  fill: var(--ll-sun);
-  outline: none;
-}
-
-/* ---------- Priority pin (WP14) ----------
- * Home-base ZIP (33771) gets sun fill + thicker ring stroke so
- * it reads as the service anchor on the map without an extra
- * label. Composes with the active state below.
- *
- * WP23 — priority indication moved from the (now-removed) solid
- * center dot to the inner ring fill. The inner ring lights up in
- * sun-color, so 33771 reads as the anchor without obscuring the
- * label.
- */
-.ringInner {
-  fill: color-mix(in oklab, var(--ll-sand-bleached) 10%, transparent);
-  transition: fill var(--motion-duration-base) var(--motion-easing-default),
-    stroke-opacity var(--motion-duration-base) var(--motion-easing-default);
-}
-
-.ringInnerPriority {
-  fill: color-mix(in oklab, var(--ll-sun) 75%, transparent);
-  stroke: var(--ll-sun);
-  stroke-opacity: 0.85;
+/* D-0024 — land mass. Warm sand color with a clay outline.
+   The outline is what makes the coastline read clearly at
+   small sizes; the fill alone blends into the water at low
+   opacity. */
+.land {
+  fill: #E8DCC4;
+  stroke: #C66B3A;
   stroke-width: 1.5;
+  stroke-linejoin: round;
 }
 
-/* Whole-pin group hover: rings + label scale up slightly when the
-   user hovers anywhere on the ZIP pin. Origin is the pin center
-   so the ring grows around it symmetrically. */
+/* D-0024 — bridges. Short clay-colored lines crossing the
+   water between Pinellas and the mainland. Slightly thicker
+   stroke + dashed pattern to read as "bridge" not "coast". */
+.bridges line {
+  stroke: #C66B3A;
+  stroke-width: 2;
+  stroke-dasharray: 6 4;
+  fill: none;
+  stroke-linecap: round;
+}
+
+/* D-0024 — city labels. Italic Fraunces serif, palm-bark at
+   75% opacity for orientation without competing with the
+   ZIP pins. (Was sand-bleached at 70%, which was invisible
+   on the cream land — fixed.) */
+.cityLabels text {
+  font-family: var(--font-fraunces), serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 18px;
+  fill: var(--ll-palm-bark);
+  fill-opacity: 0.75;
+  letter-spacing: 0.02em;
+}
+
+/* D-0024 — water labels. Italic Inter, even lower opacity
+   (the bay names are reference only, not focal). */
+.waterLabels text {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 20px;
+  fill: var(--ll-sand-bleached);
+  fill-opacity: 0.55;
+  letter-spacing: 0.04em;
+}
+
+/* D-0024 — compass rose. Small N indicator in the top-right
+   corner. Cream circle outline + bold N + small S for axis
+   orientation. */
+.compass circle {
+  fill: color-mix(in oklab, var(--ll-palm-bark) 75%, transparent);
+  stroke: var(--ll-sand-bleached);
+  stroke-opacity: 0.4;
+  stroke-width: 1;
+}
+
+.compass text {
+  font-family: var(--font-inter);
+  font-weight: 700;
+  font-size: 13px;
+  fill: var(--ll-sand-bleached);
+  fill-opacity: 0.85;
+  letter-spacing: 0.05em;
+}
+
+.compassS {
+  fill-opacity: 0.4 !important;
+  font-size: 9px !important;
+}
+
+/* ---------- Interactive ZIP pins (unchanged) ---------- */
+
 .pinGroup {
   transform-origin: center;
   transform-box: fill-box;
@@ -216,16 +212,35 @@
   stroke-opacity: 0.85;
 }
 
+.ringInner {
+  fill: color-mix(in oklab, var(--ll-sand-bleached) 10%, transparent);
+  transition: fill var(--motion-duration-base) var(--motion-easing-default),
+    stroke-opacity var(--motion-duration-base) var(--motion-easing-default);
+}
+
+/* WP14 + D-0024 — home-base ZIP (33771) renders with sun fill.
+ * Reads as the service anchor on the map without an extra
+ * label. */
+.ringInnerPriority {
+  fill: color-mix(in oklab, var(--ll-sun) 75%, transparent);
+  stroke: var(--ll-sun);
+  stroke-opacity: 0.85;
+  stroke-width: 1.5;
+}
+
 .pinLabel {
   font-family: var(--font-inter);
   font-size: 14px;
   font-weight: 700;
-  fill: var(--ll-sand-bleached);
+  /* D-0024 — was sand-bleached (cream) which was invisible on
+   * the cream land. Switched to palm-bark (dark brown) for
+   * high contrast on the cream peninsula surface. */
+  fill: var(--ll-palm-bark);
   pointer-events: none;
   text-anchor: middle;
 }
 
-/* ---------- Side rail ---------- */
+/* ---------- Side rail (unchanged) ---------- */
 
 .rail {
   display: flex;
@@ -279,8 +294,6 @@
   opacity: 1;
 }
 
-/* Per-ZIP thumbnail — ComfyUI webp, sized to read as a small
-   neighborhood chip in the side rail. */
 .railItemThumb {
   width: clamp(56px, 9vw, 80px);
   aspect-ratio: 16 / 9;
