@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 - D-0013 painted storybook section dividers)
+# Last updated: 2026-07-15 (Day 22 - D-0014 hero h1 painted brushstroke accent)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 - D-0013 painted storybook section dividers)
+# Last updated: 2026-07-15 (Day 22 - D-0014 hero h1 painted brushstroke accent)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -537,7 +537,32 @@ changelog:
   - date: "2026-07-15"
     day: 22
     change: >
-      D-0013 - Painted storybook section dividers (the missing
+      D-0014 — Painted brushstroke accent below the hero h1.
+      The hero's right column has rich painted accents (corner
+      stamp, callout pill, "Pinellas porch — golden hour"
+      caption); the left column with the largest text on the
+      site was text-only otherwise. The accent closes that
+      gap: a hand-painted gouache wavy brushstroke in sun-gold
+      (#E8B65A) with a small clay sun-burst on the left as a
+      brand mark, sized 720×111 (≈6.5:1 aspect) at max-width
+      420px. Generated via SDXL+LoRA (0.50)+IP-Adapter (0.30)
+      at denoise 0.50 with a 1024×128 input that has a
+      two-hump wave + left-edge sun-burst; 4 candidates at
+      seeds 12001-12004; seed 12003 canonical (the only one
+      where the sun-burst survived the painted conversion —
+      the others absorbed it back into the stroke). Cream
+      background chroma-keyed (binary alpha, tolerance 20) to
+      transparent. Files: hero-accent-v3-720.webp (10 KB) +
+      hero-accent-v3-1440.webp (17 KB). Inserted in
+      HeroCinematic.tsx as a decorative <span> below the h1,
+      before the subhead; aria-hidden="true"; lazy-loaded;
+      max-width 420px on desktop, 280px on mobile. No motion.
+      Charter 3/3 green, prod build clean (First Load JS
+      unchanged at 212 kB).
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      D-0013 — Painted storybook section dividers (the missing
       visual rhythm layer). The homepage has 14 sections
       transitioning by color change only; light-to-light
       transitions (e.g. ServiceBento → PricingTiers,

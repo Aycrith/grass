@@ -289,6 +289,25 @@
   margin-top: var(--space-2);
 }
 
+/* ---------- D-0014 painted brushstroke accent (below h1) ---------- */
+
+.accent {
+  display: block;
+  margin-top: calc(var(--space-2) * -1);
+  margin-bottom: calc(var(--space-2) * -1);
+  pointer-events: none;
+}
+
+.accentImage {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  /* Slight drop shadow so the gold line lifts off the sand-bleached
+   * background at the antialiased edges. */
+  filter: drop-shadow(0 1px 1px color-mix(in oklab, var(--ll-palm-shadow) 12%, transparent));
+}
+
 /* ---------- Trust micro-icons ---------- */
 
 .trustRow {

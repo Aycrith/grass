@@ -78,6 +78,26 @@ export function HeroCinematic({ className }: HeroCinematicProps): ReactNode {
               </span>
             </h1>
 
+            {/* D-0014 — hand-painted brushstroke underline below the h1.
+             * The right column has a painted hero image with editorial
+             * framing (corner stamp, callout, caption); the left column
+             * is text-only otherwise. The accent is the left column's
+             * painted counter-weight — same sun-gold storybook language
+             * that lives in the section dividers (D-0013) and the
+             * decorative callout pill. Decorative (aria-hidden). */}
+            <span className={styles.accent} aria-hidden="true">
+              <Image
+                src="/illustrations/hero-accent-v3-720.webp"
+                alt=""
+                width={720}
+                height={111}
+                sizes="(max-width: 768px) 280px, 420px"
+                loading="lazy"
+                decoding="async"
+                className={styles.accentImage}
+              />
+            </span>
+
             <p className={styles.subhead}>{hero.subhead}</p>
 
             <div className={styles.rule} aria-hidden="true" />
