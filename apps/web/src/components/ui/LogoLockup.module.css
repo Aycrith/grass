@@ -3,6 +3,11 @@
  * Two layouts:
  *   - inline: flex row, gap matches the rhythm unit.
  *   - link: row with no underline (browsers default to underline anchors).
+ *
+ * Wordmark uses Fraunces (the brand's display serif) at semi-bold
+ * weight — pairs with the painted storybook LogoMark v3 to give the
+ * SiteHeader a more editorial, storybook feel than the Inter-only v1.
+ * opsz 144 = display optical size for chunky serifs at small sizes.
  */
 
 .root {
@@ -14,10 +19,14 @@
 }
 
 .word {
-  font-family: var(--font-inter), system-ui, sans-serif;
-  font-weight: 700;
-  font-size: 1.25rem;
-  letter-spacing: -0.02em;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 600;
+  font-size: 1.3rem;
+  letter-spacing: -0.025em;
+  font-feature-settings: "ss01", "ss02";
+  font-variation-settings: "opsz" 144;
   color: var(--ll-palm-shadow);
   line-height: 1;
+  /* Tighten baseline alignment with the mark glyph */
+  transform: translateY(0.05em);
 }

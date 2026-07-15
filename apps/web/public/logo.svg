@@ -5,15 +5,28 @@
   Minimum render width: 80px (digital), 1 inch (print).
   Color: primary green #1F4E2C on light backgrounds.
         cream #FAF6F0 on dark backgrounds (swap fill).
+
+  v3 fix: the v1 center blade path was mathematically zero-width
+  (M 30 60 Q 30 20 30 0 — all x-coords = 30), which disappeared
+  at small render sizes. Replaced with a 5-unit-wide visible leaf
+  shape so the mark reads correctly at every size. The painted
+  LogoMark v3 in /public/illustrations/ is now the default for the
+  in-app header; this SVG remains the wordmark variant for places
+  that need the lockup with "Largo Lawn" text in a single asset
+  (e.g. GBP cover, print, email signature).
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100" role="img" aria-label="Largo Lawn">
   <title>Largo Lawn</title>
   <desc>Wordmark for Largo Lawn — local lawn care in 33771.</desc>
 
-  <!-- Grass-blade mark — three blades forming a stylized "L" / lawn motif -->
+  <!-- Grass-blade mark — three blades forming a stylized "L" / lawn motif.
+       v3 fix: center blade is now a visible 5-unit-wide leaf shape. -->
   <g transform="translate(20, 20)" fill="#1F4E2C">
-    <!-- Center blade (tallest) -->
-    <path d="M 30 60 Q 30 20 30 0 Q 30 20 30 60 Z" />
+    <!-- Center blade (tallest) — visible 5-unit-wide leaf -->
+    <path d="M 30 60
+             C 28 45 27 30 27 0
+             C 30 -1 30 -1 33 0
+             C 33 30 32 45 30 60 Z" />
     <!-- Left blade -->
     <path d="M 18 60 Q 16 30 12 10 Q 18 30 22 60 Z" />
     <!-- Right blade -->
@@ -22,7 +35,11 @@
     <rect x="6" y="58" width="48" height="3" rx="1.5" />
   </g>
 
-  <!-- Wordmark: "Largo Lawn" in Inter-style geometric sans -->
+  <!-- Wordmark: "Largo Lawn" in Inter-style geometric sans.
+       D-0009 v3 typography: keep the SVG text as Inter (the brand's
+       in-app display is now Fraunces via LogoLockup.module.css). The
+       SVG wordmark is used as a single-asset fallback for contexts
+       that can't load the HTML lockup (e.g. email, some OG renderers). -->
   <text x="90" y="60"
         font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif"
         font-size="36"
