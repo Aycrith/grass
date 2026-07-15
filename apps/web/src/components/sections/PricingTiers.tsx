@@ -12,6 +12,7 @@
  */
 
 import { ArrowRight } from 'lucide-react';
+import Image from 'next/image';
 import type { ReactNode } from 'react';
 
 import { StaggerGroup } from '@/components/motion';
@@ -57,9 +58,26 @@ export function PricingTiers({ className }: PricingTiersProps): ReactNode {
           {pricingTiers.map((tier) => (
             <div key={tier.title} className={cn(styles.card, tier.featured && styles.cardFeatured)}>
               {tier.featured ? (
-                <span className={styles.ribbon} aria-hidden="true">
-                  {pricingHeader.ribbon}
-                </span>
+                <>
+                  <span className={styles.ribbon} aria-hidden="true">
+                    {pricingHeader.ribbon}
+                  </span>
+                  {/* D-0020 — hand-painted corner stamp on the anchor
+                   * card. Same SVG as the OperatorStrip portrait, but
+                   * sized larger and color-tinted to read on the deep
+                   * palm-shadow card. The mark reinforces the "most
+                   * yards, most weeks" positioning without competing
+                   * with the sun ribbon. */}
+                  <span className={styles.cardCornerStamp} aria-hidden="true">
+                    <Image
+                      src="/illustrations/corner-stamp.svg"
+                      alt=""
+                      width={80}
+                      height={80}
+                      className={styles.cardCornerStampImage}
+                    />
+                  </span>
+                </>
               ) : null}
               <h3 className={styles.title}>{tier.title}</h3>
               <p className={styles.price}>

@@ -52,6 +52,21 @@ export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
                   fill
                   sizes="(max-width: 980px) 100vw, 320px"
                 />
+                {/* D-0020 — hand-painted corner stamp. Sits at the
+                 * top-right of the portrait like a postcard stamp,
+                 * adding a storybook editorial touch to the operator
+                 * section. Hand-authored SVG with intentional
+                 * stroke weight (2.5px in 80x80 viewBox, renders at
+                 * 48px so the rays stay crisp). */}
+                <span className={styles.cornerStamp} aria-hidden="true">
+                  <Image
+                    src="/illustrations/corner-stamp.svg"
+                    alt=""
+                    width={80}
+                    height={80}
+                    className={styles.cornerStampImage}
+                  />
+                </span>
               </div>
             </ParallaxImage>
           </FadeUp>

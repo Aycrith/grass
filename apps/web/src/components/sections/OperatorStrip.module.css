@@ -57,6 +57,39 @@
   display: block;
 }
 
+/* D-0020 — hand-painted corner stamp at the top-right of the
+ * portrait. Sits like a postcard stamp, with a subtle rotation
+ * to feel hand-placed rather than printed. The mark floats above
+ * the portrait via absolute positioning, with a soft sand-color
+ * background panel so the gold rays stay legible against any
+ * portrait background. */
+.cornerStamp {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  z-index: 2;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--ll-sand-bleached) 92%, transparent);
+  box-shadow: 0 2px 8px color-mix(in oklab, var(--ll-palm-shadow) 18%, transparent);
+  transform: rotate(8deg);
+  pointer-events: none;
+  /* Cream ring around the stamp, like a wax-seal border */
+  outline: 1.5px solid color-mix(in oklab, var(--ll-clay) 35%, transparent);
+  outline-offset: -1px;
+}
+
+.cornerStampImage {
+  display: block;
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+}
+
 /* ---------- Bio ---------- */
 
 .bio {

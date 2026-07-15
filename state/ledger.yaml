@@ -12,7 +12,7 @@
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 — D-0019 typography & padding refresh)
+# Last updated: 2026-07-15 (Day 22 — D-0020 hand-painted corner stamps)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -534,6 +534,10 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      D-0020 — Hand-painted corner stamps (OperatorStrip portrait + PricingTiers anchor card). Builds on D-0018's hand-authored SVG approach (proves out the pattern for any future small ornaments). (a) New apps/web/public/illustrations/corner-stamp.svg (1.4 KB, hand-authored sun-burst: 6 rays in sun-gold #E8B65A 2.5px stroke, center clay #C66B3A filled circle with sun-gold inner dot, outer sun-gold ring at 60% opacity, transparent background, viewBox 80x80 — renders crisp at 40-80px display size because the stroke weight is in the 80x80 design viewBox, not at 1024+ which is what kills the SDXL approach at small sizes). (b) OperatorStrip portrait gets a 48px corner stamp at top-right, rotated 8deg, sitting like a postcard stamp on the portrait. Sand-bleached background panel + clay outline ring ensures the gold rays stay legible against any portrait background. (c) PricingTiers Mowing anchor card gets a 64px corner stamp at top-left, rotated -6deg, opposite the existing sun ribbon so the two marks bracket the card. The stamp is color-inverted via CSS filter (invert(1) brightness(1.5) contrast(0.9)) so the gold rays read against the deep palm-shadow card surface without needing a separate dark-mode SVG. This is the same single-mark pattern D-0018 used for section dividers — proves the approach generalizes beyond dividers. Charter 3/3 green, prod build clean at / 409 B / 212 kB, both stamps render in HTML (count 2, matching the 2 call sites). Audit verdict: this is the first post-D-0013 visual asset on the page that uses intentional hand-authored linework at small scale, and it's crisp at every size tested.
   - date: "2026-07-15"
     day: 22
     change: >

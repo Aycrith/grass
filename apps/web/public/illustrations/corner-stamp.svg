@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  D-0020 hand-painted corner stamp — small sun-burst mark.
+
+  Used as an editorial "postcard stamp" accent on the OperatorStrip
+  portrait and the PricingTiers anchor card. The mark reads as
+  hand-painted because of the slightly-imperfect line spacing and
+  intentional stroke weight.
+
+  Authored as SVG (not raster) so the stroke stays crisp at any
+  rendered size. The 2px stroke in the 80x80 viewBox keeps the
+  rays visible at 40px display width.
+
+  5 rays + center dot. Sun-gold rays, clay-color center dot.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80" fill="none" stroke-linecap="round">
+  <!-- 5 rays at 72-degree intervals, starting at top (0deg = up) -->
+  <g stroke="#E8B65A" stroke-width="2.5">
+    <line x1="40" y1="14" x2="40" y2="6" />
+    <line x1="61" y1="29" x2="67" y2="23" />
+    <line x1="61" y1="51" x2="67" y2="57" />
+    <line x1="40" y1="66" x2="40" y2="74" />
+    <line x1="19" y1="51" x2="13" y2="57" />
+    <line x1="19" y1="29" x2="13" y2="23" />
+  </g>
+  <!-- Center sun: clay-color filled circle with sun-gold inner dot -->
+  <circle cx="40" cy="40" r="9" fill="#C66B3A" stroke="none" opacity="0.85" />
+  <circle cx="40" cy="40" r="3.5" fill="#E8B65A" stroke="none" />
+  <!-- Inner sun-gold ring -->
+  <circle cx="40" cy="40" r="13" fill="none" stroke="#E8B65A" stroke-width="1.5" opacity="0.6" />
+</svg>
