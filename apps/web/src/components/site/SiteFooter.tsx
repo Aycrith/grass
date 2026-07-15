@@ -58,10 +58,10 @@ export function SiteFooter({ className }: SiteFooterProps): ReactNode {
           <div className={styles.brandCol}>
             <Link href="/" className={styles.brand}>
               <Illustration
-                src="/illustrations/pinellas-palm.svg"
+                src="/illustrations/pinellas-palm-v3-72.webp"
                 alt=""
                 width={36}
-                height={24}
+                height={36}
                 className={styles.brandMark}
               />
               {BUSINESS.name}

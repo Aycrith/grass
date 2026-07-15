@@ -44,10 +44,10 @@ export function PricingTiers({ className }: PricingTiersProps): ReactNode {
         <div className={styles.headerOrnament} aria-hidden="true">
           <span className={styles.headerOrnamentRule} />
           <Illustration
-            src="/illustrations/pinellas-palm.svg"
+            src="/illustrations/pinellas-palm-v3-120.webp"
             alt=""
             width={120}
-            height={80}
+            height={120}
             className={styles.headerOrnamentMark}
           />
           <span className={styles.headerOrnamentRule} />

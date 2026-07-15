@@ -1,0 +1,99 @@
+{
+  "1": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "sd_xl_base_1.0.safetensors"
+    }
+  },
+  "2": {
+    "class_type": "LoraLoader",
+    "inputs": {
+      "model": ["1", 0],
+      "clip": ["1", 1],
+      "lora_name": "storybook-landscapes-xl.safetensors",
+      "strength_model": 0.55,
+      "strength_clip": 0.55
+    }
+  },
+  "3": {
+    "class_type": "IPAdapterUnifiedLoader",
+    "inputs": {
+      "model": ["2", 0],
+      "preset": "PLUS (high strength)"
+    }
+  },
+  "4": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "ip-style-ref.png"
+    }
+  },
+  "5": {
+    "class_type": "IPAdapter",
+    "inputs": {
+      "ipadapter": ["3", 1],
+      "model": ["3", 0],
+      "image": ["4", 0],
+      "weight": 0.40,
+      "weight_type": "style transfer",
+      "start_at": 0.0,
+      "end_at": 1.0
+    }
+  },
+  "6": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": ["2", 1],
+      "text": "digital storybook illustration, textured brushwork, painterly gouache, sharp focus, isolated foreground subject on transparent background, the subject is a single mature PINELLAS FLORIDA coconut palm tree, sabal palmetto fan-palm style with arching pinnate fronds and a textured brown trunk with visible palm rings, a small warm sun behind the fronds in the upper right, the fronds are deep saturated FOREST GREEN color specifically color hex #1F4E2C dominant and #2D5A3D shadow and #6B9B7E mid-tone, frond highlights in color hex #E8B65A warm sun-gold, the trunk is warm brown color hex #5C4A3A with darker rings color hex #1A1F1B, NOT a tropical beach, NOT an ocean, NOT a sunset, NOT a person, NOT a hammock, the palm tree silhouette is the entire subject, isolated on transparent background, painterly gouache texture visible on the fronds and trunk, soft natural brushwork"
+    }
+  },
+  "7": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": ["2", 1],
+      "text": "smiling family, generic green palm tree silhouette decoration, flamingo, sunset as focal point, lawn equipment cutout, AI generated people, human face, detailed facial features, portrait photography of person, lorem ipsum, placeholder, coming soon, photo placeholder, stock photo watermark, shutterstock, istock, getty, blurry phone photo, thumb visible, drone aerial, winter bare trees, snow, watermark, text, signature, logo, AI artifact, oversaturated, neon colors, generic suburb, photo, realistic, photorealistic, 3d render, deformed, black and white, realism, disfigured, low contrast, anime, cel shaded, vector art, flat color, sky, ocean, water, beach, sand, person, operator, multiple subjects, multiple palms, jungle"
+    }
+  },
+  "12": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "pinellas-palm-input-rgb.png"
+    }
+  },
+  "13": {
+    "class_type": "VAEEncode",
+    "inputs": {
+      "pixels": ["12", 0],
+      "vae": ["1", 2]
+    }
+  },
+  "9": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": ["5", 0],
+      "positive": ["6", 0],
+      "negative": ["7", 0],
+      "latent_image": ["13", 0],
+      "seed": 5801,
+      "steps": 35,
+      "cfg": 7.0,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 0.35
+    }
+  },
+  "10": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": ["9", 0],
+      "vae": ["1", 2]
+    }
+  },
+  "11": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": ["10", 0],
+      "filename_prefix": "pinellas_palm_v3_img2img"
+    }
+  }
+}

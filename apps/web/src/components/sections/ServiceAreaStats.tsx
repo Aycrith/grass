@@ -47,7 +47,7 @@ export function ServiceAreaStats({ className }: ServiceAreaStatsProps): ReactNod
       data-test-section="service-area-stats"
     >
       <Illustration
-        src="/illustrations/pinellas-palm.svg"
+        src="/illustrations/pinellas-palm-v3-600x400.webp"
         alt=""
         width={600}
         height={400}

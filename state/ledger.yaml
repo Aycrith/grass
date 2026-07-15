@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-14 (Day 21 — D-0010 mobile-perf CLS fix shipped; v2 hero clean ship on desktop)
+# Last updated: 2026-07-14 (Day 21 — pinellas-palm v3 cross-cutting visual upgrade; 4 components swapped)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-14 (Day 21 — D-0010 closed (HeroCinematic server-component + Lenis scrollbar-gutter); D-0009 + D-0010 both shipped; v2 hero clean ship on desktop)
+# Last updated: 2026-07-14 (Day 21 — pinellas-palm v3 img2img shipped; 4 component swaps; visual baselines need steward regen)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -534,6 +534,82 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-14"
+    day: 21
+    change: >
+      Pinellas-palm v3 shipped — img2img of the v1 hand-authored
+      SVG into the brand's storybook gouache style. Follows the
+      exact same pattern that worked for the v3 grass (D-0009 Path 3
+      of 3) — provides correct shape as input, low denoise (0.35)
+      to keep the model focused on texture rather than subject
+      invention, IP-Adapter style transfer (weight 0.40) for brand
+      consistency. 4 candidates at seeds 5801-5804, ALL 4 keepers
+      (low denoise is very stable). Seed 5801 selected as canonical.
+
+      The v1 palm SVG was described in the WP15 / WP19 audit trail
+      as "a stick figure, not a painted-storybook-spread the brand
+      voice calls for" — same complaint that flagged the v2 hero
+      blob-field. The v3 fix uses the same SDXL+LoRA+IP-Adapter
+      pipeline that produced the v2 hero keeper, but at the lower
+      denoise that keeps the silhouette intact.
+
+      Curated 4/4 keepers — verified:
+      - Single mature Pinellas fan-palm silhouette (sabal palmetto
+        style with arching pinnate fronds and a textured brown
+        trunk with visible palm rings)
+      - Warm sun behind in the upper right
+      - 2 coconuts at the crown
+      - Painterly gouache texture on fronds and trunk
+      - Brand forest green fronds (#1F4E2C)
+      - Warm brown trunk (#5C4A3A)
+      - Sun-gold highlights (#E8B65A)
+      - Transparent background
+      - ZERO LoRA bias (no tropical beach, no ocean, no sunset-
+        as-focal-point, no hammock, no person)
+
+      SHIPPED: rasterized to webp at 3 sizes (matching the 3 actual
+      component usage sizes):
+      - pinellas-palm-v3-72.webp     ~1 KB  (SiteFooter + OperatorStrip)
+      - pinellas-palm-v3-120.webp    ~2 KB  (PricingTiers)
+      - pinellas-palm-v3-600x400.webp ~9 KB (ServiceAreaStats watermark)
+
+      COMPONENT SWAPS (4 files): every page on the site renders the
+      palm in the footer, so this is a cross-cutting visual upgrade:
+      - apps/web/src/components/site/SiteFooter.tsx
+        (brandMark, 36x36 — was 36x24, height adjusted to 1:1 aspect)
+      - apps/web/src/components/sections/OperatorStrip.tsx
+        (bioSignatureMark, 72x72 — was 72x48)
+      - apps/web/src/components/sections/PricingTiers.tsx
+        (headerOrnamentMark, 120x120 — was 120x80)
+      - apps/web/src/components/sections/ServiceAreaStats.tsx
+        (watermark, 600x400 — same dimensions, now painted)
+
+      VISUAL REGRESSION: the 4 component swaps change the visual
+      output of every page. The Playwright baselines at
+      apps/web/visual/baselines/ will diff for the affected routes.
+      The steward should regenerate:
+        cd apps/web
+        bunx playwright test --update-snapshots
+        git diff visual/baselines/   # review
+        git add visual/baselines/    # commit
+      The v1 SVG is KEPT at apps/web/public/illustrations/
+      pinellas-palm.svg for fallback + diff traceability.
+
+      NEW FILES:
+      - apps/comfyui/prompts/pinellas-palm-v3-img2img.md  (8 KB brief)
+      - apps/comfyui/workflows/pinellas-palm-v3-img2img.json  (3.5 KB)
+      - apps/web/public/illustrations/pinellas-palm-v3-72.webp
+      - apps/web/public/illustrations/pinellas-palm-v3-120.webp
+      - apps/web/public/illustrations/pinellas-palm-v3-600x400.webp
+
+      Verification:
+      - bun run test:charter: 3/3 green
+      - bun run typecheck: pre-existing errors only (not from this commit)
+      - bun run build: green
+      - 4/4 candidates visually curated as keepers
+      - All 4 components updated and reference the v3 webp
+    by: "Mavis (autonomous, 2026-07-14)"
+
   - date: "2026-07-14"
     day: 21
     change: >

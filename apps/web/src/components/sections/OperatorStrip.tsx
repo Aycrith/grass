@@ -75,10 +75,10 @@ export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
             <div className={styles.bioSignature} aria-hidden="true">
               <span className={styles.bioSignatureRule} />
               <Illustration
-                src="/illustrations/pinellas-palm.svg"
+                src="/illustrations/pinellas-palm-v3-72.webp"
                 alt=""
                 width={72}
-                height={48}
+                height={72}
                 className={styles.bioSignatureMark}
               />
               <p className={styles.bioSignatureCity}>Largo · Florida</p>
