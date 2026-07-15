@@ -103,10 +103,10 @@ export function ScheduleTimeline({ className }: ScheduleTimelineProps): ReactNod
                             Today
                           </span>
                           <Illustration
-                            src="/illustrations/mower-side-profile.svg"
+                            src="/illustrations/mower-side-profile-v3-120.webp"
                             alt=""
                             width={120}
-                            height={80}
+                            height={120}
                             className={styles.todayMower}
                           />
                         </>
