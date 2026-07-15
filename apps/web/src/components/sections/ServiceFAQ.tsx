@@ -32,7 +32,7 @@ export function ServiceFAQ({ slug, className }: ServiceFAQProps): ReactNode {
     <section className={cn(styles.root, className)}>
       <div className="container">
         <header className={styles.header}>
-          <Eyebrow tone="default" dot className={styles.headerEyebrow}>
+          <Eyebrow tone="default" className={styles.headerEyebrow}>
             Questions
           </Eyebrow>
           <h2 className={styles.headerHeading}>Frequently asked.</h2>

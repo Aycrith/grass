@@ -31,7 +31,7 @@ export function PricingTiers({ className }: PricingTiersProps): ReactNode {
     <Section rhythm="loose" className={cn(styles.root, className)}>
       <div className="container">
         <header className={styles.header}>
-          <Eyebrow tone="default" dot className={styles.headerEyebrow}>
+          <Eyebrow tone="default" className={styles.headerEyebrow}>
             {pricingHeader.eyebrow}
           </Eyebrow>
           <h2 className={styles.headerHeading}>{pricingHeader.heading}</h2>

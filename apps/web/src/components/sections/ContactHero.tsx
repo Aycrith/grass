@@ -32,7 +32,7 @@ export function ContactHero({ hurricaneMode, className }: ContactHeroProps): Rea
     <Section rhythm="loose" className={cn(styles.root, className)}>
       <div className="container">
         <FadeUp className={styles.copy}>
-          <Eyebrow tone="default" dot className={styles.eyebrow}>
+          <Eyebrow tone="default" className={styles.eyebrow}>
             {contactPage.eyebrow}
           </Eyebrow>
           <h1 className={styles.title}>{contactPage.heading}</h1>

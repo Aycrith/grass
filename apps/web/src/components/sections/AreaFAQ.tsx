@@ -34,7 +34,7 @@ export function AreaFAQ({ zip, className }: AreaFAQProps): ReactNode {
     <section className={cn(styles.root, className)}>
       <div className="container">
         <header className={styles.header}>
-          <Eyebrow tone="default" dot className={styles.headerEyebrow}>
+          <Eyebrow tone="default" className={styles.headerEyebrow}>
             Specific to {zip}
           </Eyebrow>
           <h2 className={styles.headerHeading}>A {detail.name} question.</h2>

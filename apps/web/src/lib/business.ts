@@ -20,8 +20,8 @@ export const BUSINESS = {
     zip: '33771',
   },
   hours: {
-    weekdays: 'Mon–Fri 7:00 AM – 5:00 PM',
-    saturday: 'Sat 8:00 AM – 2:00 PM',
+    weekdays: 'Mon to Fri, 7:00 AM to 5:00 PM',
+    saturday: 'Sat, 8:00 AM to 2:00 PM',
     sunday: 'Closed',
   },
   service_area_zips: ['33770', '33771', '33773', '33774', '33778', '33756'] as const,

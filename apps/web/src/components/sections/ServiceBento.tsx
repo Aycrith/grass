@@ -97,7 +97,7 @@ export function ServiceBento({ className }: ServiceBentoProps): ReactNode {
     >
       <div className="container">
         <header className={styles.header}>
-          <Eyebrow tone="default" dot className={styles.headerEyebrow}>
+          <Eyebrow tone="default" className={styles.headerEyebrow}>
             03 — What I do
           </Eyebrow>
           <h2 className={styles.headerHeading}>Six things, done well.</h2>

@@ -28,7 +28,7 @@ export function FAQAccordion({ className }: FAQAccordionProps): React.ReactNode 
     <Section rhythm="loose" className={cn(styles.root, className)} id="faq">
       <div className="container">
         <header className={styles.header}>
-          <Eyebrow tone="default" dot className={styles.headerEyebrow}>
+          <Eyebrow tone="default" className={styles.headerEyebrow}>
             {faqHeader.eyebrow}
           </Eyebrow>
           <h2 className={styles.headerHeading}>{faqHeader.heading}</h2>

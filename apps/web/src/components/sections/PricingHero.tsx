@@ -28,7 +28,7 @@ export function PricingHero({ className }: PricingHeroProps): ReactNode {
     <Section rhythm="loose" className={cn(styles.root, className)}>
       <div className="container">
         <FadeUp className={styles.copy}>
-          <Eyebrow tone="default" dot className={styles.eyebrow}>
+          <Eyebrow tone="default" className={styles.eyebrow}>
             {pricingPage.eyebrow}
           </Eyebrow>
           <h1 className={styles.title}>{pricingPage.heading}</h1>

@@ -57,7 +57,7 @@ export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
           </FadeUp>
 
           <div className={styles.bio}>
-            <Eyebrow tone="default" dot className={styles.bioEyebrow}>
+            <Eyebrow tone="default" className={styles.bioEyebrow}>
               02 — The operator
             </Eyebrow>
             <h2 className={styles.bioHeading}>
@@ -91,7 +91,6 @@ export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
               <ul className={styles.toolBar} aria-label="Equipment list">
                 {operator.equipment.map((item) => (
                   <li key={item.name} className={styles.tool}>
-                    <span className={styles.toolDot} aria-hidden="true" />
                     <span className={styles.toolModel}>{item.name}</span>
                     <span className={styles.toolUse}>{item.use}</span>
                   </li>

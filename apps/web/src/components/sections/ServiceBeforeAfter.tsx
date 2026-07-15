@@ -92,7 +92,7 @@ export function ServiceBeforeAfter({ copy, className }: ServiceBeforeAfterProps)
         suppressHydrationWarning
       >
         <div className="container">
-          <Eyebrow tone="default" dot className={styles.eyebrow}>
+          <Eyebrow tone="default" className={styles.eyebrow}>
             Before &amp; after
           </Eyebrow>
           <p className={styles.caption}>{copy.caption}</p>
@@ -137,7 +137,7 @@ export function ServiceBeforeAfter({ copy, className }: ServiceBeforeAfterProps)
       suppressHydrationWarning
     >
       <div className="container">
-        <Eyebrow tone="default" dot className={styles.eyebrow}>
+        <Eyebrow tone="default" className={styles.eyebrow}>
           Before &amp; after
         </Eyebrow>
         <p className={styles.caption}>{copy.caption}</p>

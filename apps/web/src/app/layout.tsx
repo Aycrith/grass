@@ -45,8 +45,8 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   metadataBase: new URL('https://largolawn.pro'),
   title: {
-    default: `${BUSINESS.name} — Lawn Care & Landscaping in ${BUSINESS.address.city}, FL`,
-    template: `%s — ${BUSINESS.name}`,
+    default: `${BUSINESS.name}: Lawn Care & Landscaping in ${BUSINESS.address.city}, FL`,
+    template: `%s - ${BUSINESS.name}`,
   },
   description:
     'Affordable, reliable lawn care and landscaping for homeowners in Largo and Pinellas County. Mowing, edging, mulching, hedge trimming, hurricane prep.',
@@ -65,13 +65,13 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://largolawn.pro',
     siteName: BUSINESS.name,
-    title: `${BUSINESS.name} — Lawn Care in ${BUSINESS.address.city}, FL`,
+    title: `${BUSINESS.name}: Lawn Care in ${BUSINESS.address.city}, FL`,
     description:
       'Affordable, reliable lawn care and landscaping in Largo and Pinellas County. Free quotes within 24 hours.',
   },
   twitter: {
     card: 'summary',
-    title: `${BUSINESS.name} — Lawn Care in ${BUSINESS.address.city}, FL`,
+    title: `${BUSINESS.name}: Lawn Care in ${BUSINESS.address.city}, FL`,
     description:
       'Affordable, reliable lawn care and landscaping in Largo and Pinellas County.',
   },

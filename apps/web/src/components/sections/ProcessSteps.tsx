@@ -29,7 +29,7 @@ export function ProcessSteps({ className }: ProcessStepsProps): ReactNode {
       <div className="container">
         <header className={styles.header}>
           <div className={styles.headerText}>
-            <Eyebrow tone="default" dot className={styles.headerEyebrow}>
+            <Eyebrow tone="default" className={styles.headerEyebrow}>
               05 — How it works
             </Eyebrow>
             <h2 className={styles.headerHeading}>Four steps, no portal.</h2>

@@ -1,5 +1,5 @@
 /**
- * /preview index — the steward's one-stop checklist before approving
+ * /preview index - the steward's one-stop checklist before approving
  * the $4.99 domain purchase.
  */
 
@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { PREVIEW_NAV } from '@/lib/preview-nav';
 
 export const metadata = {
-  title: 'Preview Build — Index',
+  title: 'Preview Build: Index',
   robots: { index: false, follow: false },
 };
 
@@ -35,7 +35,7 @@ export default function PreviewIndex() {
       <h2>What you can do right now (zero spend)</h2>
       <ul>
         <li>
-          <input type="checkbox" /> Browse every route in the sidebar — at minimum{' '}
+          <input type="checkbox" /> Browse every route in the sidebar. At minimum{' '}
           <Link href="/preview/brand">/preview/brand</Link>,{' '}
           <Link href="/preview/profit">/preview/profit</Link>, and{' '}
           <Link href="/preview/gbp">/preview/gbp</Link>.
@@ -47,7 +47,7 @@ export default function PreviewIndex() {
         </li>
         <li>
           <input type="checkbox" /> Check <Link href="/preview/services">/preview/services</Link>{' '}
-          copy against <Link href="/preview/profit">/preview/profit</Link> pricing — do the
+          copy against <Link href="/preview/profit">/preview/profit</Link> pricing. Do the
           numbers add up to what you want to charge?
         </li>
         <li>
@@ -56,21 +56,21 @@ export default function PreviewIndex() {
         </li>
         <li>
           <input type="checkbox" /> Read the GBP profile content in{' '}
-          <Link href="/preview/gbp">/preview/gbp</Link> — every field is pre-filled.
+          <Link href="/preview/gbp">/preview/gbp</Link>. Every field is pre-filled.
         </li>
         <li>
           <input type="checkbox" /> Read the 7 operational runbooks in{' '}
-          <Link href="/preview/runbooks">/preview/runbooks</Link> — day-of-mow, weather, hurricane
+          <Link href="/preview/runbooks">/preview/runbooks</Link> - day-of-mow, weather, hurricane
           mode, equipment, quote-to-close, retention, accounting.
         </li>
         <li>
           <input type="checkbox" /> Read the 13 customer-facing content artifacts in{' '}
-          <Link href="/preview/content">/preview/content</Link> — GBP Q&amp;A, phone/email/SMS
+          <Link href="/preview/content">/preview/content</Link> - GBP Q&amp;A, phone/email/SMS
           scripts, quotes, invoices, waivers, printable assets.
         </li>
         <li>
           <input type="checkbox" /> Read the ad campaign drafts in{' '}
-          <Link href="/preview/ads">/preview/ads</Link> — these run on free new-account credits,
+          <Link href="/preview/ads">/preview/ads</Link> - these run on free new-account credits,
           so $0 out-of-pocket.
         </li>
         <li>
@@ -116,11 +116,11 @@ export default function PreviewIndex() {
         </li>
         <li>
           Authored 13 customer-content artifacts (4 scripts/templates in Phase 2, 9 print/
-          digital/transactional assets in Phase 3) — all under <code>content/</code> and
+          digital/transactional assets in Phase 3) - all under <code>content/</code> and
           browsable at <Link href="/preview/content">/preview/content</Link>.
         </li>
         <li>
-          Authored 7 operational runbooks (Phase 4) — all under <code>content/runbooks/</code> and
+          Authored 7 operational runbooks (Phase 4) - all under <code>content/runbooks/</code> and
           browsable at <Link href="/preview/runbooks">/preview/runbooks</Link>.
         </li>
       </ul>
@@ -160,7 +160,7 @@ export default function PreviewIndex() {
 
       <h2>What happens after you approve</h2>
       <ol>
-        <li>You click "I approve" — I do nothing automatically.</li>
+        <li>You click "I approve" - I do nothing automatically.</li>
         <li>
           You register <code>largolawn.pro</code> on Vercel (or Cloudflare) for $4.99/yr, then
           tell me the registrar login.

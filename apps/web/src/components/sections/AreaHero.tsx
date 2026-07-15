@@ -55,7 +55,7 @@ export function AreaHero({ zip, className }: AreaHeroProps): ReactNode {
               <Pill tone="outline" size="sm" className={styles.zipPill}>
                 {zip}
               </Pill>
-              <Eyebrow tone="dark" dot>
+              <Eyebrow tone="dark" >
                 {detail.name}
               </Eyebrow>
             </div>

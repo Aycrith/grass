@@ -65,7 +65,7 @@ export function HeroCinematic({ className }: HeroCinematicProps): ReactNode {
       <div className="container">
         <div className={styles.inner}>
           <div className={styles.copy}>
-            <Eyebrow tone="default" dot className={styles.eyebrow}>
+            <Eyebrow tone="default" className={styles.eyebrow}>
               {hero.eyebrow}
             </Eyebrow>
 
@@ -93,17 +93,10 @@ export function HeroCinematic({ className }: HeroCinematicProps): ReactNode {
 
             <div className={styles.trustRow}>
               <span className={styles.trustItem}>
-                <span className={styles.trustDot} aria-hidden="true" />
                 Serving {BUSINESS.service_area_zips.length} Pinellas ZIPs
               </span>
-              <span className={styles.trustItem}>
-                <span className={styles.trustDot} aria-hidden="true" />
-                24-hour quote turnaround
-              </span>
-              <span className={styles.trustItem}>
-                <span className={styles.trustDot} aria-hidden="true" />
-                Reply by phone, not a portal
-              </span>
+              <span className={styles.trustItem}>24-hour quote turnaround</span>
+              <span className={styles.trustItem}>Reply by phone, not a portal</span>
             </div>
           </div>
 

@@ -35,7 +35,7 @@ export function AreaDirectory({ className }: AreaDirectoryProps): ReactNode {
     <Section rhythm="loose" className={cn(styles.root, className)}>
       <div className="container">
         <header className={styles.header}>
-          <Eyebrow tone="default" dot className={styles.headerEyebrow}>
+          <Eyebrow tone="default" className={styles.headerEyebrow}>
             {areasIndex.eyebrow}
           </Eyebrow>
           <h1 className={styles.headerTitle}>{areasIndex.heading}</h1>

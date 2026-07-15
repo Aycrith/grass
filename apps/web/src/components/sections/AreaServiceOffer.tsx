@@ -37,7 +37,7 @@ export function AreaServiceOffer({ zip, className }: AreaServiceOfferProps): Rea
     <Section rhythm="loose" className={cn(styles.root, className)}>
       <div className="container">
         <header className={styles.header}>
-          <Eyebrow tone="default" dot>
+          <Eyebrow tone="default" >
             Services in {zip}
           </Eyebrow>
           <h2 className={styles.heading}>What we offer where you are.</h2>

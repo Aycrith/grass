@@ -36,7 +36,7 @@ const fraunces = Fraunces({
 const fetchFontData = (font: any): Promise<ArrayBuffer> => font.fetch();
 
 export const runtime = 'edge';
-export const alt = "Largo Lawn — your neighbor's lawn mower in Largo, FL";
+export const alt = "Largo Lawn: your neighbor's lawn mower in Largo, FL";
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 

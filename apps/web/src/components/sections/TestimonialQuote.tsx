@@ -34,7 +34,7 @@ export function TestimonialQuote({ className }: TestimonialQuoteProps): React.Re
     <Section rhythm="loose" tone="warm" className={cn(styles.root, className)}>
       <div className="container">
         <div className={styles.inner}>
-          <Eyebrow tone="default" dot className={styles.eyebrow}>
+          <Eyebrow tone="default" className={styles.eyebrow}>
             {socialHeader.eyebrow}
           </Eyebrow>
           <blockquote className={styles.quote}>

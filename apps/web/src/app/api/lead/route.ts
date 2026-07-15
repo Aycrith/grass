@@ -1,5 +1,5 @@
 /**
- * /api/lead — Lead capture endpoint.
+ * /api/lead - Lead capture endpoint.
  *
  * Validates input, calls @grass/crm-core createLead, and dispatches the
  * auto-acknowledgement via @grass/notifications-core sendLeadResponse.
@@ -9,7 +9,7 @@
  * We construct a transient `system` principal representing the inbound
  * webhook so the same authority ladder applies.
  *
- * Response is intentionally minimal — never leak internal IDs to the
+ * Response is intentionally minimal - never leak internal IDs to the
  * browser. The `lead_id` here is for support only, stored in PostHog.
  */
 
@@ -44,7 +44,7 @@ function validateLead(
   if (!inServiceArea(input.zip)) {
     return {
       ok: false,
-      error: `Sorry — we don't currently service ${input.zip}. We cover ${process.env.NEXT_PUBLIC_SERVICE_AREA ?? '33756, 33770, 33771, 33773, 33774, 33778'}.`,
+      error: `Sorry. We don't currently service ${input.zip}. We cover ${process.env.NEXT_PUBLIC_SERVICE_AREA ?? '33756, 33770, 33771, 33773, 33774, 33778'}.`,
     };
   }
   return {
@@ -110,7 +110,7 @@ export async function POST(req: Request) {
       systemPrincipal,
     );
 
-    // 3. PostHog event (fire-and-forget — never block UX on analytics).
+    // 3. PostHog event (fire-and-forget - never block UX on analytics).
     if (process.env.NEXT_PUBLIC_POSTHOG_KEY) {
       void fetch(`${process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://app.posthog.com'}/capture/`, {
         method: 'POST',
@@ -126,7 +126,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       ok: true,
-      message: 'Thanks — we will be in touch within 24 hours.',
+      message: 'Thanks. We will be in touch within 24 hours.',
     });
   } catch (err) {
     if (err instanceof Error) {

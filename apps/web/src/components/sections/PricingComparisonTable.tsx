@@ -74,7 +74,7 @@ export function PricingComparisonTable({ className }: PricingComparisonTableProp
       <Section rhythm="loose" className={cn(styles.tableSection, className)}>
         <div className="container">
           <FadeUp>
-            <Eyebrow tone="default" dot className={styles.tableEyebrow}>
+            <Eyebrow tone="default" className={styles.tableEyebrow}>
               Floor rates
             </Eyebrow>
             <h2 className={styles.tableHeading}>What it costs.</h2>
@@ -105,7 +105,7 @@ export function PricingComparisonTable({ className }: PricingComparisonTableProp
       <Section rhythm="loose" className={cn(styles.discountSection)}>
         <div className="container">
           <header className={styles.subhead}>
-            <Eyebrow tone="default" dot>
+            <Eyebrow tone="default" >
               {pricingPage.discountEyebrow}
             </Eyebrow>
             <h2 className={styles.subheadHeading}>{pricingPage.discountIntro}</h2>
@@ -124,7 +124,7 @@ export function PricingComparisonTable({ className }: PricingComparisonTableProp
       <Section rhythm="loose" className={cn(styles.notIncludedSection)}>
         <div className="container">
           <FadeUp className={styles.notIncluded}>
-            <Eyebrow tone="default" dot>
+            <Eyebrow tone="default" >
               {pricingPage.notIncludedTitle}
             </Eyebrow>
             <p className={styles.notIncludedBody}>{pricingPage.notIncludedBody}</p>
@@ -141,7 +141,7 @@ export function PricingComparisonTable({ className }: PricingComparisonTableProp
       <Section rhythm="loose" className={cn(styles.taxSection)}>
         <div className="container">
           <FadeUp className={styles.tax}>
-            <Eyebrow tone="default" dot>
+            <Eyebrow tone="default" >
               {pricingPage.taxEyebrow}
             </Eyebrow>
             <p className={styles.taxBody}>{pricingPage.taxBody}</p>

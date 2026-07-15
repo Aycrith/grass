@@ -32,10 +32,10 @@ export default function GlobalError({
     <Section rhythm="loose">
       <Container size="prose">
         <div className={styles.root}>
-          <span className={styles.label}>500 — something went wrong</span>
+          <span className={styles.label}>500: something went wrong</span>
           <h1 className={styles.title}>The page didn&apos;t load.</h1>
           <p className={styles.body}>
-            Could be a hiccup on our end. Try again — if it keeps happening, the phone line goes
+            Could be a hiccup on our end. Try again. If it keeps happening, the phone line goes
             straight to voicemail and we listen every morning.
           </p>
           <div className={styles.ctaRow}>

@@ -44,7 +44,7 @@ export function ReviewMagnet({ className }: ReviewMagnetProps): ReactNode {
       <Section rhythm="loose" className={cn(styles.heroSection, className)}>
         <div className="container">
           <FadeUp className={styles.copy}>
-            <Eyebrow tone="default" dot className={styles.eyebrow}>
+            <Eyebrow tone="default" className={styles.eyebrow}>
               {reviewPage.eyebrow}
             </Eyebrow>
             <h1 className={styles.title}>{reviewPage.heading}</h1>
@@ -56,7 +56,7 @@ export function ReviewMagnet({ className }: ReviewMagnetProps): ReactNode {
       <Section rhythm="loose" className={cn(styles.comingSoonSection)}>
         <div className="container">
           <FadeUp className={styles.card}>
-            <Eyebrow tone="default" dot>
+            <Eyebrow tone="default" >
               {reviewPage.reviewMagnetEnabled ? 'How was it?' : 'Coming soon'}
             </Eyebrow>
             {reviewPage.reviewMagnetEnabled ? (
@@ -85,7 +85,7 @@ export function ReviewMagnet({ className }: ReviewMagnetProps): ReactNode {
       <Section rhythm="loose" className={cn(styles.notRightSection)}>
         <div className="container">
           <FadeUp className={styles.card}>
-            <Eyebrow tone="default" dot>
+            <Eyebrow tone="default" >
               When something isn't right
             </Eyebrow>
             <h2 className={styles.cardHeading}>{reviewPage.notRightTitle}</h2>

@@ -32,14 +32,14 @@ export function OperatorBio({ className }: OperatorBioProps): ReactNode {
       <Section rhythm="loose" className={cn(styles.missionSection, className)}>
         <div className="container">
           <FadeUp className={styles.prose}>
-            <Eyebrow tone="default" dot>
+            <Eyebrow tone="default" >
               {aboutPage.missionEyebrow}
             </Eyebrow>
             <p className={styles.body}>{aboutPage.mission}</p>
           </FadeUp>
 
           <FadeUp className={styles.prose}>
-            <Eyebrow tone="default" dot>
+            <Eyebrow tone="default" >
               {aboutPage.whySoloEyebrow}
             </Eyebrow>
             <p className={styles.body}>{aboutPage.whySolo}</p>
@@ -50,7 +50,7 @@ export function OperatorBio({ className }: OperatorBioProps): ReactNode {
       <Section rhythm="loose" className={cn(styles.valuesSection, className)}>
         <div className="container">
           <header className={styles.valuesHeader}>
-            <Eyebrow tone="default" dot>
+            <Eyebrow tone="default" >
               {aboutPage.valuesEyebrow}
             </Eyebrow>
             <h2 className={styles.valuesHeading}>{aboutPage.valuesEyebrow}.</h2>
@@ -69,7 +69,7 @@ export function OperatorBio({ className }: OperatorBioProps): ReactNode {
       <Section rhythm="loose" className={cn(styles.registerSection, className)}>
         <div className="container">
           <FadeUp className={styles.registerInner}>
-            <Eyebrow tone="default" dot>
+            <Eyebrow tone="default" >
               {aboutPage.registerEyebrow}
             </Eyebrow>
             <ul className={styles.registerList}>

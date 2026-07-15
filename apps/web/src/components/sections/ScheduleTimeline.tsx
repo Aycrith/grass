@@ -57,7 +57,7 @@ export function ScheduleTimeline({ className }: ScheduleTimelineProps): ReactNod
     >
       <div className="container">
         <header className={styles.header}>
-          <Eyebrow tone="default" dot className={styles.eyebrow}>
+          <Eyebrow tone="default" className={styles.eyebrow}>
             06.5 — On the route this week
           </Eyebrow>
           <h2 className={styles.heading}>Which day the mower shows up.</h2>

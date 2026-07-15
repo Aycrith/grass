@@ -53,7 +53,7 @@ export function ServiceHero({ slug, className }: ServiceHeroProps): ReactNode {
       <div className="container">
         <div className={styles.copy}>
           <FadeUp>
-            <Eyebrow tone="dark" dot className={styles.eyebrow}>
+            <Eyebrow tone="dark" className={styles.eyebrow}>
               {svc.eyebrow} — {svc.title}
             </Eyebrow>
             <h1 className={styles.title}>{detail.name} in Largo, FL</h1>

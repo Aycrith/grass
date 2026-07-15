@@ -31,6 +31,10 @@ export function Eyebrow({
   className,
   ...rest
 }: EyebrowProps) {
+  // D-0016: the `dot` prop defaults to false. Decorative colored dots
+  // were flagged as a Pre-Flight anti-slop tell (skill §9.F). Eyebrow
+  // text alone is sufficient. The prop is kept for backward-compat but
+  // no caller passes `dot` anymore.
   return (
     <span
       className={cn(

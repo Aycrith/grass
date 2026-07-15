@@ -26,7 +26,7 @@ export function AboutHero({ className }: AboutHeroProps): ReactNode {
     <Section rhythm="loose" className={cn(styles.root, className)}>
       <div className="container">
         <FadeUp className={styles.copy}>
-          <Eyebrow tone="default" dot className={styles.eyebrow}>
+          <Eyebrow tone="default" className={styles.eyebrow}>
             {aboutPage.eyebrow}
           </Eyebrow>
           <h1 className={styles.title}>{aboutPage.heading}</h1>

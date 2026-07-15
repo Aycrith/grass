@@ -26,7 +26,7 @@ export function QuoteHero({ className }: QuoteHeroProps): ReactNode {
     <Section rhythm="loose" className={cn(styles.root, className)}>
       <div className="container">
         <FadeUp className={styles.copy}>
-          <Eyebrow tone="default" dot className={styles.eyebrow}>
+          <Eyebrow tone="default" className={styles.eyebrow}>
             {quotePage.eyebrow}
           </Eyebrow>
           <h1 className={styles.title}>{quotePage.heading}</h1>

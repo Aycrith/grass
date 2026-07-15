@@ -1,5 +1,5 @@
 /**
- * GBP-stub — Google Business Profile redirect landing page.
+ * GBP-stub - Google Business Profile redirect landing page.
  *
  * Real Google Business Profiles don't accept custom URLs on the listing
  * itself, but the GBP "Website" field links here. The page exists so that:
@@ -13,7 +13,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: `${BUSINESS.name} — Google Profile Visitors`,
+  title: `${BUSINESS.name}: Google Profile Visitors`,
   description: `Welcome from our Google Business Profile. ${BUSINESS.name} based in ${BUSINESS.address.city}, FL.`,
   robots: { index: false, follow: true },
 };
@@ -45,10 +45,10 @@ export default function GbpLandingPage() {
       <h2>Why Google Visitors Choose Us</h2>
       <ul>
         <li>✓ Locally owned & operated</li>
-        <li>✓ Transparent pricing — no surprise fees</li>
+        <li>✓ Transparent pricing. No surprise fees.</li>
         <li>✓ Free quotes within 24 hours</li>
         <li>✓ Weather-fair scheduling (no charge for rain cancellations)</li>
-        <li>✓ Hurricane mode — auto-pause + auto-reschedule during named storms</li>
+        <li>✓ Hurricane mode: auto-pause + auto-reschedule during named storms</li>
         <li>✓ Local, solo-founder accountability</li>
       </ul>
 

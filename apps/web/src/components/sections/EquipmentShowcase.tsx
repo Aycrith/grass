@@ -56,7 +56,7 @@ export function EquipmentShowcase({ className }: EquipmentShowcaseProps): ReactN
     >
       <div className="container">
         <FadeUp>
-          <Eyebrow tone="default" dot className={styles.eyebrow}>
+          <Eyebrow tone="default" className={styles.eyebrow}>
             The kit
           </Eyebrow>
           <h2 className={styles.heading}>Commercial-grade, residential-quiet.</h2>

@@ -75,7 +75,7 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
       <div className="container">
         <div className={styles.inner}>
           <header className={styles.header}>
-            <Eyebrow tone="dark" dot className={styles.headerEyebrow}>
+            <Eyebrow tone="dark" className={styles.headerEyebrow}>
               {serviceAreaMap.eyebrow}
             </Eyebrow>
             <h2 className={styles.headerHeading}>{serviceAreaMap.heading}</h2>

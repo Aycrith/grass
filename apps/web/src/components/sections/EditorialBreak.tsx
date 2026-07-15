@@ -56,7 +56,7 @@ export function EditorialBreak({ className }: EditorialBreakProps): ReactNode {
       </div>
       <div className={styles.copy}>
         <FadeUp>
-          <Eyebrow tone="dark" dot className={styles.eyebrow}>
+          <Eyebrow tone="dark" className={styles.eyebrow}>
             {editorialBreak.eyebrow}
           </Eyebrow>
           <p className={styles.headline}>{editorialBreak.headline}</p>

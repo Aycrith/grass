@@ -55,7 +55,7 @@ export function ServiceAreaStats({ className }: ServiceAreaStatsProps): ReactNod
       />
       <div className="container">
         <header className={styles.header}>
-          <Eyebrow tone="default" dot className={styles.eyebrow}>
+          <Eyebrow tone="default" className={styles.eyebrow}>
             04.7 — By the numbers
           </Eyebrow>
           <h2 className={styles.heading}>A small crew, by design.</h2>

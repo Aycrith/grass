@@ -39,7 +39,7 @@ export function OperatorNote({ className }: OperatorNoteProps): ReactNode {
       <div className="container">
         <div className={styles.inner}>
           <div className={styles.copy}>
-            <Eyebrow tone="default" dot className={styles.eyebrow}>
+            <Eyebrow tone="default" className={styles.eyebrow}>
               {operatorNote.eyebrow}
             </Eyebrow>
             <FadeUp>

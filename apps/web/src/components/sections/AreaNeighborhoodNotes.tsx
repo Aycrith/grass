@@ -36,14 +36,14 @@ export function AreaNeighborhoodNotes({ zip, className }: AreaNeighborhoodNotesP
       <div className="container">
         <div className={styles.grid}>
           <FadeUp className={styles.prose}>
-            <Eyebrow tone="default" dot>
+            <Eyebrow tone="default" >
               About this neighborhood
             </Eyebrow>
             <p className={styles.intro}>{detail.intro}</p>
           </FadeUp>
 
           <FadeUp className={styles.aside}>
-            <Eyebrow tone="default" dot>
+            <Eyebrow tone="default" >
               Nearby
             </Eyebrow>
             <ul className={styles.pillList}>

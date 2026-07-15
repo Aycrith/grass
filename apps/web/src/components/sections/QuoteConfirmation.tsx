@@ -31,7 +31,7 @@ export function QuoteConfirmation({ className }: QuoteConfirmationProps): ReactN
     <Section rhythm="loose" className={cn(styles.root, className)}>
       <div className="container">
         <FadeUp className={styles.inner}>
-          <Eyebrow tone="default" dot className={styles.eyebrow}>
+          <Eyebrow tone="default" className={styles.eyebrow}>
             {quotePage.confirmationEyebrow}
           </Eyebrow>
           <ol className={styles.steps}>

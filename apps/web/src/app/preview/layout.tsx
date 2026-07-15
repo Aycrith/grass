@@ -14,7 +14,7 @@ export default function PreviewLayout({ children }: { children: React.ReactNode 
         <div className="preview-banner">
           PREVIEW BUILD
           <br />
-          Localhost only — do not purchase domain yet
+          Localhost only. Do not purchase domain yet.
         </div>
         <h2>Surface Map</h2>
         <nav>

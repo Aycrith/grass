@@ -60,7 +60,7 @@ export function ServiceDirectory({ className }: ServiceDirectoryProps): ReactNod
     <Section rhythm="loose" className={cn(styles.root, className)}>
       <div className="container">
         <header className={styles.header}>
-          <Eyebrow tone="default" dot className={styles.headerEyebrow}>
+          <Eyebrow tone="default" className={styles.headerEyebrow}>
             {servicesIndex.eyebrow}
           </Eyebrow>
           <h1 className={styles.headerTitle}>{servicesIndex.heading}</h1>

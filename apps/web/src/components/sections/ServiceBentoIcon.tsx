@@ -80,7 +80,7 @@ export function ServiceBentoIcon({ service, className }: ServiceBentoIconProps):
       );
 
     case 'hurricane-prep':
-      // Spiral wind + lightning accent dot
+      // Spiral wind + lightning accent 
       return (
         // biome-ignore lint/a11y/noSvgWithoutTitle: decorative icon, card title provides semantics
         <svg {...COMMON} className={className}>
