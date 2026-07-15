@@ -73,6 +73,20 @@
    The inner SVG uses semantic classes for fills and strokes so
    brand updates land in one place. */
 
+/* D-0012 — the painted storybook Pinellas map renders as a
+ * single 800x1000 webp image at the bottom of the SVG, behind the
+ * grid lines, labels, and interactive pins. Sits at opacity 0.95
+ * so the cream-rim outline of the .mapWrap container reads through. */
+.paintedMap {
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0.95;
+  /* Match the dark surface of the section so the gulf-blue water
+   * reads correctly instead of the lighter cream rim bleeding. */
+  mix-blend-mode: normal;
+}
+
 .water {
   fill: var(--ll-gulf);
   fill-opacity: 0.4;

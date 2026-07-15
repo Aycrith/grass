@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 — D-0011 hero trust row clay bullets + quote-mark v3 painted + 21 dead-asset cleanup)
+# Last updated: 2026-07-15 (Day 22 — D-0012 painted storybook Pinellas peninsula map)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 — D-0011 hero trust row clay bullets + quote-mark v3 painted + 21 dead-asset cleanup)
+# Last updated: 2026-07-15 (Day 22 — D-0012 painted storybook Pinellas peninsula map)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -534,6 +534,36 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      D-0012 — Painted storybook Pinellas peninsula map (visual
+      audit §1.3 — the only full-bleed hand-drawn section left
+      on the homepage). The 800×1000 water+land+markers map is
+      generated via SDXL+LoRA+IP-Adapter at denoise 0.65 (the
+      higher denoise vs other v3 work was needed to push the
+      model past its default "clean shape passthrough" mode
+      and into actual brushwork on the input). 4 candidates at
+      seeds 9001-9004; seed 9001 canonical (cleanest peninsula
+      outline, 6 painted green markers on the land, no LoRA
+      bias artifacts on the water).
+
+      ServiceAreaMap.tsx now renders the painted webp as an
+      SVG <image> at viewBox 0 0 800 1000, behind the existing
+      grid lines + labels + interactive pins. The hand-drawn
+      water rect + peninsula path have been removed (the
+      painted webp contains them). The 6 interactive SVG pins
+      still sit at the same PIN_LAYOUT coordinates and remain
+      clickable; the painted "markers" behind them read as
+      decorative town dots, consistent with the storybook
+      treatment.
+
+      Also added: apps/comfyui/scripts/make-pinellas-map-input.ts
+      (gulf-blue water + sand-tan peninsula + 6 pin dots in the
+      SVG viewBox space, scaled to 1024×1024 for SDXL),
+      apps/comfyui/scripts/make-pinellas-map-v3-webp.ts
+      (resizes 1024×1024 → 800×1000 + extends water below to
+      recover the bottom 250px that the input crop cut off).
   - date: "2026-07-15"
     day: 22
     change: >

@@ -90,15 +90,21 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
               role="img"
               aria-label={serviceAreaMap.svgAriaLabel}
             >
-              {/* Tampa Bay water — gulf blue, brand token.
-                  (--ll-gulf is the gulf horizon blue; semantically the
-                  water of Tampa Bay reads as gulf blue, not palm green.) */}
-              <rect className={styles.water} width="800" height="1000" />
-
-              {/* Pinellas peninsula (abstract) */}
-              <path
-                className={styles.peninsula}
-                d="M 380 120 Q 280 200 280 380 Q 260 540 340 700 Q 360 860 420 940 Q 480 860 460 720 Q 480 560 460 400 Q 480 240 380 120 Z"
+              {/* D-0012 — painted storybook Pinellas peninsula (water + land
+                  + 6 small green markers baked in). Replaces the WP19-era
+                  abstract SVG water rect + peninsula path so the section's
+                  only full-bleed hand-drawn surface is consistent with the
+                  rest of the painted storybook homepage. The interactive
+                  pins (rings + ZIP labels) still sit on top of the painted
+                  land so the 6 neighborhoods remain clickable. */}
+              <image
+                className={styles.paintedMap}
+                href="/illustrations/pinellas-map-v3-800x1000.webp"
+                x="0"
+                y="0"
+                width="800"
+                height="1000"
+                preserveAspectRatio="xMidYMid slice"
               />
 
               {/* Tampa Bay label */}
