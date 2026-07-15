@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 — D-0012 painted storybook Pinellas peninsula map)
+# Last updated: 2026-07-15 (Day 22 - D-0013 painted storybook section dividers)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 — D-0012 painted storybook Pinellas peninsula map)
+# Last updated: 2026-07-15 (Day 22 - D-0013 painted storybook section dividers)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -21,17 +21,17 @@ schema_version: 0.1.0
 # Phase tracking
 # -------------------------------------------------------------------
 # Schema: 08-state-ledger-spec.md (phase + objectives + blockers)
-# Current phase: 2 — Landscaping MVP launch (cash-min mode)
+# Current phase: 2 - Landscaping MVP launch (cash-min mode)
 # See phase_history below for the closed Phase 0 + Phase 1 records.
 phase: 2
 phase_name: "Landscaping MVP launch (cash-min mode)"
 phase_day: 7   # Day 7 of Phase 2 (Phase 2 began Day 16; today is Day 22)
 phase_day_of: 30  # OBJ-M2-006 spans Days 20-30; Phase 2 ~30 days total
 phase_exit_criteria:
-  - "OBJ-M2-004 — Brand + domain acquisition (D-0007 phase B) complete"
-  - "OBJ-M2-006 — GBP profile + 25-citation build + 5 paid pilot jobs"
-  - "OBJ-DEBT-DECISIONS-002 — Re-verify D-0002/D-0003/D-0004 ADRs (review Oct 2026)"
-phase_exit_status: "IN PROGRESS — see objectives.active"
+  - "OBJ-M2-004 - Brand + domain acquisition (D-0007 phase B) complete"
+  - "OBJ-M2-006 - GBP profile + 25-citation build + 5 paid pilot jobs"
+  - "OBJ-DEBT-DECISIONS-002 - Re-verify D-0002/D-0003/D-0004 ADRs (review Oct 2026)"
+phase_exit_status: "IN PROGRESS - see objectives.active"
 
 # Historical record of completed phases. Preserved for traceability.
 # Phase 0 (Days 1-5) and Phase 1 (Days 6-15) are both MET.
@@ -40,7 +40,7 @@ phase_history:
     name: "Mission 1 research (Largo FL landscaping)"
     span: "Days 6-15"
     closed_on: "2026-07-10"
-    status: "MET — all 7 exit criteria satisfied; ready for Phase 2 entry."
+    status: "MET - all 7 exit criteria satisfied; ready for Phase 2 entry."
     exit_criteria:
       - "research/regulatory/largo-licensing-map.yaml authored and steward sign-off recorded ✓"
       - "research/market/largo-market-size.md authored with TAM/SAM/SOM ✓"
@@ -53,13 +53,13 @@ phase_history:
     name: "Repository audit and baseline"
     span: "Days 1-5"
     closed_on: "2026-07-10"
-    status: "MET — all 10 exit criteria satisfied; satisfied simultaneously with Phase 1."
+    status: "MET - all 10 exit criteria satisfied; satisfied simultaneously with Phase 1."
     exit_criteria:
       - "audit/phase-0/architecture-gap.md exists with concrete gap list ✓"
       - "audit/phase-0/tech-debt.md exists (likely near-empty for Day 1 repo) ✓"
       - "audit/phase-0/6-month-roadmap.md exists with KPIs and exit criteria ✓"
       - "Pre-commit hooks green on the Phase-0 exit commit ✓"
-      - "First MCP smoke test passes (Day 5 protocol) ✓ — see scripts/smoke-test.md"
+      - "First MCP smoke test passes (Day 5 protocol) ✓ - see scripts/smoke-test.md"
       - "13 agent specs authored and lint-clean (Day 3-4) ✓"
       - "5 landscaping capabilities registered (Day 3) ✓"
       - "Tier-1 MCP filesystem server installed (.mcp.json) ✓"
@@ -97,12 +97,12 @@ strategy_locked:
 # -------------------------------------------------------------------
 objectives:
   active:
-    # Phase 2 (Month 2) — Landscaping MVP launch (CASH-CONSTRAINED MODE)
+    # Phase 2 (Month 2) - Landscaping MVP launch (CASH-CONSTRAINED MODE)
     # Per steward direction 2026-07-10: minimize cash-out, focus on items
     # 4 (brand/domain) and 6 (GBP + citations + first leads). Items 1, 2, 3,
     # 5 are DEFERRED until pilot revenue covers them.
     - id: OBJ-M2-004
-      title: "Day 16: Brand + domain acquisition (D-0007 phase B) — LargoLawn.pro @ $4.99/yr"
+      title: "Day 16: Brand + domain acquisition (D-0007 phase B) - LargoLawn.pro @ $4.99/yr"
       owner_agent: marketing
       due: "2026-07-25"
       status: in_progress  # brand ratified 2026-07-10; domain registration pending steward action on Vercel
@@ -131,14 +131,14 @@ objectives:
       status: pending
       spec_ref: "research/seo/largo-keyword-map.md"
       draft_ready: "drafts/gbp/profile-content.md (every GBP field pre-filled; verification-postcard instructions)"
-      cash_required: "$0 — GBP is free; citations are free; pilot work uses borrowed/rented equipment per steward note"
+      cash_required: "$0 - GBP is free; citations are free; pilot work uses borrowed/rented equipment per steward note"
       reactivation_blocker: null
 
   deferred_cash_constrained:
     # Deferred until pilot revenue covers cash gates.
     # All drafts already authored (mechanical reactivation when funds allow).
     - id: OBJ-M2-001
-      title: "DEFERRED — Sunbiz LLC filing + EIN + bank account + DR-1 sales tax registration"
+      title: "DEFERRED - Sunbiz LLC filing + EIN + bank account + DR-1 sales tax registration"
       owner_agent: operations
       reactivation_trigger: "First paid pilot revenue OR 30 days post-OBJ-M2-006 launch, whichever first"
       deferral_rationale: "$125 Sunbiz filing + bank minimum + ongoing BTR costs not yet covered by revenue. Operating as sole proprietor in the interim."
@@ -147,7 +147,7 @@ objectives:
       draft_ready: "drafts/sunbiz/articles-of-organization.md (every field pre-filled; ready when funds allow)"
 
     - id: OBJ-M2-002
-      title: "DEFERRED — Workers comp DWC-250 + City of Largo BTR + Pinellas County BTR"
+      title: "DEFERRED - Workers comp DWC-250 + City of Largo BTR + Pinellas County BTR"
       owner_agent: operations
       reactivation_trigger: "First paying customer OR regulatory complaint, whichever first"
       deferral_rationale: "$62 + $30 BTRs + ongoing renewal costs. Operating without local BTR is a citation risk but not a customer-blocking risk for the first 5 pilots (residential, off-platform lead flow)."
@@ -159,7 +159,7 @@ objectives:
         - "drafts/btr/dwc-250-exemption.md"
 
     - id: OBJ-M2-003
-      title: "DEFERRED — General liability insurance binding ($1M+; 3 broker quotes → D-0006 phase B)"
+      title: "DEFERRED - General liability insurance binding ($1M+; 3 broker quotes → D-0006 phase B)"
       owner_agent: operations
       reactivation_trigger: "First paying customer OR first equipment-related incident"
       deferral_rationale: "$2,500-4,600/yr is the largest cash gate. Operating uninsured is high-risk but the alternative (no revenue) is also high-risk. Mitigation: 5 pilots only, hand-tools-only scope, waiver-of-liability on every quote."
@@ -168,7 +168,7 @@ objectives:
       draft_ready: "drafts/insurance/broker-quote-requests.md (3 broker emails + decision matrix + ADR template)"
 
     - id: OBJ-M2-005
-      title: "DEFERRED — Equipment access handled outside GRASS (borrow/rent short-term)"
+      title: "DEFERRED - Equipment access handled outside GRASS (borrow/rent short-term)"
       owner_agent: operations
       reactivation_trigger: "Equipment-related incident OR first full-time hire OR $500+ equipment expense from any source"
       deferral_rationale: "Steward confirmed equipment access is handled outside the GRASS system. No GRASS-managed artifact required at this time."
@@ -248,7 +248,7 @@ objectives:
       completed_on: "2026-07-10"
       commit: "de86fd5"
 
-    # Phase 1 (Days 6-15) — research workstreams + decision ADRs
+    # Phase 1 (Days 6-15) - research workstreams + decision ADRs
     - id: OBJ-DAY8-001
       title: "Author research/regulatory/largo-licensing-map.yaml (Day 8 GATE)"
       completed_on: "2026-07-10"
@@ -270,7 +270,7 @@ objectives:
       commit: "<phase-1>"
 
     - id: OBJ-DECISIONS-001
-      title: "Close DEBT-DECISIONS-001 — author D-0002/D-0003/D-0004/D-0005/D-0006/D-0007 ADRs (all 7 decisions now have ADRs in governance/decisions/)"
+      title: "Close DEBT-DECISIONS-001 - author D-0002/D-0003/D-0004/D-0005/D-0006/D-0007 ADRs (all 7 decisions now have ADRs in governance/decisions/)"
       completed_on: "2026-07-10"
       commit: "<phase-1>"
 
@@ -299,7 +299,7 @@ decisions:
 
     - id: D-0003
       slug: "mission-1-service-area"
-      title: "Mission 1 service area — Largo, FL 33771"
+      title: "Mission 1 service area - Largo, FL 33771"
       decision_file: "governance/decisions/0003-service-area.md"  # to be authored
       confidence: 0.90
       review_date: "2026-09-01"
@@ -346,7 +346,7 @@ risks:
   # the top-5 risks for quick reference.
   top:
     - risk_id: "R-CHDRIFT-001"
-      title: "Charter drift — capability registry becomes paperwork tax"
+      title: "Charter drift - capability registry becomes paperwork tax"
       owner_agent: "engineering"
       mitigation_status: "active"
       review_date: "weekly"
@@ -505,7 +505,7 @@ health_components:
   governance: 0.98  # All 7 decisions have ADRs; audit trio + risk register + Pilot Exception live
   knowledge: 0.78  # Ledger + risk register + KPI taxonomy + smoke-test + 6 research artifacts + WP5 v2 photo hooks doc + audit/phase-1-visual/SUMMARY.md; comfyui-mcp-pending-setup rewritten
   research: 0.85  # All 6 Phase 1 workstreams complete; sign-off pending steward review
-  engineering: 0.94  # Tooling + CI + MCP install + asset pipeline live end-to-end (WP0–WP5) + Lighthouse CI hook + Playwright visual regression suite (16 baselines); web build green
+  engineering: 0.94  # Tooling + CI + MCP install + asset pipeline live end-to-end (WP0-WP5) + Lighthouse CI hook + Playwright visual regression suite (16 baselines); web build green
   operations: 0.10  # 6 Month-2 objectives queued but not started; no business running yet
   tests: 0.88  # Charter-compliance aggregator + ledger-freshness + 13 agents + 9 caps + 19 webps validated + Lighthouse CI PR budget guard + nightly full sweep + Playwright visual regression (16 baselines, per-PR pixel guard)
   agent_org: 0.85  # All 13 specs drafted; reports_to graph; 0 promoted to active (acceptance gate)
@@ -516,9 +516,9 @@ health_components:
 next_actions:
   immediate:
     - "Steward review: sign off on research/regulatory/largo-licensing-map.yaml Day-1 service decomposition"
-    - "Steward review: confirm all 6 decision ADRs in governance/decisions/ — D-0002 through D-0007"
-    - "Steward review: Phase 1 Visual closeout commit (apps/web/visual/ + ci.yml visual job) — ready to merge on fix/wp1-front-end-coherence"
-    - "Steward follow-up (not blocking Phase 1 Visual merge): add framer-motion@11.18.2, lenis@1.3.25, @radix-ui/react-{dialog,accordion}, lucide-react@0.469.0 to apps/web/package.json devDependencies — currently undeclared shadow deps (installed in node_modules from a prior install, will break on `bun install --force` from a clean cache). Defer to a separate quick PR — not on Phase 1 Visual's critical path."
+    - "Steward review: confirm all 6 decision ADRs in governance/decisions/ - D-0002 through D-0007"
+    - "Steward review: Phase 1 Visual closeout commit (apps/web/visual/ + ci.yml visual job) - ready to merge on fix/wp1-front-end-coherence"
+    - "Steward follow-up (not blocking Phase 1 Visual merge): add framer-motion@11.18.2, lenis@1.3.25, @radix-ui/react-{dialog,accordion}, lucide-react@0.469.0 to apps/web/package.json devDependencies - currently undeclared shadow deps (installed in node_modules from a prior install, will break on `bun install --force` from a clean cache). Defer to a separate quick PR - not on Phase 1 Visual's critical path."
 
   week_3: []  # Phase 2 (Month 2 landscaping MVP) starts Day 16; see objectives.active
 
@@ -537,8 +537,42 @@ changelog:
   - date: "2026-07-15"
     day: 22
     change: >
-      D-0012 — Painted storybook Pinellas peninsula map (visual
-      audit §1.3 — the only full-bleed hand-drawn section left
+      D-0013 - Painted storybook section dividers (the missing
+      visual rhythm layer). The homepage has 14 sections
+      transitioning by color change only; light-to-light
+      transitions (e.g. ServiceBento → PricingTiers,
+      ScheduleTimeline → OperatorNote, MarqueeQuote → FAQ)
+      read as abrupt. New <SectionDivider /> component
+      (apps/web/src/components/ui/SectionDivider.tsx) renders
+      a hand-painted gouache wavy-line ornament in sun-gold
+      (#E8B65A) with a small grass tuft in the center as a
+      brand mark, sized 1200×163 (≈7.4:1 aspect) at max-width
+      720px. Generated via SDXL+LoRA (0.55)+IP-Adapter (0.30)
+      at denoise 0.50 with a 1024×128 sinusoidal-wave input;
+      4 candidates at seeds 11001-11004; seed 11001 canonical
+      (cleanest wavy line, grass tuft most legible, only one
+      stray paint splatter on the left). Cream background
+      chroma-keyed (binary alpha, tolerance 20) to transparent
+      so the divider floats on any sand-bleached section.
+      Files: divider-v3-1200.webp (15 KB) + divider-v3-2400.webp
+      (41 KB). Inserted 7 dividers between major chapters on
+      the home page (OperatorStrip→ServiceBento, ServiceBento
+      →PricingTiers, ServiceAreaStats→ProcessSteps, Process
+      Steps→ServiceAreaMap, ScheduleTimeline→OperatorNote,
+      MarqueeQuote→FAQAccordion, FAQAccordion→FinalCTABanner);
+      skipped around EditorialBreak (itself the visual pause)
+      and Hero→TrustStrip (sand-bleached to sand-bleached).
+      Decorative (aria-hidden="true"); no motion. Charter 3/3
+      green, prod build clean (First Load JS unchanged at 212 kB).
+      Next: continue working through visual audit's remaining
+      items; steward to regenerate playwright visual baselines
+      (bunx playwright test --update-snapshots) to capture the
+      new dividers.
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      D-0012 - Painted storybook Pinellas peninsula map (visual
+      audit §1.3 - the only full-bleed hand-drawn section left
       on the homepage). The 800×1000 water+land+markers map is
       generated via SDXL+LoRA+IP-Adapter at denoise 0.65 (the
       higher denoise vs other v3 work was needed to push the
@@ -567,18 +601,18 @@ changelog:
   - date: "2026-07-15"
     day: 22
     change: >
-      D-0011 — Hero trust row uses clay bullets (visual audit §1.4).
+      D-0011 - Hero trust row uses clay bullets (visual audit §1.4).
       The three lucide-react icons (MapPin / Clock / Phone) in the
       above-the-fold trust row were the only modern-generic thin-stroke
       stock icons on the entire painted homepage. They read as
-      "painted hero + 3 stock icons" — mixed signal. Replaced with
+      "painted hero + 3 stock icons" - mixed signal. Replaced with
       the same clay-bullet idiom used in OperatorStrip.toolBar:
       8px sun dot with 3px sun halo, no SVG icon. Trust row now
       reads continuously as painted storybook above the fold.
 
       App.jsx change: removed `Clock`, `MapPin`, `Phone` from
       `import { ... } from 'lucide-react'` in HeroCinematic.tsx
-      (now empty — that import line is deleted entirely).
+      (now empty - that import line is deleted entirely).
 
       CSS change: added `.trustDot` to HeroCinematic.module.css
       matching OperatorStrip `.toolDot` (8px sun + 3px halo via
@@ -594,11 +628,11 @@ changelog:
       v3 painted version that joins the painted family.
 
       Generated via the SDXL+LoRA+IP-Adapter pipeline at:
-      - LoRA strength 0.45 (down from 0.55 — paired glyphs at
+      - LoRA strength 0.45 (down from 0.55 - paired glyphs at
         higher LoRA trigger the leaves bias)
-      - IP-Adapter weight 0.20 (down from 0.40 — the clean SVG
+      - IP-Adapter weight 0.20 (down from 0.40 - the clean SVG
         input didn't need style anchoring)
-      - denoise 0.55 (up from 0.35 — needed freedom to add
+      - denoise 0.55 (up from 0.35 - needed freedom to add
         brushwork on the edges)
       - 4 candidates at seeds 7001-7004, all 4 keepers (paired
         glyphs + clean brushy tails, no LoRA bias). Seed 7004
@@ -618,13 +652,13 @@ changelog:
   - date: "2026-07-15"
     day: 22
     change: >
-      Cleanup PR — removed 21 dead asset files (visual audit §3).
+      Cleanup PR - removed 21 dead asset files (visual audit §3).
       All unreferenced per grep across apps/web/src:
       - 10 decorative SVGs: compass-dial, edge-blade-detail,
         hedge-line, leaf-pile, mulch-pile, pack-mule,
         phone-ringing, pin-on-map, storm-front, wind-direction
       - 5 byte-identical grass-blade-cluster.svg variants (all
-        1453 bytes, superseded by the v3 webp set — but the v3
+        1453 bytes, superseded by the v3 webp set - but the v3
         webp set was also unreferenced, so all 4 v3 sizes and all
         5 SVGs gone)
       - 2 superseded line-art SVGs: pinellas-palm.svg (v1, kept
@@ -640,20 +674,20 @@ changelog:
   - date: "2026-07-15"
     day: 22
     change: >
-      Sub-agent visual audit (read-only) — comprehensive
+      Sub-agent visual audit (read-only) - comprehensive
       report at audit/visual-audit-2026-07-15.md (18.8 KB).
       Identified 5 ranked visual improvements + 1 dead-asset
       cleanup + 5 "don't bother" confirmations + accessibility
       check. Items §1.1 (painted bento icons), §1.2 (painted
-      quote-mark — DONE this commit), §1.3 (painted Pinellas
-      map), §1.4 (clay-bullet trust row — DONE this commit)
+      quote-mark - DONE this commit), §1.3 (painted Pinellas
+      map), §1.4 (clay-bullet trust row - DONE this commit)
       are the active roadmap. §2 do-later v3 wordmark +
       logo-mark-inverse + apple-touch-icon + favicon is
       queued. §3 dead-asset cleanup is DONE this commit.
   - date: "2026-07-14"
     day: 21
     change: >
-      Logo-mark v3 painted storybook — the most-seen brand asset
+      Logo-mark v3 painted storybook - the most-seen brand asset
       on the site (every page header, every navigation bar, every
       /preview/brand page) is now rendered as a hand-painted
       storybook mark matching the rest of the homepage illustration
@@ -666,13 +700,13 @@ changelog:
 
       THE BUG: apps/web/public/logo-mark.svg has a center blade
       path that's mathematically zero-width
-      (M 50 78 Q 50 25 50 8 — all x-coords = 50). When rasterized
+      (M 50 78 Q 50 25 50 8 - all x-coords = 50). When rasterized
       to 1024x1024, the center blade becomes a single pixel wide
       and the img2img model treats it as noise, erasing it. This
       was discovered on the FIRST seed 6001 candidate at denoise
       0.35 (the model produced only 2 outer blades + the base
       line, no center blade). Lowering denoise to 0.20 made no
-      difference — the model had nothing to preserve.
+      difference - the model had nothing to preserve.
 
       THE FIX: apps/comfyui/scripts/make-logo-input.ts generates
       a new 1024x1024 cream-background PNG that depicts the
@@ -720,9 +754,9 @@ changelog:
 
       KEPT AS-IS (intentional):
       - apps/web/public/logo-mark.svg           (v1 line art, still ships as a fallback variant)
-      - apps/web/public/icon.svg                (favicon SVG — line art scales cleaner at 16-32px than painted)
-      - apps/web/public/apple-touch-icon.svg    (iOS home screen — line art, never repaints on iOS)
-      - apps/web/public/manifest.webmanifest    (unchanged — icons array still references the SVGs)
+      - apps/web/public/icon.svg                (favicon SVG - line art scales cleaner at 16-32px than painted)
+      - apps/web/public/apple-touch-icon.svg    (iOS home screen - line art, never repaints on iOS)
+      - apps/web/public/manifest.webmanifest    (unchanged - icons array still references the SVGs)
       - apps/web/public/logo-mark-inverse.svg   (light-on-dark variant, not in use today)
       - apps/web/public/logo-mark-mono.svg      (currentColor variant, not in use today)
 
@@ -739,10 +773,10 @@ changelog:
   - date: "2026-07-14"
     day: 21
     change: >
-      Pinellas-palm v3 shipped — img2img of the v1 hand-authored
+      Pinellas-palm v3 shipped - img2img of the v1 hand-authored
       SVG into the brand's storybook gouache style. Follows the
       exact same pattern that worked for the v3 grass (D-0009 Path 3
-      of 3) — provides correct shape as input, low denoise (0.35)
+      of 3) - provides correct shape as input, low denoise (0.35)
       to keep the model focused on texture rather than subject
       invention, IP-Adapter style transfer (weight 0.40) for brand
       consistency. 4 candidates at seeds 5801-5804, ALL 4 keepers
@@ -750,12 +784,12 @@ changelog:
 
       The v1 palm SVG was described in the WP15 / WP19 audit trail
       as "a stick figure, not a painted-storybook-spread the brand
-      voice calls for" — same complaint that flagged the v2 hero
+      voice calls for" - same complaint that flagged the v2 hero
       blob-field. The v3 fix uses the same SDXL+LoRA+IP-Adapter
       pipeline that produced the v2 hero keeper, but at the lower
       denoise that keeps the silhouette intact.
 
-      Curated 4/4 keepers — verified:
+      Curated 4/4 keepers - verified:
       - Single mature Pinellas fan-palm silhouette (sabal palmetto
         style with arching pinnate fronds and a textured brown
         trunk with visible palm rings)
@@ -778,13 +812,13 @@ changelog:
       COMPONENT SWAPS (4 files): every page on the site renders the
       palm in the footer, so this is a cross-cutting visual upgrade:
       - apps/web/src/components/site/SiteFooter.tsx
-        (brandMark, 36x36 — was 36x24, height adjusted to 1:1 aspect)
+        (brandMark, 36x36 - was 36x24, height adjusted to 1:1 aspect)
       - apps/web/src/components/sections/OperatorStrip.tsx
-        (bioSignatureMark, 72x72 — was 72x48)
+        (bioSignatureMark, 72x72 - was 72x48)
       - apps/web/src/components/sections/PricingTiers.tsx
-        (headerOrnamentMark, 120x120 — was 120x80)
+        (headerOrnamentMark, 120x120 - was 120x80)
       - apps/web/src/components/sections/ServiceAreaStats.tsx
-        (watermark, 600x400 — same dimensions, now painted)
+        (watermark, 600x400 - same dimensions, now painted)
 
       VISUAL REGRESSION: the 4 component swaps change the visual
       output of every page. The Playwright baselines at
@@ -831,7 +865,7 @@ changelog:
       static text (eyebrow, subhead, buttons, trust row) now renders
       server-side with zero JS. The motion parts (WordReveal,
       ParallaxImage, the framer-motion variants) are now imported
-      as implicit client boundaries — Next.js code-splits them
+      as implicit client boundaries - Next.js code-splits them
       into a separate bundle that loads after the SSR'd text is
       already visible. (2) Add `scrollbar-gutter: stable` to the
       <html> selector in apps/web/src/styles/reset.css. Without
@@ -891,17 +925,17 @@ changelog:
       candidates at seeds 5701-5704 all curate as keepers (low
       denoise produces very stable output; all 4 nearly identical).
       Seed 5701 selected as canonical. Shipped at 4 sizes (100/150/
-      200/300 webp, 1-5KB each — webp compresses solid-color
+      200/300 webp, 1-5KB each - webp compresses solid-color
       backgrounds extremely well) as
       apps/web/public/illustrations/grass-blade-cluster-v3-{100,150,
       200,300}.webp. The v1 SVG is kept for fallback + diff
       traceability. The v3 webp is currently unreferenced in the
       app source (grep confirms no /illustrations/grass references
-      in apps/web/src) — the v1 SVG was also unreferenced, so the
+      in apps/web/src) - the v1 SVG was also unreferenced, so the
       v3 ships as an "available for use" upgrade rather than a
       forced swap. New `apps/comfyui/scripts/run-img2img.py` driver
       authored for the experiment (one-off, not a general-purpose
-      driver — generate.py is still the txt2img surface). New
+      driver - generate.py is still the txt2img surface). New
       `apps/comfyui/workflows/hero-grass-v3-img2img.json` workflow
       documents the recipe. New
       `apps/comfyui/prompts/grass-v3-img2img.md` brief documents
@@ -909,14 +943,14 @@ changelog:
       path CLOSED (Path 3 of 3 successful); D-0010 mobile perf
       still queued. Verification: all 4 candidates visually
       curated, webp sizes verified, charter compliance 3/3 green
-      (no charter-tracked changes this turn — assets only).
+      (no charter-tracked changes this turn - assets only).
     by: "Mavis (autonomous, 2026-07-14)"
 
   - date: "2026-07-14"
     day: 21
     change: >
       D-0009 production-mode Lighthouse re-run shipped. Desktop
-      CI gate (Perf ≥95 per lighthouserc.cjs) is GREEN — v2 hero
+      CI gate (Perf ≥95 per lighthouserc.cjs) is GREEN - v2 hero
       holds 100/100 Perf, 97/100 A11y, 100/100 BP, 100/100 SEO
       on `/` desktop. All PRD-00 §4 success metrics met (LCP 0.7s,
       CLS 0, TBT 10ms). The v2 hero swap is a clean ship on
@@ -928,7 +962,7 @@ changelog:
       on v1 prod). LCP 4.0s (was 2.2s, +1.8s regression), TBT
       260ms (was 20ms, +240ms regression), Speed Index 3.1s
       (was 1.6s). The LCP element is the hero subhead text
-      (`.HeroCinematic_subhead`), not the image — Lighthouse
+      (`.HeroCinematic_subhead`), not the image - Lighthouse
       `lcp-breakdown-insight` shows TTFB 11.7ms, element-render
       delay 577.7ms, with the remaining ~3.4s attributable to JS
       bootup. `bootup-time` audit shows the HTML page itself now
@@ -961,15 +995,15 @@ changelog:
 
       D-0009 follow-up updated:
       - Long-term grass asset upgrade (3 paths in D-0008 §v2
-        outcome) — still queued.
-      - Mobile perf regression fix — NEW; needs D-0010.
-      - Production-mode Lighthouse re-run — DONE; this entry.
+        outcome) - still queued.
+      - Mobile perf regression fix - NEW; needs D-0010.
+      - Production-mode Lighthouse re-run - DONE; this entry.
     by: "Mavis (autonomous, 2026-07-14)"
 
   - date: "2026-07-14"
     day: 20
     change: >
-      WP49 hero v2 — replace the WP3-era hero webps (commit ac16da8,
+      WP49 hero v2 - replace the WP3-era hero webps (commit ac16da8,
       Day 17) with keeper-quality painted storybook. v1 hero was
       37 KB desktop + 22 KB mobile, blurry blob-field with no
       architecture, no focal subject, no Pinellas identity. User
@@ -978,10 +1012,10 @@ changelog:
       D-0008 ratified, brief authored (apps/comfyui/prompts/hero-v2.md),
       8 workflow JSONs + 3 scripts + 3 curation logs landed in
       commit e57c7a7. Master scene generated (4 candidates @ seed
-      4242, LoRA 0.90, IP-Adapter 0.55, 40 steps), curated 24/30 —
+      4242, LoRA 0.90, IP-Adapter 0.55, 40 steps), curated 24/30 -
       candidate 1 is the keeper (ranch house + golden hour + small
       riding mower in lower-right). Mobile scene generated
-      independently (4 candidates @ seed 4269), curated 24/30 —
+      independently (4 candidates @ seed 4269), curated 24/30 -
       candidate 1 is the keeper (2-story house + push mower in
       lower-third, on-brand palette). Mower + grass layer
       generations were ABANDONED due to LoRA bias: 4-of-4 mower
@@ -996,7 +1030,7 @@ changelog:
       was realized in practice). v2 ships as a single static
       image per breakpoint (mobile.webp 191 KB, desktop.webp
       314 KB) inside the right column. Component swap shipped in
-      commit 72e749c — HeroCinematic.tsx now renders a single
+      commit 72e749c - HeroCinematic.tsx now renders a single
       next/image instead of the WP19-WP48 layered SVG composition;
       per-layer ambient motion (palm sway / mower drift / grass
       sway) is dropped. Motion choreography preserved on the copy
@@ -1005,14 +1039,14 @@ changelog:
       queued for the next run. Charter compliance: all 4 tests
       (charter, agents, capabilities, ledger-freshness) green.
       Typecheck green. D-0009 follow-up: long-term grass asset
-      upgrade (3 paths logged in D-0008 §v2 outcome) — the v2
+      upgrade (3 paths logged in D-0008 §v2 outcome) - the v2
       stopgap uses the existing SVG, v3 should resolve.
     by: "Mavis (autonomous, 2026-07-14)"
 
   - date: "2026-07-12"
     day: 18
     change: >
-      Phase 1 Visual closeout — Playwright visual regression suite live
+      Phase 1 Visual closeout - Playwright visual regression suite live
       in apps/web/visual/ (16 baselines: 12 routes × 2 viewports from
       the 6 PRD-00 §4 routes + 4 component close-ups of the new sections
       library mounted on the internal /visual-test test route, robots:
@@ -1026,7 +1060,7 @@ changelog:
       + *-diff PNGs as GitHub artifacts so reviewers can see what
       changed. Captures run with contextOptions.reducedMotion='reduce'
       so Framer useReducedMotion collapses + CSS @media
-      (prefers-reduced-motion: reduce) queries fire — eliminates
+      (prefers-reduced-motion: reduce) queries fire - eliminates
       animation jitter in baselines. maskVolatileContent(page) helper
       in utils/stabilize.ts hides [data-visual-mask="date"] /
       [data-visual-mask="year"] / .last-updated via injected
@@ -1050,24 +1084,24 @@ changelog:
       lint on my new files clean (3 pre-existing format errors in
       apps/web/visual/ + apps/web/playwright.config.ts auto-fixed;
       pre-existing 71 lint errors in untouched files are NOT this
-      PR's problem — known-good-blocker from WP5); typecheck green
+      PR's problem - known-good-blocker from WP5); typecheck green
       (repo root + apps/web); verify-references still 85/85 strict;
       check-weight still 19/19 ≤ 300 KB; web build green; smoke
       test on /visual-test returns 200 with all 4 section anchors.
       Single commit on fix/wp1-front-end-coherence with the message
-      'chore(web): Phase 1 Visual — Playwright visual regression
-      suite'. NOT pushed — steward reviews + merges per CLAUDE.md.
+      'chore(web): Phase 1 Visual - Playwright visual regression
+      suite'. NOT pushed - steward reviews + merges per CLAUDE.md.
       Bug-fix flag: framer-motion@11.18.2, lenis@1.3.25,
       @radix-ui/react-{dialog,accordion}, lucide-react@0.469.0 are
       installed in apps/web/node_modules/ but UNDECLARED in apps/web/
       package.json (shadow deps from a prior install). The visual
       suite works today because the deps are present on disk, but
       a 'bun install --force' from a clean cache will break the build.
-      Deferred to a separate quick PR — not on Phase 1 Visual's
+      Deferred to a separate quick PR - not on Phase 1 Visual's
       critical path. Health nudge: tests 0.85 → 0.88 (Playwright adds
-      a new test surface — per-PR pixel guard runs in addition to
+      a new test surface - per-PR pixel guard runs in addition to
       Lighthouse budget guard), engineering 0.92 → 0.94 (visual
-      regression adds a regression-catch class Lighthouse misses —
+      regression adds a regression-catch class Lighthouse misses -
       CSS slip, hover-state fire, font swap), health_score 0.95 →
       0.96.
     by: "engineer (autonomous)"
@@ -1075,7 +1109,7 @@ changelog:
   - date: "2026-07-12"
     day: 17
     change: >
-      WP3 execution complete — autonomous end-to-end asset generation.
+      WP3 execution complete - autonomous end-to-end asset generation.
       Previous-session assumption that ComfyUI generations required
       steward-restart-with-MCP was wrong on inspection: the stdlib driver
       in apps/comfyui/scripts/generate.py IS the production surface
@@ -1100,7 +1134,7 @@ changelog:
       ac16da8 feat(assets): ComfyUI-generated 19 webps replace SVG placeholders.
       IP-Adapter style coherence holds across all 19 (single anchor
       rendered from apps/web/public/hero/desktop.svg at 2× display size).
-      [[comfyui-mcp-pending-setup]] rewritten — no longer flags ComfyUI
+      [[comfyui-mcp-pending-setup]] rewritten - no longer flags ComfyUI
       as pending. [[wp2-wp4-complete]] extended with WP3-execution
       provenance and confirmed WP0-resolved status. Lighthouse 100/100
       × 6 desktop baseline from fe1670b preserved (same image dimensions,
@@ -1113,7 +1147,7 @@ changelog:
   - date: "2026-07-12"
     day: 17
     change: >
-      WP5 closeout — front-end workstream finalized for steward merge.
+      WP5 closeout - front-end workstream finalized for steward merge.
       (a) Post-WP3 Lighthouse baseline captured: 12 audits (6 PRD-00
       §4 routes × desktop + mobile viewports); all 12 pass PRD-00 §4
       success metrics (Perf ≥90 worst-observed 98, LCP ≤2.5s p75
@@ -1129,13 +1163,13 @@ changelog:
       complete across all 6 service cards in ServiceBento.tsx +
       content.ts: each service now has an imageAlt string field
       curated against the actual SDXL+IPAdapterPlus webp via multimodal
-      Read sweep; inline '— placeholder photo' template dropped from
+      Read sweep; inline '- placeholder photo' template dropped from
       ServiceBento.tsx:114. Hero alt hand-tuned comment added in
       HeroCinematic.tsx. (d) v2 photo hooks doc authored at audit/
       wp5-photo-hooks.md: 5 hooks (operator portrait, hero mobile,
       areas, services, equipment) with current state, v2 path,
       constraints, and IP-Adapter anchor reference for chain-of-custody
-      — engineer's reference for the steward's phone-photo drop. (e)
+      - engineer's reference for the steward's phone-photo drop. (e)
       Draft PR body at audit/wp5-pr-body.md for steward copy/paste.
       Verification: verify-references 85/85, check-weight 19/19,
       web build green, typecheck green, grep for placeholder copy in
@@ -1165,11 +1199,11 @@ changelog:
   - date: "2026-07-10"
     day: 5
     change: >
-      Day 5 complete — Phase 0 + Phase 1 exit criteria SIMULTANEOUSLY
+      Day 5 complete - Phase 0 + Phase 1 exit criteria SIMULTANEOUSLY
       SATISFIED. Tier-1 MCP filesystem server installed (.mcp.json at repo
-      root, scoped to '.'). scripts/check-ledger-freshness.ts added —
+      root, scoped to '.'). scripts/check-ledger-freshness.ts added -
       enforces the "ledger always-current" charter rule with a 7-day
-      threshold. scripts/charter-compliance.ts aggregator added —
+      threshold. scripts/charter-compliance.ts aggregator added -
       `bun run test:charter` runs all checks in one pass. Smoke-test
       protocol documented at scripts/smoke-test.md (PASS, transcript
       logged). Three Phase-0 audit deliverables authored:
@@ -1209,7 +1243,7 @@ changelog:
   - date: "2026-07-10"
     day: 15
     change: >
-      Day 6-15 complete — PHASE 1 EXIT CRITERIA ALL SATISFIED. Six
+      Day 6-15 complete - PHASE 1 EXIT CRITERIA ALL SATISFIED. Six
       research workstreams delivered: regulatory/largo-licensing-map.yaml
       (Day-8 GATE; 9 service lines audited; Day-1 decomposition =
       mowing/edging/mulching/hedge/hurricane-prep/seasonal-cleanup;
