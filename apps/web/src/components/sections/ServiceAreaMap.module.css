@@ -1,40 +1,22 @@
 /* ============================================================
- * ServiceAreaMap — Mission 1 service-area illustration + Coverage Check.
+ * ServiceAreaMap — D-0031: form-dominant Coverage Check, no map.
  *
- * D-0028 — replaced the D-0027 6-ZIP light-cards rail with a single
- * ZIP-or-neighborhood input + in-section coverage check. The map
- * picture stays as brand art (no AI regeneration per the burned-
- * once-on-D-0024 hard rule).
+ * D-0028 shipped a 3-col layout (form | map | result) where the
+ * map was 1.5fr — visually the primary element even though the
+ * form was the only interactive one. The user feedback after
+ * shipping: "I still don't like the map/zip component/layout."
  *
- * Layout (>=980px desktop):
+ * D-0031 takes the brutal option. The map is gone from the
+ * homepage. The form is the answer to "where I mow?"; the
+ * neighborhood chips below ARE the where-I-mow information.
+ * The map picture still lives on /areas/{zip} for users who
+ * want to dig into a specific area.
  *
- *   ┌────────────┬─────────────────────┬──────────────────┐
- *   │ Form       │                     │ Result panel     │
- *   │ [input]    │   Static map image  │ (idle / hit /     │
- *   │ [submit]   │   (brand art)       │  miss)           │
- *   └────────────┴─────────────────────┴──────────────────┘
- *                  3-col grid: 1fr | 1.4fr | 1fr
- *
- * Layout (<980px mobile):
- *
- *   ┌──────────────────────────────┐
- *   │ Form                         │
- *   │ [input]                      │
- *   │ [submit]                     │
- *   ├──────────────────────────────┤
- *   │ Map (full-width, max 55vh)   │
- *   ├──────────────────────────────┤
- *   │ Result panel                 │
- *   └──────────────────────────────┘
- *
- *   [ See all six areas (collapsed details) ]
- *
- * The 6 area chips live inside a <details> below the form so the
- * primary verb ("Get free quote") isn't competing with a second
- * UI object answering the same "am I in your area?" question.
- *
- * D-0026 final layout — TOP-DOWN, map is the focal point. Kept the
- * small centered header from D-0026c.
+ * Section layout (vertical stack, all centered):
+ *   1. Section header  (small + centered)
+ *   2. Form            (max-width 480px, prominent input + button)
+ *   3. Result panel    (same max-width, only after a check)
+ *   4. Chips           (max-width 720px, the 6 ZIP neighborhoods)
  * ============================================================ */
 
 .root {
@@ -46,14 +28,11 @@
 .inner {
   display: flex;
   flex-direction: column;
-  gap: var(--space-7);
+  gap: var(--space-6);
   align-items: center;
 }
 
-/* ---------- Section header ----------
- * Small + centered, intentionally understated so the map below
- * is the focal point. Max-width keeps the heading from
- * dominating the page width. */
+/* ---------- Section header ---------- */
 .header {
   display: flex;
   flex-direction: column;
@@ -87,42 +66,20 @@
   max-width: 36rem;
 }
 
-/* ---------- Coverage Check grid (D-0028) ----------
- * 3-col on desktop (form | map | result), 1-col on mobile.
- * Mobile: form → map → result stacked. Desktop: 3-col grid
- * with the form on the left, the map in the center (slightly
- * wider), and the result panel on the right.
- *
- * The map column is wider than the form/result columns
- * because the map is the visual centerpiece of the section.
- */
+/* ---------- Coverage column (form + result) ---------- */
 .coverage {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-5);
   width: 100%;
-  max-width: 1080px;
-  align-items: start;
-}
-
-@media (min-width: 980px) {
-  .coverage {
-    grid-template-columns: 1fr 1.5fr 1fr;
-    gap: var(--space-5);
-  }
-}
-
-/* ---------- Form column (D-0028) ----------
- * Single, obvious input. Full-width on mobile, naturally
- * fills the left column on desktop. The input is the primary
- * affordance; the submit button is a secondary action
- * (Enter submits too).
- */
-.form {
+  max-width: 480px;
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  width: 100%;
+}
+
+/* ---------- Form ---------- */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
 .formLabel {
@@ -136,201 +93,145 @@
 
 .formRow {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
+  align-items: stretch;
 }
 
-@media (min-width: 640px) {
+@media (max-width: 560px) {
   .formRow {
-    flex-direction: row;
+    flex-direction: column;
   }
 }
 
 .formInput {
-  flex: 1 1 auto;
+  flex: 1;
   min-width: 0;
   font-family: var(--font-inter);
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--ll-palm-bark);
-  background: var(--ll-sand-bleached);
-  border: 1.5px solid color-mix(in srgb, var(--ll-sand-bleached) 40%, transparent);
+  font-size: 1.15rem;
+  padding: 0.85rem 1.1rem;
   border-radius: var(--radius);
-  padding: 0.75rem 1rem;
-  /* The browser default outline is replaced by a sun-gold focus
-     ring via the global `*:focus-visible` rule in typography.css.
-     We intentionally do NOT use `outline: none` here. */
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-palm-bark) 18%, transparent);
-  transition: border-color var(--motion-duration-fast) var(--motion-easing-default), background
-    var(--motion-duration-fast) var(--motion-easing-default), box-shadow var(--motion-duration-fast)
-    var(--motion-easing-default);
+  background: var(--ll-sand-bleached);
+  color: var(--ll-palm-bark);
+  border: 1.5px solid color-mix(in srgb, var(--ll-palm-bark) 18%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-sand) 30%, transparent), 0 4px 12px -6px
+    rgba(0, 0, 0, 0.35);
+  transition: border-color var(--motion-duration-fast) var(--motion-easing-default), box-shadow
+    var(--motion-duration-fast) var(--motion-easing-default);
 }
 
 .formInput::placeholder {
   color: color-mix(in srgb, var(--ll-palm-bark) 45%, transparent);
-  font-weight: 500;
 }
 
 .formInput:hover {
-  border-color: color-mix(in srgb, var(--ll-sun) 60%, transparent);
+  border-color: color-mix(in srgb, var(--ll-palm-bark) 35%, transparent);
 }
+
+/* Focus ring is intentionally global (*:focus-visible in
+ * typography.css) — we do not declare `outline: none` anywhere. */
 
 .formSubmit {
   font-family: var(--font-inter);
-  font-size: 0.95rem;
   font-weight: 700;
-  letter-spacing: 0.01em;
-  color: var(--ll-palm-bark);
-  background: var(--ll-sun);
-  border: 1.5px solid transparent;
+  font-size: 0.95rem;
+  padding: 0 1.4rem;
   border-radius: var(--radius);
-  padding: 0.75rem 1.25rem;
+  background: var(--ll-sun);
+  color: var(--ll-palm-bark);
+  border: 1.5px solid var(--ll-sun);
   cursor: pointer;
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-palm-bark) 22%, transparent), 0 4px 12px -4px
+  white-space: nowrap;
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-sun) 50%, transparent), 0 4px 12px -6px
     rgba(0, 0, 0, 0.35);
   transition: background var(--motion-duration-fast) var(--motion-easing-default), transform
-    var(--motion-duration-fast) var(--motion-easing-default), box-shadow var(--motion-duration-fast)
-    var(--motion-easing-default);
-  /* `type="submit"` so Enter in the input also submits; the
-     shared <Button> component hard-codes type="button" so the
-     raw <button> is used here to keep keyboard-submit behavior
-     correct. */
+    var(--motion-duration-fast) var(--motion-easing-default), box-shadow
+    var(--motion-duration-fast) var(--motion-easing-default);
 }
 
 .formSubmit:hover {
-  background: #f0c068;
-  transform: translateY(-1px);
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-palm-bark) 22%, transparent), 0 8px 18px -6px
-    rgba(0, 0, 0, 0.45);
+  background: color-mix(in srgb, var(--ll-sun) 92%, #fff);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-sun) 50%, transparent), 0 8px 20px -8px
+    rgba(0, 0, 0, 0.5);
 }
 
 .formSubmit:active {
-  transform: translateY(0) scale(0.98);
+  transform: scale(0.98);
+}
+
+@media (max-width: 560px) {
+  .formSubmit {
+    padding: 0.85rem 1.4rem;
+  }
 }
 
 .formHelper {
   margin: 0;
   font-family: var(--font-inter);
   font-size: 0.85rem;
-  line-height: 1.45;
   color: var(--ll-sand-bleached);
-  opacity: 0.75;
+  opacity: 0.7;
+  line-height: 1.45;
 }
 
-/* ---------- Map (D-0026 layout, preserved) ----------
- * 4:3 aspect, fills the center column on desktop, max 55vh
- * on mobile (keeps the section from being map-only on small
- * screens). A subtle drop shadow lifts the map off the dark
- * palm-bark background, and a thin palm-bark border frames
- * it (a "printed page in a brochure" feel).
- */
-.mapWrap {
-  position: relative;
-  width: 100%;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: #f4e8d0; /* matches the map's cream field */
-  aspect-ratio: 4 / 3;
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-sand-bleached) 8%, transparent), 0 24px 56px -28px
-    rgba(0, 0, 0, 0.65), 0 8px 20px -8px rgba(0, 0, 0, 0.4);
-}
-
-@media (max-width: 979px) {
-  .mapWrap {
-    max-height: 55vh;
-  }
-}
-
-.mapImage {
-  object-fit: cover;
-  object-position: center;
-}
-
-/* ---------- Result panel (D-0028) ----------
- * Cream card on the dark palm-bark background so the result
- * reads as an explicit "the system answered you" panel.
- * Uses the same palette tokens as the D-0027 light rail so
- * the visual vocabulary stays consistent.
- *
- * The idle state (no result yet) shows a soft prompt so the
- * layout doesn't shift when the user submits.
- */
+/* ---------- Result panel ---------- */
 .result {
+  display: block;
   background: var(--ll-sand-bleached);
   color: var(--ll-palm-bark);
-  border-radius: var(--radius-lg);
-  border: 1.5px solid color-mix(in srgb, var(--ll-sand-bleached) 18%, transparent);
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-sand) 30%, transparent), 0 12px 28px -10px
-    rgba(0, 0, 0, 0.4);
-  padding: var(--space-5);
-  min-height: 12rem;
-  display: flex;
-  align-items: center;
-  width: 100%;
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  border: 1.5px solid color-mix(in srgb, var(--ll-sun) 40%, transparent);
+  box-shadow: 0 4px 16px -8px rgba(0, 0, 0, 0.4);
 }
 
-.resultIdle {
-  background: color-mix(in srgb, var(--ll-sand-bleached) 70%, transparent);
-  border-style: dashed;
-  border-color: color-mix(in srgb, var(--ll-sand-bleached) 35%, transparent);
-  box-shadow: none;
+.result[data-result='miss'] {
+  border-color: color-mix(in srgb, var(--ll-clay) 40%, transparent);
 }
 
 .resultInner {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  width: 100%;
+  gap: 0.7rem;
 }
 
 .resultHeadline {
   display: flex;
-  align-items: flex-start;
-  gap: var(--space-2);
-  font-family: var(--font-fraunces), serif;
-  font-weight: 700;
-  font-size: 1.15rem;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-  color: var(--ll-palm-bark);
+  align-items: center;
+  gap: 0.6rem;
   margin: 0;
-  font-variant-numeric: tabular-nums;
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--ll-palm-bark);
+  font-weight: 500;
 }
 
-.resultCheck,
+.resultCheck {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ll-sun) 35%, transparent);
+  color: var(--ll-clay);
+  flex-shrink: 0;
+}
+
 .resultCheckMiss {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
   width: 1.5rem;
   height: 1.5rem;
-  border-radius: var(--radius-pill);
-  color: var(--ll-sun);
-  margin-top: 0.1em;
-}
-
-.resultCheck {
-  background: color-mix(in srgb, var(--ll-sun) 18%, transparent);
-  color: #b8801c; /* deeper sun-on-cream for the check mark */
-}
-
-.resultCheckMiss {
-  background: color-mix(in srgb, var(--ll-clay) 18%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ll-clay) 22%, transparent);
   color: var(--ll-clay);
-}
-
-.resultDetail {
-  margin: 0;
-  font-family: var(--font-inter);
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: color-mix(in srgb, var(--ll-palm-bark) 75%, transparent);
+  flex-shrink: 0;
 }
 
 .resultCta {
   align-self: flex-start;
-  margin-top: var(--space-2);
 }
 
 .resultCtaArrow {
@@ -341,133 +242,57 @@
 
 .resultCta:hover .resultCtaArrow,
 .resultCta:focus-visible .resultCtaArrow {
-  transform: translateX(3px);
+  transform: translateX(2px);
 }
 
-/* Idle state copy */
-.resultIdleHeadline {
-  margin: 0;
-  font-family: var(--font-fraunces), serif;
-  font-weight: 700;
-  font-size: 1.05rem;
-  line-height: 1.3;
-  color: var(--ll-palm-bark);
-}
-
-.resultIdleBody {
-  margin: 0;
-  font-family: var(--font-inter);
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: color-mix(in srgb, var(--ll-palm-bark) 70%, transparent);
-}
-
-.resultIdleKbd {
-  display: inline-block;
-  padding: 0.05em 0.45em;
-  font-family: var(--font-inter);
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--ll-palm-bark);
-  background: color-mix(in srgb, var(--ll-sun) 25%, transparent);
-  border-radius: var(--radius-sm);
-  border: 1px solid color-mix(in srgb, var(--ll-sun) 50%, transparent);
-}
-
-/* ---------- Collapsed "See all six areas" details (D-0028) ----------
- * The 6 ZIP cards are no longer the primary affordance. They
- * are demoted to a collapsed <details> so users who want to
- * browse per-area (or hit a specific /areas/{zip} SEO page)
- * can still get there. The primary verb is now "Get free
- * quote" with the ZIP prefilled.
- */
-.areasDetails {
-  width: 100%;
-  max-width: 1080px;
-  background: color-mix(in srgb, var(--ll-sand-bleached) 6%, transparent);
-  border: 1px solid color-mix(in srgb, var(--ll-sand-bleached) 18%, transparent);
-  border-radius: var(--radius);
-  padding: var(--space-2) var(--space-4);
-}
-
-.areasDetails[open] {
-  padding-bottom: var(--space-4);
-}
-
-.areasSummary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-  font-family: var(--font-inter);
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--ll-sand-bleached);
-  cursor: pointer;
-  list-style: none;
-  padding: var(--space-2) 0;
-  border-radius: var(--radius-sm);
-  /* No `outline: none` — the global focus-visible rule on
-     <summary> applies via typography.css. */
-}
-
-.areasSummary::-webkit-details-marker {
-  display: none; /* hide default disclosure triangle, use the SVG instead */
-}
-
-.areasChevron {
-  flex-shrink: 0;
-  color: var(--ll-sun);
-  transition: transform var(--motion-duration-fast) var(--motion-easing-default);
-}
-
-.areasDetails[open] .areasChevron {
-  transform: rotate(180deg);
-}
-
+/* ---------- "Where I mow" chip strip ----------
+ * With the map gone, the chips ARE the where-I-mow information.
+ * Six chips, one per neighborhood, each a Link to /areas/{zip}
+ * (SEO landing page). Cream outline, sun on hover, palm-bark
+ * text on hover for high contrast. */
 .areasChips {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: var(--space-2);
-  margin-top: var(--space-3);
+  justify-content: center;
+  width: 100%;
+  max-width: 720px;
+  padding-top: var(--space-3);
+  border-top: 1px solid color-mix(in srgb, var(--ll-sand-bleached) 18%, transparent);
 }
 
 .areaChip {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  padding: var(--space-3);
-  border-radius: var(--radius);
-  background: color-mix(in srgb, var(--ll-sand-bleached) 92%, transparent);
-  color: var(--ll-palm-bark);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5em;
+  padding: 0.55em 0.95em;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ll-sand-bleached);
   text-decoration: none;
+  font-family: var(--font-inter);
+  font-size: 0.88rem;
   border: 1px solid color-mix(in srgb, var(--ll-sand-bleached) 30%, transparent);
-  transition: background var(--motion-duration-fast) var(--motion-easing-default), border-color
-    var(--motion-duration-fast) var(--motion-easing-default), transform var(--motion-duration-fast)
-    var(--motion-easing-default);
+  transition: background var(--motion-duration-fast) var(--motion-easing-default), color
+    var(--motion-duration-fast) var(--motion-easing-default), border-color
+    var(--motion-duration-fast) var(--motion-easing-default), transform
+    var(--motion-duration-fast) var(--motion-easing-default);
 }
 
 .areaChip:hover,
 .areaChip:focus-visible {
-  background: #fffaf0;
+  background: var(--ll-sand-bleached);
+  color: var(--ll-palm-bark);
   border-color: var(--ll-sun);
   transform: translateY(-1px);
-  text-decoration: none;
 }
 
 .areaChipZip {
-  font-family: var(--font-fraunces), serif;
   font-weight: 700;
-  font-size: 1.1rem;
   font-variant-numeric: tabular-nums;
-  color: var(--ll-clay);
-  line-height: 1;
 }
 
 .areaChipName {
-  font-family: var(--font-inter);
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: color-mix(in srgb, var(--ll-palm-bark) 75%, transparent);
-  line-height: 1.3;
+  opacity: 0.78;
+  font-size: 0.82rem;
 }

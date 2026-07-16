@@ -1,63 +1,42 @@
 'use client';
 
 /**
- * ServiceAreaMap — Mission 1 illustrative map + Coverage Check.
+ * ServiceAreaMap — D-0031: form-dominant Coverage Check, no map.
  *
- * D-0028: replaced the D-0027 light-cards rail with a single, obvious
- * ZIP-or-neighborhood input that runs an in-section coverage check.
+ * D-0031 redesign (per steward feedback after D-0028): the 3-col
+ * layout (form | map | result) shipped in D-0028 was technically
+ * correct but visually wrong. The map was 1.5fr in the grid, so
+ * it was the visual primary even though the form was the only
+ * interactive element. The eye went to the map first, not the
+ * "type your ZIP" input that actually answers the conversion
+ * question. The steward escalated after seeing it in production:
+ * "I still don't like the map/zip component/layout."
  *
- * Problem D-0028 fixes (carried over from D-0026c + D-0027):
- *   - The previous 6-card rail was a SECOND UI object next to the
- *     static map illustration. The eye didn't know which object
- *     answered "am I in your service area?"
- *   - Most Largo homeowners know their street + neighborhood name
- *     ("I live off Indian Rocks, near Belleair Bluffs"). Asking
- *     them to pick from 6 ZIP cards mid-scroll was a cognitive tax.
- *   - The rail's primary verb was "view details" (→ /areas/{zip});
- *     the real primary verb is "get a free quote" with the ZIP
- *     prefilled so the calculator can pre-load the right area.
+ * D-0031 takes the brutal option: drop the map from the homepage
+ * entirely. The form is the answer to "where I mow?" — the map
+ * was decoration competing for attention. The map picture still
+ * lives on /areas/{zip} for users who want to dig into a specific
+ * neighborhood; on the homepage, the section is now just:
+ *   1. Section header (small + centered, unchanged)
+ *   2. Form column (max-width 480px, centered) — input + Check
+ *      coverage button side by side on desktop, stacked on mobile
+ *   3. Result panel (same max-width, only renders after a check;
+ *      cream card with sun-filled CTA on hit, outline CTA on miss)
+ *   4. "See all six areas" chips (visible by default — they're
+ *      the real "where I mow" information, not a collapsed
+ *      secondary path)
  *
- * New flow (D-0028):
- *   1. Section header is small + centered (unchanged from D-0026c).
- *   2. ONE input: ZIP or neighborhood name. `<datalist>` is seeded
- *      with all 6 ZIPs and all 6 neighborhood labels from
- *      `serviceAreaMap.pinLocations`, so users can either type a
- *      5-digit ZIP OR start typing a neighborhood (Largo, Belleair,
- *      Seminole, ...) and pick from the autocomplete.
- *   3. On submit, a tiny resolver runs:
- *        - 5-digit ZIP, in service area       -> hit (link to /quote?zip=)
- *        - 5-digit ZIP, not in service area   -> miss (link to /quote)
- *        - text containing a known token      -> hit (resolved to ZIP)
- *        - text without a known token         -> miss
- *        - empty / partial / 1-2 char         -> invalid (inline helper)
- *   4. A result panel sits to the right of the map on desktop and
- *      below the map on mobile. It uses the native `<output>` element
- *      (which carries an implicit `role="status"` + `aria-live="polite"`)
- *      so screen readers announce the result.
- *   5. The 6 area "details" collapse into a `<details>` element
- *      below the form. Each chip is a secondary path to
- *      `/areas/{zip}` (still useful for SEO + users who want to
- *      browse per-area).
+ * All D-0028 behavior preserved:
+ *   - ZIP or neighborhood input with <datalist>
+ *   - On hit: result panel with sun CTA → /quote?zip=
+ *   - On miss: result panel with outline CTA → /quote
+ *   - On invalid: inline helper text below the input
+ *   - Live region for screen reader announcement
+ *   - /quote prefill via ?zip= query param
  *
- * Acceptance notes:
- *   - The map picture is preserved as-is (`/illustrations/pinellas-
- *     map-clean-1200x900.webp`). NO AI regeneration, per the burned-
- *     once-on-D-0024 hard rule.
- *   - Palette + typography tokens are unchanged. Sun-filled hit CTA
- *     uses the existing `Button` variant="sun" + outline miss CTA
- *     uses Button variant="outline".
- *   - Visible focus ring on the input AND the check button (global
- *     `*:focus-visible` rule in typography.css applies automatically).
- *   - Form uses `<form onSubmit>` so Enter submits; the "Check
- *     coverage" button is `type="submit"` (the shared `Button`
- *     component hard-codes `type="button"`, so the submit button is
- *     a raw `<button>` to keep keyboard-submit behavior correct).
- *   - Prefill loop: the result panel links to `/quote?zip={zip}`,
- *     and `/quote`'s QuoteCalculator reads `?zip=` to prefill its
- *     own ZIP select (loop-closure is in QuoteCalculator.tsx).
+ * Single primary interactive zone per the design principles.
  */
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { type FormEvent, type ReactNode, useId, useState } from 'react';
 
@@ -76,8 +55,7 @@ interface ServiceAreaMapProps {
 type CoverageResult =
   | { kind: 'hit'; zip: string; name: string }
   | { kind: 'miss'; query: string }
-  | { kind: 'invalid' }
-  | { kind: 'idle' };
+  | { kind: 'invalid' };
 
 /**
  * Build a token index once at module load. `pinLocations` is a
@@ -159,7 +137,7 @@ function resolveQuery(rawQuery: string): CoverageResult {
 
 export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
   const [query, setQuery] = useState('');
-  const [result, setResult] = useState<CoverageResult>({ kind: 'idle' });
+  const [result, setResult] = useState<CoverageResult | null>(null);
 
   // Stable IDs so the input/label/region wiring is unique per
   // mount (avoids a11y collisions if two instances ever coexist
@@ -173,15 +151,14 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
     setResult(resolveQuery(query));
   };
 
-  const showResultPanel = result.kind === 'hit' || result.kind === 'miss';
-  const showInvalidHelper = result.kind === 'invalid';
+  const showInvalidHelper = result?.kind === 'invalid';
+  const showResult = result?.kind === 'hit' || result?.kind === 'miss';
 
   return (
     <Section rhythm="loose" className={cn(styles.root, className)}>
       <div className="container">
         <div className={styles.inner}>
-          {/* Section header — small + centered, the map below is the
-             focal point so we don't want the header to compete. */}
+          {/* Section header — small + centered. */}
           <header className={styles.header}>
             <Eyebrow tone="dark" className={styles.headerEyebrow}>
               {serviceAreaMap.eyebrow}
@@ -190,10 +167,11 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
             <p className={styles.headerSub}>{serviceAreaMap.subhead}</p>
           </header>
 
-          {/* Coverage Check — 3-col on desktop (form | map | result),
-             single-col stack on mobile (form → map → result). */}
+          {/* Form + result — form-dominant. max-width 480px so the
+             form is the obvious "do this" element, not lost in a
+             wide grid. Result panel (when shown) sits directly
+             below the form, same width, as a confirmation. */}
           <div className={styles.coverage}>
-            {/* ---- Form column ---- */}
             <form className={styles.form} onSubmit={handleSubmit} noValidate>
               <label htmlFor={inputId} className={styles.formLabel}>
                 ZIP or neighborhood
@@ -212,10 +190,7 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
                   value={query}
                   onChange={(e) => {
                     setQuery(e.target.value);
-                    // Clear a stale result as soon as the user starts
-                    // editing again — keeps the panel from lying
-                    // about a query that no longer matches.
-                    if (result.kind !== 'idle') setResult({ kind: 'idle' });
+                    if (result !== null) setResult(null);
                   }}
                   aria-describedby={showInvalidHelper ? helperId : undefined}
                   aria-controls={liveId}
@@ -250,142 +225,95 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
               )}
             </form>
 
-            {/* ---- Map (center column on desktop, full-width on mobile) ---- */}
-            <div className={styles.mapWrap}>
-              <Image
-                src="/illustrations/pinellas-map-clean-1200x900.webp"
-                alt={serviceAreaMap.svgAriaLabel}
-                fill
-                sizes="(max-width: 980px) 100vw, 50vw"
-                className={styles.mapImage}
-                priority={false}
-              />
-            </div>
-
-            {/* ---- Result panel (right column on desktop, full-width
-                 on mobile). Always mounted so the layout is stable;
-                 the idle state shows a friendly prompt. ---- */}
-            <output
-              id={liveId}
-              className={cn(styles.result, !showResultPanel && styles.resultIdle)}
-            >
-              {result.kind === 'hit' && (
-                <div className={styles.resultInner}>
-                  <p className={styles.resultHeadline}>
-                    <span className={styles.resultCheck} aria-hidden="true">
-                      <svg
-                        viewBox="0 0 16 16"
-                        width="16"
-                        height="16"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
-                      >
-                        <path d="m3 8 3.5 3.5L13 5" />
-                      </svg>
-                    </span>
-                    <span>
-                      You&rsquo;re covered &middot; {result.zip} &mdash; {result.name}
-                    </span>
-                  </p>
-                  <p className={styles.resultDetail}>
-                    On the weekly route. Free quote within 24 hours.
-                  </p>
-                  <Button
-                    as="link"
-                    href={`/quote?zip=${result.zip}`}
-                    variant="sun"
-                    className={styles.resultCta}
-                  >
-                    Get free quote
-                    <span aria-hidden="true" className={styles.resultCtaArrow}>
-                      &rarr;
-                    </span>
-                  </Button>
-                </div>
-              )}
-              {result.kind === 'miss' && (
-                <div className={styles.resultInner}>
-                  <p className={styles.resultHeadline}>
-                    <span className={styles.resultCheckMiss} aria-hidden="true">
-                      <svg
-                        viewBox="0 0 16 16"
-                        width="16"
-                        height="16"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
-                      >
-                        <path d="M8 3v6" />
-                        <path d="M8 12.5v.5" />
-                      </svg>
-                    </span>
-                    <span>That&rsquo;s outside my usual route.</span>
-                  </p>
-                  <p className={styles.resultDetail}>
-                    Still ask &mdash; I sometimes take neighbors. Free quote within 24 hours.
-                  </p>
-                  <Button as="link" href="/quote" variant="outline" className={styles.resultCta}>
-                    Get a free quote
-                    <span aria-hidden="true" className={styles.resultCtaArrow}>
-                      &rarr;
-                    </span>
-                  </Button>
-                </div>
-              )}
-              {result.kind === 'idle' && (
-                <div className={styles.resultInner}>
-                  <p className={styles.resultIdleHeadline}>We&rsquo;ll tell you on the spot.</p>
-                  <p className={styles.resultIdleBody}>
-                    Type a ZIP or neighborhood above and hit{' '}
-                    <span className={styles.resultIdleKbd}>Check coverage</span>. If you&rsquo;re on
-                    the route, the next click takes you to a pre-filled quote.
-                  </p>
-                </div>
-              )}
-            </output>
+            {/* Result panel — only renders after a check. Cream card
+                 on the dark palm-bark background, sun CTA on hit. */}
+            {showResult && result && (
+              <output id={liveId} className={styles.result} data-result={result.kind}>
+                {result.kind === 'hit' ? (
+                  <div className={styles.resultInner}>
+                    <p className={styles.resultHeadline}>
+                      <span className={styles.resultCheck} aria-hidden="true">
+                        <svg
+                          viewBox="0 0 16 16"
+                          width="16"
+                          height="16"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="m3 8 3.5 3.5L13 5" />
+                        </svg>
+                      </span>
+                      <span>
+                        You&rsquo;re covered &middot; {result.zip} &mdash; {result.name}
+                      </span>
+                    </p>
+                    <Button
+                      as="link"
+                      href={`/quote?zip=${result.zip}`}
+                      variant="sun"
+                      className={styles.resultCta}
+                    >
+                      Get free quote
+                      <span aria-hidden="true" className={styles.resultCtaArrow}>
+                        &rarr;
+                      </span>
+                    </Button>
+                  </div>
+                ) : (
+                  <div className={styles.resultInner}>
+                    <p className={styles.resultHeadline}>
+                      <span className={styles.resultCheckMiss} aria-hidden="true">
+                        <svg
+                          viewBox="0 0 16 16"
+                          width="16"
+                          height="16"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <circle cx="8" cy="8" r="6" />
+                          <path d="M8 5v3" />
+                          <path d="M8 11v.5" />
+                        </svg>
+                      </span>
+                      <span>Outside my usual route &mdash; still ask.</span>
+                    </p>
+                    <Button as="link" href="/quote" variant="outline" className={styles.resultCta}>
+                      Get a free quote
+                      <span aria-hidden="true" className={styles.resultCtaArrow}>
+                        &rarr;
+                      </span>
+                    </Button>
+                  </div>
+                )}
+              </output>
+            )}
           </div>
 
-          {/* Collapsed "See all areas" — secondary path. Each chip
-             still links to /areas/{zip} (the SEO landing page). */}
-          <details className={styles.areasDetails}>
-            <summary className={styles.areasSummary}>
-              <span>See all six areas</span>
-              <svg
-                className={styles.areasChevron}
-                viewBox="0 0 16 16"
-                width="14"
-                height="14"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="m4 6 4 4 4-4" />
-              </svg>
-            </summary>
-            <nav className={styles.areasChips} aria-label="All service area ZIPs">
-              {BUSINESS.service_area_zips.map((zip) => {
-                const name =
-                  serviceAreaMap.pinLocations[zip as keyof typeof serviceAreaMap.pinLocations] ??
-                  'Largo area';
-                return (
-                  <Link key={zip} href={`/areas/${zip}`} className={styles.areaChip}>
-                    <span className={styles.areaChipZip}>{zip}</span>
-                    <span className={styles.areaChipName}>{name}</span>
-                  </Link>
-                );
-              })}
-            </nav>
-          </details>
+          {/* "Where I mow" — the six neighborhood chips. With the
+             map gone, the chips ARE the where-I-mow information.
+             Visible by default; each chip links to /areas/{zip}
+             (the SEO landing page for that ZIP). */}
+          <nav className={styles.areasChips} aria-label="All service area ZIPs">
+            {BUSINESS.service_area_zips.map((zip) => {
+              const name =
+                serviceAreaMap.pinLocations[zip as keyof typeof serviceAreaMap.pinLocations] ??
+                'Largo area';
+              return (
+                <Link key={zip} href={`/areas/${zip}`} className={styles.areaChip}>
+                  <span className={styles.areaChipZip}>{zip}</span>
+                  <span className={styles.areaChipName}>{name}</span>
+                </Link>
+              );
+            })}
+          </nav>
         </div>
       </div>
     </Section>
