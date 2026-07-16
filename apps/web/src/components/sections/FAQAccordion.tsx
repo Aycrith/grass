@@ -6,10 +6,19 @@
  * Reads from `lib/content.ts → faqHeader` for section copy and
  * `lib/content.ts → faq[]` for question/answer pairs. Wraps the
  * design-system <Accordion> primitive (Radix-backed) with the
- * section's numbered eyebrow + headline + body intro. Each row
- * is hairline-divided with a chevron rotating 180° on open.
+ * section's headline + body intro. Each row is hairline-divided
+ * with a chevron rotating 180° on open.
  *
  * Keyboard accessible by Radix defaults (Arrow keys + Enter/Space).
+ *
+ * D-0030 (Wave C of three sequential design changes) — visual
+ * system hygiene pass:
+ *   - Section rhythm: loose → default. D-0030 mandates even
+ *     vertical padding (--space-10 / 64px) across all in-scope
+ *     sections; the FAQ was previously --space-13 (128px).
+ *   - The eyebrow (originally "08 - Questions") was already
+ *     removed in an earlier wave, so no further eyebrow work
+ *     here.
  */
 
 import { Section } from '@/components/site';
@@ -25,7 +34,7 @@ interface FAQAccordionProps {
 
 export function FAQAccordion({ className }: FAQAccordionProps): React.ReactNode {
   return (
-    <Section rhythm="loose" className={cn(styles.root, className)} id="faq">
+    <Section className={cn(styles.root, className)} id="faq">
       <div className="container">
         <header className={styles.header}>
           <h2 className={styles.headerHeading}>{faqHeader.heading}</h2>

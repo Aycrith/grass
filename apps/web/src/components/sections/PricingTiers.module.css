@@ -17,6 +17,11 @@
  *
  * Mobile (<900px): all 3 cards stack to 1 column with the anchor
  * card first.
+ *
+ * D-0030 — `.headerEyebrow` removed (eyebrow dropped from JSX,
+ * per the ≤3-eyebrow rule). Header margin tightened from
+ * --space-8 to --space-7 to keep visual proportion without
+ * the eyebrow's vertical weight above the heading.
  * ============================================================ */
 
 .root {
@@ -29,11 +34,7 @@
   flex-direction: column;
   gap: var(--space-3);
   max-width: 42rem;
-  margin-bottom: var(--space-8);
-}
-
-.headerEyebrow {
-  color: var(--ll-clay);
+  margin-bottom: var(--space-7);
 }
 
 .headerHeading {

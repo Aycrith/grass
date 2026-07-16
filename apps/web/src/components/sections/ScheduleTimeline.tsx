@@ -3,8 +3,8 @@
 /**
  * ScheduleTimeline — "This week, on the route" strip on `/`.
  *
- * Mounts between ServiceAreaMap (06) and OperatorNote (07) as a
- * fourth typographic moment — the operator's weekly schedule, made
+ * Mounts between ServiceAreaMap and FAQAccordion as a fourth
+ * typographic moment — the operator's weekly schedule, made
  * visible. Reduces the operational mystery ("what day do you
  * actually come?") that turns into a support question for every
  * new customer.
@@ -16,9 +16,19 @@
  * on mobile. Each day has a 1×1 dot of the team color + ZIPs in
  * mono. Reduced-motion: no scroll-snap animation, instant.
  *
- * Client component (since WP14) so we can detect "today" client-side
+ * Client component so we can detect "today" client-side
  * and highlight it with `data-today="true"`. The day-pulse animation
  * is gated by `prefers-reduced-motion`.
+ *
+ * D-0030 (Wave C of three sequential design changes) — visual
+ * system hygiene pass:
+ *   - Section rhythm: loose → default. D-0030 mandates even
+ *     vertical padding (--space-10 / 64px) across all sections
+ *     in the in-scope list. ServiceAreaMap is out of scope
+ *     (D-0028 lock); ScheduleTimeline + FAQAccordion move
+ *     down to match the others.
+ *   - FadeUp wrapper removed (below-fold = static per D-0030
+ *     motion gating). The strip renders flat on first paint.
  *
  * This is a static v1 — future Supabase dynamic would replace
  * the content registry source without touching layout.
@@ -26,7 +36,6 @@
 
 import { useEffect, useState, type ReactNode } from 'react';
 
-import { FadeUp } from '@/components/motion';
 import { Section } from '@/components/site';
 import { Illustration } from '@/components/ui';
 import { cn } from '@/lib/cn';
@@ -50,7 +59,6 @@ export function ScheduleTimeline({ className }: ScheduleTimelineProps): ReactNod
 
   return (
     <Section
-      rhythm="loose"
       tone="default"
       className={cn(styles.root, className)}
       data-test-section="schedule-timeline"
@@ -64,57 +72,55 @@ export function ScheduleTimeline({ className }: ScheduleTimelineProps): ReactNod
           </p>
         </header>
 
-        <FadeUp>
-          <ol className={styles.strip} aria-label="Weekly mowing schedule">
-            {weeklySchedule.map((day) => {
-              const isToday = todayKey === day.day;
-              return (
-                <li
-                  key={day.day}
-                  className={styles.day}
-                  data-day={day.day}
-                  data-today={isToday ? 'true' : undefined}
-                >
-                  <div className={styles.dayHead}>
-                    <span className={styles.dayDot} aria-hidden="true" />
-                    <span className={styles.dayName}>{day.day}</span>
-                    {day.closed ? (
-                      <span className={styles.dayMeta}>Closed</span>
-                    ) : (
-                      <span className={styles.dayMeta}>{day.yards} yards</span>
+        <ol className={styles.strip} aria-label="Weekly mowing schedule">
+          {weeklySchedule.map((day) => {
+            const isToday = todayKey === day.day;
+            return (
+              <li
+                key={day.day}
+                className={styles.day}
+                data-day={day.day}
+                data-today={isToday ? 'true' : undefined}
+              >
+                <div className={styles.dayHead}>
+                  <span className={styles.dayDot} aria-hidden="true" />
+                  <span className={styles.dayName}>{day.day}</span>
+                  {day.closed ? (
+                    <span className={styles.dayMeta}>Closed</span>
+                  ) : (
+                    <span className={styles.dayMeta}>{day.yards} yards</span>
+                  )}
+                </div>
+                {!day.closed && (
+                  <div className={styles.dayBody}>
+                    <span className={styles.zipLabel}>ZIPs on route</span>
+                    <ul className={styles.zipList}>
+                      {day.zips.map((zip) => (
+                        <li key={zip} className={styles.zip}>
+                          {zip}
+                        </li>
+                      ))}
+                    </ul>
+                    {isToday && (
+                      <>
+                        <span className={styles.todayBadge} aria-label="Today's route">
+                          Today
+                        </span>
+                        <Illustration
+                          src="/illustrations/mower-side-profile-v3-120.webp"
+                          alt=""
+                          width={120}
+                          height={120}
+                          className={styles.todayMower}
+                        />
+                      </>
                     )}
                   </div>
-                  {!day.closed && (
-                    <div className={styles.dayBody}>
-                      <span className={styles.zipLabel}>ZIPs on route</span>
-                      <ul className={styles.zipList}>
-                        {day.zips.map((zip) => (
-                          <li key={zip} className={styles.zip}>
-                            {zip}
-                          </li>
-                        ))}
-                      </ul>
-                      {isToday && (
-                        <>
-                          <span className={styles.todayBadge} aria-label="Today's route">
-                            Today
-                          </span>
-                          <Illustration
-                            src="/illustrations/mower-side-profile-v3-120.webp"
-                            alt=""
-                            width={120}
-                            height={120}
-                            className={styles.todayMower}
-                          />
-                        </>
-                      )}
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ol>
-        </FadeUp>
+                )}
+              </li>
+            );
+          })}
+        </ol>
       </div>
     </Section>
   );

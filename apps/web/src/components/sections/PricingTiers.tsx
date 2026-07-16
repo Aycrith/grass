@@ -4,19 +4,35 @@
  * PricingTiers — three-row pricing card with featured middle.
  *
  * Reads `lib/content.ts → pricingHeader` for section copy
- * (eyebrow, heading, subhead, featured ribbon, CTA label) and
+ * (heading, subhead, featured ribbon, CTA label) and
  * `lib/content.ts → pricingTiers` for tier data. Featured tier
- * lifts and wears a sun ribbon. Cards fade-up stagger on enter;
- * no number animation (we want the numbers to be exactly what
- * we billed the customer — animated count-up reads dishonest).
+ * lifts and wears a sun ribbon. No number animation (we want
+ * the numbers to be exactly what we billed the customer —
+ * animated count-up reads dishonest).
+ *
+ * D-0030 (Wave C of three sequential design changes) — visual
+ * system hygiene pass:
+ *   - Eyebrow removed. Per the ≤3-eyebrow rule, only Hero /
+ *     Coverage / FinalCTA get eyebrows. The "Pricing" label
+ *     was redundant with the heading "What it costs."
+ *   - CTA hierarchy fixed. Featured card keeps the sun
+ *     "Get a free quote" (the page's primary conversion).
+ *     Non-anchor cards drop from "primary" (dark-green pill)
+ *     to "outline" + no iconRight — outline is the spec's
+ *     secondary CTA treatment, and dropping the arrow on
+ *     non-anchor cards removes the "competing arrow" issue
+ *     that was making the section look like three equal
+ *     CTAs rather than one anchor + two supporting tiers.
+ *   - StaggerGroup wrapper removed (below-fold = static per
+ *     D-0030 motion gating). The grid renders flat on first
+ *     paint, no fade-up cascade.
  */
 
 import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import type { ReactNode } from 'react';
 
-import { StaggerGroup } from '@/components/motion';
-import { Eyebrow, Section } from '@/components/site';
+import { Section } from '@/components/site';
 import { Button, Illustration } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { pricingHeader, pricingTiers } from '@/lib/content';
@@ -32,9 +48,6 @@ export function PricingTiers({ className }: PricingTiersProps): ReactNode {
     <Section rhythm="loose" className={cn(styles.root, className)}>
       <div className="container">
         <header className={styles.header}>
-          <Eyebrow tone="default" className={styles.headerEyebrow}>
-            {pricingHeader.eyebrow}
-          </Eyebrow>
           <h2 className={styles.headerHeading}>{pricingHeader.heading}</h2>
           <p className={styles.headerSub}>{pricingHeader.subhead}</p>
         </header>
@@ -54,7 +67,7 @@ export function PricingTiers({ className }: PricingTiersProps): ReactNode {
           <span className={styles.headerOrnamentRule} />
         </div>
 
-        <StaggerGroup as="div" className={styles.grid} childDelay={0.1}>
+        <div className={styles.grid}>
           {pricingTiers.map((tier) => (
             <div key={tier.title} className={cn(styles.card, tier.featured && styles.cardFeatured)}>
               {tier.featured ? (
@@ -85,18 +98,26 @@ export function PricingTiers({ className }: PricingTiersProps): ReactNode {
                 <span className={styles.priceCadence}> · {tier.cadence}</span>
               </p>
               <p className={styles.body}>{tier.body}</p>
+              {/* D-0030 — CTA hierarchy:
+               *   featured:  sun (the page's only sun-filled primary,
+               *              "Get a free quote" → /quote)
+               *   non-feat:  outline (the spec's secondary treatment),
+               *              same label, no iconRight (kills the
+               *              "competing arrow" against the anchor). */}
               <Button
                 as="link"
                 href="/quote"
-                variant={tier.featured ? 'sun' : 'primary'}
+                variant={tier.featured ? 'sun' : 'outline'}
                 size="md"
-                iconRight={<ArrowRight size={16} aria-hidden="true" />}
+                iconRight={
+                  tier.featured ? <ArrowRight size={16} aria-hidden="true" /> : undefined
+                }
               >
                 {pricingHeader.ctaLabel}
               </Button>
             </div>
           ))}
-        </StaggerGroup>
+        </div>
       </div>
     </Section>
   );

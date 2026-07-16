@@ -8,6 +8,15 @@
  * Image: /operator/portrait.webp (ComfyUI-generated stylized
  * editorial abstraction per apps/comfyui/prompts/operator-portrait.md;
  * placeholder swapped for steward phone photo later).
+ *
+ * D-0030 — `.portraitInner` was previously `inset: -6% 0;
+ * height: 112%` to give the ParallaxImage layer 6% bleed
+ * above and below for the scroll-driven translation. With the
+ * motion wrapper removed (below-fold = static per D-0030),
+ * the inner now sits flush with the panel (`inset: 0`) and
+ * the `<Image fill>` uses object-cover to crop naturally.
+ * The old bleed was leaving visible cream bands when the
+ * photo height didn't match the panel — those are gone.
  * ============================================================ */
 
 .root {
@@ -45,9 +54,7 @@
 
 .portraitInner {
   position: absolute;
-  inset: -6% 0;
-  width: 100%;
-  height: 112%;
+  inset: 0;
 }
 
 .portraitInner img {
@@ -97,10 +104,6 @@
   flex-direction: column;
   gap: var(--space-4);
   max-width: 36rem;
-}
-
-.bioEyebrow {
-  color: var(--ll-clay);
 }
 
 .bioHeading {
@@ -271,20 +274,10 @@
 
 .tool {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: 1fr auto;
   gap: var(--space-3);
   align-items: baseline;
   padding-block: var(--space-1);
-}
-
-.toolDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--ll-sun);
-  flex-shrink: 0;
-  align-self: center;
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ll-sun) 22%, transparent);
 }
 
 .toolModel {

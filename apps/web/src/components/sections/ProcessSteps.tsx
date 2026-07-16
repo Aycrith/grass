@@ -6,15 +6,26 @@
  *
  * Reads `lib/content.ts → processSteps`. The horizontal connector
  * line is implemented in CSS (`.grid::before`) and only shows on
- * ≥900px. Steps fade-up stagger on enter.
+ * ≥900px.
+ *
+ * D-0030 (Wave C of three sequential design changes) — visual
+ * system hygiene pass:
+ *   - Header decorative image removed. The old layout had a small
+ *     180×101 image of the mowing card sitting in the header,
+ *     reusing `services.mowing.imageSlot` to "tie this section
+ *     visually back to the bento above." Per the ornament cap
+ *     (≤1 major illustration per fold), this section already
+ *     has 4 step icons — adding a 5th illustration in the header
+ *     was over-decorating. Header is now heading-only.
+ *   - StaggerGroup wrapper removed (below-fold = static per
+ *     D-0030 motion gating). Steps render flat on first paint.
  */
 
 import type { ReactNode } from 'react';
 
-import { StaggerGroup } from '@/components/motion';
 import { Section } from '@/components/site';
 import { cn } from '@/lib/cn';
-import { processSteps, services } from '@/lib/content';
+import { processSteps } from '@/lib/content';
 
 import { ProcessStepIcon, type ProcessStepKey } from './ProcessStepIcon';
 import styles from './ProcessSteps.module.css';
@@ -28,23 +39,10 @@ export function ProcessSteps({ className }: ProcessStepsProps): ReactNode {
     <Section rhythm="loose" className={cn(styles.root, className)}>
       <div className="container">
         <header className={styles.header}>
-          <div className={styles.headerText}>
-            <h2 className={styles.headerHeading}>Four steps, no portal.</h2>
-          </div>
-          <div className={styles.headerMedia}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={services.mowing.imageSlot}
-              alt=""
-              loading="lazy"
-              decoding="async"
-              width={180}
-              height={101}
-            />
-          </div>
+          <h2 className={styles.headerHeading}>Four steps, no portal.</h2>
         </header>
 
-        <StaggerGroup as="div" className={styles.grid} childDelay={0.12}>
+        <div className={styles.grid}>
           {processSteps.map((step) => (
             <article key={step.n} className={styles.step}>
               <ProcessStepIcon step={step.n as ProcessStepKey} className={styles.icon} />
@@ -54,7 +52,7 @@ export function ProcessSteps({ className }: ProcessStepsProps): ReactNode {
               <p className={styles.body}>{step.body}</p>
             </article>
           ))}
-        </StaggerGroup>
+        </div>
       </div>
     </Section>
   );

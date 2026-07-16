@@ -21,15 +21,26 @@
  * hurricane-prep card gains a 2px sun border (the visual signal
  * mirrors the site-wide HurricaneBanner). Stays dormant when the
  * flag is false (default).
+ *
+ * D-0030 (Wave C of three sequential design changes) — visual
+ * system hygiene pass:
+ *   - Eyebrow removed. Per the ≤3-eyebrow rule, only Hero /
+ *     Coverage / FinalCTA get eyebrows. The "What I do" label
+ *     was redundant with the heading "Six things, done well."
+ *   - Tertiary "Learn more →" micro-CTAs removed. The whole
+ *     card is already a link, so the arrow competed with the
+ *     primary affordance. The card title + visual body now
+ *     carry the clickability signal (cursor + lift on hover).
+ *   - StaggerGroup wrapper removed (below-fold = static per
+ *     D-0030 motion gating). The grid renders flat on first
+ *     paint, no fade-up cascade.
  */
 
-import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
-import { StaggerGroup } from '@/components/motion';
-import { Eyebrow, Section } from '@/components/site';
+import { Section } from '@/components/site';
 import { BUSINESS, PRICING_FLOOR_CENTS } from '@/lib/business';
 import { cn } from '@/lib/cn';
 import { type ServiceKey, services } from '@/lib/content';
@@ -97,9 +108,6 @@ export function ServiceBento({ className }: ServiceBentoProps): ReactNode {
     >
       <div className="container">
         <header className={styles.header}>
-          <Eyebrow tone="default" className={styles.headerEyebrow}>
-            What I do
-          </Eyebrow>
           <h2 className={styles.headerHeading}>Six things, done well.</h2>
           <p className={styles.headerSub}>
             I keep the service list short on purpose. Six things, no crew swap, no upsell. If you
@@ -107,7 +115,7 @@ export function ServiceBento({ className }: ServiceBentoProps): ReactNode {
           </p>
         </header>
 
-        <StaggerGroup as="div" className={styles.grid} childDelay={0.08} initialDelay={0.1}>
+        <div className={styles.grid}>
           {ordered.map((key) => {
             const svc = services[key];
             const { from, price } = formatPrice(key);
@@ -135,15 +143,12 @@ export function ServiceBento({ className }: ServiceBentoProps): ReactNode {
                       <span className={styles.priceFrom}>{from}</span>
                       <span>{price}</span>
                     </p>
-                    <span className={styles.cta}>
-                      Learn more <ArrowRight size={16} aria-hidden="true" />
-                    </span>
                   </div>
                 </article>
               </Link>
             );
           })}
-        </StaggerGroup>
+        </div>
       </div>
     </Section>
   );

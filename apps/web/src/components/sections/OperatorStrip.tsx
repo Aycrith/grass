@@ -5,9 +5,8 @@
  * neighbor's yard" first-person block.
  *
  * Sits between hero and service bento on the homepage. Shows the
- * operator portrait (parallax 0.3×), a 2-3 sentence bio, and
- * (since WP14) a horizontal "tools I run" metabar in place of
- * the legacy 2×2 webp tile grid.
+ * operator portrait, a 2-3 sentence bio, and a horizontal "tools
+ * I run" metabar in place of the legacy 2×2 webp tile grid.
  *
  * The metabar trades webp tile micro-photography for typographic
  * clarity — four italic-Fraunces model names with sun-colored
@@ -26,6 +25,22 @@
  * stay specific (47 yards / 18h) and inherit the operator's
  * voice instead of feeling like a marketing panel.
  *
+ * D-0030 (Wave C of three sequential design changes) — visual
+ * system hygiene pass:
+ *   - Removed ParallaxImage wrapper around the portrait. D-0030
+ *     gates motion to above-the-fold (Hero + Coverage); the
+ *     operator strip is the first section below the fold, so
+ *     the portrait now renders as a static, full-bleed image.
+ *     The portrait keeps its D-0020 corner stamp; the corner
+ *     stamp is a "corner ornament" (allowed) not "scroll-driven
+ *     motion" (gated).
+ *   - Removed FadeUp wrappers around the portrait and the
+ *     "tools I run" metabar. Same below-the-fold static rule.
+ *   - The image now uses object-position so the head sits
+ *     inside the panel without a 6% bleed; the old bleed was
+ *     sized to the ParallaxImage motion range, not the static
+ *     layout.
+ *
  * Copy flows from `lib/content.ts → operator` so the steward
  * can edit it without touching this component.
  *
@@ -36,7 +51,6 @@
 import Image from 'next/image';
 import type { ReactNode } from 'react';
 
-import { FadeUp, ParallaxImage } from '@/components/motion';
 import { Section } from '@/components/site';
 import { Illustration } from '@/components/ui';
 import { cn } from '@/lib/cn';
@@ -53,33 +67,31 @@ export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
     <Section rhythm="loose" className={cn(styles.root, className)}>
       <div className="container">
         <div className={styles.inner}>
-          <FadeUp>
-            <ParallaxImage offset={40} className={styles.portrait}>
-              <div className={styles.portraitInner}>
+          <div className={styles.portrait}>
+            <div className={styles.portraitInner}>
+              <Image
+                src="/operator/portrait.webp"
+                alt={`Portrait of ${operator.name}, Largo Lawn operator`}
+                fill
+                sizes="(max-width: 980px) 100vw, 320px"
+              />
+              {/* D-0020 — hand-painted corner stamp. Sits at the
+               * top-right of the portrait like a postcard stamp,
+               * adding a storybook editorial touch to the operator
+               * section. Hand-authored SVG with intentional
+               * stroke weight (2.5px in 80x80 viewBox, renders at
+               * 48px so the rays stay crisp). */}
+              <span className={styles.cornerStamp} aria-hidden="true">
                 <Image
-                  src="/operator/portrait.webp"
-                  alt={`Portrait of ${operator.name}, Largo Lawn operator`}
-                  fill
-                  sizes="(max-width: 980px) 100vw, 320px"
+                  src="/illustrations/corner-stamp.svg"
+                  alt=""
+                  width={80}
+                  height={80}
+                  className={styles.cornerStampImage}
                 />
-                {/* D-0020 — hand-painted corner stamp. Sits at the
-                 * top-right of the portrait like a postcard stamp,
-                 * adding a storybook editorial touch to the operator
-                 * section. Hand-authored SVG with intentional
-                 * stroke weight (2.5px in 80x80 viewBox, renders at
-                 * 48px so the rays stay crisp). */}
-                <span className={styles.cornerStamp} aria-hidden="true">
-                  <Image
-                    src="/illustrations/corner-stamp.svg"
-                    alt=""
-                    width={80}
-                    height={80}
-                    className={styles.cornerStampImage}
-                  />
-                </span>
-              </div>
-            </ParallaxImage>
-          </FadeUp>
+              </span>
+            </div>
+          </div>
 
           <div className={styles.bio}>
             <h2 className={styles.bioHeading}>
@@ -127,16 +139,14 @@ export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
 
           <div className={styles.equipment}>
             <p className={styles.equipmentTitle}>What I run</p>
-            <FadeUp>
-              <ul className={styles.toolBar} aria-label="Equipment list">
-                {operator.equipment.map((item) => (
-                  <li key={item.name} className={styles.tool}>
-                    <span className={styles.toolModel}>{item.name}</span>
-                    <span className={styles.toolUse}>{item.use}</span>
-                  </li>
-                ))}
-              </ul>
-            </FadeUp>
+            <ul className={styles.toolBar} aria-label="Equipment list">
+              {operator.equipment.map((item) => (
+                <li key={item.name} className={styles.tool}>
+                  <span className={styles.toolModel}>{item.name}</span>
+                  <span className={styles.toolUse}>{item.use}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>

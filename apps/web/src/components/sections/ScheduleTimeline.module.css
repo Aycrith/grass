@@ -10,15 +10,19 @@
  * No JS interactions in v1 — the schedule is a static snapshot.
  * Future Supabase dynamic would add a click-to-expand per-day
  * detail without changing this layout.
+ *
+ * D-0030 — Section rhythm moved from "loose" to the <Section>
+ * default (--space-10 / 64px) for even vertical padding with
+ * the rest of the page. The schedule strip itself is unchanged.
  * ============================================================ */
 
 .root {
-  /* Section tone="default" supplies cream-soft surface */
+  /* Section vertical rhythm supplied by <Section rhythm="default">. */
 }
 
 .header {
   max-width: 56rem;
-  margin-bottom: var(--space-8);
+  margin-bottom: var(--space-7);
 }
 
 .eyebrow {

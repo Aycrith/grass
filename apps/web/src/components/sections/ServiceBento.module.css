@@ -12,6 +12,15 @@
  * On tablet/mobile the whole grid stacks single column.
  *
  * Hover: image scale 1.03 + card lift -4px (240ms ease-out).
+ *
+ * D-0030 — `.headerEyebrow` removed (eyebrow dropped from JSX,
+ * per the ≤3-eyebrow rule). Header margin tightened from
+ * --space-8 to --space-7 to keep visual proportion without
+ * the eyebrow's vertical weight above the heading. The .cta
+ * (tertiary "Learn more →" arrow) was also removed: the whole
+ * card is already a `<Link>`, so the arrow competed with the
+ * primary affordance and was killing the price row's
+ * prominence.
  * ============================================================ */
 
 .root {
@@ -24,11 +33,7 @@
   flex-direction: column;
   gap: var(--space-3);
   max-width: 42rem;
-  margin-bottom: var(--space-8);
-}
-
-.headerEyebrow {
-  color: var(--ll-clay);
+  margin-bottom: var(--space-7);
 }
 
 .headerHeading {
@@ -173,15 +178,6 @@
   flex: 1;
 }
 
-.eyebrow {
-  font-family: var(--font-inter);
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-weight: 600;
-  opacity: 0.75;
-}
-
 /* ---------- Brand mark (WP14, D-0021 upgraded) ----------
  * Inline SVG sits between the image and the title. Clay at
  * rest, lifts to sun + tilts -3° on card hover/focus. D-0021
@@ -265,30 +261,6 @@
   font-weight: 400;
   font-size: 0.8rem;
   opacity: 0.7;
-}
-
-.cta {
-  margin-top: var(--space-2);
-  font-family: var(--font-inter);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.cardMowing .cta,
-.cardMulching .cta,
-.cardHurricane .cta,
-.cardSeasonal .cta {
-  color: inherit;
-}
-
-.cardEdging .cta,
-.cardHedge .cta {
-  color: var(--ll-clay);
 }
 
 /* ---------- Hurricane-mode signal ----------

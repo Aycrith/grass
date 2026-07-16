@@ -2,6 +2,13 @@
  * ProcessSteps — 4 numbered steps horizontal desktop,
  * vertical mobile. Each step: large number + eyebrow + title
  * + 2-line description. Clays the numerals, palms the title.
+ *
+ * D-0030 — `.headerMedia` and `.headerText` removed. The
+ * decorative mowing image in the header was over-decorating
+ * the section (4 step icons + 1 header image = 5 illustrations
+ * on a single fold). Header is now a single-line heading.
+ * Dashed connector line (`.grid::before`) is kept as it carries
+ * a structural relationship, not decoration.
  * ============================================================ */
 
 .root {
@@ -14,28 +21,7 @@
   flex-direction: column;
   gap: var(--space-3);
   max-width: 42rem;
-  margin-bottom: var(--space-8);
-}
-
-@media (min-width: 720px) {
-  .header {
-    flex-direction: row;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: var(--space-6);
-    max-width: none;
-  }
-}
-
-.headerText {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  max-width: 42rem;
-}
-
-.headerEyebrow {
-  color: var(--ll-clay);
+  margin-bottom: var(--space-7);
 }
 
 .headerHeading {
@@ -46,25 +32,6 @@
   letter-spacing: -0.015em;
   color: var(--ll-palm-bark);
   margin: 0;
-}
-
-/* Decorative header accent — reuses the mowing service webp
-   to tie this section visually back to the bento above. */
-.headerMedia {
-  width: clamp(120px, 18vw, 180px);
-  aspect-ratio: 16 / 9;
-  flex-shrink: 0;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  box-shadow: var(--elevation-2);
-  background: var(--ll-cream);
-}
-
-.headerMedia img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
 }
 
 .icon {
