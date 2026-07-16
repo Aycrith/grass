@@ -1,6 +1,9 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+
+import { inServiceArea } from '@/lib/business';
 
 type LotSize = 'small' | 'medium' | 'large' | 'xlarge';
 type Frequency = 'one-time' | 'bi-weekly' | 'weekly';
@@ -52,7 +55,18 @@ export function QuoteCalculator({
   const [submitted, setSubmitted] = useState<null | { ok: boolean; message: string }>(null);
   const [utm, setUtm] = useState<{ source: string; campaign: string; medium: string } | null>(null);
 
-  // Read UTM params once on mount so attribution flows through to the lead.
+  // D-0028: read the `?zip=` search param (set by the Coverage Check
+  // CTA on the homepage ServiceAreaMap) and prefill the ZIP select if
+  // it points at a ZIP in our service area. Falls through silently if
+  // the param is missing, malformed, or outside the route — preserves
+  // the existing "33771" default. Search-params reading via the
+  // Next 15 client hook opts the route into dynamic rendering; the
+  // parent page wraps this component in <Suspense> so the rest of the
+  // /quote page can still prerender statically.
+  const searchParams = useSearchParams();
+
+  // Read UTM params + ?zip= prefill once on mount so attribution
+  // and the Coverage Check loop both flow through to the lead.
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
@@ -60,7 +74,12 @@ export function QuoteCalculator({
     const campaign = params.get('utm_campaign');
     const medium = params.get('utm_medium');
     if (source) setUtm({ source, campaign: campaign ?? '', medium: medium ?? '' });
-  }, []);
+
+    const zipParam = searchParams?.get('zip');
+    if (zipParam && inServiceArea(zipParam)) {
+      setZip(zipParam);
+    }
+  }, [searchParams]);
 
   const estimate = useMemo(() => {
     const base = MOW_BASE[lot];

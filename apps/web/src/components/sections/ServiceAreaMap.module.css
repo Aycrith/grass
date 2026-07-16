@@ -1,18 +1,40 @@
 /* ============================================================
- * ServiceAreaMap — Mission 1 service-area illustration.
+ * ServiceAreaMap — Mission 1 service-area illustration + Coverage Check.
  *
- * D-0026 final layout — TOP-DOWN, map is the focal point.
- * The previous 2-column side-by-side layout (heading-left, map-right)
- * made the map look like a small side-image; the steward review
- * called that "incoherent." This new layout has the heading small
- * and centered at the top, the large map in the middle, and the
- * 6 ZIP rail as a horizontal row below — so the map is the visual
- * centerpiece of the section.
+ * D-0028 — replaced the D-0027 6-ZIP light-cards rail with a single
+ * ZIP-or-neighborhood input + in-section coverage check. The map
+ * picture stays as brand art (no AI regeneration per the burned-
+ * once-on-D-0024 hard rule).
  *
- * D-0027 — reworked the rail to be OBVIOUSLY interactive:
- * light cards (cream on dark palm-bark), big ZIP code in sun-gold,
- * a "View details →" arrow CTA, section label + helper text above,
- * and a single primary "Get a free quote" CTA below.
+ * Layout (>=980px desktop):
+ *
+ *   ┌────────────┬─────────────────────┬──────────────────┐
+ *   │ Form       │                     │ Result panel     │
+ *   │ [input]    │   Static map image  │ (idle / hit /     │
+ *   │ [submit]   │   (brand art)       │  miss)           │
+ *   └────────────┴─────────────────────┴──────────────────┘
+ *                  3-col grid: 1fr | 1.4fr | 1fr
+ *
+ * Layout (<980px mobile):
+ *
+ *   ┌──────────────────────────────┐
+ *   │ Form                         │
+ *   │ [input]                      │
+ *   │ [submit]                     │
+ *   ├──────────────────────────────┤
+ *   │ Map (full-width, max 55vh)   │
+ *   ├──────────────────────────────┤
+ *   │ Result panel                 │
+ *   └──────────────────────────────┘
+ *
+ *   [ See all six areas (collapsed details) ]
+ *
+ * The 6 area chips live inside a <details> below the form so the
+ * primary verb ("Get free quote") isn't competing with a second
+ * UI object answering the same "am I in your area?" question.
+ *
+ * D-0026 final layout — TOP-DOWN, map is the focal point. Kept the
+ * small centered header from D-0026c.
  * ============================================================ */
 
 .root {
@@ -65,15 +87,146 @@
   max-width: 36rem;
 }
 
-/* ---------- Map container (D-0026 final) ----------
- * The focal point. Width is 100% of the container, height follows
- * the 4:3 image aspect ratio. A subtle drop shadow lifts the map
- * off the dark palm-bark background, and a thin palm-bark border
- * frames it (a "printed page in a brochure" feel). */
+/* ---------- Coverage Check grid (D-0028) ----------
+ * 3-col on desktop (form | map | result), 1-col on mobile.
+ * Mobile: form → map → result stacked. Desktop: 3-col grid
+ * with the form on the left, the map in the center (slightly
+ * wider), and the result panel on the right.
+ *
+ * The map column is wider than the form/result columns
+ * because the map is the visual centerpiece of the section.
+ */
+.coverage {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+  width: 100%;
+  max-width: 1080px;
+  align-items: start;
+}
+
+@media (min-width: 980px) {
+  .coverage {
+    grid-template-columns: 1fr 1.5fr 1fr;
+    gap: var(--space-5);
+  }
+}
+
+/* ---------- Form column (D-0028) ----------
+ * Single, obvious input. Full-width on mobile, naturally
+ * fills the left column on desktop. The input is the primary
+ * affordance; the submit button is a secondary action
+ * (Enter submits too).
+ */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.formLabel {
+  font-family: var(--font-inter);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ll-sun);
+}
+
+.formRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+@media (min-width: 640px) {
+  .formRow {
+    flex-direction: row;
+  }
+}
+
+.formInput {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--ll-palm-bark);
+  background: var(--ll-sand-bleached);
+  border: 1.5px solid color-mix(in srgb, var(--ll-sand-bleached) 40%, transparent);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  /* The browser default outline is replaced by a sun-gold focus
+     ring via the global `*:focus-visible` rule in typography.css.
+     We intentionally do NOT use `outline: none` here. */
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-palm-bark) 18%, transparent);
+  transition: border-color var(--motion-duration-fast) var(--motion-easing-default), background
+    var(--motion-duration-fast) var(--motion-easing-default), box-shadow var(--motion-duration-fast)
+    var(--motion-easing-default);
+}
+
+.formInput::placeholder {
+  color: color-mix(in srgb, var(--ll-palm-bark) 45%, transparent);
+  font-weight: 500;
+}
+
+.formInput:hover {
+  border-color: color-mix(in srgb, var(--ll-sun) 60%, transparent);
+}
+
+.formSubmit {
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--ll-palm-bark);
+  background: var(--ll-sun);
+  border: 1.5px solid transparent;
+  border-radius: var(--radius);
+  padding: 0.75rem 1.25rem;
+  cursor: pointer;
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-palm-bark) 22%, transparent), 0 4px 12px -4px
+    rgba(0, 0, 0, 0.35);
+  transition: background var(--motion-duration-fast) var(--motion-easing-default), transform
+    var(--motion-duration-fast) var(--motion-easing-default), box-shadow var(--motion-duration-fast)
+    var(--motion-easing-default);
+  /* `type="submit"` so Enter in the input also submits; the
+     shared <Button> component hard-codes type="button" so the
+     raw <button> is used here to keep keyboard-submit behavior
+     correct. */
+}
+
+.formSubmit:hover {
+  background: #f0c068;
+  transform: translateY(-1px);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-palm-bark) 22%, transparent), 0 8px 18px -6px
+    rgba(0, 0, 0, 0.45);
+}
+
+.formSubmit:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.formHelper {
+  margin: 0;
+  font-family: var(--font-inter);
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--ll-sand-bleached);
+  opacity: 0.75;
+}
+
+/* ---------- Map (D-0026 layout, preserved) ----------
+ * 4:3 aspect, fills the center column on desktop, max 55vh
+ * on mobile (keeps the section from being map-only on small
+ * screens). A subtle drop shadow lifts the map off the dark
+ * palm-bark background, and a thin palm-bark border frames
+ * it (a "printed page in a brochure" feel).
+ */
 .mapWrap {
   position: relative;
   width: 100%;
-  max-width: 1080px;
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: #f4e8d0; /* matches the map's cream field */
@@ -82,202 +235,239 @@
     rgba(0, 0, 0, 0.65), 0 8px 20px -8px rgba(0, 0, 0, 0.4);
 }
 
+@media (max-width: 979px) {
+  .mapWrap {
+    max-height: 55vh;
+  }
+}
+
 .mapImage {
   object-fit: cover;
   object-position: center;
 }
 
-/* ---------- Rail block (D-0027) ----------
- * Wraps the section label, the 6 ZIP cards, and the single primary
- * CTA. Centered, with a clear visual stack so the user knows
- * "this is a navigation control, not a content list." */
-.railBlock {
+/* ---------- Result panel (D-0028) ----------
+ * Cream card on the dark palm-bark background so the result
+ * reads as an explicit "the system answered you" panel.
+ * Uses the same palette tokens as the D-0027 light rail so
+ * the visual vocabulary stays consistent.
+ *
+ * The idle state (no result yet) shows a soft prompt so the
+ * layout doesn't shift when the user submits.
+ */
+.result {
+  background: var(--ll-sand-bleached);
+  color: var(--ll-palm-bark);
+  border-radius: var(--radius-lg);
+  border: 1.5px solid color-mix(in srgb, var(--ll-sand-bleached) 18%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-sand) 30%, transparent), 0 12px 28px -10px
+    rgba(0, 0, 0, 0.4);
+  padding: var(--space-5);
+  min-height: 12rem;
+  display: flex;
+  align-items: center;
   width: 100%;
-  max-width: 1080px;
+}
+
+.resultIdle {
+  background: color-mix(in srgb, var(--ll-sand-bleached) 70%, transparent);
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--ll-sand-bleached) 35%, transparent);
+  box-shadow: none;
+}
+
+.resultInner {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
-  align-items: center;
-}
-
-.railLabel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-1);
-  text-align: center;
-}
-
-.railLabelEyebrow {
-  font-family: var(--font-inter);
-  font-weight: 700;
-  font-size: 0.78rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ll-sun);
-}
-
-.railLabelHelper {
-  font-family: var(--font-inter);
-  font-size: 0.9rem;
-  color: var(--ll-sand-bleached);
-  opacity: 0.75;
-  max-width: 32rem;
-  line-height: 1.45;
-}
-
-/* ---------- 6 ZIPs rail (D-0027 — interactive buttons) ----------
- * Light cream cards on the dark palm-bark bg, so they read as
- * actual interactive cards (not info chips). Each card is a real
- * button-link with focus ring, press state, and a "View details →"
- * arrow CTA that slides on hover. */
-.rail {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: var(--space-3);
   width: 100%;
 }
 
-@media (max-width: 980px) {
-  .rail {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 560px) {
-  .rail {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.railItem {
-  font-family: var(--font-inter);
-  text-decoration: none;
+.resultHeadline {
   display: flex;
-  flex-direction: column;
+  align-items: flex-start;
   gap: var(--space-2);
-  padding: var(--space-4) var(--space-3);
-  border-radius: var(--radius);
-  background: var(--ll-sand-bleached);
-  color: var(--ll-palm-bark);
-  border: 1.5px solid color-mix(in srgb, var(--ll-palm-bark) 18%, transparent);
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-sand) 30%, transparent), 0 4px 12px -6px
-    rgba(0, 0, 0, 0.35);
-  min-height: 7.5rem;
-  cursor: pointer;
-  /* IMPORTANT: do NOT use `outline: none` — a visible focus ring
-     is required for keyboard nav and accessibility. The base
-     browser outline is replaced with a sun-gold one below. */
-  transition: background var(--motion-duration-fast) var(--motion-easing-default), border-color
-    var(--motion-duration-fast) var(--motion-easing-default), box-shadow var(--motion-duration-fast)
-    var(--motion-easing-default), transform var(--motion-duration-fast) var(--motion-easing-default);
-}
-
-.railItem:hover,
-.railItem:focus-visible {
-  background: #fffaf0; /* one shade lighter than sand-bleached on hover */
-  border-color: var(--ll-sun);
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-sun) 50%, transparent), 0 12px 24px -8px
-    rgba(0, 0, 0, 0.5), 0 0 0 3px color-mix(in srgb, var(--ll-sun) 35%, transparent);
-  transform: translateY(-3px);
-  outline: none;
-}
-
-.railItem:focus-visible {
-  /* Distinct keyboard-focus ring (separate from hover glow) */
-  outline: 2px solid var(--ll-sun);
-  outline-offset: 2px;
-}
-
-.railItem:active {
-  transform: translateY(-1px) scale(0.98);
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-sun) 50%, transparent), 0 4px 10px -4px
-    rgba(0, 0, 0, 0.4);
-}
-
-.railItemZip {
   font-family: var(--font-fraunces), serif;
   font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  font-size: 1.4rem;
+  font-size: 1.15rem;
+  line-height: 1.25;
   letter-spacing: -0.01em;
+  color: var(--ll-palm-bark);
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.resultCheck,
+.resultCheckMiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: var(--radius-pill);
+  color: var(--ll-sun);
+  margin-top: 0.1em;
+}
+
+.resultCheck {
+  background: color-mix(in srgb, var(--ll-sun) 18%, transparent);
+  color: #b8801c; /* deeper sun-on-cream for the check mark */
+}
+
+.resultCheckMiss {
+  background: color-mix(in srgb, var(--ll-clay) 18%, transparent);
+  color: var(--ll-clay);
+}
+
+.resultDetail {
+  margin: 0;
+  font-family: var(--font-inter);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--ll-palm-bark) 75%, transparent);
+}
+
+.resultCta {
+  align-self: flex-start;
+  margin-top: var(--space-2);
+}
+
+.resultCtaArrow {
+  display: inline-block;
+  margin-left: 0.4em;
+  transition: transform var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.resultCta:hover .resultCtaArrow,
+.resultCta:focus-visible .resultCtaArrow {
+  transform: translateX(3px);
+}
+
+/* Idle state copy */
+.resultIdleHeadline {
+  margin: 0;
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1.3;
+  color: var(--ll-palm-bark);
+}
+
+.resultIdleBody {
+  margin: 0;
+  font-family: var(--font-inter);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--ll-palm-bark) 70%, transparent);
+}
+
+.resultIdleKbd {
+  display: inline-block;
+  padding: 0.05em 0.45em;
+  font-family: var(--font-inter);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ll-palm-bark);
+  background: color-mix(in srgb, var(--ll-sun) 25%, transparent);
+  border-radius: var(--radius-sm);
+  border: 1px solid color-mix(in srgb, var(--ll-sun) 50%, transparent);
+}
+
+/* ---------- Collapsed "See all six areas" details (D-0028) ----------
+ * The 6 ZIP cards are no longer the primary affordance. They
+ * are demoted to a collapsed <details> so users who want to
+ * browse per-area (or hit a specific /areas/{zip} SEO page)
+ * can still get there. The primary verb is now "Get free
+ * quote" with the ZIP prefilled.
+ */
+.areasDetails {
+  width: 100%;
+  max-width: 1080px;
+  background: color-mix(in srgb, var(--ll-sand-bleached) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ll-sand-bleached) 18%, transparent);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-4);
+}
+
+.areasDetails[open] {
+  padding-bottom: var(--space-4);
+}
+
+.areasSummary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ll-sand-bleached);
+  cursor: pointer;
+  list-style: none;
+  padding: var(--space-2) 0;
+  border-radius: var(--radius-sm);
+  /* No `outline: none` — the global focus-visible rule on
+     <summary> applies via typography.css. */
+}
+
+.areasSummary::-webkit-details-marker {
+  display: none; /* hide default disclosure triangle, use the SVG instead */
+}
+
+.areasChevron {
+  flex-shrink: 0;
+  color: var(--ll-sun);
+  transition: transform var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.areasDetails[open] .areasChevron {
+  transform: rotate(180deg);
+}
+
+.areasChips {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.areaChip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: var(--space-3);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--ll-sand-bleached) 92%, transparent);
+  color: var(--ll-palm-bark);
+  text-decoration: none;
+  border: 1px solid color-mix(in srgb, var(--ll-sand-bleached) 30%, transparent);
+  transition: background var(--motion-duration-fast) var(--motion-easing-default), border-color
+    var(--motion-duration-fast) var(--motion-easing-default), transform var(--motion-duration-fast)
+    var(--motion-easing-default);
+}
+
+.areaChip:hover,
+.areaChip:focus-visible {
+  background: #fffaf0;
+  border-color: var(--ll-sun);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.areaChipZip {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  font-variant-numeric: tabular-nums;
   color: var(--ll-clay);
   line-height: 1;
 }
 
-.railItemName {
-  font-size: 0.82rem;
-  line-height: 1.35;
-  color: var(--ll-palm-bark);
-  opacity: 0.78;
-  font-weight: 500;
-}
-
-.railItemCta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  margin-top: auto;
-  padding-top: var(--space-2);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: var(--ll-palm-bark);
-  /* Hairline divider between the neighborhood and the CTA row */
-  border-top: 1px solid color-mix(in srgb, var(--ll-palm-bark) 18%, transparent);
-}
-
-.railItemArrow {
-  flex-shrink: 0;
-  transition: transform var(--motion-duration-fast) var(--motion-easing-default);
-}
-
-.railItem:hover .railItemArrow,
-.railItem:focus-visible .railItemArrow {
-  transform: translateX(3px);
-}
-
-/* ---------- "Get a free quote" footnote (single primary CTA) ---------- */
-.railFootnote {
-  margin: 0;
+.areaChipName {
   font-family: var(--font-inter);
-  font-size: 0.9rem;
-  color: var(--ll-sand-bleached);
-  opacity: 0.85;
-  text-align: center;
-  line-height: 1.5;
-}
-
-.railFootnoteLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  color: var(--ll-sun);
-  font-weight: 700;
-  text-decoration: none;
-  padding: 0.1em 0.2em;
-  border-radius: 4px;
-  transition: color var(--motion-duration-fast) var(--motion-easing-default);
-}
-
-.railFootnoteLink:hover,
-.railFootnoteLink:focus-visible {
-  color: #fff;
-  text-decoration: underline;
-  outline: none;
-}
-
-.railFootnoteLink:focus-visible {
-  outline: 2px solid var(--ll-sun);
-  outline-offset: 2px;
-}
-
-.railFootnoteArrow {
-  flex-shrink: 0;
-  transition: transform var(--motion-duration-fast) var(--motion-easing-default);
-}
-
-.railFootnoteLink:hover .railFootnoteArrow,
-.railFootnoteLink:focus-visible .railFootnoteArrow {
-  transform: translateX(2px);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--ll-palm-bark) 75%, transparent);
+  line-height: 1.3;
 }

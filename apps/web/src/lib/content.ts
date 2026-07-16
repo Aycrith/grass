@@ -76,9 +76,14 @@ export const trustStrip = {
  */
 export const serviceAreaMap = {
   eyebrow: 'Where I mow',
-  heading: 'Six ZIPs, one route.',
+  // D-0028: heading + subhead retargeted from "Six ZIPs, one route." to
+  // lead with the neighborhood word the user actually thinks in. The ZIP
+  // input is right below, so the section label now matches how a Largo
+  // homeowner talks about their address (street + neighborhood), not how
+  // their postal code reads on an envelope.
+  heading: 'Six Pinellas neighborhoods. One route.',
   subhead:
-    'We keep the service area tight on purpose: six ZIPs across Largo and the adjacent Pinellas neighborhoods. If you are right outside one of these, ask; I sometimes make exceptions for yards next door.',
+    "Type your ZIP or neighborhood name — we'll tell you on the spot whether you're on the route.",
   svgAriaLabel: 'Map of Largo Lawn service area with six ZIPs marked',
   tampaBayLabel: 'Tampa Bay',
   gulfOfMexicoLabel: 'Gulf of Mexico',
