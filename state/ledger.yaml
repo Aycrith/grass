@@ -539,6 +539,56 @@ changelog:
   - date: "2026-07-16"
     day: 23
     change: >
+      D-0034 — Per-area pages with real local content + 6 painted
+      storybook illustrations (commit f28b386). Steward feedback
+      after D-0033: "yes just source and use good quality content —
+      i don't have my own pictures now just make it look good."
+      D-0034 restores the /areas + /areas/[zip] routes (deleted
+      by D-0033) with substantive content + 6 new painted webps,
+      not the placeholder copy D-0026/27/28 had. Content is
+      grounded in real local knowledge per ZIP (soils, climate,
+      tree canopy, landmarks, lawn challenges) — not generic
+      templated copy. Image generation: all 6 webps were generated
+      by the existing ComfyUI pipeline (apps/comfyui/scripts/
+      generate.py with the area.md brief). Each took ~30-60s on
+      the RTX 3090; 1 candidate per ZIP was sufficient — every
+      first candidate was a keeper. Converted to webp at q=82
+      via apps/comfyui/scripts/convert-to-webp.mjs (all 64-75KB,
+      under the 500KB cap). The OSM-map fallback was not needed.
+      Files created: 5 per-area components (AreaHero, AreaNeighbor-
+      hoodNotes, AreaServiceOffer, AreaFAQ, AreaCTA) with
+      matching module.css; /areas index page; /areas/[zip] page
+      with generateStaticParams; 6 webp assets at public/areas/;
+      capture-d0034.mjs (16 visual captures). Files modified:
+      lib/content.ts (+342 lines: areaImages map + AreaDetail
+      interface + areaDetail record with real local content per
+      ZIP); sitemap.ts (re-added /areas and /areas/[zip] entries,
+      now 19 routes total); sections/index.ts (re-exported 5
+      per-area components); Button.module.css (+.outline.inverse
+      rule for visible secondary CTAs on dark hero scrims).
+      Per-ZIP flavor highlights: 33771 (Largo central, home base,
+      "Tuesday is a 33771 day" — SiteOne on 66th St as mulch
+      source); 33770 (Belleair Bluffs, oak leaf-drop March-April
+      in mow rate); 33773 (Largo east, newer subdivisions, first-
+      month sod protocol, "I do not service irrigation systems"
+      per FL PCCLB Irrigation Specialty rule); 33774 (Ridgecrest,
+      elevated terrain, shade-tolerant cultivars); 33778
+      (Seminole, sandy soil + salt air, hurricane prep is the
+      headline); 33756 (Belleair / Clearwater east edge, coastal
+      salt-tolerant grass, HOA-aware timing). Acceptance: build
+      green, charter 3/3, 0 new typecheck errors. Visual captures
+      at audit/d0034-{desktop,mobile}-{areas-index,area-33756,
+      area-33771,area-33778}-{fold,full}.png. No fake customer
+      quotes, no SDXL maps, no stock photo watermarks, no "coming
+      soon" placeholders. Steward review: side-by-side
+      audit/d0033-desktop-areas-index-fold.png (would be a 404
+      page, no longer applicable) vs audit/d0034-desktop-areas-
+      index-fold.png (substantive painted index with 6 ZIP cards).
+    by: "Mavis (orchestrator + coder sub-agent, 2026-07-16)"
+
+  - date: "2026-07-16"
+    day: 23
+    change: >
       D-0033 — Drop the per-area slop (commits 21b3742 + f2f30e0 +
       3d451f1). Steward feedback after D-0032 hit production:
       "the service area zipcode subpages accessible from the
