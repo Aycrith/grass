@@ -3,28 +3,23 @@
 /**
  * ServiceAreaMap — Mission 1 illustrative map.
  *
- * D-0026 (final): custom-composed editorial map. The 6 service-area
- * ZIP badges (33756, 33770, 33771, 33773, 33774, 33778) are baked
- * directly into the image as filled circles with dark borders and
- * dark text labels — the priority ZIP (33771, home base) gets a
- * sun-gold fill. This replaces the D-0025/D-0026 split-image approach
- * (map image + separate SVG pin overlay) which the steward called
- * "incoherent" because the SVG rings used cream stroke on a white
- * map (invisible), leaving just floating text labels.
+ * D-0026 final layout: the map is the FOCAL POINT of the section.
+ * The previous 2-column side-by-side layout (heading-left, map-right)
+ * made the map look like a small side-image; the user review called
+ * that "incoherent" because the heading dwarfed the visual.
  *
- * The image is a single self-contained artifact:
- *   - Line-art OSM base (real coastline, street grid, water bodies)
- *   - 6 ZIP badges positioned at their real lat/lon coordinates
- *   - Tiny "Map Data © OSM" attribution in the bottom-right (ODbL)
+ * New layout (top-down):
+ *   - Small eyebrow + heading + subhead (centered)
+ *   - The map (full width, 4:3)
+ *   - The 6 ZIP rail (horizontal row below the map)
  *
- * The 6 ZIPs are also surfaced in the side rail below the map —
- * each rail row links to /areas/{zip} and shows a thumbnail + the
- * neighborhood name. The map is the visual reference; the side rail
- * is the navigation. (D-0026 final: no separate SVG pin layer.)
- *
- * The .mapWrap is a positioned 4:3 container that holds the image
- * edge-to-edge. The side rail is in the same column as the heading
- * on desktop, and stacks below the map on mobile.
+ * The map is a single self-contained editorial composition
+ * (pinellas-map-clean-1200x900.webp) with the 6 ZIP badges
+ * baked directly into the image at their real lat/lon coords.
+ * Priority ZIP (33771, home base) has a sun-gold fill; the other
+ * 5 have a cream fill. Each badge has a hand-stamped feel
+ * (subtle drop shadow) matching the corner-stamp and
+ * passport-stamp SVGs elsewhere on the page.
  */
 
 import Image from 'next/image';
@@ -47,6 +42,8 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
     <Section rhythm="loose" className={cn(styles.root, className)}>
       <div className="container">
         <div className={styles.inner}>
+          {/* Section header — small + centered, the map below is the
+             focal point so we don't want the header to compete. */}
           <header className={styles.header}>
             <Eyebrow tone="dark" className={styles.headerEyebrow}>
               {serviceAreaMap.eyebrow}
@@ -55,24 +52,26 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
             <p className={styles.headerSub}>{serviceAreaMap.subhead}</p>
           </header>
 
+          {/* The map — the focal point. 4:3 aspect, fills the
+             container edge-to-edge, custom-composed image with the
+             6 ZIP badges baked in. */}
           <div className={styles.mapWrap}>
-            {/* D-0026 final — single self-contained editorial map. The
-             * 6 ZIP badges are baked into the image at their real
-             * lat/lon coordinates; the priority ZIP (33771) has a
-             * sun-gold fill. No separate SVG pin overlay needed.
-             * 1200x900 px (4:3) WebP, ~225 KB. */}
             <Image
               src="/illustrations/pinellas-map-clean-1200x900.webp"
               alt={serviceAreaMap.svgAriaLabel}
               fill
-              sizes="(max-width: 980px) 100vw, 60vw"
+              sizes="(max-width: 980px) 100vw, 80vw"
               className={styles.mapImage}
               priority={false}
             />
           </div>
 
-          <div className={styles.rail}>
-            <p className={styles.railTitle}>{serviceAreaMap.railTitle}</p>
+          {/* The 6 ZIPs as a horizontal navigation row below the map.
+             Each row links to /areas/{zip} and shows a thumbnail +
+             the neighborhood name. Bidirectional hover syncs the
+             thumbnail with the (no-longer-existing) SVG pin via
+             data-zip-active. */}
+          <nav className={styles.rail} aria-label="Service area ZIP codes">
             {BUSINESS.service_area_zips.map((zip) => {
               const name = serviceAreaMap.pinLocations[zip] ?? 'Largo area';
               const thumbSrc = serviceAreaMap.areaImages[zip];
@@ -100,7 +99,7 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
                 </Link>
               );
             })}
-          </div>
+          </nav>
         </div>
       </div>
     </Section>

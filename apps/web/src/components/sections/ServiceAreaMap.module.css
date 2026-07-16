@@ -1,17 +1,13 @@
 /* ============================================================
  * ServiceAreaMap — Mission 1 service-area illustration.
  *
- * D-0026 (final) — custom-composed editorial map. The .mapWrap
- * is a positioned 4:3 container that holds the finished image
- * edge-to-edge. The 6 ZIP badges are baked into the image (no
- * separate SVG overlay), so the .mapWrap just needs to size and
- * frame the image cleanly.
- *
- * Layout (D-0026):
- *   .inner is a 2-column grid on desktop:
- *     - col 1 (1fr): header (heading + body) + side rail
- *     - col 2 (1.4fr): map (the visual focal point)
- *   On mobile (<980px), everything stacks in 1 column.
+ * D-0026 final layout — TOP-DOWN, map is the focal point.
+ * The previous 2-column side-by-side layout (heading-left, map-right)
+ * made the map look like a small side-image; the steward review
+ * called that "incoherent." This new layout has the heading small
+ * and centered at the top, the large map in the middle, and the
+ * 6 ZIP rail as a horizontal row below — so the map is the visual
+ * centerpiece of the section.
  * ============================================================ */
 
 .root {
@@ -21,32 +17,23 @@
 }
 
 .inner {
-  display: grid;
-  grid-template-columns: 1fr minmax(0, 1.4fr);
-  grid-template-areas:
-    'header map'
-    'rail    map';
-  gap: var(--space-8);
-  align-items: start;
-}
-
-@media (max-width: 980px) {
-  .inner {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      'header'
-      'map'
-      'rail';
-    gap: var(--space-6);
-  }
-}
-
-.header {
-  grid-area: header;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  max-width: 32rem;
+  gap: var(--space-7);
+  align-items: center;
+}
+
+/* ---------- Section header ----------
+ * Small + centered, intentionally understated so the map below
+ * is the focal point. Max-width keeps the heading from
+ * dominating the page width. */
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 44rem;
+  text-align: center;
+  align-items: center;
 }
 
 .headerEyebrow {
@@ -56,8 +43,8 @@
 .headerHeading {
   font-family: var(--font-fraunces), serif;
   font-weight: 700;
-  font-size: clamp(2rem, 4vw, 3rem);
-  line-height: 1.05;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  line-height: 1.1;
   letter-spacing: -0.015em;
   color: var(--ll-sand-bleached);
   margin: 0;
@@ -65,91 +52,94 @@
 
 .headerSub {
   font-family: var(--font-inter);
-  font-size: 1.05rem;
+  font-size: 1rem;
   line-height: 1.55;
   color: var(--ll-sand-bleached);
-  opacity: 0.85;
+  opacity: 0.8;
   margin: 0;
+  max-width: 36rem;
 }
 
 /* ---------- Map container (D-0026 final) ----------
- * Positioned 4:3 container holding the finished editorial map.
- * The 6 ZIP badges are baked into the image, so the container
- * just needs to size and frame the image cleanly — no SVG
- * overlay layer, no separate pin math.
- *
- * The container is sized to a 4:3 aspect ratio to match the
- * image exactly. The image fills the container edge-to-edge
- * (no letterboxing). A subtle drop shadow lifts the map off
- * the dark palm-bark background. */
+ * The focal point. Width is 100% of the container, height follows
+ * the 4:3 image aspect ratio. A subtle drop shadow lifts the map
+ * off the dark palm-bark background, and a thin palm-bark border
+ * frames it (a "printed page in a brochure" feel). */
 .mapWrap {
-  grid-area: map;
   position: relative;
+  width: 100%;
+  max-width: 1080px;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background: #FAF6F0; /* matches the map's white field */
-  border: 1px solid color-mix(in srgb, var(--ll-sand) 25%, transparent);
+  background: #F4E8D0; /* matches the map's cream field */
   aspect-ratio: 4 / 3;
   box-shadow:
     0 1px 0 color-mix(in srgb, var(--ll-sand-bleached) 8%, transparent),
-    0 22px 48px -28px rgba(0, 0, 0, 0.55);
+    0 24px 56px -28px rgba(0, 0, 0, 0.65),
+    0 8px 20px -8px rgba(0, 0, 0, 0.4);
 }
 
-/* The map image fills the container. object-fit: cover ensures
- * the image always fills the 4:3 frame, even at the tiniest
- * viewport where the rendered aspect might drift. */
 .mapImage {
   object-fit: cover;
   object-position: center;
 }
 
-/* ---------- Side rail (navigation, since the map pins are baked) ---------- */
-
+/* ---------- 6 ZIPs rail (horizontal navigation) ----------
+ * Full-width row of 6 ZIPs, evenly distributed. Each cell is a
+ * clickable link to /areas/{zip} with a thumbnail + ZIP + name. */
 .rail {
-  grid-area: rail;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--space-3);
+  width: 100%;
+  max-width: 1080px;
 }
 
-.railTitle {
-  font-family: var(--font-inter);
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: var(--ll-sand);
-  margin: 0 0 var(--space-2);
+@media (max-width: 980px) {
+  .rail {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .railItem {
   font-family: var(--font-inter);
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: var(--ll-sand-bleached);
   text-decoration: none;
   display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2) 0;
-  border-bottom: 1px solid color-mix(in srgb, var(--ll-sand) 15%, transparent);
-  transition: color var(--motion-duration-fast) var(--motion-easing-default);
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--ll-palm-shadow) 30%, var(--ll-palm-bark));
+  border: 1px solid color-mix(in srgb, var(--ll-sand) 15%, transparent);
+  transition:
+    background var(--motion-duration-fast) var(--motion-easing-default),
+    border-color var(--motion-duration-fast) var(--motion-easing-default),
+    transform var(--motion-duration-fast) var(--motion-easing-default);
 }
 
 .railItem:hover,
 .railItem:focus {
-  color: var(--ll-sun);
+  background: color-mix(in srgb, var(--ll-sun) 22%, var(--ll-palm-bark));
+  border-color: color-mix(in srgb, var(--ll-sun) 60%, transparent);
+  transform: translateY(-2px);
   outline: none;
 }
 
 .railItemThumb {
-  width: clamp(56px, 9vw, 80px);
+  width: 100%;
   aspect-ratio: 16 / 9;
-  flex-shrink: 0;
   border-radius: var(--radius-sm);
   overflow: hidden;
-  background: color-mix(in srgb, var(--ll-palm-shadow) 40%, var(--ll-palm-bark));
+  background: color-mix(in srgb, var(--ll-palm-shadow) 60%, var(--ll-palm-bark));
   box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-sand-bleached) 20%, transparent);
-  transition: transform var(--motion-duration-fast) var(--motion-easing-default);
 }
 
 .railItemThumb img {
@@ -159,18 +149,16 @@
   display: block;
 }
 
-.railItem:hover .railItemThumb,
-.railItem:focus .railItemThumb {
-  transform: scale(1.04);
-}
-
 .railItemZip {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  width: 56px;
-  flex-shrink: 0;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  color: var(--ll-sun);
 }
 
 .railItemName {
   opacity: 0.85;
+  font-size: 0.82rem;
+  line-height: 1.35;
 }
