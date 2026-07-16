@@ -1,0 +1,141 @@
+/* ============================================================
+ * AreaServiceOffer — `/areas/[zip]` services grid.
+ *
+ * 3-up grid on desktop (3 columns of 2 rows), 1-up on mobile.
+ * Each card is a <Link> wrapping an <article> with the
+ * ServiceBentoIcon painted mark + title + summary + price
+ * floor. Same affordance pattern as the homepage ServiceBento,
+ * but tightened to 3-up rather than the bento's 12-col
+ * asymmetric layout — per-area pages need a service surface
+ * that fits below the fold, not a homepage hero grid.
+ *
+ * Sand-bleached surface so the cards read as a focused service
+ * block between the cream challenges section above and the
+ * cream FAQ section below.
+ * ============================================================ */
+
+.root {
+  background: var(--ll-sand-bleached);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 42rem;
+  margin-bottom: var(--space-7);
+}
+
+.heading {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--ll-palm-shadow);
+  margin: 0;
+}
+
+.subhead {
+  font-family: var(--font-inter);
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+}
+
+.cardLi {
+  display: contents;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background: var(--ll-cream);
+  border: 1px solid color-mix(in oklab, var(--ll-clay) 18%, transparent);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+  transition: transform var(--motion-duration-base) var(--motion-easing-default),
+    box-shadow var(--motion-duration-base) var(--motion-easing-default),
+    border-color var(--motion-duration-base) var(--motion-easing-default);
+}
+
+.card:hover,
+.card:focus-visible {
+  transform: translateY(-3px);
+  border-color: var(--ll-clay);
+  box-shadow: var(--elevation-2);
+  text-decoration: none;
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--ll-clay);
+  outline-offset: 2px;
+}
+
+.icon {
+  width: 40px;
+  height: 40px;
+  color: var(--ll-clay);
+  margin-bottom: calc(var(--space-2) * -1);
+  transition:
+    color var(--motion-duration-base) var(--motion-easing-default),
+    transform var(--motion-duration-base) var(--motion-easing-default);
+}
+
+.card:hover .icon,
+.card:focus-visible .icon {
+  color: var(--ll-sun);
+  transform: rotate(-3deg);
+}
+
+.title {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: 1.35rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--ll-green);
+  margin: 0;
+}
+
+.summary {
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0;
+  flex: 1;
+}
+
+.price {
+  font-family: var(--font-inter);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--ll-palm-bark);
+  margin: 0;
+  padding-top: var(--space-2);
+  border-top: 1px solid color-mix(in oklab, var(--ll-clay) 14%, transparent);
+}

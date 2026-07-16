@@ -1,0 +1,101 @@
+/* ============================================================
+ * AreaHero — `/areas/[zip]` page opener.
+ *
+ * Full-bleed storybook-painted neighborhood scene with editorial
+ * copy overlay (sand-bleached text on a clay-warm scrim). The
+ * copy column sits inside the standard 1200px container at 60%
+ * max-width so it reads like an editorial spread.
+ *
+ * Visually identical to ServiceHero — same dark-stage
+ * composition with a per-ZIP image swap. The scrim is tuned
+ * slightly darker (78% → 84%) so the cream text reads cleanly
+ * over the warm-golden-hour painted scenes (which have more
+ * sun-color mid-tones than the cool-toned service scenes).
+ *
+ * Reduced-motion: the FadeUp is framer-motion-aware via the
+ * MotionConfig in root layout — no parallax, no scale on scroll.
+ * ============================================================ */
+
+.root {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--ll-palm-shadow);
+  color: var(--ll-sand-bleached);
+  padding-block: var(--space-13) var(--space-12);
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.image {
+  object-fit: cover;
+  object-position: center;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ll-palm-shadow) 40%, transparent) 0%,
+    color-mix(in srgb, var(--ll-palm-shadow) 84%, transparent) 100%
+  );
+}
+
+.copy {
+  max-width: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+@media (max-width: 980px) {
+  .copy {
+    max-width: 100%;
+  }
+}
+
+.eyebrow {
+  /* Eyebrow tone="dark" handles the sand-on-palm color. */
+}
+
+.title {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--ll-sand-bleached);
+  margin: 0;
+}
+
+.tagline {
+  font-family: var(--font-inter);
+  font-size: 1.15rem;
+  line-height: 1.55;
+  color: var(--ll-sand-bleached);
+  opacity: 0.9;
+  margin: 0;
+  max-width: 40rem;
+}
+
+.intro {
+  font-family: var(--font-inter);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--ll-sand-bleached);
+  opacity: 0.85;
+  margin: var(--space-3) 0 var(--space-4);
+  max-width: 40rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}

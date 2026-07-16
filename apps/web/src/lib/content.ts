@@ -99,6 +99,348 @@ export const serviceAreaMap = {
 } as const;
 
 /**
+ * Per-ZIP service-area images. D-0034: storybook-painted
+ * neighborhood scenes generated via the ComfyUI pipeline at
+ * `apps/comfyui/prompts/area.md`, one webp per ZIP. The same
+ * image renders as the per-area hero on `/areas/[zip]`. Each
+ * image is 1200x675 webp, ~64-74KB, painted style with the
+ * brand's 9-token palette.
+ */
+export const areaImages: Readonly<Record<string, string>> = {
+  '33756': '/areas/33756.webp',
+  '33770': '/areas/33770.webp',
+  '33771': '/areas/33771.webp',
+  '33773': '/areas/33773.webp',
+  '33774': '/areas/33774.webp',
+  '33778': '/areas/33778.webp',
+};
+
+/**
+ * Per-ZIP detail content for `/areas/[zip]` pages. D-0034:
+ * substantive local content, not the placeholder copy D-0026/27/28
+ * shipped. Each block has:
+ *
+ *   - `name`     Short neighborhood label (matches pinLocations).
+ *   - `longName` Long-form name used in the hero h1 + metadata.
+ *   - `tagline`  1-2 sentence intro for the hero subhead.
+ *   - `intro`    2-3 sentence paragraph for the hero body.
+ *   - `about`    2-3 paragraphs of real local content
+ *                (neighborhood character, local landmarks, what
+ *                mows like here).
+ *   - `landmarks` List of 4-5 real nearby landmarks the user
+ *                would recognize.
+ *   - `challenges` 3 bullets of common lawn challenges here.
+ *   - `whatWeDo`   3-4 bullets of the operator's specific
+ *                approach for this ZIP.
+ *   - `faqs`     3-4 per-ZIP questions (the 1-question placeholder
+ *                density D-0026/27 had is gone).
+ *
+ * Copy is grounded in:
+ *   - research/seo/largo-keyword-map.md (long-tail ZIP keywords)
+ *   - research/regulatory/largo-licensing-map.yaml (legal scope)
+ *   - research/suppliers/largo.yaml (SiteOne Largo, Horizon
+ *     Pinellas, Pinellas Tractor — real local businesses)
+ *   - First-person operator voice per brand/guidelines.md
+ */
+export interface AreaDetail {
+  zip: string;
+  name: string;
+  longName: string;
+  tagline: string;
+  intro: string;
+  about: ReadonlyArray<string>;
+  landmarks: ReadonlyArray<string>;
+  challenges: ReadonlyArray<string>;
+  whatWeDo: ReadonlyArray<string>;
+  faqs: ReadonlyArray<{ q: string; a: string }>;
+  /** Hint for narrative voice. Currently always 'standard'. */
+  voice: 'standard';
+}
+
+export const areaDetail: Readonly<Record<string, AreaDetail>> = {
+  '33771': {
+    zip: '33771',
+    name: 'Largo (central)',
+    longName: 'Largo (central) lawn care',
+    tagline:
+      'Home base. Same-guy, same-day response in the heart of Largo — 33771 — the route the rest of the week builds around.',
+    intro:
+      'I live in 33771. When you call before 10am on a Tuesday, you are most often calling me on Tuesday, not next Tuesday. The route has been built around this ZIP for six years.',
+    about: [
+      'Largo (central) — 33771 — is the operator home base. Downtown Largo, Largo Central Park, the cultural center of the city. Streets are a mix of older homes from the 1950s through 1970s and the newer infill builds going in around the old lots. The dominant ground cover is St. Augustine grass, which means weekly mowing through the wet season (April through October) is the right schedule, biweekly works for the dry months (November through March) for most yards.',
+      'Starkey Ranch is on the north edge of 33771 — newer subdivisions, more irrigation, more Bahia and freshly-sodded St. Augustine. The east side of 33771 (still inside this ZIP) drifts toward 33773-style newer construction, with brand-new sod, irrigation heads that need to be worked around, and pre-sod weeds that need to be kept off the lawn.',
+      'The lot sizes are mostly a quarter to a half acre, with some larger along the east side. Most yards in 33771 are within the bread-and-butter mow-rate range — no need for a quote call-out to scope before I can give you a number. If the gate is unlocked on the day I am coming, you do not have to be home. The mower will not be alone with the dog unless we have talked about it first.',
+    ],
+    landmarks: [
+      'Downtown Largo',
+      'Largo Central Park',
+      'Starkey Ranch',
+      'Highland Recreation Complex',
+      'Largo Public Library',
+    ],
+    challenges: [
+      'Standard St. Augustine maintenance: weekly mow April through October, biweekly November through March.',
+      'Edging along sidewalks and the longer driveways — clean lines take a few passes on the older concrete that has crumbled a bit.',
+      'Full-yard cleanup in March and April, when the spring growth starts pushing and the older lots have six months of buildup in the beds.',
+    ],
+    whatWeDo: [
+      'I keep the route on 33771 the way most of you keep your day — same day, same time, every week. Tuesday is a 33771 day.',
+      'Edging is included with every mow. I run a real mechanical edger, not a string trimmer held sideways, so the lines stay clean through the week.',
+      'Spring cleanup and full-bed mulch in March through May, sourced from SiteOne on 66th Street (a ten-minute drive from anywhere in 33771).',
+    ],
+    faqs: [
+      {
+        q: 'How fast can you start a new customer in 33771?',
+        a: 'Most weeks I can start within five business days of a quote. The route has room on Tuesdays, Wednesdays, and Fridays. Hurricane season and seasonal cleanup are longer waits — book early.',
+      },
+      {
+        q: 'Do you work with the downtown Largo small businesses too?',
+        a: 'Yes — light commercial lots in 33771 are welcome. Vacant-lot mow, parking-lot edging, and the long strips along West Bay are all in scope. The legal scope is the same as residential (no fertilization, no pest control, no irrigation).',
+      },
+      {
+        q: 'I do not have a fence or a gate. Will the mower be in the yard while I am at work?',
+        a: 'Yes. Solo operator, no crew. The mower shows up, mows, edges, blows, and is gone before you get home. I do not subcontract — when you book, you get me.',
+      },
+      {
+        q: 'I am out of town for three weeks — will the lawn be okay?',
+        a: 'Three weeks of missed cuts in the wet season is rough. If you let me know before you leave, I will schedule an extra mid-trip visit at a discounted rate so the lawn does not bounce back from a full-scale rescue. A single rescue mow after a long absence is also a service we offer under seasonal cleanup.',
+      },
+    ],
+    voice: 'standard',
+  },
+  '33770': {
+    zip: '33770',
+    name: 'Belleair Bluffs / Largo',
+    longName: 'Belleair Bluffs & west-central Largo lawn care',
+    tagline:
+      'Belleair Bluffs and the west-central Largo neighborhoods. Mature oaks, the oak-leaf drop in March and April, and clean lines for the wider sidewalks along West Bay.',
+    intro:
+      'A ten-minute drive from 33771, and a different lawn rhythm. The oaks drop leaves for two months solid. The lots are tighter than 33771. The sidewalks along West Bay are wider, and the HOA is paying attention.',
+    about: [
+      'Belleair Bluffs and the west-central edge of Largo — 33770 — is an established neighborhood with mature live oaks. The lots run a quarter to a half acre, mostly ranch-style homes from the 60s and 70s with a fair number of recent teardowns that have been rebuilt. The dominant ground cover is St. Augustine, and the dominant challenge is the oaks.',
+      'March and April are the oak leaf drop. A 33770 yard will get a measurable leaf-drop every week for six to eight weeks. If your lot has even one mature live oak on it, that is part of the mow rate. Two oaks and a magnolia, the rate is going to be on the higher end of the bread-and-butter band — but I have already built that into the quote.',
+      'The east side of 33770 runs along West Bay Drive, where the sidewalks are wider and the small-commercial lots are mixed in with the residential. Edging here is the part that takes longer than it looks: a 24-inch sidewalk with a 30-foot straightaway still needs the same hand-trim at the corners that a 4-foot walk does. Indian Rocks Beach is a few minutes west, which is a nice Saturday destination even if it is not part of the mow route.',
+    ],
+    landmarks: [
+      'Belleair Bluffs',
+      'Indian Rocks Beach access (west)',
+      'Largo Medical Center',
+      'West Bay Drive shops',
+      'Walsingham Park',
+    ],
+    challenges: [
+      'Oak leaf cleanup March and April: leaves for six to eight weeks solid, every week. Already in the rate.',
+      'Oak root intrusion into lawn: oak roots heave and the mower scalps the high spots. Not a fix, but I cut higher over the raised area to keep the lines even.',
+      'St. Augustine thatch buildup: thatch layer thickens through the wet season, and the lawn starts to feel spongy. The mow stays at 3 to 3.5 inches to keep the grass competitive with the thatch.',
+    ],
+    whatWeDo: [
+      'Mow-and-edge every visit. The mow rate covers weekly leaf pickup during oak-drop season; you do not get a spring cleanup bill for the oak leaves.',
+      'Higher cut on the root-heave areas to keep the lines from scalping. Better lawn than trying to fight the roots.',
+      'Corner-and-bed detail on the wider West Bay Drive sidewalks — that is where the curb appeal reads first, and that is where I slow down.',
+    ],
+    faqs: [
+      {
+        q: 'My oak drops leaves every week in spring — is that in the mowing rate?',
+        a: 'Yes. If your lot has a mature oak, the March and April weekly leaf pickup is part of the mow rate. I would rather build it in than bill you for a seasonal cleanup every spring.',
+      },
+      {
+        q: 'Do you edge along West Bay Drive properties with the wider sidewalks?',
+        a: 'Yes. The wider sidewalks take longer to edge, but they also benefit the most from a clean line. I run a real mechanical edger along the whole walk plus the bed edges.',
+      },
+      {
+        q: 'How do you handle root-heave scalping in 33770?',
+        a: 'I cut higher over the raised area. Trying to scalp level would scalp the lawn. The mow stays at 3.5 inches over the heave, which keeps the grass full while the rest of the lawn is at 3.',
+      },
+    ],
+    voice: 'standard',
+  },
+  '33773': {
+    zip: '33773',
+    name: 'Largo (east)',
+    longName: 'Largo (east) lawn care',
+    tagline:
+      'Newer subdivisions, irrigation systems, freshly sodded lawns. The east side of Largo, 33773, on the Pinellas Park border.',
+    intro:
+      'East of 33771, into the 90s-and-2000s subdivisions. Bahia, freshly laid St. Augustine, irrigation heads everywhere. I work around the heads — I do not service the systems.',
+    about: [
+      'Largo (east) — 33773 — is mostly newer subdivisions, built from the 1990s through the 2010s with some brand-new construction still going in on the east edge. The lot sizes are tighter than 33771 — closer to a fifth of an acre — and the houses are closer together. Most homes in 33773 have irrigation systems pre-installed, and most lawns are either Bahia or freshly sodded St. Augustine.',
+      'The Pinellas Park border is on the east edge. East Bay and the Feather Sound area are just over the line. The houses are a little newer, the lots a little smaller, and the irrigation heads a little denser per square foot than anywhere else on the route.',
+      'For the operator, 33773 is about working around the irrigation heads (I do not service the systems — Florida requires the PCCLB Irrigation Specialty license for that, and I refer irrigation work out). I mow slightly higher over the irrigation zones so the heads do not get scalped. I will flag a leaking head to you when I see it; I do not touch the system itself.',
+    ],
+    landmarks: [
+      'East Bay',
+      'Feather Sound',
+      'Pinellas Park',
+      'John Chesnut Sr. Park (just east)',
+      'Brooker Creek Preserve',
+    ],
+    challenges: [
+      'Irrigation coordination: I mow around the heads and slightly higher over the irrigation zones, but the systems themselves are out of scope. I can flag leaks to you.',
+      'New-construction settling: the houses that are still going in have a few years of settling and the lawn edges drift. I trim to the new grade, not the old one.',
+      'Sod establishment: freshly sodded lawns need a different mow pattern for the first month (higher cut, sharper blade, no bagging so the clippings feed the new sod).',
+    ],
+    whatWeDo: [
+      'I will mow around the irrigation heads and flag any leaks to you. The systems themselves are out of scope; I refer irrigation work to a licensed partner.',
+      'First-month sod protocol on freshly laid lawns — higher cut, no bagging, sharp blade — until the sod has rooted.',
+      'Edge along the foundation beds of the newer construction, which usually need a clean-up pass at the first few visits until the bed edges settle.',
+    ],
+    faqs: [
+      {
+        q: 'Do you service irrigation systems?',
+        a: 'No — Florida requires the PCCLB Irrigation Specialty Contractor license for irrigation work, which is a different license than mine. I mow around the heads and flag anything I see (leaks, broken heads, misaligned spray), and I can refer you to a licensed irrigation partner for repairs.',
+      },
+      {
+        q: 'How do you handle new-construction lawns that have not fully established?',
+        a: 'First-month protocol: higher cut (3.5 to 4 inches), no bagging (the clippings feed the new sod), and a sharp blade (dull blades tear new sod). After the sod has rooted, normal mowing schedule kicks in.',
+      },
+      {
+        q: 'My irrigation runs in the early morning — will the lawn be too wet?',
+        a: 'If the irrigation is on a normal 5am-6am cycle, the lawn is usually dry enough by 8am when I show up. If the cycle is heavier or runs later, the first cut might be after the dew has lifted anyway. I do not mow wet grass — it clumps, ruts, and the cut is uneven. I will skip to the next day if the yard is too wet.',
+      },
+    ],
+    voice: 'standard',
+  },
+  '33774': {
+    zip: '33774',
+    name: 'Largo / Ridgecrest',
+    longName: 'Largo & Ridgecrest lawn care',
+    tagline:
+      'Ridgecrest and the elevated terrain to the south. More mature tree canopy, more shade, more landscaped lots, and the drainage on the ridge is its own thing.',
+    intro:
+      'Ridgecrest — 33774 — sits a little higher than the rest of the route. The tree canopy is heavier, the lots are larger, and the drainage on the ridge has been working for fifty years.',
+    about: [
+      'Ridgecrest — 33774 — is the elevated terrain south of central Largo. The lots tend to be larger and more landscaped than the other ZIPs on the route, with mature live oaks, pines, and a number of landscaped foundation beds that need regular attention. The Seminole border is to the south; Lake Seminole is to the southeast.',
+      'Drainage on the ridge is generally good — the elevation handles heavy rain well — but the lots at the lower edges of the ridge see runoff from the higher properties. The mow does not change for that, but the edging along the swales and the curbs takes a steadier hand.',
+      'Shade is the bigger issue for 33774. The mature tree canopy filters a lot of light, and St. Augustine Palmetto or Seville cultivars do better here than the broader-leaf Floratam that does well in the sun. If your yard is mostly shade, I will ask at quote-time what cultivar is in the lawn so the mow height is right for it.',
+    ],
+    landmarks: [
+      'Ridgecrest',
+      'Lake Seminole',
+      'Seminole City Park',
+      'Walsingham corridor',
+      'Pinellas Trail access',
+    ],
+    challenges: [
+      'Shade tolerance: the broader-leaf St. Augustine cultivars thin out under the canopy. Palmetto or Seville are the right call for shaded lots.',
+      'Drainage on the lower-elevation lots: swales and curbs handle the runoff, but the edges take more attention to keep the line clean through wet weeks.',
+      'Mature tree root zones: the root zones of the mature oaks and pines are not places to scalp. Higher cut, no aggressive edging into the root flare.',
+    ],
+    whatWeDo: [
+      'Right cultivar for the light. If you have shade, I will ask at quote-time and the mow height adjusts (Palmetto and Seville prefer 3.5 to 4 inches, Floratam prefers 3 to 3.5).',
+      'Steady-hand edging along the swales and the curbs, not the same perfunctory pass that the open lots get.',
+      'Conservative cut over the mature tree root zones. Better lawn long-term than trying to push the line right up to the trunk.',
+    ],
+    faqs: [
+      {
+        q: 'My yard has a lot of shade — what grass will actually grow?',
+        a: 'St. Augustine is the right grass for Pinellas in general, but the cultivar matters under shade. Floratam needs the most sun. Palmetto and Seville tolerate partial shade. Raleigh is OK in deep shade but slower. If you do not know what is in your lawn, I can usually tell at the first visit from the blade width and the growth pattern, and we go from there.',
+      },
+      {
+        q: 'Do you handle the drainage issues on the elevated lots?',
+        a: 'I do the drainage-related edging (swales, curbs, the lower edges of the ridge) well. I do not do drainage work itself — regrading, French drains, catch basin installs — those are out of scope and I refer them to a licensed partner. I will flag what I see at a visit.',
+      },
+      {
+        q: 'My oak roots are heaving the lawn — what do you do?',
+        a: 'Higher cut over the root-heave area, no aggressive edging into the root flare. The lawn stays full, the lines stay even, and the oak keeps its roots.',
+      },
+    ],
+    voice: 'standard',
+  },
+  '33778': {
+    zip: '33778',
+    name: 'Seminole / Largo West',
+    longName: 'Seminole & west Largo lawn care',
+    tagline:
+      'Seminole and the west edge of Largo, 33778. Sandy soil, salt air, hurricane exposure. The hurricane prep work is real here.',
+    intro:
+      'West of 33771, into Seminole and the west edge of Largo. The lots are a mix of established and new, the soil is sandy, and the salt air off the Gulf is a fact of life. Hurricane prep is the headline service in 33778.',
+    about: [
+      'Seminole and the west edge of Largo — 33778 — runs from the Pinellas Park border west to Indian Shores access. The lots are a mix of established residential and newer builds, and the soil is the sandy coastal-soil that comes with being a few miles from the Gulf. Salt-tolerant grass varieties are the right call for the closer-to-Gulf properties — Bahiagrass and certain St. Augustine cultivars (Floratam, in particular) handle the salt better than the broader-leaf cultivars.',
+      'Hurricane prep is the headline service in 33778. The Gulf proximity means named-storm exposure is a real thing, and the June through November hurricane season drives most of the off-schedule work in this ZIP. Pre-storm sweep, post-storm haul, and the insurance paperwork that goes with it.',
+      'Indian Shores is just to the west, and Boca Ciega Bay is the body of water on the south side of the ZIP. The salt air is part of the lawn-care picture — salt-tolerance matters for the grass, and the mow height is a little higher than inland properties to keep the grass competitive with the salt.',
+    ],
+    landmarks: [
+      'Seminole',
+      'Indian Shores access (beaches just west)',
+      'Lake Seminole',
+      'Boca Ciega Bay',
+      'Tiki Gardens',
+    ],
+    challenges: [
+      'Salt damage: salt air off the Gulf burns the leaf tips and stresses the grass. The mow height is a little higher (3.5 inches) to keep the grass competitive with the salt.',
+      'Hurricane prep + cleanup: pre-storm yard sweep, post-storm debris haul. Insurance-friendly invoices. Most-active hurricane ZIP on the route.',
+      'Sandy-soil nutrient management: sandy soil leaches fertilizer fast. I do not fertilize (separate Florida license required), but I will flag soil-stress patterns to you.',
+    ],
+    whatWeDo: [
+      'Salt-aware mow: 3.5 inches instead of 3, and a sharper blade so the cut is clean rather than tearing the salt-burned tips.',
+      'Hurricane prep mode: the same guy who mows your yard on Saturday is the same guy who sweeps the loose debris on Saturday before the wind. Pre-storm sweep is a single-visit job; post-storm haul is by appointment and the queue moves in the order the storm came through.',
+      'Insurance-friendly invoices for the post-storm haul. Photos of the before-and-after for your claim if you want them.',
+    ],
+    faqs: [
+      {
+        q: 'How quickly can you respond to a hurricane in this ZIP?',
+        a: 'Hurricane mode activates when a named storm is in the Pinellas cone or sustained winds hit 30 mph. I pause regular scheduling and dispatch prep visits in the order the cone arrives. After the all-clear, post-storm haul is by appointment and the queue moves in the order the storm came through. 33778 is the highest hurricane-exposure ZIP on the route — the prep slots tend to fill first.',
+      },
+      {
+        q: 'Do you handle the salt-air grass varieties for the closer-to-Gulf properties?',
+        a: 'Yes. Floratam and Bahiagrass both do well closer to the Gulf. The mow is a little higher (3.5 inches) and the blade is kept sharper to keep the cut clean through the salt-burned tips. If you do not know what is in your lawn, I can tell at the first visit.',
+      },
+      {
+        q: 'I am a few blocks from Indian Shores — does the salt affect how often you mow?',
+        a: 'The closer to the Gulf, the faster the salt-burn cycle pushes the grass to seed. Most 33778 yards closer to Indian Shores do well on a weekly mow in the wet season, biweekly in the dry. The mow is at 3.5 inches regardless of the week.',
+      },
+    ],
+    voice: 'standard',
+  },
+  '33756': {
+    zip: '33756',
+    name: 'Belleair / Clearwater',
+    longName: 'Belleair & east Clearwater lawn care',
+    tagline:
+      'Belleair and the east edge of Clearwater, 33756. Coastal soil, salt-tolerant grass, HOA standards that read twice.',
+    intro:
+      'West of 33771, across the county line into Pinellas proper. Belleair and the east edge of Clearwater. Higher property values, larger lots, HOA standards that read twice.',
+    about: [
+      'Belleair and the east edge of Clearwater — 33756 — sits west of 33770, on the coastal side of Pinellas. The lots are larger than the rest of the route (a third of an acre to a full acre in some of the Belleair subdivisions), the property values are higher, and the HOA standards in many of the subdivisions read twice — curb appeal is a real line item for the homes here.',
+      'The soil is sandy coastal soil. The salt air off the Gulf is a fact of life, and the salt-tolerant grass varieties (Bahia, Floratam, certain St. Augustine cultivars) do better than the broader-leaf cultivars. The tree canopy is mature — live oaks, magnolias, sabal palms. Palm root intrusion into the lawn is a real thing in 33756, especially the closer-to-coastal lots.',
+      'The historic district in Belleair has its own rhythm — the older homes, the wider lots, the slower pace. The east Clearwater side of 33756 has more of a mixed residential/commercial feel along the main corridors. Both sides benefit from a higher mow cut and a sharper blade, and both have stricter curb-appeal standards than the inland ZIPs.',
+    ],
+    landmarks: [
+      'Belleair',
+      'Belleair Beach access',
+      'Clearwater',
+      'Intracoastal Waterway',
+      'Pelican Walk Plaza',
+    ],
+    challenges: [
+      'Salt damage to grass: the closer-to-Gulf properties see salt burn at the leaf tips, and the mow needs to be a little higher (3.5 inches) to keep the grass competitive.',
+      'Palm root intrusion into lawn: sabal palm roots heave and the mower scalps the high spots. Higher cut over the heave, no aggressive edging into the root flare.',
+      'Sandy-soil irrigation needs: sandy soil drains fast and the lawn needs more frequent watering. I do not service irrigation (separate Florida license), but I will flag what I see.',
+    ],
+    whatWeDo: [
+      'Right grass for the soil. Bahia and Floratam handle the salt better than the broader-leaf cultivars. If you are not sure what is in the lawn, I can usually tell at the first visit from the blade width and the growth pattern.',
+      'HOA-aware timing: the mow happens before the weekend, the edging is clean, the curbside clippings are blown back into the lawn. Curb appeal is a real line item here.',
+      'Slower pass through the historic district lots. The wider lots and the mature tree canopy mean the mow is not a fast job — and the rate is built around that.',
+    ],
+    faqs: [
+      {
+        q: 'Do you handle saltwater irrigation damage on the coastal properties?',
+        a: 'I do not service the irrigation systems themselves (separate Florida license required for that), but I will flag leaks, broken heads, and saltwater intrusion patterns. The mow is adjusted for the salt — higher cut, sharper blade — to keep the grass competitive through the burn.',
+      },
+      {
+        q: 'How do you deal with HOA standards in Belleair?',
+        a: 'Curb-appeal timing: the mow is before the weekend, the edging is clean, the clippings are blown back into the lawn (not onto the sidewalk or the street). The whole point of the Belleair HOA standards is the street-facing first impression, and that is what I slow down on.',
+      },
+      {
+        q: 'My palm roots are heaving the lawn — what is the fix?',
+        a: 'There is not a fix. The palm keeps growing, the roots keep heaving, and the lawn keeps shifting. The right move is a higher cut over the heave so the lines stay even, and no aggressive edging into the root flare. The lawn stays full and the palm keeps its roots.',
+      },
+    ],
+    voice: 'standard',
+  },
+};
+
+/**
  * Service line items. Slugs match `/services/[slug]` routes and the keys in
  * `business.ts → PRICING_FLOOR_CENTS`. `featured: true` flags the bento card
  * that spans two columns on desktop.

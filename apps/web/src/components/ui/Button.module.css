@@ -145,3 +145,19 @@
 .sun.inverse {
   color: var(--ll-palm-bark);
 }
+
+/* D-0034 — outline.inverse override. The default .outline uses
+ * palm-shadow border + text, which is invisible on the painted
+ * AreaHero scrim (dark green + warm golden hour tones). On dark
+ * surfaces, the outline switches to sand-bleached border + text
+ * so the secondary CTA reads cleanly. Used by AreaHero, ServiceHero,
+ * and the per-area AreaCTA's "See all service areas" button. */
+.outline.inverse {
+  border-color: var(--ll-sand-bleached);
+  color: var(--ll-sand-bleached);
+}
+
+.outline.inverse:hover:not(:disabled) {
+  background: var(--ll-sand-bleached);
+  color: var(--ll-palm-bark);
+}

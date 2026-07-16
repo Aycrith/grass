@@ -1,0 +1,203 @@
+/* ============================================================
+ * /areas - index of 6 Pinellas neighborhood pages.
+ *
+ * Hero is a cream-band editorial opener (matches the
+ * editorial-band opener on /services, /pricing, /about).
+ * Directory is a 2-up grid on desktop (3 rows of 2), 1-up
+ * on mobile, with the per-ZIP painted scene as the card
+ * image. The card body sits below the image (not floating
+ * on it) so the layout reads as a content grid rather than
+ * a hero gallery.
+ * ============================================================ */
+
+.root {
+  background: var(--ll-cream);
+}
+
+/* ---------- Hero ---------- */
+
+.hero {
+  background: var(--ll-cream);
+  padding-block: var(--space-11) var(--space-8);
+  border-bottom: 1px solid color-mix(in oklab, var(--ll-clay) 14%, transparent);
+}
+
+.eyebrow {
+  color: var(--ll-clay);
+  display: inline-block;
+  margin-bottom: var(--space-3);
+}
+
+.title {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: clamp(2.5rem, 5vw, 4.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--ll-palm-bark);
+  margin: 0;
+  text-wrap: balance;
+  max-width: 22ch;
+}
+
+.tagline {
+  font-family: var(--font-inter);
+  font-size: 1.15rem;
+  line-height: 1.55;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: var(--space-4) 0 0;
+  max-width: 42rem;
+}
+
+/* ---------- Directory ---------- */
+
+.directory {
+  background: var(--ll-sand-bleached);
+  padding-block: var(--space-10);
+}
+
+.grid {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-8);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+}
+
+.cardLi {
+  display: contents;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--ll-cream);
+  border: 1px solid color-mix(in oklab, var(--ll-clay) 14%, transparent);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+  transition: transform var(--motion-duration-base) var(--motion-easing-default),
+    box-shadow var(--motion-duration-base) var(--motion-easing-default),
+    border-color var(--motion-duration-base) var(--motion-easing-default);
+}
+
+.card:hover,
+.card:focus-visible {
+  transform: translateY(-4px);
+  border-color: var(--ll-clay);
+  box-shadow: var(--elevation-3);
+  text-decoration: none;
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--ll-clay);
+  outline-offset: 2px;
+}
+
+.imageWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--ll-sand);
+  overflow: hidden;
+}
+
+.image {
+  object-fit: cover;
+  transition: transform var(--motion-duration-slow) var(--motion-easing-default);
+}
+
+.card:hover .image,
+.card:focus-visible .image {
+  transform: scale(1.04);
+}
+
+.zipPill {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-inter);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in oklab, var(--ll-sun) 92%, transparent);
+  color: var(--ll-palm-bark);
+  box-shadow: 0 2px 12px color-mix(in oklab, var(--ll-palm-shadow) 25%, transparent);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  flex: 1;
+}
+
+.cardTitle {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--ll-green);
+  margin: 0;
+}
+
+.cardTeaser {
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0;
+  flex: 1;
+}
+
+.cardLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-inter);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ll-clay);
+  margin-top: var(--space-2);
+}
+
+.cardLinkArrow {
+  transition: transform var(--motion-duration-base) var(--motion-easing-default);
+}
+
+.card:hover .cardLinkArrow,
+.card:focus-visible .cardLinkArrow {
+  transform: translateX(4px);
+}
+
+.tail {
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ll-palm-bark);
+  opacity: 0.7;
+  margin: 0;
+  max-width: 48rem;
+  padding-top: var(--space-5);
+  border-top: 1px solid color-mix(in oklab, var(--ll-clay) 14%, transparent);
+}

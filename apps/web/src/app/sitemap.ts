@@ -1,10 +1,13 @@
 /**
- * sitemap.xml — auto-generated from service slugs.
+ * sitemap.xml — auto-generated from service slugs + area ZIPs.
  *
- * 11 routes: 1 home + 1 services index + 6 service detail + 1 pricing
- * + 1 about + 1 contact + 2 legal = 11. (D-0033: per-area ZIP pages
- * removed — the form on the homepage is the single service-area
- * surface; no per-ZIP SEO placeholder pages.)
+ * 19 routes: 1 home + 1 services index + 6 service detail + 1 pricing
+ * + 1 about + 1 contact + 1 areas index + 6 area detail + 2 legal = 19.
+ * (D-0034: per-area ZIP pages re-included. D-0033 had removed them;
+ * D-0034 restores them with substantive local content + 6 painted
+ * storybook illustrations. The form on the homepage is still the
+ * primary service-area surface; the /areas routes are the secondary
+ * "explore the neighborhoods" surface for users who want to dig in.)
  *
  * The /gbp page is excluded (noindex,follow), and /privacy + /terms are
  * included as legal documentation but with lower priority.
@@ -25,6 +28,10 @@ const SERVICE_SLUGS = [
   'seasonal-cleanup',
 ] as const;
 
+// D-0034: 6 area ZIPs (matches the 6 home-area ZIPs in
+// `BUSINESS.service_area_zips` + the `areaDetail` keys).
+const AREA_ZIPS = ['33756', '33770', '33771', '33773', '33774', '33778'] as const;
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = 'https://largolawn.pro';
   const lastmod = new Date();
@@ -35,6 +42,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/pricing`, lastModified: lastmod, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${base}/about`, lastModified: lastmod, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${base}/contact`, lastModified: lastmod, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${base}/areas`, lastModified: lastmod, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${base}/privacy`, lastModified: lastmod, changeFrequency: 'yearly', priority: 0.2 },
     { url: `${base}/terms`, lastModified: lastmod, changeFrequency: 'yearly', priority: 0.2 },
 
@@ -44,6 +52,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: lastmod,
       changeFrequency: 'monthly' as const,
       priority: 0.85,
+    })),
+
+    // --- 6 area detail pages (D-0034 re-introduction) ---
+    ...AREA_ZIPS.map((zip) => ({
+      url: `${base}/areas/${zip}`,
+      lastModified: lastmod,
+      changeFrequency: 'monthly' as const,
+      priority: 0.75,
     })),
   ];
 }

@@ -1,0 +1,249 @@
+/* ============================================================
+ * AreaNeighborhoodNotes — `/areas/[zip]` body.
+ *
+ * Three sub-sections that alternate surface tones so the
+ * reader feels a rhythm:
+ *   1. About     — cream surface
+ *   2. Landmarks — sand-bleached surface
+ *   3. Challenges — cream surface
+ *
+ * Each sub-section has a 40-60rem column (matches the
+ * editorial spread of ServiceIncludes + ServiceFAQ on the
+ * service detail pages) and a single Fraunces heading with
+ * the same eyebrow rule as OperatorBio.
+ *
+ * Editorial typography: Fraunces serif for headings, Inter
+ * for body. Same scale as the rest of the site (1.5rem → 2rem
+ * for headings, 1.05rem for body).
+ * ============================================================ */
+
+/* ---------- About (cream) ---------- */
+
+.aboutSection {
+  background: var(--ll-cream);
+}
+
+.aboutHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  max-width: 42rem;
+}
+
+.aboutHeading {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--ll-palm-shadow);
+  margin: var(--space-1) 0 0;
+}
+
+.aboutBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 44rem;
+}
+
+.aboutParagraph p {
+  font-family: var(--font-inter);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--ll-palm-bark);
+  margin: 0;
+  opacity: 0.92;
+}
+
+/* ---------- Landmarks (sand-bleached) ---------- */
+
+.landmarksSection {
+  background: var(--ll-sand-bleached);
+}
+
+.landmarksInner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-7);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .landmarksInner {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+}
+
+.landmarksHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 28rem;
+}
+
+.landmarksHeading {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--ll-palm-shadow);
+  margin: var(--space-1) 0 0;
+}
+
+.landmarksSub {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: var(--space-2) 0 0;
+}
+
+.landmarksList ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.landmarksList li {
+  font-family: var(--font-fraunces), serif;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--ll-palm-bark);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid color-mix(in oklab, var(--ll-clay) 22%, transparent);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.landmarksList li::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ll-sun);
+  flex-shrink: 0;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ll-sun) 22%, transparent);
+}
+
+/* ---------- Challenges (cream) ---------- */
+
+.challengesSection {
+  background: var(--ll-cream);
+}
+
+.challengesInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  max-width: 48rem;
+}
+
+.challengesHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 36rem;
+}
+
+.challengesHeading {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--ll-palm-shadow);
+  margin: var(--space-1) 0 0;
+}
+
+.challengesSub {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: var(--space-2) 0 0;
+}
+
+.challengesList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.challengesList li {
+  font-family: var(--font-inter);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--ll-palm-bark);
+  padding-left: var(--space-4);
+  position: relative;
+}
+
+.challengesList li::before {
+  content: "01";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: var(--font-fraunces), serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ll-clay);
+  letter-spacing: 0.02em;
+}
+
+.challengesList li:nth-child(2)::before {
+  content: "02";
+}
+
+.challengesList li:nth-child(3)::before {
+  content: "03";
+}
+
+.challengesWhat {
+  margin-top: var(--space-3);
+  padding-top: var(--space-5);
+  border-top: 1px solid color-mix(in oklab, var(--ll-clay) 22%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.whatWeDoList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.whatWeDoList li {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ll-palm-bark);
+  padding-left: var(--space-5);
+  position: relative;
+}
+
+.whatWeDoList li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--ll-clay);
+  font-weight: 600;
+}

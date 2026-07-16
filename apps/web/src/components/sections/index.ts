@@ -36,3 +36,8 @@ export { ScheduleTimeline } from './ScheduleTimeline';
 export { EquipmentShowcase } from './EquipmentShowcase';
 export { EmptyState } from './EmptyState';
 export type { EmptyStateVariant } from './EmptyState';
+export { AreaHero } from './AreaHero';
+export { AreaNeighborhoodNotes } from './AreaNeighborhoodNotes';
+export { AreaServiceOffer } from './AreaServiceOffer';
+export { AreaFAQ } from './AreaFAQ';
+export { AreaCTA } from './AreaCTA';
