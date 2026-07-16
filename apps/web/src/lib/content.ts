@@ -52,7 +52,7 @@ export const hero = {
     mowerAriaLabel: 'Solo push mower mid-cut on the route.',
     grassAriaLabel: 'Foreground grass tufts anchoring the composition.',
     callout: '33771 - Largo central',
-    calloutHref: '/areas/33771',
+    calloutHref: '/quote?zip=33771',
   },
 } as const;
 
@@ -83,7 +83,7 @@ export const serviceAreaMap = {
   // their postal code reads on an envelope.
   heading: 'Six Pinellas neighborhoods. One route.',
   subhead:
-    'Type your ZIP or neighborhood name — I will get back to you with a quote. The six chips below are where I mow every week; I am flexible about nearby ZIPs while I am building the route.',
+    'Type your ZIP or neighborhood name — I will get back to you with a quote. Home base is Largo and the surrounding Pinellas County neighborhoods, but I am flexible about nearby ZIPs while I am building the route.',
   svgAriaLabel: 'Map of Largo Lawn service area with six ZIPs marked',
   tampaBayLabel: 'Tampa Bay',
   gulfOfMexicoLabel: 'Gulf of Mexico',
@@ -96,23 +96,6 @@ export const serviceAreaMap = {
     '33774': 'Largo / Ridgecrest',
     '33778': 'Seminole / Largo West',
   },
-  /**
-   * Per-ZIP thumbnail map. Sources are ComfyUI-generated webps
-   * produced against `apps/comfyui/prompts/area.md`; rendered
-   * alongside each rail row so the previously-orphaned area
-   * imagery lands on the page where it was always meant to live.
-   * Generic alt text: these are abstract illustrations, not
-   * neighborhood photography.
-   */
-  areaImages: {
-    '33756': '/areas/33756.webp',
-    '33770': '/areas/33770.webp',
-    '33771': '/areas/33771.webp',
-    '33773': '/areas/33773.webp',
-    '33774': '/areas/33774.webp',
-    '33778': '/areas/33778.webp',
-  },
-  areaImageAlt: 'Abstract illustration of a Largo-area neighborhood.',
 } as const;
 
 /**
@@ -481,122 +464,6 @@ export function isKnownService(slug: string): slug is ServiceKey {
 // quote, and review. Each block is a self-contained const that
 // the corresponding section component reads from.
 // ============================================================
-
-/**
- * AreaDirectory: `/areas` index page header.
- *
- * Same shape as servicesIndex: eyebrow + h1 + tagline + tail.
- */
-export const areasIndex = {
-  eyebrow: '01 - Service areas',
-  heading: 'Six ZIPs.',
-  tagline:
-    'Largo and the five adjacent Pinellas County neighborhoods: six ZIPs we know well enough to commit to a recurring weekly route through.',
-  tail: 'Right outside one of these? Ask. I sometimes make exceptions for yards next door.',
-} as const;
-
-/**
- * Per-ZIP area detail. Keys match BUSINESS.service_area_zips.
- * Each entry carries: neighborhood name, intro paragraph, 3 - 4
- * nearby landmarks, 1 area-specific FAQ. Image source comes
- * from serviceAreaMap.areaImages[zip] so the same webp serves
- * both the landing-page rail and the area-detail hero.
- */
-export const areaDetail = {
-  '33756': {
-    zip: '33756',
-    name: 'Belleair / Clearwater',
-    heading: 'Lawn care in Belleair & Clearwater (33756)',
-    intro:
-      'Mix of historic homes and waterfront properties along the west side of Pinellas. Salinity-resistant plant selection is common: and strict HOA standards mean curb appeal matters twice over.',
-    nearby: ['Belleair', 'Belleair Beach access', 'Clearwater'],
-    faqs: [
-      {
-        q: 'Do you handle saltwater irrigation damage?',
-        a: 'Yes. Salt-tolerant grass varieties (Bahiagrass, certain St. Augustine cultivars) and a slightly higher mow height help. We can recommend a partner for soil amendments if your lawn is heavily affected.',
-      },
-    ],
-  },
-  '33770': {
-    zip: '33770',
-    name: 'Belleair Bluffs / Largo',
-    heading: 'Lawn care in Belleair Bluffs & east Largo (33770)',
-    intro:
-      'Established neighborhood with mature oaks: heavy leaf-drop in spring and lush, established landscaping requiring routine maintenance. Most yards in this ZIP have a 0.25 - 0.5 acre footprint.',
-    nearby: ['Belleair Bluffs', 'Indian Rocks Beach access', 'Largo Medical Center'],
-    faqs: [
-      {
-        q: 'My oak drops leaves every week in spring: is that in the mowing rate?',
-        a: 'Light leaf-drop is bundled with the mowing visit (we blow off the hard surfaces after each cut). Heavy seasonal drops in March through April can be a separate seasonal cleanup visit.',
-      },
-    ],
-  },
-  '33771': {
-    zip: '33771',
-    name: 'Largo (central)',
-    heading: 'Lawn care in central Largo (33771)',
-    intro:
-      'Our home base: fastest response times for this ZIP. Mix of older and newer homes; many 0.25 - 0.5 acre lots. St. Augustine grass is the dominant ground cover.',
-    nearby: ['Downtown Largo', 'Largo Central Park', 'Starkey Ranch'],
-    faqs: [
-      {
-        q: 'How fast can you start?',
-        a: 'For 33771 specifically, we can usually start within five business days of a quote. Hurricane season is the exception: book early if you want prep or cleanup.',
-      },
-    ],
-  },
-  '33773': {
-    zip: '33773',
-    name: 'Largo (east)',
-    heading: 'Lawn care in east Largo (33773)',
-    intro:
-      'Newer subdivisions with irrigation systems and Bahia or St. Augustine lawns. Many homes under 10 years old with new landscaping: different needs than older neighborhoods.',
-    nearby: ['East Bay', 'Pinellas Park border', 'Feather Sound'],
-    faqs: [
-      {
-        q: 'Do you service irrigation systems?',
-        a: 'No: irrigation installation requires the PCCLB Irrigation Specialty license, which we have not acquired. We mow and trim around irrigation heads carefully, and can recommend a licensed irrigation operator.',
-      },
-    ],
-  },
-  '33774': {
-    zip: '33774',
-    name: 'Largo / Ridgecrest',
-    heading: 'Lawn care in Ridgecrest (33774)',
-    intro:
-      'Ridgecrest area with elevated terrain and mature tree canopy. Drainage considerations and shade-tolerant grass varieties are common needs. Lots tend to be larger and more landscaped.',
-    nearby: ['Ridgecrest', 'Seminole border', 'Lake Seminole'],
-    faqs: [
-      {
-        q: 'My yard has a lot of shade: what grass will actually grow?',
-        a: 'St. Augustine cultivars like Palmetto and Seville handle partial shade well. Bahia tolerates more sun than shade. We can recommend a partner for sod or overseeding if your current turf is thinning out.',
-      },
-    ],
-  },
-  '33778': {
-    zip: '33778',
-    name: 'Seminole / Largo West',
-    heading: 'Lawn care in Seminole & west Largo (33778)',
-    intro:
-      'Coastal influence: sandy soil and salt air. Service scheduling is tight in this ZIP due to high demand. Hurricane prep is the top seller for homes this close to the Gulf.',
-    nearby: ['Seminole', 'Indian Shores access', 'Largo (west)'],
-    faqs: [
-      {
-        q: 'How quickly can you respond to a hurricane in this ZIP?',
-        a: 'Once winds drop below 30 mph sustained, we resume outdoor work and prioritize this ZIP along with 33773 and 33774. Most post-storm cleanup visits happen within 48 hours of the all-clear.',
-      },
-    ],
-  },
-} as const satisfies Record<string, AreaDetailCopy>;
-
-export interface AreaDetailCopy {
-  zip: string;
-  name: string;
-  heading: string;
-  intro: string;
-  nearby: ReadonlyArray<string>;
-  faqs: ReadonlyArray<{ q: string; a: string }>;
-}
 
 /**
  * Pricing: `/pricing` page content.

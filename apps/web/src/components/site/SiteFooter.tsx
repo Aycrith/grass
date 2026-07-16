@@ -15,7 +15,7 @@ import { Mail, Phone } from 'lucide-react';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
-import { Illustration, Pill } from '@/components/ui';
+import { Illustration } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
 
@@ -133,20 +133,8 @@ export function SiteFooter({ className }: SiteFooterProps): ReactNode {
           <div className={styles.col}>
             <h3 className={styles.colTitle}>Service Area</h3>
             <p className={styles.areaNote}>
-              Serving six ZIPs across Largo and the surrounding Pinellas County neighborhoods.
+              Solo-operator lawn care across Largo and the surrounding Pinellas County neighborhoods. Type your ZIP on the homepage to check coverage.
             </p>
-            <div className={styles.zipRow}>
-              {BUSINESS.service_area_zips.map((zip) => (
-                <Link key={zip} href={`/areas/${zip}`} aria-label={`Service area ${zip}`}>
-                  <Pill tone="outline" size="sm">
-                    {zip}
-                  </Pill>
-                </Link>
-              ))}
-            </div>
-            <Link href="/areas" className={styles.areaLink}>
-              See full service area →
-            </Link>
           </div>
         </div>
 

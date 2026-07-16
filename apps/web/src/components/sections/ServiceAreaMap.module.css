@@ -233,54 +233,9 @@
   transform: translateX(2px);
 }
 
-/* ---------- "Where I mow" chip strip ----------
- * With the map gone, the chips ARE the where-I-mow information.
- * Six chips, one per neighborhood, each a Link to /areas/{zip}
- * (SEO landing page). Cream outline, sun on hover, palm-bark
- * text on hover for high contrast. */
-.areasChips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  justify-content: center;
-  width: 100%;
-  max-width: 720px;
-  padding-top: var(--space-3);
-  border-top: 1px solid color-mix(in srgb, var(--ll-sand-bleached) 18%, transparent);
-}
-
-.areaChip {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.5em;
-  padding: 0.55em 0.95em;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--ll-sand-bleached);
-  text-decoration: none;
-  font-family: var(--font-inter);
-  font-size: 0.88rem;
-  border: 1px solid color-mix(in srgb, var(--ll-sand-bleached) 30%, transparent);
-  transition: background var(--motion-duration-fast) var(--motion-easing-default), color
-    var(--motion-duration-fast) var(--motion-easing-default), border-color
-    var(--motion-duration-fast) var(--motion-easing-default), transform
-    var(--motion-duration-fast) var(--motion-easing-default);
-}
-
-.areaChip:hover,
-.areaChip:focus-visible {
-  background: var(--ll-sand-bleached);
-  color: var(--ll-palm-bark);
-  border-color: var(--ll-sun);
-  transform: translateY(-1px);
-}
-
-.areaChipZip {
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-
-.areaChipName {
-  opacity: 0.78;
-  font-size: 0.82rem;
-}
+/* ---------- (D-0033: chip strip removed) ----------
+ * The form on its own is the answer to "where I mow?". The chip
+ * strip was redundant with the form's datalist. The .areasChips,
+ * .areaChip, .areaChip:hover, .areaChipZip, .areaChipName classes
+ * were all removed when the JSX was deleted from
+ * ServiceAreaMap.tsx. No replacement: the form is the surface. */

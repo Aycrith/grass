@@ -32,7 +32,6 @@ import styles from './SiteHeader.module.css';
 
 const NAV_ITEMS = [
   { href: '/services', label: 'Services' },
-  { href: '/areas', label: 'Service Areas' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/about', label: 'About' },
 ] as const;

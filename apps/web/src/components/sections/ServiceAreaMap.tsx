@@ -49,7 +49,6 @@
  * Single primary interactive zone per the design principles.
  */
 
-import Link from 'next/link';
 import { type FormEvent, type ReactNode, useId, useState } from 'react';
 
 import { Eyebrow, Section } from '@/components/site';
@@ -310,23 +309,12 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
             )}
           </div>
 
-          {/* "Where I mow" — the six neighborhood chips. With the
-             map gone, the chips ARE the where-I-mow information.
-             Visible by default; each chip links to /areas/{zip}
-             (the SEO landing page for that ZIP). */}
-          <nav className={styles.areasChips} aria-label="All service area ZIPs">
-            {BUSINESS.service_area_zips.map((zip) => {
-              const name =
-                serviceAreaMap.pinLocations[zip as keyof typeof serviceAreaMap.pinLocations] ??
-                'Largo area';
-              return (
-                <Link key={zip} href={`/areas/${zip}`} className={styles.areaChip}>
-                  <span className={styles.areaChipZip}>{zip}</span>
-                  <span className={styles.areaChipName}>{name}</span>
-                </Link>
-              );
-            })}
-          </nav>
+          {/* D-0033: the chip strip is gone. The form on its own is
+             the answer to "where I mow?" — the 6 chips were just
+             redundant with the form's datalist. The pinLocations
+             map stays in lib/content.ts for the form's datalist
+             (autocomplete for neighborhood names) but no longer
+             drives a visible chip strip. */}
         </div>
       </div>
     </Section>
