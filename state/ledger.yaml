@@ -536,6 +536,39 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-16"
+    day: 23
+    change: >
+      D-0031 — Drop the map; make Coverage Check form-dominant (commit
+      146f288). Steward feedback after D-0028 hit production: "I still
+      don't like the map/zip component/layout." D-0028's 3-col grid
+      (form | map | result) put the map at 1.5fr so it was the visual
+      primary even though only the form was interactive. The dual-UI
+      problem was solved in the affordance layer (D-0028's input) but
+      persisted in the visual hierarchy. D-0031 takes the brutal
+      option: drop the map from the homepage entirely. The form is
+      the answer to "where I mow?" — the map was decoration competing
+      for attention. The 6 neighborhood chips below ARE the where-I-mow
+      information, no longer a collapsed secondary path. The map
+      picture still lives on /areas/{zip} for users who want to dig
+      into a specific area. Changes: (1) ServiceAreaMap.tsx — removed
+      <Image> import + .mapWrap <div>. Result panel reworked from
+      3-col to inline-below-the-form. 6 area chips promoted from
+      <details> to visible <nav>. Idle state no longer renders a
+      placeholder panel. (2) ServiceAreaMap.module.css — rewrote ~half
+      the file. Removed .mapWrap, .mapImage, .mapStrip, .areasDetails,
+      .areasSummary, .areasChevron. Added .coverage (max-width 480px
+      centered) and .areasChips (visible by default, max-width 720px
+      centered). 9 visual captures at audit/d0031-*.png (desktop +
+      mobile, idle / hit / miss / full / areas-open). New capture
+      helper at apps/web/capture-d0031.mjs (Playwright via
+      playwright-core, no test framework overhead). Build green, 0
+      new typecheck errors. Page height 9048px → 9020px. The form is
+      now ~3x the relative weight of D-0028's form and the map is
+      gone. Steward review: side-by-side audit/d0028-desktop-hit-
+      section.png vs audit/d0031-desktop-hit-section.png.
+    by: "Mavis (orchestrator, 2026-07-16)"
+
   - date: "2026-07-15"
     day: 22
     change: >
