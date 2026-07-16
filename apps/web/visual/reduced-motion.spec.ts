@@ -29,7 +29,11 @@ interface MotionPrimitive {
 const MOTION_PRIMITIVES: ReadonlyArray<MotionPrimitive> = [
   {
     slug: 'marquee-quote',
-    path: '/',
+    // D-0029: MarqueeQuote was demoted from `/`; the component is
+    // still mounted on `/visual-test` for the per-component baseline
+    // matrix, so the reduced-motion regression runs against the
+    // canonical mount surface instead of the production page.
+    path: '/visual-test',
     staticMarker: '[data-test-section="marquee-quote"] ul',
     animatedMarker: '[data-test-section="marquee-quote"] .track',
   },
@@ -40,13 +44,19 @@ const MOTION_PRIMITIVES: ReadonlyArray<MotionPrimitive> = [
   },
   {
     slug: 'service-area-stats',
-    path: '/',
+    // D-0029: ServiceAreaStats was demoted from `/` (its 2 strongest
+    // stats were folded into OperatorStrip's bio card); the full
+    // 4-stat panel still mounts on `/visual-test` for the baseline
+    // matrix, so the reduced-motion regression runs there.
+    path: '/visual-test',
     staticMarker:
       '[data-test-section="service-area-stats"] dl, [data-test-section="service-area-stats"] p',
   },
   {
     slug: 'editorial-break',
-    path: '/',
+    // D-0029: EditorialBreak was demoted from `/`; the component is
+    // still mounted on `/visual-test` for the baseline matrix.
+    path: '/visual-test',
     // On desktop the <img> is the visible element; on mobile (≤768px)
     // the image is intentionally collapsed to display:none and only the
     // editorial copy remains (per `EditorialBreak.tsx` design doc). The

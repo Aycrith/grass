@@ -1,6 +1,6 @@
 import { test } from '@playwright/test';
 
-test('wp89 scroll-entry motion at ServiceBento + PricingTiers + ScheduleTimeline + EditorialBreak', async ({ page, browserName }) => {
+test('wp89 scroll-entry motion at ServiceBento + PricingTiers + ScheduleTimeline', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium');
   test.setTimeout(180_000);
 
@@ -87,9 +87,11 @@ test('wp89 scroll-entry motion at ServiceBento + PricingTiers + ScheduleTimeline
     }, text);
   };
 
-  // EditorialBreak — section with "Every Tuesday" or "Every TUESDAY"
-  const editorialY = await getY('Every TUESDAY');
-  await capturePair('editorial', 'early', 'settled', editorialY);
+  // EditorialBreak — D-0029: removed from `/`. The component still
+  // mounts on `/visual-test` for the per-component baseline matrix,
+  // but the scroll-entry motion verification is specifically about
+  // the user's scroll experience on `/`, so we drop this section
+  // from the matrix.
 
   // ServiceBento — section with "From $110" or "by the yard"
   const bentoY = await getY('From $');

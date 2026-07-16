@@ -16,6 +16,16 @@
  * directly than tiny webps did, and removes the only place on
  * the page that rendered the equipment webp slots.
  *
+ * D-0029 — fold the two strongest "by the numbers" stats from
+ * the demoted ServiceAreaStats panel into the bio card. The full
+ * 4-stat panel was demoted from `/` (it sat at fold 3-4 and
+ * competed with the coverage check for attention); the two
+ * stats that read as "we know what we're doing" (vs.
+ * "look at our numbers") are kept inline in the bio as a
+ * single quiet row above the signature mark. The numbers
+ * stay specific (47 yards / 18h) and inherit the operator's
+ * voice instead of feeling like a marketing panel.
+ *
  * Copy flows from `lib/content.ts → operator` so the steward
  * can edit it without touching this component.
  *
@@ -79,6 +89,24 @@ export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
               {operator.yearsMowing} years cutting grass in 33771
             </span>
             <p className={styles.bioBody}>{operator.bio}</p>
+
+            {/* D-0029 — inline "we know what we're doing" stat row
+             * folded from the demoted ServiceAreaStats panel. The
+             * bio is the operator's voice section, so two specific
+             * numbers ("47 yards on the route" + "18h median quote
+             * turnaround") reinforce that voice without a separate
+             * stats section. Quiet typographic row above the
+             * signature mark; no chart, no card, no CTA. */}
+            <ul className={styles.bioStatRow} aria-label="Operator stats">
+              <li className={styles.bioStat}>
+                <span className={styles.bioStatValue}>47</span>
+                <span className={styles.bioStatLabel}>Yards on the weekly route</span>
+              </li>
+              <li className={styles.bioStat}>
+                <span className={styles.bioStatValue}>18 h</span>
+                <span className={styles.bioStatLabel}>Median quote turnaround</span>
+              </li>
+            </ul>
 
             {/* WP15 — editorial "operator signature mark" closing the bio.
              * A sun-color rule + centered pinellas-palm + city caption,

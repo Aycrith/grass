@@ -127,6 +127,52 @@
   margin: 0;
 }
 
+/* D-0029 — inline "by the numbers" row folded from the demoted
+ * ServiceAreaStats panel. Two specific stats (47 yards / 18h
+ * quote turnaround) sit between the bio body and the signature
+ * mark. No card, no chart, no CTA — just a quiet typographic
+ * row that reinforces the operator's voice. Number uses
+ * Fraunces italic for the same idiom as the metabar tool models. */
+.bioStatRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid color-mix(in oklab, var(--ll-clay) 28%, transparent);
+  padding-top: var(--space-4);
+}
+
+.bioStat {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-family: var(--font-inter);
+  font-size: 0.85rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.78;
+}
+
+.bioStatValue {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--ll-clay);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.bioStatLabel {
+  font-family: var(--font-inter);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--ll-palm-shadow);
+}
+
 /* WP15 — editorial "operator signature mark" closing the bio block.
  * A small pinellas-palm centered under the bio paragraph, with a
  * thin sun-color rule above it. Acts as the operator's signed
