@@ -539,6 +539,46 @@ changelog:
   - date: "2026-07-16"
     day: 23
     change: >
+      D-0032 — Permissive ZIP coverage during pre-revenue phase
+      (commit 3b346a3). Steward has not yet landed a customer;
+      wants to be flexible about ZIPs while building the route.
+      Lifted the service-area gate from the homepage Coverage Check
+      — any 5-digit ZIP and any 3+ char text now produce a positive
+      result routed to /quote. The actual serviceability check moved
+      downstream to /quote + the on-site visit, not this input.
+      Changes: (1) ServiceAreaMap.tsx — removed the inServiceArea()
+      check from resolveQuery. Type changed to allow name:string|null
+      on the hit case. The result panel collapsed from 2 visual
+      variants (hit with sun + miss with outline) to 1 visual
+      variant (sun-filled "Got it" for all positive cases) with
+      body text that varies: known ZIP / unknown ZIP / unresolved
+      text. All paths route to /quote (with or without zip param).
+      (2) ServiceAreaMap.module.css — removed .resultCheckMiss
+      (warning icon class). Updated .result[data-result] selector
+      for the text case. (3) content.ts — updated subhead from
+      "we'll tell you on the spot whether you're on the route" to
+      "I will get back to you with a quote. The six chips below
+      are where I mow every week; I am flexible about nearby ZIPs
+      while I am building the route." (honest about the temporary
+      relaxation). 6 home-area ZIPs remain the source of truth for
+      the chip strip below the form. (4) New capture helper
+      apps/web/capture-d0032.mjs + 6 captures at audit/d0032-*.png
+      (idle / 33771 known / 90210 unknown / Tampa text / invalid
+      "3" / mobile 33771). TEMPORARY: when the steward has enough
+      customers in the immediate 6-ZIP area, this can be reverted
+      by re-adding the inServiceArea() check + a "miss" branch in
+      the result panel. The inServiceArea() helper in business.ts
+      is unchanged — it just no longer gates this form. Build green,
+      charter 3/3, 0 new typecheck errors. Steward review:
+      side-by-side audit/d0031-desktop-hit-section.png (D-0031,
+      before) vs audit/d0032-desktop-90210-unknown.png (D-0032,
+      90210 is California; was a "miss" before, now a positive
+      "Got it · 90210").
+    by: "Mavis (orchestrator, 2026-07-16)"
+
+  - date: "2026-07-16"
+    day: 23
+    change: >
       D-0031 — Drop the map; make Coverage Check form-dominant (commit
       146f288). Steward feedback after D-0028 hit production: "I still
       don't like the map/zip component/layout." D-0028's 3-col grid
