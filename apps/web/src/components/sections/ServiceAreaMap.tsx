@@ -3,23 +3,31 @@
 /**
  * ServiceAreaMap — Mission 1 illustrative map.
  *
- * D-0026 final layout: the map is the FOCAL POINT of the section.
- * The previous 2-column side-by-side layout (heading-left, map-right)
- * made the map look like a small side-image; the user review called
- * that "incoherent" because the heading dwarfed the visual.
+ * D-0027: reworked the 6 ZIP rail to be OBVIOUSLY interactive.
  *
- * New layout (top-down):
- *   - Small eyebrow + heading + subhead (centered)
- *   - The map (full width, 4:3)
- *   - The 6 ZIP rail (horizontal row below the map)
+ * User review (D-0026c) said: "this looks better but lacks interactivity
+ * — the buttons themselves do not project an area and are not
+ * clickable/interactive, the component is not intuitive or self
+ * apparent." The previous rail was light-on-dark info-cards with a
+ * subtle hover. They linked to /areas/{zip} but didn't read as
+ * clickable buttons.
  *
- * The map is a single self-contained editorial composition
- * (pinellas-map-clean-1200x900.webp) with the 6 ZIP badges
- * baked directly into the image at their real lat/lon coords.
- * Priority ZIP (33771, home base) has a sun-gold fill; the other
- * 5 have a cream fill. Each badge has a hand-stamped feel
- * (subtle drop shadow) matching the corner-stamp and
- * passport-stamp SVGs elsewhere on the page.
+ * New rail (D-0027):
+ *   - Light cream cards on the dark palm-bark bg (high contrast, pops
+ *     as actual cards)
+ *   - Big ZIP code in sun-gold at the top, neighborhood below
+ *   - "View details →" arrow at the bottom that slides on hover
+ *   - Sun-gold border + lift + larger shadow on hover
+ *   - 2px sun-gold focus ring for keyboard nav
+ *   - Scale(0.98) on press
+ *   - Full-card clickable area (no inner-element dead zones)
+ *   - Visible section label "Choose your ZIP" with helper text
+ *     "Tap to see pricing and availability in your neighborhood"
+ *   - Single primary CTA below the rail: "Get a free quote" → /quote
+ *     (catches the user who is "not sure which ZIP")
+ *
+ * The 6 cards still link to /areas/{zip} (the SEO landing page for
+ * each ZIP) — destination is unchanged, only the affordance is.
  */
 
 import Image from 'next/image';
@@ -66,40 +74,72 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
             />
           </div>
 
-          {/* The 6 ZIPs as a horizontal navigation row below the map.
-             Each row links to /areas/{zip} and shows a thumbnail +
-             the neighborhood name. Bidirectional hover syncs the
-             thumbnail with the (no-longer-existing) SVG pin via
-             data-zip-active. */}
-          <nav className={styles.rail} aria-label="Service area ZIP codes">
-            {BUSINESS.service_area_zips.map((zip) => {
-              const name = serviceAreaMap.pinLocations[zip] ?? 'Largo area';
-              const thumbSrc = serviceAreaMap.areaImages[zip];
-              return (
-                <Link
-                  key={zip}
-                  href={`/areas/${zip}`}
-                  className={styles.railItem}
+          {/* The 6 ZIPs as a labeled, clickable rail below the map.
+             The section label + helper text make the purpose obvious
+             ("tap to see pricing/availability"), and each card is
+             visually a button (light bg, big ZIP, arrow CTA, focus
+             ring, press state, full-card click target). */}
+          <div className={styles.railBlock}>
+            <div className={styles.railLabel}>
+              <span className={styles.railLabelEyebrow}>Choose your ZIP</span>
+              <span className={styles.railLabelHelper}>
+                Tap to see pricing and availability in your neighborhood
+              </span>
+            </div>
+
+            <nav className={styles.rail} aria-label="Service area ZIP codes">
+              {BUSINESS.service_area_zips.map((zip) => {
+                const name = serviceAreaMap.pinLocations[zip] ?? 'Largo area';
+                return (
+                  <Link key={zip} href={`/areas/${zip}`} className={styles.railItem}>
+                    <span className={styles.railItemZip}>{zip}</span>
+                    <span className={styles.railItemName}>{name}</span>
+                    <span className={styles.railItemCta}>
+                      View details
+                      <svg
+                        className={styles.railItemArrow}
+                        viewBox="0 0 16 16"
+                        width="14"
+                        height="14"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M3 8h10" />
+                        <path d="m9 4 4 4-4 4" />
+                      </svg>
+                    </span>
+                  </Link>
+                );
+              })}
+            </nav>
+
+            <p className={styles.railFootnote}>
+              Not sure which ZIP?{' '}
+              <Link href="/quote" className={styles.railFootnoteLink}>
+                Get a free quote
+                <svg
+                  className={styles.railFootnoteArrow}
+                  viewBox="0 0 16 16"
+                  width="12"
+                  height="12"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
                 >
-                  <span className={styles.railItemThumb}>
-                    {thumbSrc ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={thumbSrc}
-                        alt={serviceAreaMap.areaImageAlt}
-                        loading="lazy"
-                        decoding="async"
-                        width={120}
-                        height={67}
-                      />
-                    ) : null}
-                  </span>
-                  <span className={styles.railItemZip}>{zip}</span>
-                  <span className={styles.railItemName}>{name}</span>
-                </Link>
-              );
-            })}
-          </nav>
+                  <path d="M3 8h10" />
+                  <path d="m9 4 4 4-4 4" />
+                </svg>
+              </Link>{' '}
+              — we&apos;ll figure out service area on the call.
+            </p>
+          </div>
         </div>
       </div>
     </Section>

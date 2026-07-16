@@ -8,6 +8,11 @@
  * and centered at the top, the large map in the middle, and the
  * 6 ZIP rail as a horizontal row below — so the map is the visual
  * centerpiece of the section.
+ *
+ * D-0027 — reworked the rail to be OBVIOUSLY interactive:
+ * light cards (cream on dark palm-bark), big ZIP code in sun-gold,
+ * a "View details →" arrow CTA, section label + helper text above,
+ * and a single primary "Get a free quote" CTA below.
  * ============================================================ */
 
 .root {
@@ -71,12 +76,10 @@
   max-width: 1080px;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background: #F4E8D0; /* matches the map's cream field */
+  background: #f4e8d0; /* matches the map's cream field */
   aspect-ratio: 4 / 3;
-  box-shadow:
-    0 1px 0 color-mix(in srgb, var(--ll-sand-bleached) 8%, transparent),
-    0 24px 56px -28px rgba(0, 0, 0, 0.65),
-    0 8px 20px -8px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-sand-bleached) 8%, transparent), 0 24px 56px -28px
+    rgba(0, 0, 0, 0.65), 0 8px 20px -8px rgba(0, 0, 0, 0.4);
 }
 
 .mapImage {
@@ -84,15 +87,55 @@
   object-position: center;
 }
 
-/* ---------- 6 ZIPs rail (horizontal navigation) ----------
- * Full-width row of 6 ZIPs, evenly distributed. Each cell is a
- * clickable link to /areas/{zip} with a thumbnail + ZIP + name. */
+/* ---------- Rail block (D-0027) ----------
+ * Wraps the section label, the 6 ZIP cards, and the single primary
+ * CTA. Centered, with a clear visual stack so the user knows
+ * "this is a navigation control, not a content list." */
+.railBlock {
+  width: 100%;
+  max-width: 1080px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.railLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  text-align: center;
+}
+
+.railLabelEyebrow {
+  font-family: var(--font-inter);
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ll-sun);
+}
+
+.railLabelHelper {
+  font-family: var(--font-inter);
+  font-size: 0.9rem;
+  color: var(--ll-sand-bleached);
+  opacity: 0.75;
+  max-width: 32rem;
+  line-height: 1.45;
+}
+
+/* ---------- 6 ZIPs rail (D-0027 — interactive buttons) ----------
+ * Light cream cards on the dark palm-bark bg, so they read as
+ * actual interactive cards (not info chips). Each card is a real
+ * button-link with focus ring, press state, and a "View details →"
+ * arrow CTA that slides on hover. */
 .rail {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: var(--space-3);
   width: 100%;
-  max-width: 1080px;
 }
 
 @media (max-width: 980px) {
@@ -109,56 +152,132 @@
 
 .railItem {
   font-family: var(--font-inter);
-  font-size: 0.9rem;
-  color: var(--ll-sand-bleached);
   text-decoration: none;
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  padding: var(--space-3);
+  padding: var(--space-4) var(--space-3);
   border-radius: var(--radius);
-  background: color-mix(in srgb, var(--ll-palm-shadow) 30%, var(--ll-palm-bark));
-  border: 1px solid color-mix(in srgb, var(--ll-sand) 15%, transparent);
-  transition:
-    background var(--motion-duration-fast) var(--motion-easing-default),
-    border-color var(--motion-duration-fast) var(--motion-easing-default),
-    transform var(--motion-duration-fast) var(--motion-easing-default);
+  background: var(--ll-sand-bleached);
+  color: var(--ll-palm-bark);
+  border: 1.5px solid color-mix(in srgb, var(--ll-palm-bark) 18%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-sand) 30%, transparent), 0 4px 12px -6px
+    rgba(0, 0, 0, 0.35);
+  min-height: 7.5rem;
+  cursor: pointer;
+  /* IMPORTANT: do NOT use `outline: none` — a visible focus ring
+     is required for keyboard nav and accessibility. The base
+     browser outline is replaced with a sun-gold one below. */
+  transition: background var(--motion-duration-fast) var(--motion-easing-default), border-color
+    var(--motion-duration-fast) var(--motion-easing-default), box-shadow var(--motion-duration-fast)
+    var(--motion-easing-default), transform var(--motion-duration-fast) var(--motion-easing-default);
 }
 
 .railItem:hover,
-.railItem:focus {
-  background: color-mix(in srgb, var(--ll-sun) 22%, var(--ll-palm-bark));
-  border-color: color-mix(in srgb, var(--ll-sun) 60%, transparent);
-  transform: translateY(-2px);
+.railItem:focus-visible {
+  background: #fffaf0; /* one shade lighter than sand-bleached on hover */
+  border-color: var(--ll-sun);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-sun) 50%, transparent), 0 12px 24px -8px
+    rgba(0, 0, 0, 0.5), 0 0 0 3px color-mix(in srgb, var(--ll-sun) 35%, transparent);
+  transform: translateY(-3px);
   outline: none;
 }
 
-.railItemThumb {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  background: color-mix(in srgb, var(--ll-palm-shadow) 60%, var(--ll-palm-bark));
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-sand-bleached) 20%, transparent);
+.railItem:focus-visible {
+  /* Distinct keyboard-focus ring (separate from hover glow) */
+  outline: 2px solid var(--ll-sun);
+  outline-offset: 2px;
 }
 
-.railItemThumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+.railItem:active {
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ll-sun) 50%, transparent), 0 4px 10px -4px
+    rgba(0, 0, 0, 0.4);
 }
 
 .railItemZip {
+  font-family: var(--font-fraunces), serif;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  font-size: 0.95rem;
-  letter-spacing: 0.02em;
-  color: var(--ll-sun);
+  font-size: 1.4rem;
+  letter-spacing: -0.01em;
+  color: var(--ll-clay);
+  line-height: 1;
 }
 
 .railItemName {
-  opacity: 0.85;
   font-size: 0.82rem;
   line-height: 1.35;
+  color: var(--ll-palm-bark);
+  opacity: 0.78;
+  font-weight: 500;
+}
+
+.railItemCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: auto;
+  padding-top: var(--space-2);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ll-palm-bark);
+  /* Hairline divider between the neighborhood and the CTA row */
+  border-top: 1px solid color-mix(in srgb, var(--ll-palm-bark) 18%, transparent);
+}
+
+.railItemArrow {
+  flex-shrink: 0;
+  transition: transform var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.railItem:hover .railItemArrow,
+.railItem:focus-visible .railItemArrow {
+  transform: translateX(3px);
+}
+
+/* ---------- "Get a free quote" footnote (single primary CTA) ---------- */
+.railFootnote {
+  margin: 0;
+  font-family: var(--font-inter);
+  font-size: 0.9rem;
+  color: var(--ll-sand-bleached);
+  opacity: 0.85;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.railFootnoteLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--ll-sun);
+  font-weight: 700;
+  text-decoration: none;
+  padding: 0.1em 0.2em;
+  border-radius: 4px;
+  transition: color var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.railFootnoteLink:hover,
+.railFootnoteLink:focus-visible {
+  color: #fff;
+  text-decoration: underline;
+  outline: none;
+}
+
+.railFootnoteLink:focus-visible {
+  outline: 2px solid var(--ll-sun);
+  outline-offset: 2px;
+}
+
+.railFootnoteArrow {
+  flex-shrink: 0;
+  transition: transform var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.railFootnoteLink:hover .railFootnoteArrow,
+.railFootnoteLink:focus-visible .railFootnoteArrow {
+  transform: translateX(2px);
 }
