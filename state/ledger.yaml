@@ -539,6 +539,63 @@ changelog:
   - date: "2026-07-16"
     day: 23
     change: >
+      D-0033 — Drop the per-area slop (commits 21b3742 + f2f30e0 +
+      3d451f1). Steward feedback after D-0032 hit production:
+      "the service area zipcode subpages accessible from the
+      navigation menu is just additional/unnecessary slop — these
+      components/assets and pages need to be utilized in an
+      effective fashion that provides value/use/interactivity/
+      engagement/entertainment, anything besides acting as a
+      useless placeholder for real content. These people are aware
+      of the areas surrounding Largo, they already live here... the
+      simple zip code entry with service area button component is
+      sufficient already." Changes (20 files deleted + 7 source
+      files modified + sitemap + 6 webp assets gone + 1 unused
+      spec deleted): (1) Deleted /areas route entirely
+      (apps/web/src/app/areas/page.tsx + apps/web/src/app/areas/
+      [zip]/page.tsx). The 6 per-ZIP pages were SEO placeholders
+      pretending to be content — AreaHero + AreaNeighborhoodNotes
+      + AreaServiceOffer + AreaFAQ + AreaCTA each rendered a
+      template with the same per-ZIP intro + 1 FAQ + a back-link
+      to /areas. (2) Deleted 6 per-area components (AreaCTA,
+      AreaDirectory, AreaFAQ, AreaHero, AreaNeighborhoodNotes,
+      AreaServiceOffer) — 12 files (tsx + module.css). Imports
+      cleared from sections/index.ts. (3) Deleted 6 ComfyUI-generated
+      thumbnail webps at public/areas/337{56,70,71,73,74,78}.webp
+      (only referenced by the now-removed per-ZIP pages).
+      (4) SiteHeader.tsx — removed the "Service Areas" nav link.
+      The form on the homepage IS the service-area entry point.
+      (5) ServiceAreaMap.tsx — removed the chip strip <nav>
+      below the form (the 6 chips were redundant with the form's
+      <datalist> which already had all 6 ZIPs + 6 neighborhood
+      names for autocomplete). The form alone is the answer to
+      "where I mow?". Removed unused <Link> import. (6) SiteFooter.tsx
+      — replaced the 6 ZIP pills + "See full service area →" link
+      with a single paragraph: "Solo-operator lawn care across
+      Largo and the surrounding Pinellas County neighborhoods.
+      Type your ZIP on the homepage to check coverage." Removed
+      unused Pill import. (7) sitemap.ts — removed /areas and
+      /areas/[zip] entries. 18 routes → 11 routes. (8) lib/content.ts
+      — removed areaDetail export (6 entries × ~30 lines of
+      placeholder copy), areaImages map, AreaDetailCopy interface,
+      areasIndex export. Updated hero composition calloutHref from
+      /areas/33771 to /quote?zip=33771 (so the 33771 callout pill
+      on the hero now routes to /quote instead of a 404). Updated
+      the ServiceAreaMap subhead from "The six chips below are
+      where I mow every week..." to "Home base is Largo and the
+      surrounding Pinellas County neighborhoods, but I am flexible
+      about nearby ZIPs while I am building the route." Net:
+      -20 files, ~1,500 lines of placeholder content gone. The
+      form is the single service-area surface. Verified: /areas →
+      404, /areas/33771 → 404, /quote?zip=33771 → 200. Nav items
+      are now [Largo Lawn, Services, Pricing, About, Free quote].
+      Build green, charter 3/3, 0 new typecheck errors. Visual
+      captures at audit/d0033-*.png.
+    by: "Mavis (orchestrator, 2026-07-16)"
+
+  - date: "2026-07-16"
+    day: 23
+    change: >
       D-0032 — Permissive ZIP coverage during pre-revenue phase
       (commit 3b346a3). Steward has not yet landed a customer;
       wants to be flexible about ZIPs while building the route.
