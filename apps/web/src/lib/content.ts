@@ -83,7 +83,7 @@ export const serviceAreaMap = {
   // their postal code reads on an envelope.
   heading: 'Six Pinellas neighborhoods. One route.',
   subhead:
-    "Type your ZIP or neighborhood name — we'll tell you on the spot whether you're on the route.",
+    'Type your ZIP or neighborhood name — I will get back to you with a quote. The six chips below are where I mow every week; I am flexible about nearby ZIPs while I am building the route.',
   svgAriaLabel: 'Map of Largo Lawn service area with six ZIPs marked',
   tampaBayLabel: 'Tampa Bay',
   gulfOfMexicoLabel: 'Gulf of Mexico',

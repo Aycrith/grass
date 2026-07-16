@@ -2,6 +2,7 @@
 
 /**
  * ServiceAreaMap — D-0031: form-dominant Coverage Check, no map.
+ *                D-0032: permissive about ZIP codes.
  *
  * D-0031 redesign (per steward feedback after D-0028): the 3-col
  * layout (form | map | result) shipped in D-0028 was technically
@@ -16,21 +17,32 @@
  * entirely. The form is the answer to "where I mow?" — the map
  * was decoration competing for attention. The map picture still
  * lives on /areas/{zip} for users who want to dig into a specific
- * neighborhood; on the homepage, the section is now just:
- *   1. Section header (small + centered, unchanged)
+ * neighborhood.
+ *
+ * D-0032: the form is now permissive about ZIP codes. The
+ * steward has not yet landed a customer; wants to be flexible
+ * about ZIPs during the pre-revenue phase to maximize conversion.
+ * The service-area gate moved to /quote + the on-site visit, not
+ * this input. We accept any 5-digit ZIP and any 3+ char text as
+ * a positive result routed to /quote. The 6 home-area ZIPs are
+ * still shown as the chip strip below the form (primary territory),
+ * but the form itself is open.
+ *
+ * Section layout (vertical stack, all centered):
+ *   1. Section header (small + centered)
  *   2. Form column (max-width 480px, centered) — input + Check
  *      coverage button side by side on desktop, stacked on mobile
  *   3. Result panel (same max-width, only renders after a check;
- *      cream card with sun-filled CTA on hit, outline CTA on miss)
- *   4. "See all six areas" chips (visible by default — they're
- *      the real "where I mow" information, not a collapsed
- *      secondary path)
+ *      cream card with sun-filled CTA for any valid input)
+ *   4. Chip strip (the 6 ZIP neighborhoods — primary territory)
  *
- * All D-0028 behavior preserved:
+ * All D-0028 behavior preserved + D-0032 expansion:
  *   - ZIP or neighborhood input with <datalist>
- *   - On hit: result panel with sun CTA → /quote?zip=
- *   - On miss: result panel with outline CTA → /quote
- *   - On invalid: inline helper text below the input
+ *   - On any 5-digit ZIP: result panel with sun CTA → /quote?zip=
+ *   - On text that doesn't match a known neighborhood: result
+ *     panel with sun CTA → /quote (no zip param)
+ *   - On invalid (empty / partial / 1-2 chars): inline helper
+ *     text below the input
  *   - Live region for screen reader announcement
  *   - /quote prefill via ?zip= query param
  *
@@ -42,7 +54,7 @@ import { type FormEvent, type ReactNode, useId, useState } from 'react';
 
 import { Eyebrow, Section } from '@/components/site';
 import { Button } from '@/components/ui';
-import { BUSINESS, inServiceArea } from '@/lib/business';
+import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
 import { serviceAreaMap } from '@/lib/content';
 
@@ -52,9 +64,32 @@ interface ServiceAreaMapProps {
   className?: string;
 }
 
+/**
+ * D-0032: Coverage Check is now permissive about ZIP codes.
+ *
+ * The service-area gate is the quote form (/quote) and the
+ * eventual on-site visit, not this input. We accept any 5-digit
+ * ZIP and route the user to /quote?zip={zip} where the actual
+ * serviceability check + price estimate happens. For ZIPs we
+ * have a neighborhood name for, we show the rich result; for
+ * ZIPs we don't recognize, we just show the ZIP. Same UX either
+ * way — sun-filled "Get free quote" CTA.
+ *
+ * This is a temporary relaxation per the D-0032 decision. The
+ * steward has not yet landed a customer; wants to be flexible
+ * about ZIPs to maximize conversion during the pre-revenue
+ * phase. The 6 home-area ZIPs (33770, 33771, 33773, 33774, 33778,
+ * 33756) are still the primary territory — shown as the chip
+ * strip below the form — but the form is open to any ZIP.
+ *
+ * The inServiceArea() helper in business.ts is unchanged (other
+ * code may still use it) — it's just no longer wired into this
+ * resolver. The `BUSINESS.service_area_zips` array is still the
+ * source of truth for the chip strip below.
+ */
 type CoverageResult =
-  | { kind: 'hit'; zip: string; name: string }
-  | { kind: 'miss'; query: string }
+  | { kind: 'hit'; zip: string; name: string | null }  // 5-digit ZIP (known or unknown)
+  | { kind: 'miss'; query: string }                    // 3+ char text we couldn't resolve
   | { kind: 'invalid' };
 
 /**
@@ -94,18 +129,15 @@ function resolveQuery(rawQuery: string): CoverageResult {
   const q = rawQuery.trim();
   if (q.length === 0) return { kind: 'invalid' };
 
-  // Pure-digit input. Only an exact 5-digit ZIP is accepted here;
-  // partials (1-4 digits) are explicitly invalid so the helper
-  // text can guide the user to complete the field.
+  // Pure-digit input. D-0032: any 5-digit ZIP is accepted
+  // (serviceability check moves to /quote + on-site visit, not
+  // this input). Partials (1-4 digits) are explicitly invalid
+  // so the helper text can guide the user to complete the field.
   if (/^\d+$/.test(q)) {
     if (q.length === 5) {
-      if (inServiceArea(q)) {
-        const name =
-          serviceAreaMap.pinLocations[q as keyof typeof serviceAreaMap.pinLocations] ??
-          'Largo area';
-        return { kind: 'hit', zip: q, name };
-      }
-      return { kind: 'miss', query: q };
+      const name =
+        serviceAreaMap.pinLocations[q as keyof typeof serviceAreaMap.pinLocations] ?? null;
+      return { kind: 'hit', zip: q, name };
     }
     return { kind: 'invalid' };
   }
@@ -122,17 +154,23 @@ function resolveQuery(rawQuery: string): CoverageResult {
     if (qLower.includes(token)) matchedZips.add(zip);
   }
 
-  if (matchedZips.size === 0) return { kind: 'miss', query: q };
+  if (matchedZips.size > 0) {
+    // Prefer the home ZIP if it's in the match set (so "Largo"
+    // resolves to 33771, not 33778 by alphabetical accident).
+    // We already returned early on `matchedZips.size === 0`, so
+    // `sortedZips[0]` is guaranteed to exist here.
+    const sortedZips = Array.from(matchedZips).sort();
+    const chosen: string = matchedZips.has(HOME_ZIP) ? HOME_ZIP : (sortedZips[0] as string);
+    const name =
+      serviceAreaMap.pinLocations[chosen as keyof typeof serviceAreaMap.pinLocations] ?? null;
+    return { kind: 'hit', zip: chosen, name };
+  }
 
-  // Prefer the home ZIP if it's in the match set (so "Largo"
-  // resolves to 33771, not 33778 by alphabetical accident).
-  // We already returned early on `matchedZips.size === 0`, so
-  // `sortedZips[0]` is guaranteed to exist here.
-  const sortedZips = Array.from(matchedZips).sort();
-  const chosen: string = matchedZips.has(HOME_ZIP) ? HOME_ZIP : (sortedZips[0] as string);
-  const name =
-    serviceAreaMap.pinLocations[chosen as keyof typeof serviceAreaMap.pinLocations] ?? 'Largo area';
-  return { kind: 'hit', zip: chosen, name };
+  // 3+ char text we couldn't resolve to a known neighborhood.
+  // Still a positive result (D-0032: don't gate on text either)
+  // — route to /quote, no zip param, where the form will collect
+  // the address properly.
+  return { kind: 'miss', query: q };
 }
 
 export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
@@ -225,74 +263,49 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
               )}
             </form>
 
-            {/* Result panel — only renders after a check. Cream card
-                 on the dark palm-bark background, sun CTA on hit. */}
+            {/* Result panel — only renders after a check. D-0032:
+                 all positive cases (known ZIP, unknown ZIP, unresolved
+                 text) get the same cream card + sun-filled CTA. The
+                 service-area gate moved to /quote + on-site visit. */}
             {showResult && result && (
-              <output id={liveId} className={styles.result} data-result={result.kind}>
-                {result.kind === 'hit' ? (
-                  <div className={styles.resultInner}>
-                    <p className={styles.resultHeadline}>
-                      <span className={styles.resultCheck} aria-hidden="true">
-                        <svg
-                          viewBox="0 0 16 16"
-                          width="16"
-                          height="16"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          aria-hidden="true"
-                        >
-                          <path d="m3 8 3.5 3.5L13 5" />
-                        </svg>
-                      </span>
-                      <span>
-                        You&rsquo;re covered &middot; {result.zip} &mdash; {result.name}
-                      </span>
-                    </p>
-                    <Button
-                      as="link"
-                      href={`/quote?zip=${result.zip}`}
-                      variant="sun"
-                      className={styles.resultCta}
-                    >
-                      Get free quote
-                      <span aria-hidden="true" className={styles.resultCtaArrow}>
-                        &rarr;
-                      </span>
-                    </Button>
-                  </div>
-                ) : (
-                  <div className={styles.resultInner}>
-                    <p className={styles.resultHeadline}>
-                      <span className={styles.resultCheckMiss} aria-hidden="true">
-                        <svg
-                          viewBox="0 0 16 16"
-                          width="16"
-                          height="16"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          aria-hidden="true"
-                        >
-                          <circle cx="8" cy="8" r="6" />
-                          <path d="M8 5v3" />
-                          <path d="M8 11v.5" />
-                        </svg>
-                      </span>
-                      <span>Outside my usual route &mdash; still ask.</span>
-                    </p>
-                    <Button as="link" href="/quote" variant="outline" className={styles.resultCta}>
-                      Get a free quote
-                      <span aria-hidden="true" className={styles.resultCtaArrow}>
-                        &rarr;
-                      </span>
-                    </Button>
-                  </div>
-                )}
+              <output id={liveId} className={styles.result} data-result={result.kind === 'miss' ? 'text' : 'hit'}>
+                <div className={styles.resultInner}>
+                  <p className={styles.resultHeadline}>
+                    <span className={styles.resultCheck} aria-hidden="true">
+                      <svg
+                        viewBox="0 0 16 16"
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="m3 8 3.5 3.5L13 5" />
+                      </svg>
+                    </span>
+                    <span>
+                      {result.kind === 'hit' && result.name
+                        ? `Got it \u00b7 ${result.zip} \u2014 ${result.name}`
+                        : result.kind === 'hit'
+                          ? `Got it \u00b7 ${result.zip}`
+                          : `Got it \u2014 let\u2019s chat about ${result.query}`}
+                    </span>
+                  </p>
+                  <Button
+                    as="link"
+                    href={result.kind === 'hit' ? `/quote?zip=${result.zip}` : '/quote'}
+                    variant="sun"
+                    className={styles.resultCta}
+                  >
+                    Get free quote
+                    <span aria-hidden="true" className={styles.resultCtaArrow}>
+                      &rarr;
+                    </span>
+                  </Button>
+                </div>
               </output>
             )}
           </div>
