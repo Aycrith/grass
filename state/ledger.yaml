@@ -515,10 +515,12 @@ health_components:
 # -------------------------------------------------------------------
 next_actions:
   immediate:
-    - "Steward review: sign off on research/regulatory/largo-licensing-map.yaml Day-1 service decomposition"
-    - "Steward review: confirm all 6 decision ADRs in governance/decisions/ - D-0002 through D-0007"
-    - "Steward review: Phase 1 Visual closeout commit (apps/web/visual/ + ci.yml visual job) - ready to merge on fix/wp1-front-end-coherence"
-    - "Steward follow-up (not blocking Phase 1 Visual merge): add framer-motion@11.18.2, lenis@1.3.25, @radix-ui/react-{dialog,accordion}, lucide-react@0.469.0 to apps/web/package.json devDependencies - currently undeclared shadow deps (installed in node_modules from a prior install, will break on `bun install --force` from a clean cache). Defer to a separate quick PR - not on Phase 1 Visual's critical path."
+    - "Steward review: D-0028 / D-0029 / D-0030 landing-page redesign — 3 sequential commits (63234dd, 17a5454, 5efc5ef). Coverage Check at fold 1-2, 14 → 9 sections, visual system hygiene. Build green, charter 3/3. Local-only (not pushed). Review via `git show <hash>` + audit/d0028-*, d0029-*, d0030-* captures side-by-side."
+    - "Steward follow-up: clean up `_d0028-capture.spec.ts` strict typecheck noise (1 unused `expect` import) — trivial 1-line fix, not blocking build."
+    - "Steward follow-up: ~30 untracked audit files (chrome-debug-data, debug-mobile, verify-quote-prefill, d0027 capture scripts, etc.) — these are working-tree noise from D-0026/27/28 work, not from the 3 redesign commits. Move to a date-stamped subdirectory or mavis-trash as you see fit."
+    - "Steward follow-up: pre-existing baseline drift on 28 routes.spec.ts + 6 component baselines (about, contact, services, areas, hero-cinematic, service-bento, etc.) per the D-0029 / D-0030 commit notes. Separate housekeeping pass."
+    - "Steward follow-up: ScheduleTimeline + FAQAccordion not in COMPONENT_BASELINES matrix. Optional: add them so the rhythm changes D-0030 made are caught by future regressions."
+    - "Steward sign-off (still pending from pre-D-0028 work): research/regulatory/largo-licensing-map.yaml Day-1 service decomposition; 6 decision ADRs in governance/decisions/ - D-0002 through D-0007."
 
   week_3: []  # Phase 2 (Month 2 landscaping MVP) starts Day 16; see objectives.active
 
@@ -534,6 +536,160 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      D-0030 — Visual system hygiene pass (Wave C of three sequential
+      design changes; commit 5efc5ef). Three problems addressed after
+      D-0029 cut the page to 9 sections: (1) eyebrow density was still
+      too high — only 3 survive on the new page (Hero, Map, FinalCTA),
+      ServiceBento and PricingTiers eyebrows removed. (2) PricingTiers
+      CTA hierarchy was ambiguous — all 3 cards had identical dark-green
+      primary CTAs. Fix: anchor Mowing card keeps the sun-filled primary
+      CTA, the 2 non-anchor cards switch to outline secondary. (3) Below-
+      fold motion was contributing to LCP and "feels complicated" — FadeUp
+      / StaggerGroup / ParallaxImage removed from OperatorStrip,
+      ServiceBento, PricingTiers, ProcessSteps, ScheduleTimeline. Hero
+      and Coverage keep their motion. 8/9 sections now at --space-10
+      vertical rhythm (ServiceAreaMap at --space-13 is the intentional
+      D-0028 outlier). 6 "Learn more →" tertiary arrows removed from
+      bento cards. ProcessSteps decorative header image removed. Cleanup
+      pass: deleted 9 dead CSS rules. Playwright baselines updated for
+      hero-cinematic, service-bento, operator-strip, pricing-tiers
+      (desktop + mobile = 8 baselines). Visual captures saved at audit/
+      d0030-{desktop,mobile}-after-fullpage.png. Page height 9551px →
+      9048px (-5%). 5 issues found but not fixed (documented in commit
+      body) — pre-existing baseline drift on routes + components,
+      ScheduleTimeline + FAQAccordion not in COMPONENT_BASELINES matrix.
+      Acceptance: build green, charter 3/3, prefers-reduced-motion
+      collapses all motion (12/12 tests pass). Steward can review via
+      `git show 5efc5ef` and side-by-side d0029/d0030 fullpage captures.
+    by: "Mavis (orchestrator + coder sub-agent, 2026-07-15)"
+
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      D-0029 — Homepage IA reorder: 14 sections → 9 sections, coverage
+      check to fold 1-2 (Wave B; commit 17a5454). Two problems drove the
+      cut. (1) The user's first conversion question is "am I in your
+      service area?" In the prior 14-section order the Coverage Check
+      sat at position 6 — by fold 3 the user had scrolled past ~8 full-
+      bleed editorial blocks before answering. Now ServiceAreaMap is
+      position 2 (right after Hero), so the first paint after the hero
+      already answers the conversion question. (2) Operator voice was
+      duplicated: OperatorStrip's bio already says "Same guy, same day,
+      every week" — OperatorNote (typographic pause) and MarqueeQuote
+      (slow horizontal scroll) both carried the same operator-voice
+      content. Demoted both to the /about surface. EditorialBreak (full-
+      bleed image pause, non-converting) and ServiceAreaStats (4-stat
+      panel) also demoted. The 2 strongest stats from ServiceAreaStats
+      (47 yards on the route, 18h median quote turnaround) folded into
+      OperatorStrip's bio card — the bio is the operator's voice
+      section, so those numbers reinforce that voice without an extra
+      section. SectionDivider count cut from 8 to 3 (only at major tone
+      shifts). page.tsx header comment rewritten to describe the new
+      9-section composition. 4 Playwright baselines updated (home +
+      operator-strip × 2 viewports). reduced-motion.spec.ts redirected
+      3 demoted-section entries to /visual-test where the components
+      still mount. Build green, charter 3/3, captures at audit/
+      d0029-{desktop,mobile}-{before,after}-fullpage.png. Steward can
+      review via `git show 17a5454`.
+    by: "Mavis (orchestrator + coder sub-agent, 2026-07-15)"
+
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      D-0028 — Coverage Check replaces dual-UI ServiceAreaMap (Wave A;
+      commit 63234dd). The prior ServiceAreaMap had a static map
+      illustration AND a separate 6-card ZIP rail, both trying to
+      answer "am I in your service area?" The dual-UI was the steward
+      feedback flagged in D-0026c ("looks better but lacks
+      interactivity") and partially addressed in D-0027's light cards.
+      Root cause: most Largo homeowners know their street + city, not
+      their 5-digit ZIP. Asking them to pick from 6 ZIP cards mid-scroll
+      is a cognitive tax. D-0028's fix is a single, obvious input that
+      does an in-section coverage check: (1) ServiceAreaMap promoted
+      from a server component to a 'use client' component with
+      internal state for query + result. (2) The 6-card ZIP rail
+      replaced with a form (input + Check coverage button) and a
+      result panel. (3) Input accepts both ZIPs (inputmode=numeric,
+      pattern=\d{5}, autoComplete=postal-code) and neighborhood names
+      via a <datalist> fed by BUSINESS.service_area_zips +
+      Object.values(serviceAreaMap.pinLocations). (4) On valid match:
+      result panel shows "You're covered · {zip} — {neighborhood}"
+      + a sun-filled CTA to /quote?zip={zip}. (5) On miss: "still
+      ask" copy + an outline CTA to /quote. (6) On invalid: inline
+      helper, no CTA. (7) Result panel uses native <output> element
+      (implicit role=status + aria-live=polite) for screen-reader
+      announcement. (8) Collapsed "See all six areas" details/summary
+      below the form for users who still want the 6 cards as a
+      secondary path. (9) /quote prefill: useSearchParams() reads
+      ?zip= and prefills the ZIP select if inServiceArea(zip) is
+      true. This closes the loop end-to-end: cover-check → quote
+      calculator with ZIP pre-filled. (10) Heading rewritten to
+      "Six Pinellas neighborhoods. One route." (was "Six ZIPs, one
+      route.") to match the neighborhood-first framing. Map picture
+      preserved as brand art (no rebuild). Layout: 3-col desktop
+      (form | map | result), 1-col stack on mobile. Build green,
+      charter 3/3, typecheck at 7 pre-existing errors (no new from
+      D-0028). 10 visual captures saved at audit/d0028-{desktop,
+      mobile}-{idle,hit,miss,hit-areas-open}.png. 1 follow-up: a
+      Playwright capture spec at apps/web/visual/_d0028-capture.spec.ts
+      has an unused `expect` import — trivial cleanup if steward
+      wants the strict typecheck clean.
+    by: "Mavis (orchestrator + coder sub-agent, 2026-07-15)"
+
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      D-0027 — Obviously-interactive ZIP rail (commit e4d030c;
+      retroactive ledger entry — the change was already shipped but
+      never recorded). Replaced the previous 6-ZIP rail (subtle info
+      cards with light hover) with light cream cards on the dark palm-
+      bark background: big ZIP code in sun-gold at the top, neighborhood
+      name below, "View details →" arrow at the bottom that slides on
+      hover, sun-gold border + lift on hover, 2px sun-gold focus ring
+      for keyboard nav, scale(0.98) on press, full-card clickable
+      area, visible section label "Choose your ZIP" with helper text
+      "Tap to see pricing and availability in your neighborhood",
+      and a single primary CTA below the rail ("Get a free quote" →
+      /quote) for users who don't know their ZIP. Destination
+      unchanged: the 6 cards still link to /areas/{zip}. This commit
+      fixed the steward feedback from D-0026c ("looks better but
+      lacks interactivity — the buttons themselves do not project an
+      area and are not clickable/interactive, the component is not
+      intuitive or self apparent") by making the rail's interactivity
+      obvious. The underlying dual-UI problem (static map + 6 cards
+      competing for "am I in your service area?") was solved in
+      D-0028's Coverage Check.
+    by: "Mavis (orchestrator, retroactive entry, 2026-07-15)"
+
+  - date: "2026-07-15"
+    day: 22
+    change: >
+      D-0026 series — Top-down map layout + curated composition
+      (commits f5a0e2f, 3e54b77, 237aaf8; retroactive ledger entry
+      — the change was already shipped but never recorded). Three
+      commits. (a) D-0026 (f5a0e2f): custom-composed Pinellas map
+      with baked-in ZIP badges. The D-0024 hand-authored SVG was
+      rejected by the steward ("not coherent enough to meet
+      acceptance criteria"), so the D-0026 commit authored a
+      different map image with the 6 ZIP badges baked in as
+      decorative dots, intended as a more "obvious this is where
+      I mow" composition. (b) D-0026b (3e54b77): curated the map
+      image to match the landing-page storybook theme (consistent
+      with the rest of the painted family). (c) D-0026c (237aaf8):
+      top-down layout — the steward called the 2-column side-by-
+      side layout (heading-left, map-right) "incoherent", so the
+      layout was rewritten so the heading is small and centered at
+      the top, the large map is the focal point in the middle, and
+      the 6 ZIP rail is a horizontal row below. The map is now the
+      visual centerpiece of the section. This was the D-0027
+      prerequisite (you need the map as the focal point before the
+      rail can sit below it). The dual-UI problem was finally
+      addressed in D-0028's Coverage Check.
+    by: "Mavis (orchestrator, retroactive entry, 2026-07-15)"
+
   - date: "2026-07-15"
     day: 22
     change: >
