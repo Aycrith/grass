@@ -49,8 +49,10 @@
  * Single primary interactive zone per the design principles.
  */
 
+import { motion, useReducedMotion } from 'framer-motion';
 import { type FormEvent, type ReactNode, useId, useState } from 'react';
 
+import { FadeUp } from '@/components/motion';
 import { Eyebrow, Section } from '@/components/site';
 import { Button } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
@@ -61,6 +63,30 @@ import styles from './ServiceAreaMap.module.css';
 
 interface ServiceAreaMapProps {
   className?: string;
+}
+
+function ResultPanel({
+  children,
+  id,
+  resultKind,
+}: {
+  children: ReactNode;
+  id: string;
+  resultKind: 'text' | 'hit';
+}) {
+  const reduced = useReducedMotion();
+  return (
+    <motion.output
+      id={id}
+      className={styles.result}
+      data-result={resultKind}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: reduced ? 0.01 : 0.35, ease: [0.16, 1, 0.3, 1] }}
+    >
+      {children}
+    </motion.output>
+  );
 }
 
 /**
@@ -192,23 +218,23 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
   const showResult = result?.kind === 'hit' || result?.kind === 'miss';
 
   return (
-    <Section rhythm="loose" className={cn(styles.root, className)}>
+    <Section rhythm="loose" className={cn(styles.root, className)} data-test-section="service-area-map">
       <div className="container">
         <div className={styles.inner}>
           {/* Section header — small + centered. */}
-          <header className={styles.header}>
+          <FadeUp as="header" className={styles.header}>
             <Eyebrow tone="dark" className={styles.headerEyebrow}>
               {serviceAreaMap.eyebrow}
             </Eyebrow>
             <h2 className={styles.headerHeading}>{serviceAreaMap.heading}</h2>
             <p className={styles.headerSub}>{serviceAreaMap.subhead}</p>
-          </header>
+          </FadeUp>
 
           {/* Form + result — form-dominant. max-width 480px so the
              form is the obvious "do this" element, not lost in a
              wide grid. Result panel (when shown) sits directly
              below the form, same width, as a confirmation. */}
-          <div className={styles.coverage}>
+          <FadeUp as="div" className={styles.coverage} delay={0.1}>
             <form className={styles.form} onSubmit={handleSubmit} noValidate>
               <label htmlFor={inputId} className={styles.formLabel}>
                 ZIP or neighborhood
@@ -267,7 +293,10 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
                  text) get the same cream card + sun-filled CTA. The
                  service-area gate moved to /quote + on-site visit. */}
             {showResult && result && (
-              <output id={liveId} className={styles.result} data-result={result.kind === 'miss' ? 'text' : 'hit'}>
+              <ResultPanel
+                id={liveId}
+                resultKind={result.kind === 'miss' ? 'text' : 'hit'}
+              >
                 <div className={styles.resultInner}>
                   <p className={styles.resultHeadline}>
                     <span className={styles.resultCheck} aria-hidden="true">
@@ -305,9 +334,9 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
                     </span>
                   </Button>
                 </div>
-              </output>
+              </ResultPanel>
             )}
-          </div>
+          </FadeUp>
 
           {/* D-0033: the chip strip is gone. The form on its own is
              the answer to "where I mow?" — the 6 chips were just

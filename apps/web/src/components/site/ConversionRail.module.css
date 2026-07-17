@@ -1,0 +1,121 @@
+/* ============================================================
+ * ConversionRail — sticky bottom-bar CTA (D-0037).
+ *
+ * Desktop: anchored to the bottom-right corner as a thin pill.
+ * Mobile: full-width band at the bottom.
+ *
+ * Visibility: slides up 240ms when the user scrolls past the
+ * hero, slides down 240ms when the final CTA enters view.
+ * Reduced motion: instant (no transition).
+ * ============================================================ */
+
+.root {
+  position: fixed;
+  z-index: 40;
+  pointer-events: none;
+  transition: transform 240ms var(--motion-easing-emphasize),
+    opacity 240ms var(--motion-easing-default);
+}
+
+.hidden {
+  transform: translateY(120%);
+  opacity: 0;
+}
+
+.visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root { transition: none; }
+}
+
+/* ---------- Desktop: bottom-right pill ---------- */
+@media (min-width: 768px) {
+  .root {
+    bottom: var(--space-5);
+    right: var(--space-5);
+    max-width: 28rem;
+  }
+  .inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
+    background: var(--ll-shell);
+    border: 1px solid color-mix(in oklab, var(--ll-clay) 25%, transparent);
+    border-radius: var(--radius-pill);
+    box-shadow: 0 8px 24px color-mix(in oklab, var(--ll-palm-bark) 18%, transparent);
+  }
+  .copy {
+    font-family: var(--font-inter), sans-serif;
+    font-size: 0.875rem;
+    color: var(--ll-palm-bark);
+    font-weight: 500;
+  }
+  .altLink {
+    display: none;
+  }
+}
+
+/* ---------- Mobile: full-width band ---------- */
+@media (max-width: 767px) {
+  .root {
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom));
+    background: var(--ll-shell);
+    border-top: 1px solid color-mix(in oklab, var(--ll-palm-bark) 12%, transparent);
+    box-shadow: 0 -4px 16px color-mix(in oklab, var(--ll-palm-bark) 10%, transparent);
+  }
+  .copy {
+    display: none;
+  }
+  .altLink {
+    font-family: var(--font-inter), sans-serif;
+    font-size: 0.75rem;
+    color: var(--ll-clay);
+    text-decoration: none;
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+}
+
+.cta {
+  width: 100%;
+  justify-content: center;
+}
+
+@media (max-width: 767px) {
+  .cta {
+    width: auto;
+    flex: 1 1 auto;
+  }
+}
+
+@media (min-width: 768px) {
+  .cta {
+    width: auto;
+  }
+}
+
+.arrow {
+  display: inline-block;
+  margin-inline-start: 4px;
+  transition: transform var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cta:hover .arrow {
+    transform: translateX(2px);
+  }
+}

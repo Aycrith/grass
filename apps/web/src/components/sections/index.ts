@@ -3,6 +3,8 @@
  */
 
 export { HeroCinematic } from './HeroCinematic';
+export { HeroFieldTelemetry } from './HeroFieldTelemetry';
+export { HeroStorybookLayer } from './HeroStorybookLayer';
 export { TrustStrip } from './TrustStrip';
 export { OperatorStrip } from './OperatorStrip';
 export { ServiceBento } from './ServiceBento';

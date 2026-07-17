@@ -55,12 +55,18 @@ import styles from './HeroCinematic.module.css';
 
 interface HeroCinematicProps {
   className?: string;
+  /**
+   * Section id. Defaults to "hero" for production use; the visual-test
+   * page passes "hero-cinematic" so both hero variants can co-exist
+   * on the same /visual-test page without duplicate-id warnings.
+   */
+  id?: string;
 }
 
-export function HeroCinematic({ className }: HeroCinematicProps): ReactNode {
+export function HeroCinematic({ className, id = 'hero' }: HeroCinematicProps): ReactNode {
   const { composition } = hero;
   return (
-    <section className={cn(styles.root, className)} aria-label="Largo Lawn introduction">
+    <section className={cn(styles.root, className)} aria-label="Largo Lawn introduction" id={id} data-test-section="hero-cinematic">
       <div className="container">
         <div className={styles.inner}>
           <div className={styles.copy}>

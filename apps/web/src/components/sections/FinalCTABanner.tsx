@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * FinalCTABanner — full-bleed CTA band.
  *
@@ -9,6 +11,7 @@
  * default "09 — Ready when you are".
  */
 
+import { FadeUp } from '@/components/motion';
 import { Button, Illustration } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { finalCta } from '@/lib/content';
@@ -23,9 +26,9 @@ interface FinalCTABannerProps {
 
 export function FinalCTABanner({ className, eyebrow, href }: FinalCTABannerProps): React.ReactNode {
   return (
-    <section className={cn(styles.root, className)}>
+    <section className={cn(styles.root, className)} id="final-cta" data-test-section="final-cta-banner">
       <div className="container">
-        <div className={styles.inner}>
+        <FadeUp as="div" className={styles.inner}>
           <span className={styles.eyebrow}>{eyebrow ?? 'Ready when you are'}</span>
           {/* D-0011 — opening quote-mark ornament, v3 painted storybook.
            * Pairs with the painted v3 logo mark + Fraunces wordmark in
@@ -47,7 +50,7 @@ export function FinalCTABanner({ className, eyebrow, href }: FinalCTABannerProps
               {finalCta.cta.label}
             </Button>
           </div>
-        </div>
+        </FadeUp>
       </div>
     </section>
   );

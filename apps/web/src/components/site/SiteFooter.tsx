@@ -11,10 +11,13 @@
  * anywhere else in the codebase — go through BUSINESS.
  */
 
+'use client';
+
 import { Mail, Phone } from 'lucide-react';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
+import { FadeUp } from '@/components/motion';
 import { Illustration } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
@@ -54,7 +57,7 @@ export function SiteFooter({ className }: SiteFooterProps): ReactNode {
   return (
     <footer className={cn(styles.root, className)}>
       <div className={styles.container}>
-        <div className={styles.grid}>
+        <FadeUp as="div" className={styles.grid}>
           <div className={styles.brandCol}>
             <Link href="/" className={styles.brand}>
               <Illustration
@@ -136,9 +139,9 @@ export function SiteFooter({ className }: SiteFooterProps): ReactNode {
               Solo-operator lawn care across Largo and the surrounding Pinellas County neighborhoods. Type your ZIP on the homepage to check coverage.
             </p>
           </div>
-        </div>
+        </FadeUp>
 
-        <div className={styles.bottom}>
+        <FadeUp as="div" className={styles.bottom} delay={0.1}>
           <span data-visual-mask="year">
             © {year} {BUSINESS.legal_entity}. All rights reserved.
           </span>
@@ -155,7 +158,7 @@ export function SiteFooter({ className }: SiteFooterProps): ReactNode {
               largolawn.pro
             </a>
           </span>
-        </div>
+        </FadeUp>
       </div>
     </footer>
   );

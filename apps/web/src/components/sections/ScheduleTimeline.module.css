@@ -1,67 +1,731 @@
 /* ============================================================
- * ScheduleTimeline — 7-day route strip.
+ * ScheduleTimeline — D-0036 conversion-first rebuild.
  *
- * Desktop: horizontal scroll-snap strip with cards side-by-side.
- * Mobile: vertical stack. Each day is a column with a header
- * (dot + day name + yard count), and a body listing the ZIPs
- * routed that day. Sundays render as a "Closed" state — no ZIPs,
- * dot muted.
+ * The section now has 4 layers, all funneling toward /quote:
+ *   1. Header (compact) — heading + subhead + week meta inline
+ *   2. Resolver — ZIP input + button + result panel with
+ *      primary "Lock in {day}" CTA
+ *   3. Today card — BIG card with primary "Book this mow" CTA
+ *      at the bottom
+ *   4. Week strip — 7 compact day cards each with a "Book {Day}"
+ *      mini-CTA
+ *   5. Subscribe (small, secondary) — ghost CTA at the bottom
  *
- * No JS interactions in v1 — the schedule is a static snapshot.
- * Future Supabase dynamic would add a click-to-expand per-day
- * detail without changing this layout.
+ * The month calendar is collapsed behind a "See full month"
+ * toggle — it's reference info, not conversion-driving.
  *
- * D-0030 — Section rhythm moved from "loose" to the <Section>
- * default (--space-10 / 64px) for even vertical padding with
- * the rest of the page. The schedule strip itself is unchanged.
+ * Animations:
+ *   - Card scroll-reveal (Framer Motion: fade-up 12px, 70ms stagger)
+ *   - Today card one-time attention pulse (1.2s clay-bloom)
+ *   - Resolver result spring slide-in
+ *   - Primary CTA breathing pulse (3s, gated by reduced-motion)
+ *   - Day card hover lift (2px, gated by reduced-motion)
  * ============================================================ */
 
 .root {
   /* Section vertical rhythm supplied by <Section rhythm="default">. */
 }
 
+/* ============================================================
+ * Layer 1: Header (compact)
+ * ============================================================ */
+
 .header {
-  max-width: 56rem;
-  margin-bottom: var(--space-7);
+  max-width: 60rem;
+  margin-bottom: var(--space-6);
 }
 
-.eyebrow {
-  margin-bottom: var(--space-3);
+.headerRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.headerCopy {
+  flex: 1 1 auto;
+  min-width: 16rem;
+  max-width: 40rem;
 }
 
 .heading {
   font-family: var(--font-fraunces), serif;
   font-weight: 400;
-  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  font-size: clamp(1.625rem, 3vw, 2.25rem);
   line-height: 1.1;
   color: var(--ll-palm-bark);
-  margin-block: 0 var(--space-3);
+  margin-block: 0 var(--space-2);
   letter-spacing: -0.01em;
 }
 
 .lede {
   font-family: var(--font-inter), sans-serif;
-  font-size: clamp(1rem, 1.4vw, 1.1rem);
-  line-height: 1.55;
+  font-size: 1rem;
+  line-height: 1.5;
   color: var(--ll-palm-bark);
   opacity: 0.78;
-  max-width: 38rem;
-  margin-block: 0;
+  margin: 0;
 }
+
+.weekMeta {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.75rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.55;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-variant-numeric: tabular-nums;
+  flex: 0 0 auto;
+}
+
+.skipBanner {
+  margin-top: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: color-mix(in oklab, var(--ll-sun) 20%, var(--ll-shell));
+  border: 1px solid color-mix(in oklab, var(--ll-clay) 35%, transparent);
+  border-radius: var(--radius-md);
+  color: var(--ll-palm-bark);
+}
+
+.skipBannerIcon {
+  display: inline-flex;
+  color: var(--ll-clay);
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.skipBannerText {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+/* ============================================================
+ * Layer 2: Resolver (the BIG primary action)
+ * ============================================================ */
+
+.resolver {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-7);
+  padding: var(--space-6);
+  background: var(--ll-sand-bleached);
+  border: 1.5px solid color-mix(in oklab, var(--ll-clay) 22%, transparent);
+  border-radius: var(--radius-lg);
+  position: relative;
+}
+
+.resolverEyebrow {
+  display: inline-block;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ll-clay);
+}
+
+.resolverForm {
+  display: flex;
+  gap: var(--space-3);
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.resolverInput {
+  flex: 1 1 18rem;
+  min-width: 0;
+  font: inherit;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 1rem;
+  color: var(--ll-palm-bark);
+  background: var(--ll-shell);
+  border: 1px solid color-mix(in oklab, var(--ll-palm-bark) 18%, transparent);
+  border-radius: var(--radius-md);
+  padding: 0.875rem 1.125rem;
+  font-size: 1.0625rem;
+  transition: border-color var(--motion-duration-fast) var(--motion-easing-default),
+    box-shadow var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.resolverInput:focus {
+  outline: none;
+  border-color: var(--ll-clay);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--ll-clay) 22%, transparent);
+}
+
+.resolverInput::placeholder {
+  color: color-mix(in oklab, var(--ll-palm-bark) 40%, transparent);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Resolver result panel (hit + miss) --- */
+
+.resolverHit {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  background: var(--ll-shell);
+  border: 1px solid color-mix(in oklab, var(--ll-clay) 30%, transparent);
+  border-left: 3px solid var(--ll-clay);
+  border-radius: var(--radius-md);
+  position: relative;
+}
+
+/* Breathing pulse on the hit CTA: a 3s ease-in-out clay glow that
+ * breathes. Gated by prefers-reduced-motion. */
+.resolverHitPulse {
+  position: relative;
+}
+
+.resolverHitPulse::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: var(--radius-md);
+  pointer-events: none;
+  box-shadow: 0 0 0 0 color-mix(in oklab, var(--ll-sun) 50%, transparent);
+  animation: resolverHitBreath 3s ease-in-out infinite;
+}
+
+@keyframes resolverHitBreath {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--ll-sun) 0%, transparent); }
+  50% { box-shadow: 0 0 0 6px color-mix(in oklab, var(--ll-sun) 30%, transparent); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resolverHitPulse::after { animation: none; }
+}
+
+.resolverHitLabel {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ll-clay);
+}
+
+.resolverHitValue {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 500;
+  font-size: 1.625rem;
+  line-height: 1.1;
+  color: var(--ll-palm-bark);
+}
+
+.resolverHitRelative {
+  font-family: var(--font-inter), sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.7;
+}
+
+.resolverHitMeta {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.875rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.7;
+}
+
+.resolverHitCta {
+  margin-top: var(--space-3);
+  align-self: flex-start;
+}
+
+.resolverMiss {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  background: var(--ll-shell);
+  border: 1px solid color-mix(in oklab, var(--ll-palm-bark) 15%, transparent);
+  border-radius: var(--radius-md);
+}
+
+.resolverMissLabel {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ll-palm-bark);
+}
+
+.resolverMissBody {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--ll-palm-bark);
+  margin: 0;
+}
+
+.resolverMissCta {
+  align-self: flex-start;
+  margin-top: var(--space-2);
+}
+
+/* ============================================================
+ * Layer 3: Today card (BIG with primary CTA)
+ * ============================================================ */
+
+.todayCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+  padding: var(--space-7);
+  background: var(--ll-shell);
+  border: 1.5px solid var(--ll-clay);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 24px color-mix(in oklab, var(--ll-sun) 22%, transparent);
+  position: relative;
+  overflow: hidden;
+}
+
+.todayCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 0% 0%,
+    color-mix(in oklab, var(--ll-sun) 18%, transparent) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+}
+
+.todayCardClosed {
+  opacity: 0.85;
+}
+
+@media (max-width: 720px) {
+  .todayCard {
+    padding: var(--space-6);
+  }
+}
+
+.todayCardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  position: relative;
+}
+
+.todayCardBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ll-palm-bark);
+  background: var(--ll-sun);
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  position: relative;
+}
+
+.todayCardDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ll-clay);
+  display: inline-block;
+  animation: todayCardPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes todayCardPulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--ll-clay) 50%, transparent); }
+  50% { box-shadow: 0 0 0 6px color-mix(in oklab, var(--ll-clay) 0%, transparent); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .todayCardDot { animation: none; }
+}
+
+.todayCardYards {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.875rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
+}
+
+.todayCardBody {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.todayCardEta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 12px 6px 10px;
+  background: color-mix(in oklab, var(--ll-sun) 18%, transparent);
+  border-radius: var(--radius-pill);
+  width: fit-content;
+}
+
+.todayCardEtaIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: var(--ll-clay);
+  flex-shrink: 0;
+}
+
+.todayCardEtaIcon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.todayCardEtaValue {
+  font-family: var(--font-fraunces), serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.25rem;
+  line-height: 1.2;
+  color: var(--ll-palm-bark);
+  font-variant-numeric: tabular-nums;
+  /* Italic descender clearance per design-taste-frontend 4.1 */
+  padding-bottom: 2px;
+}
+
+.todayCardProgress {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--space-3) var(--space-4);
+  background: color-mix(in oklab, var(--ll-sun) 12%, transparent);
+  border-radius: var(--radius-md);
+  border: 1px solid color-mix(in oklab, var(--ll-sun) 30%, transparent);
+}
+
+.todayCardProgressLabel {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--ll-palm-bark);
+}
+
+.todayCardProgressLabel strong {
+  color: var(--ll-clay);
+  font-weight: 700;
+}
+
+.progressBar {
+  width: 100%;
+  height: 6px;
+  background: color-mix(in oklab, var(--ll-palm-bark) 8%, transparent);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  position: relative;
+}
+
+.progressFill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--ll-clay), var(--ll-sun));
+  border-radius: var(--radius-pill);
+  transition: width var(--motion-duration-deliberate) var(--motion-easing-out-quart);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progressFill { transition: none; }
+}
+
+.todayCardProgressCount {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.6875rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.75;
+  font-variant-numeric: tabular-nums;
+}
+
+.todayCardProgressCount strong {
+  font-weight: 700;
+  opacity: 1;
+}
+
+.todayCardIdle {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.875rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--ll-palm-bark);
+  opacity: 0.7;
+  margin: 0;
+}
+
+.todayCardNote {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.875rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--ll-palm-bark);
+  opacity: 0.78;
+  margin: 0;
+}
+
+.todayCardFoot {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  position: relative;
+  margin-top: var(--space-2);
+}
+
+.todayCardCta {
+  flex: 1 1 auto;
+}
+
+.todayMower {
+  display: block;
+  width: 100%;
+  max-width: 5.5rem;
+  height: auto;
+  opacity: 0.95;
+  mix-blend-mode: multiply;
+  flex: 0 0 auto;
+}
+
+@media (max-width: 480px) {
+  .todayCardFoot {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .todayMower {
+    display: none;
+  }
+}
+
+/* One-time attention pulse on the today card when it scrolls
+ * into view. 1.2s clay-bloom, runs once, gated by reduced-motion. */
+.todayCardPulse {
+  animation: todayCardBloom 1.2s ease-out;
+}
+
+@keyframes todayCardBloom {
+  0% { box-shadow: 0 4px 24px color-mix(in oklab, var(--ll-sun) 22%, transparent); }
+  35% { box-shadow: 0 4px 24px color-mix(in oklab, var(--ll-clay) 40%, transparent), 0 0 0 8px color-mix(in oklab, var(--ll-sun) 35%, transparent); }
+  100% { box-shadow: 0 4px 24px color-mix(in oklab, var(--ll-sun) 22%, transparent); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .todayCardPulse { animation: none; }
+}
+
+/* ============================================================
+ * Layer 4: Week strip (compact, per-day mini-CTA)
+ * ============================================================ */
+
+.week {
+  margin-bottom: var(--space-6);
+}
+
+.weekHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.weekHeading {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 1.2;
+  color: var(--ll-palm-bark);
+  margin: 0;
+}
+
+.weekCount {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.75rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.55;
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.monthToggle {
+  margin-inline-start: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.75rem;
+  color: var(--ll-clay);
+  background: transparent;
+  border: 1px solid color-mix(in oklab, var(--ll-clay) 30%, transparent);
+  border-radius: var(--radius-pill);
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: background var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.monthToggle:hover {
+  background: color-mix(in oklab, var(--ll-clay) 10%, transparent);
+}
+
+.monthToggleArrow {
+  display: inline-flex;
+  width: 12px;
+  height: 12px;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+/* --- Month calendar (collapsible) --- */
+
+.month {
+  overflow: hidden;
+  margin-bottom: var(--space-5);
+}
+
+.monthHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+  gap: var(--space-3);
+}
+
+.monthHeading {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 400;
+  font-size: 1.125rem;
+  line-height: 1.2;
+  color: var(--ll-palm-bark);
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.monthLegend {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.6875rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.7;
+}
+
+.monthLegendDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ll-green);
+  display: inline-block;
+}
+
+.monthGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  background: color-mix(in oklab, var(--ll-palm-bark) 4%, transparent);
+  border: 1px solid color-mix(in oklab, var(--ll-palm-bark) 8%, transparent);
+  border-radius: var(--radius-md);
+  padding: 3px;
+}
+
+.monthWeekday {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.5625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ll-palm-bark);
+  opacity: 0.5;
+  padding: 4px 0;
+}
+
+.monthCell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.875rem;
+  background: var(--ll-shell);
+  border-radius: 4px;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.75rem;
+  color: var(--ll-palm-bark);
+  font-variant-numeric: tabular-nums;
+}
+
+.monthCellMuted { opacity: 0.3; background: transparent; }
+.monthCellMow { color: var(--ll-green); font-weight: 600; }
+.monthCellToday {
+  background: var(--ll-sun);
+  color: var(--ll-palm-bark);
+  border: 1.5px solid var(--ll-clay);
+  font-weight: 700;
+}
+
+.monthCellNum { position: relative; z-index: 1; }
+.monthCellDot {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--ll-green);
+}
+.monthCellToday .monthCellDot { background: var(--ll-clay); }
+
+/* --- 7 day cards --- */
 
 .strip {
   list-style: none;
   padding: 0;
   margin: 0;
   display: grid;
-  grid-template-columns: repeat(7, minmax(8rem, 1fr));
-  gap: var(--space-3);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--space-2);
 }
 
 @media (max-width: 1024px) {
   .strip {
     grid-auto-flow: column;
-    grid-auto-columns: minmax(11rem, 1fr);
+    grid-auto-columns: minmax(10rem, 1fr);
     grid-template-columns: none;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -84,42 +748,60 @@
 .day {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-5) var(--space-4);
-  border: 1px solid color-mix(in oklab, var(--ll-palm-bark) 12%, transparent);
-  border-radius: var(--radius-lg);
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid color-mix(in oklab, var(--ll-palm-bark) 10%, transparent);
+  border-radius: var(--radius-md);
   background: var(--ll-shell);
   scroll-snap-align: start;
-  min-height: 10rem;
+  min-height: 9rem;
+  transition: border-color var(--motion-duration-base) var(--motion-easing-default),
+    transform var(--motion-duration-base) var(--motion-easing-default);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .day:hover {
+    border-color: color-mix(in oklab, var(--ll-clay) 35%, transparent);
+    transform: translateY(-2px);
+  }
 }
 
 .day[data-day='Sun'] {
   background: color-mix(in oklab, var(--ll-cream) 60%, transparent);
 }
 
+.dayPast { opacity: 0.55; }
+
 .dayHead {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 6px;
   flex-wrap: wrap;
 }
 
-.dayDot {
-  width: 0.625rem;
-  height: 0.625rem;
-  border-radius: 50%;
-  background: var(--ll-green);
+.dayIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  background: color-mix(in oklab, var(--ll-green) 10%, transparent);
+  color: var(--ll-green);
   flex-shrink: 0;
 }
 
-.day[data-day='Sun'] .dayDot {
-  background: var(--ll-sage-muted);
+.dayIcon svg { width: 14px; height: 14px; }
+
+.day[data-day='Sun'] .dayIcon {
+  background: color-mix(in oklab, var(--ll-sage-muted) 18%, transparent);
+  color: var(--ll-sage-muted);
 }
 
 .dayName {
   font-family: var(--font-inter), sans-serif;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ll-palm-bark);
@@ -127,27 +809,44 @@
 
 .dayMeta {
   font-family: var(--font-inter), sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   color: var(--ll-palm-bark);
   opacity: 0.6;
   margin-inline-start: auto;
   font-variant-numeric: tabular-nums;
 }
 
-.dayBody {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  margin-block-start: auto;
+.dayEta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px 3px 6px;
+  background: color-mix(in oklab, var(--ll-sun) 14%, transparent);
+  border-radius: var(--radius-pill);
+  width: fit-content;
 }
 
-.zipLabel {
+.dayEtaIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  color: var(--ll-clay);
+  flex-shrink: 0;
+}
+
+.dayEtaIcon svg {
+  width: 12px;
+  height: 12px;
+}
+
+.dayEtaValue {
   font-family: var(--font-inter), sans-serif;
   font-size: 0.6875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font-weight: 600;
   color: var(--ll-palm-bark);
-  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
 }
 
 .zipList {
@@ -155,84 +854,142 @@
   padding: 0;
   margin: 0;
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
+  flex-direction: column;
+  gap: 3px;
+  flex: 1 1 auto;
 }
 
 .zip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
   font-family: var(--font-inter), sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;
-  padding: 2px 8px;
-  border-radius: var(--radius-pill);
+  padding: 4px 8px 3px;
+  border-radius: var(--radius-sm);
   background: color-mix(in oklab, var(--ll-palm-bark) 6%, transparent);
   color: var(--ll-palm-bark);
-}
-
-/* ---------- Today marker (WP14) ----------
- * Client-side highlight of the current day. Pulse on the day
- * dot is gated by prefers-reduced-motion so reduce-motion
- * users see a static, still-readable schedule.
- */
-
-.day[data-today='true'] {
-  border-color: var(--ll-clay);
-  box-shadow: 0 0 0 1px color-mix(in oklab, var(--ll-sun) 30%, transparent);
-}
-
-.day[data-today='true'] .dayDot {
-  background: var(--ll-sun);
+  text-decoration: none;
+  transition: background var(--motion-duration-fast) var(--motion-easing-default);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .day[data-today='true'] .dayDot {
-    animation: scheduleTodayPulse 2.4s ease-in-out infinite;
+  .zip:hover {
+    background: color-mix(in oklab, var(--ll-clay) 14%, transparent);
   }
 }
 
-@keyframes scheduleTodayPulse {
-  0%, 100% {
-    box-shadow: 0 0 0 0 color-mix(in oklab, var(--ll-sun) 55%, transparent);
-  }
-  50% {
-    box-shadow: 0 0 0 8px transparent;
-  }
+.zipNumber {
+  font-weight: 600;
+  line-height: 1.1;
 }
 
-/* WP15 — mower anchor on the today card. Small illustration sits at
- * the bottom of the today card, reading as "this is the day the mower
- * shows up." mix-blend-mode: multiply tints the dark mower silhouette
- * against the card's shell color, so the body and grass tufts darken
- * into the cream rather than floating as opaque blocks.
- *
- * WP18 — removed the SVG's sand surface rect and ground line so the
- * illustration paints cleanly on any background; no crop needed.
- * clip-path is no longer required. */
-
-.todayMower {
-  display: block;
-  width: 100%;
-  max-width: 7.5rem;
-  height: auto;
-  margin-block-start: auto;
-  align-self: center;
-  opacity: 0.95;
-  mix-blend-mode: multiply;
+.zipNeighborhood {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.5625rem;
+  font-weight: 400;
+  opacity: 0.7;
+  line-height: 1.2;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.todayBadge {
+.dayNote {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.6875rem;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--ll-palm-bark);
+  opacity: 0.7;
+  margin: 0;
+  flex: 1 1 auto;
+}
+
+.dayCta {
+  margin-top: auto;
+  align-self: stretch;
+  justify-content: center;
+}
+
+/* ============================================================
+ * Layer 5: Subscribe (small, secondary)
+ * ============================================================ */
+
+.subscribe {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: transparent;
+  border-top: 1px solid color-mix(in oklab, var(--ll-palm-bark) 10%, transparent);
+  margin-top: var(--space-2);
+}
+
+.subscribeCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.subscribeHeading {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-family: var(--font-inter);
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-  background: var(--ll-sun);
+  gap: 8px;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
   color: var(--ll-palm-bark);
-  width: fit-content;
+}
+
+.subscribeIcon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  color: var(--ll-green);
+}
+
+.subscribeBody {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--ll-palm-bark);
+  opacity: 0.65;
+}
+
+.subscribeCta {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 640px) {
+  .subscribe {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+  .subscribeCta { width: 100%; }
+}
+
+/* ============================================================
+ * Shared: CTA arrow nudge (the "->" gets a tiny slide on hover)
+ * ============================================================ */
+
+.ctaArrow {
+  display: inline-block;
+  transition: transform var(--motion-duration-fast) var(--motion-easing-default);
+  margin-inline-start: 4px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:hover .ctaArrow,
+  button:hover .ctaArrow {
+    transform: translateX(2px);
+  }
 }

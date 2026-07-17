@@ -329,7 +329,16 @@ jobs:
 
       - name: Run Playwright visual regression
         working-directory: apps/web
-        run: bunx playwright test --project=chromium-desktop --reporter=github,list
+        # On diff, emit a red PR annotation that explicitly tells the dev
+        # to run `bun run visual:refresh` locally. CI never auto-updates
+        # baselines — that would mask regressions. The PR diff view +
+        # the *-actual.png + *-diff.png artifacts let the reviewer
+        # side-by-side verify the change before approving.
+        run: |
+          if ! bunx playwright test --project=chromium-desktop --reporter=github,list; then
+            echo "::error title=Visual baselines stale::Playwright visual regression failed — baselines drifted from committed snapshots. Run \`bun run visual:refresh\` from apps/web/, review the PNG diffs in apps/web/visual/test-output/ + the GitHub PR UI, commit the refreshed PNGs in apps/web/visual/baselines/, and push. CI never auto-updates baselines to avoid masking regressions."
+            exit 1
+          fi
 
       - name: Upload diff artifacts on failure
         if: failure()

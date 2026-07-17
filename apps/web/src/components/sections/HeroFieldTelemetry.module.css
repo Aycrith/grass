@@ -1,0 +1,638 @@
+/* ============================================================
+ * HeroFieldTelemetry - unified production hero.
+ *
+ * 200svh scroll-pinned root with a sticky 100svh viewport. The
+ * scroll-driven cross-fade between the storybook layer and the
+ * photo is driven by useScroll in HeroFieldTelemetry.tsx; this
+ * stylesheet just supplies the z-index stack + sizing.
+ *
+ * Layer stack (bottom to top):
+ *   0  .photo           - 4K Florida lawn photograph (resting state)
+ *   1  .scrim           - dark wash for left-column text legibility
+ *   2  .storybookWrap   - SVG landscape, fades out across 0..1
+ *   3  .content         - eyebrow + headline + subhead + CTAs
+ *   4  .liveStatus      - top-right pulsing widget
+ *      .stamp           - bottom-left passport stamp
+ *      .telemetry       - bottom-right field log strip
+ *
+ * Mobile + reduced-motion collapse the section to 100svh and
+ * hide the storybook behind the photo immediately, so the user
+ * sees the photo + content without any scroll-scrubbed animation.
+ * ============================================================ */
+
+.root {
+  position: relative;
+  width: 100%;
+  height: 200svh;
+  background-color: var(--ll-palm-bark);
+  color: var(--ll-cream);
+  isolation: isolate;
+  /* The viewport is sticky, so the root needs to NOT collapse its
+   * overflow in a way that would clip the sticky child. */
+}
+
+.viewport {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+  background-color: var(--ll-palm-bark);
+}
+
+/* ============================================================
+ * Background photo - the resting state, below the storybook.
+ *
+ * D-0043 — the previous 32s `@keyframes hero-kenburns` ran on a
+ * free-running alternate cycle that competed with the user's
+ * scroll clock. It was replaced by a scroll-driven
+ * `transform: scale + translateY` on `.photoWrap` via framer-motion
+ * `useTransform` in HeroFieldTelemetry.tsx. The `.photoImg` rule
+ * keeps its saturate/contrast filter (LCP color treatment) but no
+ * longer carries its own animation. The `.photoGrade` overlay is
+ * the sunset warmth gradient that lets the photo "wake up" from
+ * the storybook's color world into its own.
+ * ============================================================ */
+
+.photo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.photoWrap {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+  transform-origin: 60% 50%;
+}
+
+.photoImg {
+  object-fit: cover;
+  object-position: 55% 55%;
+  filter: saturate(1.08) contrast(1.03);
+}
+
+/* D-0043 — sunset-color grade overlay on the photo.
+ * Sits above `.photoImg` but below `.photoVignette` (vignette is
+ * the source of truth for left-column text legibility, so it must
+ * stay on top). The grade is concentrated entirely on the RIGHT
+ * side of the frame - the left 20% (where the headline + subhead
+ * sit) is explicitly transparent so neither the headline column
+ * nor the dark scrim beside it pick up a warm tint from the
+ * grade. mix-blend-mode: overlay (not "multiply") preserves the
+ * photo's natural highlights - grass blades and the sky's bright
+ * spots keep their luminance while mid-tone greens are tinted
+ * warm. The radial sun hotspot at ~78% 28% anchors the "sun
+ * coming up" feel in the upper-right of the photo. */
+.photoGrade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  background:
+    radial-gradient(
+      ellipse at 82% 22%,
+      color-mix(in oklab, var(--ll-sun) 44%, transparent) 0%,
+      transparent 50%
+    ),
+    linear-gradient(
+      to left,
+      transparent 0%,
+      transparent 42%,
+      color-mix(in oklab, var(--ll-clay) 30%, transparent) 65%,
+      color-mix(in oklab, var(--ll-sun-deep) 62%, transparent) 100%
+    );
+}
+
+/* D-0043 (rev) — narrower desktop viewports (768-1499px), the
+ * content column extends further into the right half of the
+ * viewport (column right edge ≈ 78% at 1000px viewport, 66% at
+ * 1200px viewport). Push the warm zone further right so the
+ * subhead's right tail and headline never pick up a tint. The
+ * default wider-desktop baseline keeps the more dramatic warmth
+ * spread for >=1500px. */
+@media (max-width: 1499px) {
+  .photoGrade {
+    background:
+      radial-gradient(
+        ellipse at 84% 22%,
+        color-mix(in oklab, var(--ll-sun) 44%, transparent) 0%,
+        transparent 50%
+      ),
+      linear-gradient(
+        to left,
+        transparent 0%,
+        transparent 60%,
+        color-mix(in oklab, var(--ll-clay) 28%, transparent) 80%,
+        color-mix(in oklab, var(--ll-sun-deep) 60%, transparent) 100%
+      );
+  }
+}
+
+/* D-0043 — gate `.photoGrade` on the same surfaces where
+ * `enableScrollFade=false` already unmounts the storybook.
+ * Without this gate the grade would sit at 0.55 opacity on a
+ * phone (where the section collapses to 100svh and the progress
+ * driver is effectively pinned at 0), tinting the resting photo
+ * permanently warm. Reduced-motion desktop users also need the
+ * gate because the parent `enableScrollFade=false` short-circuits
+ * the entire scroll-fade branch.
+ *
+ * D-0043 (rev 2) — also force the layer-4 dashboard widgets
+ * (`.liveStatus`, `.telemetry`) to `opacity: 1` + `transform: none`
+ * on the same surfaces via `!important`. The widgets always
+ * render as `motion.div` in JS with `style="opacity: 0"` (so the
+ * cinematic fade-in runs on desktop scroll users). On phone /
+ * coarse-pointer / reduced-motion the CSS `!important` override
+ * beats the inline style — no React conditional branching, no
+ * SSR->hydration flash, and the dashboard stays visible at scroll
+ * 0 forever. The storybook renders in the React tree on SSR
+ * (`enableScrollFade` defaults to `true`) but is hidden via CSS
+ * below so the brief DOM presence costs no visible flash. */
+@media (max-width: 767px),
+       (pointer: coarse),
+       (prefers-reduced-motion: reduce) {
+  .photoGrade {
+    display: none;
+  }
+
+  .storybookWrap {
+    display: none;
+  }
+
+  .liveStatus,
+  .telemetry {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* D-0043 (rev 3) — per-item override so the stat-strip cascade
+   * (4 motion.span children with their own scroll-driven opacity)
+   * is forced visible on non-scroll surfaces too. Without this rule
+   * the items would resolve to opacity:0 via inline style on phone
+   * / coarse-pointer / reduced-motion, and the strip would be empty
+   * there. With it, the items fall through to opacity:1 alongside
+   * the wrapper override above. */
+  .telemetryItem {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+.photoVignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse at 70% 50%,
+      transparent 0%,
+      transparent 40%,
+      color-mix(in oklab, var(--ll-palm-bark) 18%, transparent) 80%,
+      color-mix(in oklab, var(--ll-palm-bark) 35%, transparent) 100%
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--ll-palm-bark) 78%, transparent) 0%,
+      color-mix(in oklab, var(--ll-palm-bark) 55%, transparent) 28%,
+      color-mix(in oklab, var(--ll-palm-bark) 18%, transparent) 55%,
+      transparent 78%
+    );
+  pointer-events: none;
+}
+
+/* ============================================================
+ * Scrim - dark wash for left-column text legibility.
+ * Independent of the photo vignette so the storybook / photo
+ * transition can run on top of it.
+ * ============================================================ */
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--ll-palm-bark) 25%, transparent) 0%,
+    transparent 18%,
+    transparent 70%,
+    color-mix(in oklab, var(--ll-palm-bark) 55%, transparent) 100%
+  );
+}
+
+/* ============================================================
+ * Storybook wrap - sits between scrim and content.
+ * The HeroStorybookLayer component fades its own internal opacity
+ * from 1 to 0 across scroll progress 0.10-0.45. The wrap itself
+ * is just a positioning layer.
+ * ============================================================ */
+
+.storybookWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ============================================================
+ * Content (left, vertically centered) - always visible.
+ * The headline, subhead, CTAs read identically whether the
+ * visitor enters from the storybook or the photo.
+ * ============================================================ */
+
+.content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(6rem, 10vh, 10rem) clamp(1.25rem, 5vw, 5rem)
+    clamp(6rem, 10vh, 10rem);
+  height: 100%;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .content {
+    max-width: 720px;
+    padding-left: clamp(2rem, 6vw, 6rem);
+    padding-right: clamp(2rem, 6vw, 6rem);
+  }
+}
+
+.eyebrow {
+  display: inline-block;
+  padding: 0.5rem 0.875rem;
+  border: 1px solid color-mix(in oklab, var(--ll-cream) 28%, transparent);
+  border-radius: var(--radius-pill);
+  background: color-mix(in oklab, var(--ll-palm-bark) 45%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--ll-sand-bleached);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  line-height: 1;
+}
+
+.headline {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(2.75rem, 7vw, 5.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  color: var(--ll-cream);
+  margin: 0;
+  text-shadow: 0 2px 24px color-mix(in oklab, var(--ll-palm-bark) 40%, transparent);
+}
+
+.headlineLine {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+}
+
+.wordWindow {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.wordInner {
+  display: inline-block;
+  will-change: transform;
+}
+
+.subhead {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
+  font-weight: 400;
+  line-height: 1.55;
+  color: color-mix(in oklab, var(--ll-cream) 86%, transparent);
+  max-width: 38ch;
+  margin: 0;
+  text-shadow: 0 1px 12px color-mix(in oklab, var(--ll-palm-bark) 40%, transparent);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.875rem;
+  margin-top: 0.75rem;
+}
+
+.magneticWrap {
+  display: inline-flex;
+  will-change: transform;
+}
+
+.ctaArrow {
+  display: inline-block;
+  margin-left: 0.4rem;
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.magneticWrap:hover .ctaArrow {
+  transform: translateX(3px);
+}
+
+/* ============================================================
+ * Live status widget - top right.
+ * The "currently mowing" pill. Real-feeling, pulsing dot.
+ * ============================================================ */
+
+.liveStatus {
+  position: absolute;
+  top: clamp(5.5rem, 8vh, 7rem);
+  right: clamp(1.25rem, 4vw, 3.5rem);
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.875rem 1.125rem;
+  background: color-mix(in oklab, var(--ll-cream) 96%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid color-mix(in oklab, var(--ll-green) 18%, transparent);
+  border-radius: var(--radius-lg);
+  min-width: 220px;
+  max-width: 280px;
+  box-shadow:
+    0 10px 30px color-mix(in oklab, var(--ll-palm-bark) 18%, transparent),
+    0 1px 0 color-mix(in oklab, var(--ll-shell) 60%, transparent) inset;
+  color: var(--ll-palm-bark);
+}
+
+.liveStatusRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.liveStatusDot {
+  position: relative;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.liveStatusDotOn {
+  background: var(--ll-green);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--ll-green) 18%, transparent);
+}
+
+.liveStatusDotSoon {
+  background: var(--ll-sun);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--ll-sun) 22%, transparent);
+}
+
+.liveStatusDotOpen {
+  background: var(--ll-sky);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--ll-sky) 22%, transparent);
+}
+
+.liveStatusPulse {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  color: var(--ll-green);
+  opacity: 0.6;
+  animation: live-pulse 2.2s ease-out infinite;
+}
+
+@keyframes live-pulse {
+  0% { transform: scale(0.85); opacity: 0.7; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+.liveStatusLabel {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ll-clay);
+}
+
+.liveStatusLine1 {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  font-style: italic;
+  line-height: 1.2;
+  color: var(--ll-palm-bark);
+}
+
+.liveStatusLine2 {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: color-mix(in oklab, var(--ll-palm-bark) 72%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+.liveStatusMeta {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: color-mix(in oklab, var(--ll-palm-bark) 50%, transparent);
+  margin-top: 0.2rem;
+}
+
+@media (max-width: 767px) {
+  .liveStatus {
+    top: auto;
+    bottom: 6.5rem;
+    right: 1.25rem;
+    left: 1.25rem;
+    min-width: 0;
+    max-width: none;
+  }
+}
+
+/* ============================================================
+ * Field stamp - bottom left.
+ * Tilted, like a hand-pressed stamp. Always visible on desktop.
+ * ============================================================ */
+
+.stamp {
+  position: absolute;
+  bottom: clamp(2.5rem, 6vh, 5rem);
+  left: clamp(1.25rem, 4vw, 3.5rem);
+  z-index: 4;
+  pointer-events: none;
+}
+
+.stampInner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.95rem;
+  border: 1.5px solid color-mix(in oklab, var(--ll-sand-bleached) 85%, transparent);
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklab, var(--ll-palm-bark) 72%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--ll-sand-bleached);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 4px 12px color-mix(in oklab, var(--ll-palm-bark) 30%, transparent);
+}
+
+.stampDot {
+  opacity: 0.5;
+}
+
+@media (max-width: 767px) {
+  .stamp {
+    bottom: 1.25rem;
+    left: 1.25rem;
+  }
+  .stampInner {
+    font-size: 0.6rem;
+    padding: 0.4rem 0.7rem;
+  }
+}
+
+/* ============================================================
+ * Telemetry stats - bottom right.
+ * A horizontal row of 4 stats. Numbers count up on first view.
+ * Opacity is driven by scroll progress (0.30-0.55) so they fade
+ * in exactly as the photo becomes the resting state.
+ * ============================================================ */
+
+.telemetry {
+  position: absolute;
+  bottom: clamp(2.5rem, 6vh, 5rem);
+  right: clamp(1.25rem, 4vw, 3.5rem);
+  z-index: 4;
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(1.25rem, 2.5vw, 2.25rem);
+  padding: 0.875rem 1.25rem;
+  border-top: 1px solid color-mix(in oklab, var(--ll-sand-bleached) 28%, transparent);
+  pointer-events: none;
+}
+
+.telemetryItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 5.5rem;
+}
+
+.telemetryValue {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1;
+  color: var(--ll-cream);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.telemetryLabel {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  line-height: 1.2;
+  color: color-mix(in oklab, var(--ll-sand-bleached) 70%, transparent);
+}
+
+@media (max-width: 767px) {
+  .telemetry {
+    display: none;
+  }
+}
+
+/* ============================================================
+ * Reduced motion - collapse every animation to its resting state.
+ * The storybook still renders but the cross-fade is instantaneous
+ * via the JS `enableScrollFade=false` flag, which collapses the
+ * section to 100svh in CSS and hides the storybook behind the
+ * photo via `.storybookWrapMobile`. The same flag short-circuits
+ * `.photoWrap` scale (via framer-motion) and `.photoGrade` is
+ * hidden by the `@media (prefers-reduced-motion: reduce)` gate
+ * above so transforms don't cart the still photo around either.
+ * ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .liveStatusPulse {
+    animation: none;
+  }
+  .root {
+    height: 100svh;
+  }
+  .storybookWrapMobile {
+    display: none;
+  }
+  .photoWrap {
+    transform: none;
+  }
+}
+
+/* ============================================================
+ * Mobile collapse - 100svh section, storybook hidden so the
+ * photo + content + live status are the resting state. Battery
+ * budget on phones stays low.
+ * ============================================================ */
+
+@media (max-width: 767px) {
+  .root {
+    height: 100svh;
+  }
+  .content {
+    padding: 8rem 6vw 2rem;
+    padding-top: max(8rem, 18svh);
+  }
+  .headline {
+    font-size: clamp(2rem, 9vw, 3rem);
+    line-height: 1.05;
+    max-width: 100%;
+    text-shadow:
+      0 2px 0 color-mix(in oklab, var(--ll-shell) 30%, transparent),
+      0 0 40px color-mix(in oklab, var(--ll-cream) 55%, transparent);
+  }
+  .subhead {
+    max-width: 100%;
+    font-size: 0.95rem;
+  }
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .storybookWrapMobile {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .content {
+    padding-top: max(6rem, 14svh);
+  }
+  .headline {
+    font-size: clamp(1.75rem, 8.5vw, 2.25rem);
+  }
+  .subhead {
+    margin-bottom: 0.5rem;
+  }
+}

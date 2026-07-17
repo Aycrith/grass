@@ -26,6 +26,20 @@ interface OperatorBioProps {
   className?: string | undefined;
 }
 
+interface ValueCardProps {
+  label: string;
+  body: string;
+}
+
+function ValueCard({ label, body }: ValueCardProps): ReactNode {
+  return (
+    <FadeUp className={styles.valueCard}>
+      <span className={styles.valueLabel}>{label}</span>
+      <p className={styles.valueBody}>{body}</p>
+    </FadeUp>
+  );
+}
+
 export function OperatorBio({ className }: OperatorBioProps): ReactNode {
   return (
     <>
@@ -57,10 +71,7 @@ export function OperatorBio({ className }: OperatorBioProps): ReactNode {
           </header>
           <div className={styles.valuesGrid}>
             {aboutPage.values.map((v) => (
-              <FadeUp key={v.label} className={styles.valueCard}>
-                <span className={styles.valueLabel}>{v.label}</span>
-                <p className={styles.valueBody}>{v.body}</p>
-              </FadeUp>
+              <ValueCard key={v.label} label={v.label} body={v.body} />
             ))}
           </div>
         </div>

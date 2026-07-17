@@ -2,9 +2,11 @@
  * `visual-test` page — mount surface for Playwright component baselines.
  *
  * Renders the current homepage section components in their natural
- * homepage order:
+ * homepage order, plus the demoted library (components that were
+ * cut from the production surface but kept for visual-regression
+ * coverage and potential revival on /about or seasonal campaigns):
  *
- *   #hero-mower-scene  → HeroMowerScene
+ *   #hero              → HeroFieldTelemetry
  *   #service-area-map  → ServiceAreaMap
  *   #operator-strip    → OperatorStrip
  *   #service-bento     → ServiceBento
@@ -13,23 +15,37 @@
  *   #schedule-timeline → ScheduleTimeline
  *   #faq-accordion     → FAQAccordion
  *   #final-cta-banner  → FinalCTABanner
+ *   #hero-cinematic    → HeroCinematic (library fallback)
+ *   #marquee-quote     → MarqueeQuote (library)
+ *   #service-area-stats → ServiceAreaStats (library)
+ *   #editorial-break   → EditorialBreak (library)
  *
- * Each section carries a `data-test-section="<slug>"` attribute so the
- * Playwright locator can target it precisely. No nav, no footer, no
- * inter-section padding — each section is element-scoped for the
- * element-level screenshot (`expect(section).toHaveScreenshot(...)`).
+ * The `data-test-section="<slug>"` attribute is emitted by the
+ * component itself (via its inner <Section>), so the page wrappers
+ * are bare <div> containers — adding the attribute here too would
+ * produce duplicate matches and break the strict-mode locator in
+ * `visual/components.spec.ts`. Wrappers carry only `id` (for
+ * navigation) and `aria-label` (for screen readers).
+ *
+ * No nav, no footer, no inter-section padding — each section is
+ * element-scoped for the element-level screenshot
+ * (`expect(section).toHaveScreenshot(...)`).
  *
  * Not surfaced to users. `layout.tsx` exports `robots: noindex`.
  */
 import {
+  EditorialBreak,
   FAQAccordion,
   FinalCTABanner,
-  HeroMowerScene,
+  HeroCinematic,
+  HeroFieldTelemetry,
+  MarqueeQuote,
   OperatorStrip,
   PricingTiers,
   ProcessSteps,
   ScheduleTimeline,
   ServiceAreaMap,
+  ServiceAreaStats,
   ServiceBento,
 } from '@/components/sections';
 import { hero as heroContent } from '@/lib/content';
@@ -37,74 +53,58 @@ import { hero as heroContent } from '@/lib/content';
 export default function VisualPage() {
   return (
     <main>
-      <section
-        id="hero-mower-scene"
-        data-test-section="hero-mower-scene"
-        aria-label="HeroMowerScene visual baseline"
-      >
-        <HeroMowerScene
+      <div id="hero" aria-label="HeroFieldTelemetry visual baseline">
+        <HeroFieldTelemetry
           eyebrow={heroContent.eyebrow}
           subhead={heroContent.subhead}
           primaryCta={heroContent.primaryCta}
           secondaryCta={heroContent.secondaryCta}
         />
-      </section>
-      <section
-        id="service-area-map"
-        data-test-section="service-area-map"
-        aria-label="ServiceAreaMap visual baseline"
-      >
+      </div>
+      <div id="service-area-map" aria-label="ServiceAreaMap visual baseline">
         <ServiceAreaMap />
-      </section>
-      <section
-        id="operator-strip"
-        data-test-section="operator-strip"
-        aria-label="OperatorStrip visual baseline"
-      >
+      </div>
+      <div id="operator-strip" aria-label="OperatorStrip visual baseline">
         <OperatorStrip />
-      </section>
-      <section
-        id="service-bento"
-        data-test-section="service-bento"
-        aria-label="ServiceBento visual baseline"
-      >
+      </div>
+      <div id="service-bento" aria-label="ServiceBento visual baseline">
         <ServiceBento />
-      </section>
-      <section
-        id="pricing-tiers"
-        data-test-section="pricing-tiers"
-        aria-label="PricingTiers visual baseline"
-      >
+      </div>
+      <div id="pricing-tiers" aria-label="PricingTiers visual baseline">
         <PricingTiers />
-      </section>
-      <section
-        id="process-steps"
-        data-test-section="process-steps"
-        aria-label="ProcessSteps visual baseline"
-      >
+      </div>
+      <div id="process-steps" aria-label="ProcessSteps visual baseline">
         <ProcessSteps />
-      </section>
-      <section
-        id="schedule-timeline"
-        data-test-section="schedule-timeline"
-        aria-label="ScheduleTimeline visual baseline"
-      >
+      </div>
+      <div id="schedule-timeline" aria-label="ScheduleTimeline visual baseline">
         <ScheduleTimeline />
-      </section>
-      <section
-        id="faq-accordion"
-        data-test-section="faq-accordion"
-        aria-label="FAQAccordion visual baseline"
-      >
+      </div>
+      <div id="faq-accordion" aria-label="FAQAccordion visual baseline">
         <FAQAccordion />
-      </section>
-      <section
-        id="final-cta-banner"
-        data-test-section="final-cta-banner"
-        aria-label="FinalCTABanner visual baseline"
-      >
+      </div>
+      <div id="final-cta-banner" aria-label="FinalCTABanner visual baseline">
         <FinalCTABanner />
-      </section>
+      </div>
+      {/* ===========================================================
+       * Library (demoted) — these components were cut from the
+       * production surface in D-0029 / D-0042 but are kept here
+       * so the per-component visual-regression matrix still has
+       * a mount surface. They may return on /about or seasonal
+       * campaigns; if not, drop the corresponding reduced-motion
+       * spec entries from `visual/reduced-motion.spec.ts`.
+       * =========================================================== */}
+      <div id="hero-cinematic-mount" aria-label="HeroCinematic visual baseline (library fallback)">
+        <HeroCinematic id="hero-cinematic" />
+      </div>
+      <div id="marquee-quote" aria-label="MarqueeQuote visual baseline (library)">
+        <MarqueeQuote />
+      </div>
+      <div id="service-area-stats" aria-label="ServiceAreaStats visual baseline (library)">
+        <ServiceAreaStats />
+      </div>
+      <div id="editorial-break" aria-label="EditorialBreak visual baseline (library)">
+        <EditorialBreak />
+      </div>
     </main>
   );
 }

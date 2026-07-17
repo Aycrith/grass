@@ -5,7 +5,7 @@
  * GBP-style NAP block matches schema.org/LandscapingBusiness in layout.
  *
  * Canonical section composition (9 sections, eyebrows 01-09):
- *   HeroCinematic → ServiceAreaMap → OperatorStrip → ServiceBento →
+ *   HeroMowerScene → ServiceAreaMap → OperatorStrip → ServiceBento →
  *   PricingTiers → ProcessSteps → ScheduleTimeline → FAQAccordion →
  *   FinalCTABanner
  *
@@ -30,6 +30,17 @@
  *      OperatorNote + MarqueeQuote to the library (still available for
  *      /about and seasonal campaigns).
  *
+ *   3. **D-XXXX (creative rebrand, 2026-07-17)**: HeroCinematic was
+ *      swapped for HeroMowerScene. The storybook-painted-static-image
+ *      hero felt dated and earned repeated steward pushback. The new
+ *      hero is a hand-authored animated SVG landscape where a small
+ *      lawn mower crosses the scene on scroll, revealing the headline
+ *      in its mowed path. Multiple parallax layers, ambient CSS
+ *      animations (drifting clouds, swaying palms, blooming wildflowers),
+ *      and magnetic CTAs. The same id="hero" anchor is preserved so
+ *      the ConversionRail still works. HeroCinematic is retained in
+ *      the library for /visual-test and as a fallback.
+ *
  * `EditorialBreak` (pretty, non-converting full-bleed image pause) and
  * `ServiceAreaStats` (the "47 / 89 / 18h / 6 yrs" data panel) were
  * also demoted. The two strongest stats from `ServiceAreaStats` were
@@ -53,7 +64,7 @@
 import {
   FAQAccordion,
   FinalCTABanner,
-  HeroCinematic,
+  HeroFieldTelemetry,
   OperatorStrip,
   PricingTiers,
   ProcessSteps,
@@ -61,7 +72,9 @@ import {
   ServiceAreaMap,
   ServiceBento,
 } from '@/components/sections';
+import { ConversionRail } from '@/components/site';
 import { SectionDivider } from '@/components/ui';
+import { hero as heroContent } from '@/lib/content';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -71,8 +84,13 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      {/* 01 — Hero */}
-      <HeroCinematic />
+      {/* 01 — Hero (D-0042: Field Telemetry + WebGL grass field) */}
+      <HeroFieldTelemetry
+        eyebrow={heroContent.eyebrow}
+        subhead={heroContent.subhead}
+        primaryCta={heroContent.primaryCta}
+        secondaryCta={heroContent.secondaryCta}
+      />
       <SectionDivider />
 
       {/* 02 — Coverage check (D-0028: ZIP-or-neighborhood input +
@@ -108,6 +126,12 @@ export default function HomePage() {
 
       {/* 09 — Final CTA (the closer) */}
       <FinalCTABanner />
+
+      {/* D-0037 — sticky conversion rail. Appears once the user
+       * scrolls past the hero, hides when the final CTA is in
+       * view. Single primary "Get a free quote" CTA is always
+       * within reach. */}
+      <ConversionRail heroId="hero" finalCtaId="final-cta" />
     </>
   );
 }

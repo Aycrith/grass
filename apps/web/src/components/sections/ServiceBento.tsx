@@ -36,10 +36,18 @@
  *     paint, no fade-up cascade.
  */
 
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+} from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
+import { FadeUp, useFadeUp } from '@/components/motion';
 import { Section } from '@/components/site';
 import { BUSINESS, PRICING_FLOOR_CENTS } from '@/lib/business';
 import { cn } from '@/lib/cn';
@@ -53,6 +61,11 @@ interface ServiceBentoProps {
 }
 
 type VariantKey = ServiceKey;
+
+const STAGGER_STEP_S = 0.06;
+const STAGGER_INITIAL_S = 0.05;
+
+const MotionLink = motion(Link);
 
 const variantClass: Record<VariantKey, string> = {
   mowing: styles.cardMowing ?? '',
@@ -90,6 +103,66 @@ function formatPrice(key: ServiceKey): { from: string; price: string } {
   }
 }
 
+function TiltCard({
+  children,
+  className,
+  href,
+  ariaLabel,
+  delay = 0,
+}: {
+  children: ReactNode;
+  className?: string;
+  href: string;
+  ariaLabel: string;
+  delay?: number;
+}): ReactNode {
+  const { ref, fadeUpProps } = useFadeUp<HTMLAnchorElement>(delay);
+  const reducedMotion = useReducedMotion();
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const springConfig = { stiffness: 150, damping: 15, mass: 0.1 };
+  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [8, -8]), springConfig);
+  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-8, 8]), springConfig);
+
+  const handleMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (reducedMotion) return;
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    x.set((e.clientX - rect.left) / rect.width - 0.5);
+    y.set((e.clientY - rect.top) / rect.height - 0.5);
+  };
+
+  const handleLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <MotionLink
+      ref={ref}
+      href={href}
+      className={className}
+      aria-label={ariaLabel}
+      onMouseMove={handleMove}
+      onMouseLeave={handleLeave}
+      {...fadeUpProps}
+    >
+      <motion.article
+        className={styles.tiltInner}
+        style={{
+          rotateX: reducedMotion ? 0 : rotateX,
+          rotateY: reducedMotion ? 0 : rotateY,
+          transformStyle: 'preserve-3d',
+        }}
+      >
+        {children}
+      </motion.article>
+    </MotionLink>
+  );
+}
+
 export function ServiceBento({ className }: ServiceBentoProps): ReactNode {
   const ordered: ReadonlyArray<ServiceKey> = [
     'mowing',
@@ -104,48 +177,48 @@ export function ServiceBento({ className }: ServiceBentoProps): ReactNode {
     <Section
       rhythm="loose"
       className={cn(styles.root, className)}
+      data-test-section="service-bento"
       data-hurricane-mode={BUSINESS.hurricaneModeActive ? 'true' : undefined}
     >
       <div className="container">
-        <header className={styles.header}>
+        <FadeUp as="header" className={styles.header}>
           <h2 className={styles.headerHeading}>Six things, done well.</h2>
           <p className={styles.headerSub}>
             I keep the service list short on purpose. Six things, no crew swap, no upsell. If you
             need something not listed, ask. Half of what I do is the stuff nobody else lists.
           </p>
-        </header>
+        </FadeUp>
 
         <div className={styles.grid}>
-          {ordered.map((key) => {
+          {ordered.map((key, i) => {
             const svc = services[key];
             const { from, price } = formatPrice(key);
             return (
-              <Link
+              <TiltCard
                 key={svc.slug}
                 href={`/services/${svc.slug}`}
                 className={cn(styles.card, variantClass[key])}
-                aria-label={`${svc.title}: ${svc.summary}`}
+                ariaLabel={`${svc.title}: ${svc.summary}`}
+                delay={STAGGER_INITIAL_S + i * STAGGER_STEP_S}
               >
-                <article>
-                  <div className={styles.imageWrap}>
-                    <Image
-                      src={svc.imageSlot}
-                      alt={svc.imageAlt}
-                      fill
-                      sizes="(max-width: 980px) 100vw, 50vw"
-                    />
-                  </div>
-                  <div className={styles.body}>
-                    <ServiceBentoIcon service={key} className={styles.icon} />
-                    <h3 className={styles.title}>{svc.title}</h3>
-                    <p className={styles.summary}>{svc.summary}</p>
-                    <p className={styles.price}>
-                      <span className={styles.priceFrom}>{from}</span>
-                      <span>{price}</span>
-                    </p>
-                  </div>
-                </article>
-              </Link>
+                <div className={styles.imageWrap}>
+                  <Image
+                    src={svc.imageSlot}
+                    alt={svc.imageAlt}
+                    fill
+                    sizes="(max-width: 980px) 100vw, 50vw"
+                  />
+                </div>
+                <div className={styles.body}>
+                  <ServiceBentoIcon service={key} className={styles.icon} />
+                  <h3 className={styles.title}>{svc.title}</h3>
+                  <p className={styles.summary}>{svc.summary}</p>
+                  <p className={styles.price}>
+                    <span className={styles.priceFrom}>{from}</span>
+                    <span>{price}</span>
+                  </p>
+                </div>
+              </TiltCard>
             );
           })}
         </div>

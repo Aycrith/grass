@@ -141,12 +141,42 @@
   background: var(--ll-palm-shadow);
   color: var(--ll-sand-bleached);
   border: none;
-  box-shadow: var(--elevation-3);
+  box-shadow:
+    var(--elevation-3),
+    0 0 40px color-mix(in oklab, var(--ll-sun) 18%, transparent);
+  position: relative;
+  overflow: hidden;
+}
+
+.cardFeatured::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--ll-sun) 40%, transparent) 0%,
+    color-mix(in oklab, var(--ll-green) 20%, transparent) 50%,
+    transparent 70%
+  );
+  border-radius: inherit;
+  opacity: 0.35;
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, black 0%, transparent 60%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 60%);
 }
 
 .cardFeatured:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--elevation-4);
+  transform: translateY(-6px);
+  box-shadow:
+    var(--elevation-4),
+    0 0 60px color-mix(in oklab, var(--ll-sun) 28%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cardFeatured,
+  .cardFeatured:hover {
+    box-shadow: var(--elevation-3);
+  }
 }
 
 /* Anchor card gets a more substantial layout to fill the left

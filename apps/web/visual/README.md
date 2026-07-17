@@ -49,10 +49,16 @@ When an intentional visual change lands (CSS token shift, component
 refactor, image swap):
 
 ```bash
-bunx playwright test --update-snapshots
+bun run visual:refresh
 git diff visual/baselines/   # review the diff
 git add visual/baselines/    # commit the updated PNGs
 ```
+
+The CI `visual` job fails with a red `::error::` annotation when
+baselines are stale. That annotation tells the dev to run
+`bun run visual:refresh` locally, review the PNG diffs in their
+editor / the GitHub PR UI, and commit the updated baselines.
+CI never auto-updates baselines — that would mask regressions.
 
 ## Thresholds
 
@@ -90,7 +96,8 @@ the new `components/sections/` library, route baselines regenerate as a
 natural side effect of that change:
 
 ```bash
-bunx playwright test visual/routes.spec.ts -g "<route-slug>" --update-snapshots
+bun run visual:test visual/routes.spec.ts -g "<route-slug>"
+bun run visual:refresh visual/routes.spec.ts -g "<route-slug>"
 ```
 
 The diff IS the change. Review the PNG, commit, push.

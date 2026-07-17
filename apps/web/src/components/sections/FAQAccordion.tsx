@@ -21,6 +21,7 @@
  *     here.
  */
 
+import { FadeUp } from '@/components/motion';
 import { Section } from '@/components/site';
 import { Accordion } from '@/components/ui';
 import { cn } from '@/lib/cn';
@@ -34,18 +35,20 @@ interface FAQAccordionProps {
 
 export function FAQAccordion({ className }: FAQAccordionProps): React.ReactNode {
   return (
-    <Section className={cn(styles.root, className)} id="faq">
+    <Section className={cn(styles.root, className)} id="faq" data-test-section="faq-accordion">
       <div className="container">
-        <header className={styles.header}>
+        <FadeUp as="header" className={styles.header}>
           <h2 className={styles.headerHeading}>{faqHeader.heading}</h2>
           <p className={styles.headerSub}>{faqHeader.subhead}</p>
-        </header>
+        </FadeUp>
 
-        <Accordion
-          id="faq"
-          items={faq.map((f) => ({ q: f.q, a: <p>{f.a}</p> }))}
-          className={styles.accordion}
-        />
+        <FadeUp as="div" className={styles.accordionWrap} delay={0.1}>
+          <Accordion
+            id="faq"
+            items={faq.map((f) => ({ q: f.q, a: <p>{f.a}</p> }))}
+            className={styles.accordion}
+          />
+        </FadeUp>
       </div>
     </Section>
   );

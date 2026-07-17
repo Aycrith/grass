@@ -1,5 +1,5 @@
 /**
- * Root layout — Mission 1 web app.
+ * Root layout - Mission 1 web app.
  *
  * Charter binding: every page is customer-facing, so this is the only place
  * brand NAP (name/address/phone) is rendered in JSON-LD for SEO.
@@ -12,7 +12,7 @@
  * typography.css consumes those variables. No Google Fonts CDN @import.
  *
  * Why JSON-LD lives in <body> and not <head>:
- * Next.js 15 App Router fully manages <head> when `metadata` is exported —
+ * Next.js 15 App Router fully manages <head> when `metadata` is exported -
  * any manual children written into a JSX <head> element can shadow the
  * auto-generated <title>, <meta name="description">, <meta property="og:*">,
  * and twitter:* tags in the prod SSR HTML output. The Lighthouse audit
@@ -23,7 +23,7 @@
  */
 
 import { SiteFooter, SiteHeader } from '@/components/site';
-import { LenisProvider } from '@/components/motion';
+import { LenisProvider, MotionConfig } from '@/components/motion';
 import { BUSINESS } from '@/lib/business';
 import type { Metadata } from 'next';
 import { Fraunces, Inter } from 'next/font/google';
@@ -138,16 +138,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a className="skip-link" href="#main">
           Skip to main content
         </a>
-        {/* WP19 — LenisProvider mounts smooth-scroll so the ParallaxImage
+        {/* WP19 - LenisProvider mounts smooth-scroll so the ParallaxImage
          * in HeroCinematic (and every other scroll-coupled component
          * site-wide) actually sees a non-zero `scrollYProgress`. The
          * provider is gated for prefers-reduced-motion + coarse-pointer +
          * <=768px viewports inside LenisProvider.tsx so mobile and
          * reduce-motion users keep native scroll. */}
         <LenisProvider>
-          <SiteHeader />
-          <main id="main">{children}</main>
-          <SiteFooter />
+          <MotionConfig>
+            <SiteHeader />
+            <main id="main">{children}</main>
+            <SiteFooter />
+          </MotionConfig>
         </LenisProvider>
       </body>
     </html>

@@ -36,6 +36,11 @@
   --ll-palm-light: #6b9b7e; /* subdued green; tag bg */
   --ll-gulf: #2e6b8c; /* navy; secondary headings */
   --ll-sun: #e8b65a; /* warm gold; ribbon / badge */
+  /* Derived sun tints — generated from the base sun + cream so the
+   * hand-illustrated hero sky stays in sync with the brand palette. */
+  --ll-sun-pale: color-mix(in oklab, var(--ll-sun) 30%, var(--ll-cream)); /* very light peach; hero sky */
+  --ll-sun-light: color-mix(in oklab, var(--ll-sun) 50%, var(--ll-cream)); /* light warm yellow; hero sky */
+  --ll-sun-deep: color-mix(in oklab, var(--ll-sun) 70%, var(--ll-cream)); /* deeper warm orange; hero sky */
   --ll-clay: #b5651d; /* brick accent; emphasis */
   --ll-sand-bleached: #f4e8d0; /* warm bone; hero / section bg */
   --ll-shell: #ffffff; /* pure white; card bg */

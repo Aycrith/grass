@@ -26,7 +26,14 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import {
+  type ElementType,
+  type ReactNode,
+  type RefObject,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { cn } from '@/lib/cn';
 import { DURATION, EASE, STAGGER } from '@/lib/motion';
@@ -116,27 +123,74 @@ interface FadeUpProps extends Omit<MotionProps, 'initial' | 'animate' | 'variant
 }
 
 export function FadeUp({ children, className, delay = 0, as = 'div', ...rest }: FadeUpProps) {
-  // The dynamic `as` makes a single ref type untenable; the motion component
-  // itself is happy with any HTMLElement, so we widen the ref type.
-  const ref = useRef<HTMLElement | null>(null);
-  const isInView = useInView(ref, { once: true, margin: '-10% 0px' });
-  const reduced = useReducedMotion();
-
-  const Component = motion[as] as React.ElementType;
+  const { ref, fadeUpProps } = useFadeUp(delay);
+  // The dynamic `as` key produces a union type that TypeScript treats as
+  // not a JSX element. Cast to ElementType so we can render it uniformly.
+  const Component = motion[as] as ElementType;
 
   return (
     <Component
       ref={ref}
       className={cn(className)}
-      variants={fadeUpVariants}
-      initial="hidden"
-      animate={isInView ? 'visible' : 'hidden'}
-      transition={{ duration: reduced ? 0.01 : DURATION.base, delay: reduced ? 0 : delay }}
+      {...fadeUpProps}
       {...rest}
     >
       {children}
     </Component>
   );
+}
+
+/* ============================================================
+ * useFadeUp — headless companion of FadeUp.
+ *
+ * Returns a `ref` plus a `fadeUpProps` bag designed to spread
+ * onto a `motion(...)` element (e.g., `motion(Link)`) so the
+ * animation lives on the card root with no extra wrapper.
+ *
+ * Honors `prefers-reduced-motion` via the same `useReducedMotion`
+ * gate FadeUp uses, and triggers on the same `-10% 0px` viewport
+ * margin. The `delay` arg drives the stagger cascade.
+ *
+ * Usage:
+ * ```tsx
+ * const { ref, fadeUpProps } = useFadeUp(delay);
+ * <MotionLink ref={ref} {...fadeUpProps}>...</MotionLink>
+ * ```
+ * ============================================================ */
+
+export interface UseFadeUpResult<E extends HTMLElement = HTMLElement> {
+  ref: RefObject<E | null>;
+  fadeUpProps: {
+    variants: Variants;
+    initial: 'hidden';
+    animate: 'hidden' | 'visible';
+    transition: { duration: number; delay: number };
+  };
+}
+
+export function useFadeUp<E extends HTMLElement = HTMLElement>(
+  delay = 0
+): UseFadeUpResult<E> {
+  // The dynamic ref type — consumers attach this to any motion element
+  // (Link, article, div, etc.) and framer-motion handles the rest. Generic
+  // so `ref` narrows to the consumer's element type (HTMLAnchorElement for
+  // motion(Link), HTMLElement for motion.div, etc.) and stays assignable.
+  const ref = useRef<E | null>(null);
+  const isInView = useInView(ref, { once: true, margin: '-10% 0px' });
+  const reduced = useReducedMotion();
+
+  return {
+    ref,
+    fadeUpProps: {
+      variants: fadeUpVariants,
+      initial: 'hidden',
+      animate: isInView ? 'visible' : 'hidden',
+      transition: {
+        duration: reduced ? 0.01 : DURATION.base,
+        delay: reduced ? 0 : delay,
+      },
+    },
+  };
 }
 
 /* ============================================================
@@ -167,7 +221,7 @@ export function StaggerGroup({
   const ref = useRef<HTMLElement | null>(null);
   const isInView = useInView(ref, { once: true, margin: '-10% 0px' });
   const reduced = useReducedMotion();
-  const Component = motion[as] as React.ElementType;
+  const Component = motion[as] as ElementType;
 
   const visible = trigger === 'inView' ? isInView || reduced : true;
 

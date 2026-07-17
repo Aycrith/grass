@@ -68,6 +68,24 @@ const RATES: ReadonlyArray<{ label: string; value: string }> = [
   },
 ];
 
+interface Discount {
+  label: string;
+  body: string;
+}
+
+interface DiscountCardProps {
+  discount: Discount;
+}
+
+function DiscountCard({ discount }: DiscountCardProps): ReactNode {
+  return (
+    <FadeUp className={styles.discountCard}>
+      <span className={styles.discountLabel}>{discount.label}</span>
+      <p className={styles.discountBody}>{discount.body}</p>
+    </FadeUp>
+  );
+}
+
 export function PricingComparisonTable({ className }: PricingComparisonTableProps): ReactNode {
   return (
     <>
@@ -112,10 +130,7 @@ export function PricingComparisonTable({ className }: PricingComparisonTableProp
           </header>
           <div className={styles.discountGrid}>
             {pricingPage.discounts.map((d) => (
-              <FadeUp key={d.label} className={styles.discountCard}>
-                <span className={styles.discountLabel}>{d.label}</span>
-                <p className={styles.discountBody}>{d.body}</p>
-              </FadeUp>
+              <DiscountCard key={d.label} discount={d} />
             ))}
           </div>
         </div>

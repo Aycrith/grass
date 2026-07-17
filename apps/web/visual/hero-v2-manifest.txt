@@ -1,0 +1,4 @@
+hero-v2-desktop-top.png
+hero-v2-desktop-mid.png
+hero-v2-mobile-top.png
+hero-v2-mobile-mid.png

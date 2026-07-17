@@ -82,13 +82,13 @@
   overflow: hidden;
   text-decoration: none;
   color: inherit;
-  transition: transform var(--motion-duration-base) var(--motion-easing-default), box-shadow
-    var(--motion-duration-base) var(--motion-easing-default);
+  transition: box-shadow var(--motion-duration-base) var(--motion-easing-default);
+  transform-style: preserve-3d;
+  perspective: 1000px;
 }
 
 .card:hover,
 .card:focus-visible {
-  transform: translateY(-4px);
   box-shadow: var(--elevation-3);
   text-decoration: none;
 }
@@ -96,6 +96,25 @@
 .card:focus-visible {
   outline: 2px solid var(--ll-clay);
   outline-offset: 2px;
+}
+
+.tiltInner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.card:hover .tiltInner,
+.card:focus-visible .tiltInner {
+  transform: translateZ(12px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card:hover .tiltInner,
+  .card:focus-visible .tiltInner {
+    transform: none;
+  }
 }
 
 /* ---------- Card sizing ---------- */

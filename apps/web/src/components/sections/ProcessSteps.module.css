@@ -57,9 +57,8 @@
 
 /* Faint connector line on desktop — dashed 2px clay ties visually
    to the ServiceAreaMap dashed grid lines so the whole page reads
-   as one coordinate system. */
-.grid::before {
-  content: "";
+   as one coordinate system. Animated via Framer Motion scaleX. */
+.connector {
   position: absolute;
   top: 36px;
   left: 56px;
@@ -71,7 +70,7 @@
 }
 
 @media (max-width: 900px) {
-  .grid::before {
+  .connector {
     display: none;
   }
 }

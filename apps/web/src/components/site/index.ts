@@ -13,3 +13,4 @@ export { Eyebrow } from './Eyebrow';
 export { SiteHeader } from './SiteHeader';
 export { SiteFooter } from './SiteFooter';
 export { HurricaneBanner } from './HurricaneBanner';
+export { ConversionRail } from './ConversionRail';

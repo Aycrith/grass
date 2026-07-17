@@ -19,14 +19,14 @@
  * working east to Seminole.
  */
 
-import Image from 'next/image';
-import Link from 'next/link';
 import type { Metadata } from 'next';
 
+import { FadeUp } from '@/components/motion';
 import { Eyebrow } from '@/components/site';
 import { BUSINESS } from '@/lib/business';
 import { areaDetail, areaImages } from '@/lib/content';
 
+import { AreaCard } from './AreaCard';
 import styles from './areas.module.css';
 
 export const metadata: Metadata = {
@@ -50,58 +50,42 @@ const DISPLAY_ORDER: ReadonlyArray<string> = [
   '33778',
 ];
 
+const STAGGER_STEP_S = 0.06;
+
 export default function AreasIndexPage() {
   return (
     <main className={styles.root}>
       <section className={styles.hero}>
         <div className="container">
-          <Eyebrow tone="default" className={styles.eyebrow}>
-            01 — Service areas
-          </Eyebrow>
-          <h1 className={styles.title}>Six Pinellas neighborhoods.</h1>
-          <p className={styles.tagline}>
-            Home base is 33771, the heart of Largo. The route reaches into the five adjacent ZIPs
-            on a consistent weekly schedule. Click any neighborhood for what mows like there,
-            what I do about it, and the local questions that come up at quote-time.
-          </p>
+          <FadeUp>
+            <Eyebrow tone="default" className={styles.eyebrow}>
+              01 — Service areas
+            </Eyebrow>
+            <h1 className={styles.title}>Six Pinellas neighborhoods.</h1>
+            <p className={styles.tagline}>
+              Home base is 33771, the heart of Largo. The route reaches into the five adjacent ZIPs
+              on a consistent weekly schedule. Click any neighborhood for what mows like there,
+              what I do about it, and the local questions that come up at quote-time.
+            </p>
+          </FadeUp>
         </div>
       </section>
 
       <section className={styles.directory}>
         <div className="container">
           <ul className={styles.grid}>
-            {DISPLAY_ORDER.map((zip) => {
+            {DISPLAY_ORDER.map((zip, i) => {
               const detail = areaDetail[zip];
               if (!detail) return null;
               const imageSlot = areaImages[zip];
               return (
                 <li key={zip} className={styles.cardLi}>
-                  <Link href={`/areas/${zip}`} className={styles.card} aria-label={detail.name}>
-                    <article>
-                      <div className={styles.imageWrap}>
-                        {imageSlot && (
-                          <Image
-                            src={imageSlot}
-                            alt={`Painted ${detail.name} neighborhood at golden hour`}
-                            fill
-                            sizes="(max-width: 900px) 100vw, 50vw"
-                            className={styles.image}
-                          />
-                        )}
-                        <span className={styles.zipPill}>ZIP {zip}</span>
-                      </div>
-                      <div className={styles.body}>
-                        <h2 className={styles.cardTitle}>{detail.name}</h2>
-                        <p className={styles.cardTeaser}>
-                          {detail.tagline.split('.')[0]}.
-                        </p>
-                        <span className={styles.cardLink} aria-hidden="true">
-                          View neighborhood details
-                          <span className={styles.cardLinkArrow}>→</span>
-                        </span>
-                      </div>
-                    </article>
-                  </Link>
+                  <AreaCard
+                    zip={zip}
+                    detail={detail}
+                    imageSlot={imageSlot}
+                    delay={STAGGER_STEP_S * i}
+                  />
                 </li>
               );
             })}

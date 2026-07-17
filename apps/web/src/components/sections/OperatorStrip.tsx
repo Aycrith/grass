@@ -34,12 +34,17 @@
  *     The portrait keeps its D-0020 corner stamp; the corner
  *     stamp is a "corner ornament" (allowed) not "scroll-driven
  *     motion" (gated).
- *   - Removed FadeUp wrappers around the portrait and the
- *     "tools I run" metabar. Same below-the-fold static rule.
  *   - The image now uses object-position so the head sits
  *     inside the panel without a 6% bleed; the old bleed was
  *     sized to the ParallaxImage motion range, not the static
  *     layout.
+ *
+ * D-0039 — scroll-driven reveal pass: the portrait, bio, and
+ * equipment metabar now fade up with a staggered cascade when
+ * the section enters the viewport. This is an intentional
+ * relaxation of the D-0030 below-the-fold motion gate; the
+ * reveals are subtle (24px fade-up, once only) and respect
+ * prefers-reduced-motion via the FadeUp component.
  *
  * Copy flows from `lib/content.ts → operator` so the steward
  * can edit it without touching this component.
@@ -51,6 +56,7 @@
 import Image from 'next/image';
 import type { ReactNode } from 'react';
 
+import { FadeUp } from '@/components/motion';
 import { Section } from '@/components/site';
 import { Illustration } from '@/components/ui';
 import { cn } from '@/lib/cn';
@@ -62,12 +68,15 @@ interface OperatorStripProps {
   className?: string;
 }
 
+// Stagger step for the three-column scroll reveal (portrait → bio → equipment).
+const STAGGER_STEP_S = 0.12;
+
 export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
   return (
-    <Section rhythm="loose" className={cn(styles.root, className)}>
+    <Section rhythm="loose" className={cn(styles.root, className)} data-test-section="operator-strip">
       <div className="container">
         <div className={styles.inner}>
-          <div className={styles.portrait}>
+          <FadeUp as="div" className={styles.portrait} delay={STAGGER_STEP_S * 0}>
             <div className={styles.portraitInner}>
               <Image
                 src="/operator/portrait.webp"
@@ -91,9 +100,9 @@ export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
                 />
               </span>
             </div>
-          </div>
+          </FadeUp>
 
-          <div className={styles.bio}>
+          <FadeUp as="div" className={styles.bio} delay={STAGGER_STEP_S * 1}>
             <h2 className={styles.bioHeading}>
               Hi, I'm <em>{operator.name}</em>.
             </h2>
@@ -135,9 +144,9 @@ export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
               />
               <p className={styles.bioSignatureCity}>Largo · Florida</p>
             </div>
-          </div>
+          </FadeUp>
 
-          <div className={styles.equipment}>
+          <FadeUp as="div" className={styles.equipment} delay={STAGGER_STEP_S * 2}>
             <p className={styles.equipmentTitle}>What I run</p>
             <ul className={styles.toolBar} aria-label="Equipment list">
               {operator.equipment.map((item) => (
@@ -147,7 +156,7 @@ export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
                 </li>
               ))}
             </ul>
-          </div>
+          </FadeUp>
         </div>
       </div>
     </Section>

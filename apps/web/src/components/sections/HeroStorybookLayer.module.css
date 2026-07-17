@@ -1,0 +1,403 @@
+/* ============================================================
+ * HeroStorybookLayer - SVG storybook scenery.
+ *
+ * The wrapping <div class="layer"> is positioned by the parent
+ * (HeroFieldTelemetry) at the top of the viewport. Inside, the
+ * layers stack with z-index so the sky is at the back, the near
+ * grass is at the front, and the mower sits between the mid layer
+ * (ranches + palms) and the near layer (foreground grass tufts).
+ * ============================================================ */
+
+.layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* ============================================================
+ * Sky background - fixed to viewport, subtle horizontal drift
+ * driven by parent scroll progress.
+ * ============================================================ */
+
+.skyWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.sky {
+  position: absolute;
+  width: 105%;
+  height: 105%;
+  left: -2.5%;
+  top: -2.5%;
+}
+
+/* ============================================================
+ * Drifting clouds - pure CSS, GPU-friendly. Positioned across
+ * the upper half of the viewport.
+ * ============================================================ */
+
+.clouds {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.cloud {
+  position: absolute;
+  background: color-mix(in oklab, var(--ll-shell) 62%, transparent);
+  border-radius: 100px;
+  filter: blur(2px);
+  animation: drift 60s linear infinite;
+}
+
+.cloud::before,
+.cloud::after {
+  content: "";
+  position: absolute;
+  background: inherit;
+  border-radius: 50%;
+}
+
+.cloud1 {
+  width: 160px;
+  height: 32px;
+  top: 18%;
+  left: -10%;
+  animation-duration: 80s;
+  animation-delay: -10s;
+}
+.cloud1::before {
+  width: 80px;
+  height: 80px;
+  top: -32px;
+  left: 24px;
+}
+.cloud1::after {
+  width: 60px;
+  height: 60px;
+  top: -22px;
+  left: 80px;
+}
+
+.cloud2 {
+  width: 120px;
+  height: 26px;
+  top: 32%;
+  left: -10%;
+  animation-duration: 95s;
+  animation-delay: -45s;
+  opacity: 0.7;
+}
+.cloud2::before {
+  width: 56px;
+  height: 56px;
+  top: -22px;
+  left: 18px;
+}
+.cloud2::after {
+  width: 40px;
+  height: 40px;
+  top: -14px;
+  left: 60px;
+}
+
+.cloud3 {
+  width: 100px;
+  height: 22px;
+  top: 10%;
+  left: -10%;
+  animation-duration: 110s;
+  animation-delay: -70s;
+  opacity: 0.5;
+}
+.cloud3::before {
+  width: 48px;
+  height: 48px;
+  top: -18px;
+  left: 14px;
+}
+
+.cloud4 {
+  width: 140px;
+  height: 28px;
+  top: 24%;
+  left: -10%;
+  animation-duration: 70s;
+  animation-delay: -25s;
+  opacity: 0.6;
+}
+.cloud4::before {
+  width: 64px;
+  height: 64px;
+  top: -26px;
+  left: 20px;
+}
+.cloud4::after {
+  width: 48px;
+  height: 48px;
+  top: -18px;
+  left: 70px;
+}
+
+@keyframes drift {
+  0% { transform: translateX(-20vw); }
+  100% { transform: translateX(120vw); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cloud {
+    animation-duration: 240s;
+  }
+}
+
+/* ============================================================
+ * Parallax layers
+ * ============================================================ */
+
+.farLayer,
+.midLayer,
+.nearLayer {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: 0;
+  height: 100%;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.farLayer { z-index: 3; }
+.midLayer { z-index: 4; }
+.nearLayer { z-index: 7; }
+
+.layerSvg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ============================================================
+ * The mower
+ * ============================================================ */
+
+.mower {
+  position: absolute;
+  bottom: 6%;
+  z-index: 6;
+  pointer-events: none;
+  filter: drop-shadow(
+    0 8px 12px color-mix(in oklab, var(--ll-palm-bark) 30%, transparent)
+  );
+  transform: translateX(-50%);
+  width: 160px;
+  height: 96px;
+}
+
+.mower svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.mowedPath {
+  position: absolute;
+  top: 78%;
+  right: 60%;
+  height: 6px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    color-mix(in oklab, var(--ll-sun) 60%, transparent) 20%,
+    color-mix(in oklab, var(--ll-sand) 85%, transparent) 100%
+  );
+  border-radius: 999px;
+  pointer-events: none;
+  filter: blur(2px);
+  transform-origin: right center;
+  transform: translateY(-50%);
+}
+
+.mowerTrail {
+  position: absolute;
+  bottom: 4px;
+  right: 78%;
+  width: 360px;
+  height: 8px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in oklab, var(--ll-sun) 50%, transparent) 40%,
+    color-mix(in oklab, var(--ll-sand) 85%, transparent) 100%
+  );
+  border-radius: 999px;
+  pointer-events: none;
+  filter: blur(3px);
+}
+
+.birds {
+  animation: birdsDrift 45s linear infinite;
+}
+
+@keyframes birdsDrift {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(40px); }
+}
+
+/* ============================================================
+ * Near layer - grass with bloom + sway
+ * ============================================================ */
+
+.nearInner {
+  position: absolute;
+  inset: 0;
+}
+
+.blades {
+  animation: grow 1.2s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  transform-origin: bottom;
+}
+
+.wildflowers circle {
+  transform-origin: center;
+  animation: bloom 1.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.wildflowers g:nth-child(1) circle { animation-delay: 0.2s; }
+.wildflowers g:nth-child(2) circle { animation-delay: 0.4s; }
+.wildflowers g:nth-child(3) circle { animation-delay: 0.6s; }
+.wildflowers g:nth-child(4) circle { animation-delay: 0.8s; }
+.wildflowers g:nth-child(5) circle { animation-delay: 1.0s; }
+.wildflowers g:nth-child(6) circle { animation-delay: 1.2s; }
+
+@keyframes grow {
+  from { transform: scaleY(0); opacity: 0; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+
+@keyframes bloom {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blades,
+  .wildflowers circle {
+    animation: none;
+  }
+}
+
+/* ============================================================
+ * Sway - palm fronds wave gently
+ * ============================================================ */
+
+.swaySlow {
+  transform-origin: bottom center;
+  animation: sway 8s ease-in-out infinite;
+}
+
+@keyframes sway {
+  0%, 100% { transform: rotate(-1.5deg); }
+  50% { transform: rotate(1.5deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .swaySlow {
+    animation: none;
+  }
+}
+
+/* ============================================================
+ * Scroll hint
+ * ============================================================ */
+
+.scrollHint {
+  position: absolute;
+  bottom: 2.4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.scrollHintLabel {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ll-clay);
+}
+
+.scrollHintTrack {
+  position: relative;
+  width: 120px;
+  height: 2px;
+  background: color-mix(in oklab, var(--ll-palm-bark) 15%, transparent);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.scrollHintDot {
+  position: absolute;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  background: var(--ll-clay);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--ll-clay) 15%, transparent);
+}
+
+.scrollHintArrow {
+  color: var(--ll-clay);
+  animation: scrollHintBounce 1.6s ease-in-out infinite;
+}
+
+@keyframes scrollHintBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.8; }
+  50% { transform: translateY(6px); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scrollHintArrow {
+    animation: none;
+  }
+}
+
+/* ============================================================
+ * Mobile collapse - slow ambient animations to save battery.
+ * The scroll-driven cross-fade is handled by the parent so the
+ * storybook still appears on first paint but fades out faster.
+ * ============================================================ */
+
+@media (max-width: 768px) {
+  .swaySlow {
+    animation-duration: 12s;
+  }
+  .cloud {
+    animation-duration: 140s;
+  }
+  .mower {
+    bottom: 18%;
+  }
+  .scrollHint {
+    bottom: 1.4rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .scrollHint {
+    bottom: 1rem;
+  }
+}

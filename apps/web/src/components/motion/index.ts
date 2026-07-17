@@ -17,6 +17,8 @@ export {
   scaleInVariants,
   wordRevealVariants,
   staggerContainerVariants,
+  useFadeUp,
+  type UseFadeUpResult,
 } from './variants';
 
 export { LenisProvider } from './LenisProvider';
