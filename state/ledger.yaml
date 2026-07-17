@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 — D-0019 typography & padding refresh)
+# Last updated: 2026-07-17 (Day 24 — D-0039 visual baseline refresh, card-root-collapse + useFadeUp wave)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-15 (Day 22 — D-0025 OSM-based Pinellas map + browser error fixes)
+# Last updated: 2026-07-17 (Day 24 — D-0039 visual baseline refresh, card-root-collapse + useFadeUp wave)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -536,6 +536,83 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-17"
+    day: 24
+    change: >
+      D-0039 — Refresh 6 desktop Playwright baselines (the visual
+      delta from the card-root-collapse + useFadeUp wave). The
+      prior Playwright regression pass surfaced 6 failing desktop
+      baselines (`home`, `pricing`, `quote`, `about`, `contact`,
+      `review`) whose committed PNGs pre-dated the earlier section
+      refactors and so were no longer the contract — every diff
+      was the visual footprint of a refactor whose baseline
+      wasn't refreshed in lockstep, not an unintended regression.
+      Six card extractions + one shared hook caused the drift
+      (each is named in this ledger under D-0036 / D-0038 / D-0030
+      exception): (1) `TiltCard` extraction in `ServiceBento`
+      (card-root-collapse pattern: the anchor itself is now the
+      motion element, no `FadeUp` wrapper). (2) `AreaCard`
+      extraction in `apps/web/src/app/areas/AreaCard.tsx`. (3)
+      `ServiceDirectoryCard` extraction in
+      `apps/web/src/components/sections/ServiceDirectory.tsx`.
+      (4) `PricingTierCard` extraction in `PricingTiers`. (5)
+      `DiscountCard` extraction in `PricingComparisonTable`. (6)
+      `ValueCard` extraction in `OperatorBio`. (7) Shared
+      `useFadeUp<E extends HTMLElement>(delay)` hook in
+      `apps/web/src/components/motion/variants.tsx`
+      (`TiltCard` + `AreaCard` + `ServiceDirectoryCard` all
+      consume the same fade-up animation logic now; the hook
+      returns a `{ ref, fadeUpProps }` pair that consumers spread
+      onto `motion(Link)` with the narrowed ref type).      Files changed (this ledger commit only): the 6 refreshed
+      PNGs committed to lock the new contract —
+      `apps/web/visual/baselines/home-chromium-desktop.png`,
+      `apps/web/visual/baselines/pricing-chromium-desktop.png`,
+      `apps/web/visual/baselines/quote-chromium-desktop.png`,
+      `apps/web/visual/baselines/about-chromium-desktop.png`,
+      `apps/web/visual/baselines/contact-chromium-desktop.png`,
+      `apps/web/visual/baselines/review-chromium-desktop.png`;
+      `state/ledger.yaml` (this entry). Validation: regression
+      pass (no `--update-snapshots`) confirms all 6 desktop
+      routes pass cleanly; mobile baselines (all 14 routes)
+      were refreshed in a prior turn; the 8 other desktop routes
+      (`services`, `services-mowing`, `areas`,
+      `areas-33756/71/73/74/78`) were refreshed even earlier.
+      Future prevention: the new CI gate in
+      `.github/workflows/ci.yml` (visual job) emits a red
+      `::error title=Visual baselines stale::` annotation when
+      Playwright fails, pointing the dev at `bun run
+      visual:refresh` from `apps/web/` + the artifact path for
+      diff review. CI never auto-updates baselines (that would
+      mask regressions). Acceptance: build green, charter 3/3,
+      0 new typecheck errors (the 8 pre-existing TS6133 errors
+      in `visual/` specs are unrelated to this commit).
+      Steward review: `git diff` against the 6 PNGs (listed
+      above in `Files changed`) side-by-side in the PR UI
+      against the prior commits; the diffs should map 1:1 onto
+      the card collapses named above (no surprise surface
+      changes).
+    by: "Mavis (orchestrator, 2026-07-17)"
+
+  - date: "2026-07-17"
+    day: 24
+    change: >
+      D-0030 exception — below-the-fold scroll-driven reveals.
+      The original D-0030 motion gate restricted fade-up motion to
+      above-the-fold sections (Hero + Coverage Check). This wave
+      extends the same FadeUp scroll-reveal pattern to all remaining
+      below-fold landing-page sections for a consistent page rhythm:
+      ServiceBento (header + staggered cards), PricingTiers (header +
+      ornament + staggered tier cards), FAQAccordion (header +
+      accordion), OperatorStrip (portrait + bio + equipment metabar),
+      and FinalCTABanner (inner content). Each reveal uses the shared
+      FadeUp component (useInView + useReducedMotion) so animations
+      are gated by prefers-reduced-motion and fire only once. Stagger
+      timing is driven by section-level constants rather than magic
+      numbers. The exception is recorded here so future stewards know
+      the convention was intentionally relaxed. Build green, charter
+      3/3, 0 new typecheck errors.
+    by: "Mavis (orchestrator, 2026-07-17)"
+
   - date: "2026-07-16"
     day: 23
     change: >
@@ -641,6 +718,199 @@ changelog:
       are now [Largo Lawn, Services, Pricing, About, Free quote].
       Build green, charter 3/3, 0 new typecheck errors. Visual
       captures at audit/d0033-*.png.
+    by: "Mavis (orchestrator, 2026-07-16)"
+
+  - date: "2026-07-16"
+    day: 23
+    change: >
+      D-0038 — Em-dash ban + jargon scrub + Stitch design export.
+      Steward feedback on D-0036: "'mower window' is an
+      unintuitive concept" and "use skills to ensure you are
+      following a workflow for design like claude hyperframe or
+      stitch design taste." Applied the design-taste-frontend
+      skill workflow (brief inference, dial set 6/5/3 for
+      "streamlined and refined", Pre-Flight Check audit).
+      Concrete changes: (1) Em-dash ban enforced: zero `—` or
+      `–` in visible text. Replaced all en-dashes in time
+      ranges with " to " ("8:00 AM to 11:30 AM" not "8:00 AM
+      – 11:30 AM"). Used Python regex sweep on content.ts to
+      fix all em-dashes in user-visible strings while
+      preserving em-dashes in code comments. (2) Jargon
+      scrub: "MOWER WINDOW" label on the today card and "ETA"
+      label on day cards and resolver hit panel all replaced
+      with a clock pictogram + time-only display. The time is
+      the message. (3) Resolver subhead: "I'll show you the
+      day, the window, and lock in a free quote" → "I'll show
+      you the day, the time, and lock in a free quote". (4)
+      Today card idle message: "Outside the ETA window. 8:00
+      AM - 11:30 AM is when the mower's on the road" →
+      "Mower runs 8:00 AM to 11:30 AM. Catch me on the next
+      route." (5) Sunday note em-dash removed: "No outdoor
+      power equipment - HOA noise rules in 33771." (6)
+      Today card layout: 2-column grid → single-column flow
+      for clearer top-to-bottom reading. Mower illustration
+      shrunk from 9rem to 5.5rem, hidden on viewports < 480px.
+      (7) Italic descender clearance: added 2px padding-bottom
+      on the today-card time display (the Fraunces italic
+      "Saturday" / "8:00 AM" have descenders that could clip
+      at line-height 1.1). (8) Stitch design export: created
+      /stitch-prompt-schedule-section.md (16KB) using the
+      enhance-prompt skill. The file contains: a one-line
+      design read, the full design system (platform, theme,
+      brand context, 14 brand-locked and Pinellas-evocative
+      colors with hex values, typography stack, type scale,
+      spacing, radius, motion language), 5 page-structure
+      sections with detailed component specs, 14 anti-patterns
+      (the design-taste-frontend bans), dark mode note, mobile
+      collapse rules, accessibility rules, reduced motion
+      behavior, real assets list, and Stitch tips. The user
+      can copy this into Stitch as a prompt, or use it to
+      import the design direction back into Stitch for a
+      hand-drawn or higher-fidelity revision. The file also
+      includes a warning at the top that the prompt itself
+      contains no em-dashes (per the same design system ban)
+      and instructs the user to scan the Stitch output for
+      any auto-formatted `—` or `–` characters. 4 captures at
+      audit/d0038-*.png. Charter 3/3, build green, 0 new
+      typecheck errors.
+    by: "Mavis (orchestrator, 2026-07-16)"
+
+  - date: "2026-07-16"
+    day: 23
+    change: >
+      D-0037 — Sticky conversion rail (conversion-first principle
+      applied site-wide). Steward feedback on D-0035: "use
+      design and animations to guardrail and prompt with
+      engagement/animations to direct the user through
+      engagement to funnel/flow their attention toward setting
+      an appointment — this applies as a general underlining
+      principal for all components on the landing page body."
+      Built a new shared `<ConversionRail>` component
+      (apps/web/src/components/site/ConversionRail.tsx +
+      .module.css) that anchors a single sun-colored "Get a free
+      quote" CTA at the bottom of the viewport. Behavior:
+      (1) Hidden while the hero is in view (no duplication of
+      the hero CTA); (2) Slides up 240ms ease-out as soon as
+      the hero scrolls out; (3) Hides again when the final
+      CTA enters the viewport (no duplication of the closer).
+      IntersectionObserver-driven, no scroll listeners.
+      Desktop: bottom-right pill with "Ready when you are."
+      microcopy. Mobile: full-width band at the bottom with
+      "See service area" alt link. Reduced motion: instant,
+      no transition. Mounted once on the landing page
+      (apps/web/src/app/page.tsx). Required adding
+      `id="hero"` to HeroCinematic and `id="final-cta"` to
+      FinalCTABanner so the rail can track them. The rail
+      is the single persistent conversion path the user
+      always has within reach — the rest of the page can
+      stay focused on its job (bio, process, FAQ) without
+      each section needing a forced CTA. Charter 3/3, build
+      green, 0 new typecheck errors. Steward review:
+      audit/d0037-desktop-{hero,mid,schedule,final-cta}.png
+      vs the same scenes before the rail.
+    by: "Mavis (orchestrator, 2026-07-16)"
+
+  - date: "2026-07-16"
+    day: 23
+    change: >
+      D-0036 — ScheduleTimeline conversion-first rebuild.
+      Continuation of D-0035 per the same steward brief. The
+      static v1 still had information but no funnel. Every
+      interactive moment now pushes toward /quote. Specific
+      changes: (1) Resolver hit panel ends with a primary
+      "Lock in {day} →" CTA in sun color, routes to
+      /quote?zip={zip}&day={Day}. Hit state also has a 3s
+      breathing pulse on the CTA container (gated by reduced-
+      motion). (2) Today card has a primary "Book this mow →"
+      CTA at the bottom in sun color, routes to /quote?zip=
+      {firstZip}&day={today}. Today card gets a 1.2s one-time
+      clay-bloom on scroll-into-view (useInView + keyframe).
+      (3) Each day card in the week strip has a "Book {Day} →"
+      mini-CTA at the bottom, routes to /quote?zip={firstZip}&
+      day={Day}. (4) Month calendar collapsed behind a
+      "See full month / Hide month" toggle. Reference info;
+      not conversion-driving. (5) Subscribe CTA de-emphasized
+      — small ghost variant, hairline border-top separator,
+      not competing with the primary path. Animations
+      (Framer Motion): (a) Scroll-reveal stagger on the 7
+      day cards (fade + 12px up, 70ms stagger, whileInView
+      with once: true). (b) Resolver result spring slide-in
+      on submit. (c) Today card attention bloom on entry.
+      (d) Primary CTA arrow nudges 2px on hover. (e) Day
+      card lifts 2px on hover with clay border. (f) The
+      `ctaArrow` micro-interaction is shared across all
+      primary CTAs on the page (resolver hit, today card,
+      day cards, miss state). All gated by
+      prefers-reduced-motion. Header simplified (no separate
+      week-stamp card; the date sits inline as "Week of
+      {date}"). Field-log pictograms and ZIP-as-link kept
+      from D-0035. Charter 3/3, build green, 0 new typecheck
+      errors. 5 visual captures at audit/d0036-desktop-{idle,
+      hit,miss,month-open,full}.png. Steward review:
+      side-by-side audit/d0035-desktop-idle-section.png
+      (D-0035, big text wall) vs audit/d0036-desktop-hit.png
+      (D-0036, resolver pushes into "Lock in Saturday →"
+      CTA) — the conversion moment is now in the section
+      rather than buried at the bottom of the page.
+    by: "Mavis (orchestrator, 2026-07-16)"
+
+  - date: "2026-07-16"
+    day: 23
+    change: >
+      D-0035 — ScheduleTimeline field-log rebuild. Steward
+      feedback: "this component is non-functional and is text
+      based in nature likely acting as a placeholder — ensure
+      that this and all other components across the landing page
+      are functional, providing value, and exceeding expectations
+      in all categories." The static v1 answered "what day does
+      the mower show up?" with a text wall that visitors had to
+      reverse-lookup by ZIP. Five typographic moments stacked in
+      one section now: (1) Ledger header — "Field log" eyebrow +
+      heading + lede + a storybook-stamped week card (Week 29 /
+      Jul 13-19, sand-bleached background, clay border, dashed
+      inner border, rotated -1.5deg). (2) Find your mow day —
+      ZIP-or-neighborhood input that resolves to the next day
+      the operator mows that address. Mirrors the Coverage Check
+      above (D-0031 + D-0032) — same permissive resolver, same
+      /quote fallback. Cream result card with a sun CTA. (3) This
+      month — a 7xN calendar grid for the current month. Mow days
+      are marked with a small green dot; today is highlighted
+      with a clay border + sun fill. (4) This week — the 7 day
+      cards from v1, each now carrying: a hand-tuned field-log
+      pictogram (mower / edger / trimmer / leaf blower / rest /
+      closed — inline SVG, no new webp), the standing ETA window
+      for that day ("8:00 AM - 11:30 AM"), clickable ZIP pills
+      (now Next <Link>s to /areas/[zip] with the neighborhood
+      name stacked below the ZIP number), a short operator-voice
+      note ("Heaviest day — 4 mulching jobs"), and a "Today"
+      block on the today card with a deterministic-by-hour
+      "Currently mowing in {zip} · {n} of {m} done" progress bar
+      (sun→clay gradient) and a fallback message outside the ETA
+      window. (5) Subscribe to route — cream-card CTA at the
+      bottom: "Get a text when the mower is in your ZIP." Routes
+      to /quote?zip={zip}&notify=1 so the existing /quote
+      prefill (D-0028) carries the ZIP forward; the notify=1
+      flag is a forward-compatible hint for a future v2
+      notification list. Holiday/skip-day detection is data-only
+      (a 6-row table in content.ts) so the operator can add a
+      holiday in 5 seconds without code. Data model additions:
+      dayMeta (per-day icon/eta/note/kind), holidaySkips (6
+      hard-coded shifts), scheduleResolver + subscribeToRoute
+      (copy). Pure helpers in business.ts: nextMowForZip,
+      currentRouteProgress, daysSinceLastMow, neighborhoodFor,
+      buildMonthMatrix. All SSR-safe (now state set in useEffect,
+      no hydration mismatch). 7 visual captures at audit/d0035-*
+      (desktop idle / hit / miss / full / week-strip / mobile
+      idle / resolver states). Charter 3/3, build green, 0 new
+      typecheck errors. Page height +~600px from the new stacked
+      layers. Reduced-motion: scroll-snap disabled, progress-bar
+      fill animation disabled, card hover lift disabled.
+      Steward review: side-by-side audit/d0029-* (D-0029
+      9-section cut, static text wall) vs audit/d0035-desktop-
+      full.png (D-0035 5-layer field log). Also: deleted the
+      d0026c-verify cron (was polling every 5 min for approval
+      of the D-0026c map, which D-0031 removed from the page —
+      the decision is no longer relevant).
     by: "Mavis (orchestrator, 2026-07-16)"
 
   - date: "2026-07-16"
