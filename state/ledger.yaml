@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-17 (Day 24 — D-0039 visual baseline refresh, card-root-collapse + useFadeUp wave)
+# Last updated: 2026-07-17 (Day 24 — D-0040 schedule-timeline + faq-accordion in matrix, frozen-clock baselines)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-17 (Day 24 — D-0039 visual baseline refresh, card-root-collapse + useFadeUp wave)
+# Last updated: 2026-07-17 (Day 24 — D-0040 schedule-timeline + faq-accordion in matrix, frozen-clock baselines)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -536,6 +536,85 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-17"
+    day: 24
+    change: >
+      D-0040 — ScheduleTimeline + FAQAccordion back in
+      COMPONENT_BASELINES + frozen-clock baselines for the
+      ScheduleTimeline-bearing routes. The matrix entries for
+      `schedule-timeline` and `faq-accordion` already existed in
+      `apps/web/visual/utils/fixtures.ts` (and `visual-test/page.tsx`
+      already mounted both), but the Playwright component-baseline
+      test loop (`components.spec.ts`) uses
+      `page.locator('[data-test-section="${slug}"]')` — the
+      `schedule-timeline` wrapper was MISSING the
+      `data-test-section="schedule-timeline"` attribute (the other
+      8 sections had it), so the locator timed out and the
+      schedule-timeline baseline had never been captured. The
+      faq-accordion baseline had the attribute but had been
+      silently dropped from CI runs because nobody caught the
+      dormant-matrix case. Two changes to close the dormant entry:
+      (1) `apps/web/src/app/visual-test/page.tsx` gained
+      `data-test-section="schedule-timeline"` (format-matched to
+      neighbors). (2) Both `schedule-timeline-chromium-desktop.png`
+      and `faq-accordion-chromium-desktop.png` baselines captured
+      under frozen clock. The second-order problem: ScheduleTimeline
+      uses `useState<Date|null>(null)` +
+      `useEffect(() => setNow(new Date()))` (SSR-safe pattern) and
+      many elements compute from `now` at render — `todayCardBadge`
+      text, `routeProgress` ("Currently mowing in {zip} · {n} of
+      {m} done"), "Week of {date}" header, and date arithmetic in
+      `nextMowForZip` + `daysSinceLastMow` for zip-pill titles. A
+      baseline captured at 14:32 today would have diffed against
+      any later capture at any other time, producing daily
+      false-positive `::error::` annotations on the new gate in
+      `.github/workflows/ci.yml`. The fix: `page.clock.setSystemTime(
+      new Date('2026-07-14T10:15:00-04:00') )` placed before
+      `page.goto(...)` in BOTH `visual/components.spec.ts` AND
+      `visual/routes.spec.ts`. Pinned to Tuesday 2026-07-14 10:15
+      EDT — inside the operator's 8:00–11:30 ETA window so the
+      today card shows a realistic in-progress state. Critical
+      detail: chose `setSystemTime` NOT `install` because
+      `install({ time })` pauses the timer queue (setTimeout,
+      requestAnimationFrame) by default, which would deadlock
+      `settleForCapture` (uses `waitForLoadState('networkidle')` +
+      `requestAnimationFrame` + `waitForTimeout(1300)` per the
+      helper in `visual/utils/stabilize.ts`). `setSystemTime`
+      freezes `Date.now()` + `new Date()` only and leaves
+      real-time timers ticking — exactly the semantics
+      ScheduleTimeline needs. Side-effect accepted: `setSystemTime`
+      lets time advance at real speed from the set point, so
+      captured "now" = `frozen + test_runtime`, and the
+      `routeProgress` percentage varies by ~1-2% between runs.
+      For the "catch rhythm changes" goal this is sufficient
+      (state is reproducibly "Tuesday in ETA window with progress
+      approx 30%"); if a future steward needs byte-stable
+      baselines they should upgrade to `install({ time })` +
+      `await page.clock.runFor('00:00:02')` after each helper.
+      Affected baselines refreshed:
+      `schedule-timeline-chromium-desktop.png` (was missing),
+      `faq-accordion-chromium-desktop.png` (was missing),
+      `home-chromium-desktop.png` (the only PRD route that mounts
+      ScheduleTimeline, so it sees time-derived rendering). The
+      other 13 PRD routes don't have time-dependent content, so
+      `setSystemTime` is a no-op for them but applied globally
+      for per-test page-context isolation (no cross-contamination
+      risk). FAQAccordion now has the closed-by-default state
+      captured; a future steward may want a second baseline for
+      the open state to guard the answer-panel typography. Files
+      changed this commit: 3 source files (visual-test/page.tsx,
+      components.spec.ts, routes.spec.ts) + 3 PNG baselines +
+      state/ledger.yaml (this entry). Acceptance: visual:test
+      chromium-desktop passes for all 3 affected slugs
+      (schedule-timeline, faq-accordion, home); typecheck unchanged
+      (still 8 pre-existing TS6133 errors unrelated to D-0040);
+      charter 3/3. Steward review: open
+      `apps/web/visual/baselines/schedule-timeline-chromium-desktop.png`
+      side-by-side with the rendered `/visual-test#schedule-timeline`
+      to confirm the today card reads "Today · Tuesday" with the
+      in-progress ETA shown.
+    by: "Mavis (orchestrator + coder sub-agent, 2026-07-17)"
+
   - date: "2026-07-17"
     day: 24
     change: >

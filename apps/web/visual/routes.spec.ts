@@ -17,6 +17,11 @@ import { maskVolatileContent, settleForCapture } from './utils/stabilize';
 
 for (const route of PRD_ROUTES) {
   test(`${route.slug}`, async ({ page }) => {
+    // Freeze the clock for deterministic ScheduleTimeline rendering on
+    // the home route (the only PRD route with time-dependent content).
+    // `setSystemTime` freezes Date only — see comment in components.spec.ts
+    // for full rationale. Safe for the other 13 routes. D-0040.
+    await page.clock.setSystemTime(new Date('2026-07-14T10:15:00-04:00'));
     await page.goto(route.path);
     await settleForCapture(page);
     await maskVolatileContent(page);

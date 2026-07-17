@@ -1,63 +1,60 @@
 /**
  * `visual-test` page — mount surface for Playwright component baselines.
  *
- * Renders ten section components in their natural homepage order:
+ * Renders the current homepage section components in their natural
+ * homepage order:
  *
- *   #hero-cinematic    → HeroCinematic
- *   #service-bento     → ServiceBento
+ *   #hero-mower-scene  → HeroMowerScene
+ *   #service-area-map  → ServiceAreaMap
  *   #operator-strip    → OperatorStrip
+ *   #service-bento     → ServiceBento
  *   #pricing-tiers     → PricingTiers
- *   #editorial-break   → EditorialBreak
- *   #service-area-stats → ServiceAreaStats
+ *   #process-steps     → ProcessSteps
  *   #schedule-timeline → ScheduleTimeline
- *   #marquee-quote     → MarqueeQuote
- *   #equipment-showcase → EquipmentShowcase
- *   #service-before-after → ServiceBeforeAfter
+ *   #faq-accordion     → FAQAccordion
+ *   #final-cta-banner  → FinalCTABanner
  *
  * Each section carries a `data-test-section="<slug>"` attribute so the
  * Playwright locator can target it precisely. No nav, no footer, no
  * inter-section padding — each section is element-scoped for the
  * element-level screenshot (`expect(section).toHaveScreenshot(...)`).
  *
- * WP12 expansion: 4 → 10 sections. EditorialBreak + the 5 WP10 marquee
- * sections + EquipmentShowcase join the matrix. ServiceBeforeAfter is
- * mounted with synthetic copy pointing at the mowing webp (the
- * reduced-motion static grid is captured).
- *
  * Not surfaced to users. `layout.tsx` exports `robots: noindex`.
  */
 import {
-  EditorialBreak,
-  EquipmentShowcase,
-  HeroCinematic,
-  MarqueeQuote,
+  FAQAccordion,
+  FinalCTABanner,
+  HeroMowerScene,
   OperatorStrip,
   PricingTiers,
+  ProcessSteps,
   ScheduleTimeline,
-  ServiceAreaStats,
-  ServiceBeforeAfter,
+  ServiceAreaMap,
   ServiceBento,
 } from '@/components/sections';
-import { services } from '@/lib/content';
-
-const BEFORE_AFTER_COPY = services.mowing.beforeAfter;
+import { hero as heroContent } from '@/lib/content';
 
 export default function VisualPage() {
   return (
     <main>
       <section
-        id="hero-cinematic"
-        data-test-section="hero-cinematic"
-        aria-label="HeroCinematic visual baseline"
+        id="hero-mower-scene"
+        data-test-section="hero-mower-scene"
+        aria-label="HeroMowerScene visual baseline"
       >
-        <HeroCinematic />
+        <HeroMowerScene
+          eyebrow={heroContent.eyebrow}
+          subhead={heroContent.subhead}
+          primaryCta={heroContent.primaryCta}
+          secondaryCta={heroContent.secondaryCta}
+        />
       </section>
       <section
-        id="service-bento"
-        data-test-section="service-bento"
-        aria-label="ServiceBento visual baseline"
+        id="service-area-map"
+        data-test-section="service-area-map"
+        aria-label="ServiceAreaMap visual baseline"
       >
-        <ServiceBento />
+        <ServiceAreaMap />
       </section>
       <section
         id="operator-strip"
@@ -67,6 +64,13 @@ export default function VisualPage() {
         <OperatorStrip />
       </section>
       <section
+        id="service-bento"
+        data-test-section="service-bento"
+        aria-label="ServiceBento visual baseline"
+      >
+        <ServiceBento />
+      </section>
+      <section
         id="pricing-tiers"
         data-test-section="pricing-tiers"
         aria-label="PricingTiers visual baseline"
@@ -74,18 +78,11 @@ export default function VisualPage() {
         <PricingTiers />
       </section>
       <section
-        id="editorial-break"
-        data-test-section="editorial-break"
-        aria-label="EditorialBreak visual baseline"
+        id="process-steps"
+        data-test-section="process-steps"
+        aria-label="ProcessSteps visual baseline"
       >
-        <EditorialBreak />
-      </section>
-      <section
-        id="service-area-stats"
-        data-test-section="service-area-stats"
-        aria-label="ServiceAreaStats visual baseline"
-      >
-        <ServiceAreaStats />
+        <ProcessSteps />
       </section>
       <section
         id="schedule-timeline"
@@ -95,25 +92,18 @@ export default function VisualPage() {
         <ScheduleTimeline />
       </section>
       <section
-        id="marquee-quote"
-        data-test-section="marquee-quote"
-        aria-label="MarqueeQuote visual baseline"
+        id="faq-accordion"
+        data-test-section="faq-accordion"
+        aria-label="FAQAccordion visual baseline"
       >
-        <MarqueeQuote />
+        <FAQAccordion />
       </section>
       <section
-        id="equipment-showcase"
-        data-test-section="equipment-showcase"
-        aria-label="EquipmentShowcase visual baseline"
+        id="final-cta-banner"
+        data-test-section="final-cta-banner"
+        aria-label="FinalCTABanner visual baseline"
       >
-        <EquipmentShowcase />
-      </section>
-      <section
-        id="service-before-after"
-        data-test-section="service-before-after"
-        aria-label="ServiceBeforeAfter visual baseline"
-      >
-        <ServiceBeforeAfter copy={BEFORE_AFTER_COPY} />
+        <FinalCTABanner />
       </section>
     </main>
   );

@@ -18,9 +18,22 @@ test.describe('component close-ups', () => {
   test.describe.configure({ mode: 'serial' });
 
   for (const { slug, anchor } of COMPONENT_BASELINES) {
-    test(`${slug}`, async ({ page, browserName }) => {
-      test.skip(browserName !== 'chromium', 'Desktop-only visual baseline.');
+    test(`${slug}`, async ({ page }) => {
+      test.skip(
+        test.info().project.name !== 'chromium-desktop',
+        'Desktop-only visual baseline.'
+      );
 
+      // Freeze the clock so ScheduleTimeline's wall-clock-derived
+      // rendering ("today", "currently mowing", zip last-mow-arithmetic)
+      // is deterministic across capture days. `setSystemTime` freezes
+      // `Date.now()` + `new Date()` only — it does NOT pause timers,
+      // so `settleForCapture` (rAF + waitForTimeout) keeps working.
+      // Pin: Tuesday 2026-07-14 10:15 EDT, inside the operator's
+      // 8:00–11:30 ETA window so the today card shows a realistic
+      // in-progress state. Safe across all 9 component tests.
+      // D-0040.
+      await page.clock.setSystemTime(new Date('2026-07-14T10:15:00-04:00'));
       await page.goto(`/visual-test${anchor}`);
       const section = page.locator(`[data-test-section="${slug}"]`);
       await section.scrollIntoViewIfNeeded();
