@@ -29,13 +29,12 @@ test('wp79 desktop servicebento 3x2 grid at 1280x800', async ({ page, browserNam
   await page.waitForTimeout(500);
 
   // Find the service bento element
-  const bentoBox = await page.evaluate(() => {
+  await page.evaluate(() => {
     const bento = document.querySelector('[class*="ServiceBento_root"]');
-    if (!bento) return null;
+    if (!bento) return;
     const r = bento.getBoundingClientRect();
     const targetY = window.scrollY + r.top - 50;
     window.scrollTo(0, targetY);
-    return { y: targetY };
   });
 
   await page.waitForTimeout(500);

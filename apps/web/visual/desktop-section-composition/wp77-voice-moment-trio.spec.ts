@@ -29,13 +29,12 @@ test('wp77 desktop operatorstrip + operatornote + marqueequote trio', async ({ p
   await page.waitForTimeout(500);
 
   // Find the operator strip element
-  const operatorBox = await page.evaluate(() => {
+  await page.evaluate(() => {
     const op = document.querySelector('[class*="OperatorStrip_root"]');
-    if (!op) return null;
+    if (!op) return;
     const r = op.getBoundingClientRect();
     const targetY = window.scrollY + r.top - 100;
     window.scrollTo(0, targetY);
-    return { y: targetY };
   });
 
   await page.waitForTimeout(500);

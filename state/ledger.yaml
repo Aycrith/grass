@@ -539,6 +539,41 @@ changelog:
   - date: "2026-07-17"
     day: 24
     change: >
+      D-0042-follow-up — Hero redesign follow-ups: TypeScript
+      cleanup, coarse-pointer regression coverage, and quote-route
+      flakiness fix. (1) Fixed 7 pre-existing TS6133 errors in
+      apps/web/visual/desktop-section-composition/*.spec.ts by
+      removing unused const assignments (pricingBox, scheduleBox,
+      operatorBox, ctaBox, bentoBox, faqBox, editorialBox) while
+      keeping the side-effect page.evaluate scroll calls. (2) Added
+      a `home-coarse-pointer` test in
+      apps/web/visual/routes.spec.ts that preserves the real
+      window.matchMedia and only overrides `(pointer: coarse)` to
+      `matches: true`, then asserts `#hero canvas` count is 0 and
+      captures a baseline. This verifies the WebGL grass overlay is
+      disabled on touch devices. (3) Fixed consistent quote-route
+      visual regression failures by calling `flushScrollTriggers`
+      before `settleForCapture` in routes.spec.ts for every route
+      and both special tests; this forces below-the-fold FadeUp
+      animations (notably QuoteConfirmation) to trigger before the
+      screenshot, eliminating mid-animation pixel drift. (4) Removed
+      stale `hero-mower-scene*` component baselines after the
+      COMPONENT_BASELINES slug was renamed to `hero`. (5) Refreshed
+      affected baselines: home-chromium-mobile,
+      quote-chromium-desktop, quote-chromium-mobile,
+      home-reduced-motion-chromium-mobile, and
+      home-coarse-pointer-{desktop,mobile}. Validation: typecheck
+      clean; full Playwright routes suite (32 tests) passes on both
+      chromium-desktop and chromium-mobile. Files changed:
+      apps/web/visual/desktop-section-composition/wp{75-81}*.spec.ts
+      (7 files), apps/web/visual/routes.spec.ts,
+      apps/web/visual/baselines/* (refreshed PNGs),
+      state/ledger.yaml (this entry).
+    by: "Buffy (orchestrator, 2026-07-17)"
+
+  - date: "2026-07-17"
+    day: 24
+    change: >
       D-0040 — ScheduleTimeline + FAQAccordion back in
       COMPONENT_BASELINES + frozen-clock baselines for the
       ScheduleTimeline-bearing routes. The matrix entries for
@@ -614,6 +649,43 @@ changelog:
       to confirm the today card reads "Today · Tuesday" with the
       in-progress ETA shown.
     by: "Mavis (orchestrator + coder sub-agent, 2026-07-17)"
+
+  - date: "2026-07-17"
+    day: 24
+    change: >
+      D-0042 — Hero redesign: Field Telemetry direction with WebGL
+      grass field now in production. Replaced the scroll-driven
+      HeroMowerScene on the homepage with HeroFieldTelemetry.
+      The new hero uses a real Florida lawn photograph as the
+      LCP element, with a Ken Burns CSS pan/zoom, a live status
+      widget, a passport-style field stamp, a telemetry stats
+      strip, kinetic headline reveal, and magnetic CTAs. Added a
+      Three.js WebGL overlay (HeroFieldTelemetryScene) that renders
+      an interactive, wind-driven grass field over the photo on
+      desktop; the canvas is disabled on coarse-pointer devices
+      and for prefers-reduced-motion, falling back to the photo
+      alone. Installed `three` + `@types/three` in apps/web.
+      Refactored HeroMowerScene mobile clipping fix to a CSS-only
+      approach (no JS coarse-pointer detection) so the headline,
+      subhead, and CTAs are visible immediately on mobile. Files
+      changed: apps/web/src/app/page.tsx (swap hero component);
+      apps/web/src/components/sections/index.ts (export new hero);
+      apps/web/src/components/sections/HeroFieldTelemetry.tsx +
+      .module.css (production hero, remove MotionLayer dead code,
+      add .scene canvas overlay styles); new
+      apps/web/src/components/sections/HeroFieldTelemetryScene.tsx
+      (WebGL grass shader with mouse interaction, half-resolution
+      rendering, WebGL context fallback); refreshed
+      apps/web/visual/baselines/home-chromium-desktop.png and
+      home-chromium-mobile.png. Validation: typecheck clean
+      (7 pre-existing TS6133 warnings in visual/ specs unrelated
+      to this change); browser verification confirms the hero
+      renders, the WebGL grass animates, and all CTAs/status
+      widgets are visible; Playwright routes suite passes with
+      updated baselines. Steward review: compare the new
+      home-chromium-desktop.png baseline against the previous one
+      to confirm the Field Telemetry direction is acceptable.
+    by: "Buffy (orchestrator, 2026-07-17)"
 
   - date: "2026-07-17"
     day: 24

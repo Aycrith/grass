@@ -29,13 +29,12 @@ test('wp75 desktop pricing tiers + schedule timeline transition', async ({ page,
   await page.waitForTimeout(500);
 
   // Find the pricing tiers section
-  const pricingBox = await page.evaluate(() => {
+  await page.evaluate(() => {
     const pricing = document.querySelector('[class*="PricingTiers_root"]');
-    if (!pricing) return null;
+    if (!pricing) return;
     const r = pricing.getBoundingClientRect();
     const targetY = window.scrollY + r.top - 50;
     window.scrollTo(0, targetY);
-    return { y: targetY };
   });
 
   await page.waitForTimeout(500);

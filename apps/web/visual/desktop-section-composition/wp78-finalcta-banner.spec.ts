@@ -29,13 +29,12 @@ test('wp78 desktop finalcta banner at 1280x800', async ({ page, browserName }) =
   await page.waitForTimeout(500);
 
   // Find the final CTA banner
-  const ctaBox = await page.evaluate(() => {
+  await page.evaluate(() => {
     const cta = document.querySelector('[class*="FinalCTABanner_root"]');
-    if (!cta) return null;
+    if (!cta) return;
     const r = cta.getBoundingClientRect();
     const targetY = window.scrollY + r.top - 100;
     window.scrollTo(0, targetY);
-    return { y: targetY };
   });
 
   await page.waitForTimeout(500);

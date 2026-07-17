@@ -29,13 +29,12 @@ test('wp76 desktop schedule timeline at 1280x800', async ({ page, browserName })
   await page.waitForTimeout(500);
 
   // Find the schedule timeline
-  const scheduleBox = await page.evaluate(() => {
+  await page.evaluate(() => {
     const schedule = document.querySelector('[class*="ScheduleTimeline_root"]');
-    if (!schedule) return null;
+    if (!schedule) return;
     const r = schedule.getBoundingClientRect();
     const targetY = window.scrollY + r.top - 100;
     window.scrollTo(0, targetY);
-    return { y: targetY };
   });
 
   await page.waitForTimeout(500);

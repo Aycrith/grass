@@ -29,13 +29,12 @@ test('wp81 desktop editorialbreak full-bleed photo at 1280x800', async ({ page, 
   await page.waitForTimeout(500);
 
   // Find the editorial break
-  const editorialBox = await page.evaluate(() => {
+  await page.evaluate(() => {
     const editorial = document.querySelector('[class*="EditorialBreak_root"]');
-    if (!editorial) return null;
+    if (!editorial) return;
     const r = editorial.getBoundingClientRect();
     const targetY = window.scrollY + r.top - 50;
     window.scrollTo(0, targetY);
-    return { y: targetY };
   });
 
   await page.waitForTimeout(500);

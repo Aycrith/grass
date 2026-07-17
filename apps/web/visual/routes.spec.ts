@@ -13,7 +13,7 @@
  */
 import { expect, test } from '@playwright/test';
 import { PRD_ROUTES } from './utils/fixtures';
-import { maskVolatileContent, settleForCapture } from './utils/stabilize';
+import { flushScrollTriggers, maskVolatileContent, settleForCapture } from './utils/stabilize';
 
 for (const route of PRD_ROUTES) {
   test(`${route.slug}`, async ({ page }) => {
@@ -23,6 +23,9 @@ for (const route of PRD_ROUTES) {
     // for full rationale. Safe for the other 13 routes. D-0040.
     await page.clock.setSystemTime(new Date('2026-07-14T10:15:00-04:00'));
     await page.goto(route.path);
+    // Scroll to the bottom and back so every below-the-fold FadeUp
+    // (e.g. QuoteConfirmation) has a chance to trigger before we settle.
+    await flushScrollTriggers(page);
     await settleForCapture(page);
     await maskVolatileContent(page);
     await expect(page).toHaveScreenshot(route.slug, {
@@ -31,3 +34,47 @@ for (const route of PRD_ROUTES) {
     });
   });
 }
+
+// Reduced-motion / coarse-pointer fallback for the new WebGL hero.
+// The WebGL grass overlay is disabled when prefers-reduced-motion is
+// true OR when the primary pointer is coarse, so the hero should
+// degrade to the photo + Ken Burns only.
+test('home-reduced-motion', async ({ page }) => {
+  await page.clock.setSystemTime(new Date('2026-07-14T10:15:00-04:00'));
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  await flushScrollTriggers(page);
+  await settleForCapture(page);
+  await maskVolatileContent(page);
+  await expect(page).toHaveScreenshot('home-reduced-motion', {
+    maxDiffPixels: 200,
+    threshold: 0.2,
+  });
+});
+
+test('home-coarse-pointer', async ({ page }) => {
+  await page.clock.setSystemTime(new Date('2026-07-14T10:15:00-04:00'));
+  // Preserve the real matchMedia and only override the coarse query so
+  // other media-query consumers (e.g. Framer Motion useReducedMotion)
+  // continue to work.
+  await page.context().addInitScript(() => {
+    const original = window.matchMedia.bind(window);
+    window.matchMedia = (query: string) => {
+      if (query === '(pointer: coarse)') {
+        const list = original('(pointer: coarse)');
+        return { ...list, matches: true } as MediaQueryList;
+      }
+      return original(query);
+    };
+  });
+  await page.goto('/');
+  await flushScrollTriggers(page);
+  await settleForCapture(page);
+  await maskVolatileContent(page);
+  // The WebGL grass overlay should be disabled on coarse pointers.
+  await expect(page.locator('#hero canvas')).toHaveCount(0);
+  await expect(page).toHaveScreenshot('home-coarse-pointer', {
+    maxDiffPixels: 200,
+    threshold: 0.2,
+  });
+});

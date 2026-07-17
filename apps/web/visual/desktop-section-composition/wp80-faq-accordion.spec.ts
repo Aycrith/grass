@@ -29,13 +29,12 @@ test('wp80 desktop FAQ accordion at 1280x800', async ({ page, browserName }) => 
   await page.waitForTimeout(500);
 
   // Find the FAQ accordion
-  const faqBox = await page.evaluate(() => {
+  await page.evaluate(() => {
     const faq = document.querySelector('[class*="FAQAccordion_root"]');
-    if (!faq) return null;
+    if (!faq) return;
     const r = faq.getBoundingClientRect();
     const targetY = window.scrollY + r.top - 50;
     window.scrollTo(0, targetY);
-    return { y: targetY };
   });
 
   await page.waitForTimeout(500);
