@@ -36,15 +36,23 @@
 # the visual rollback set: byte-lock catches cascade-revert attempts,
 # Playwright catches intent-changing new commits. Both are mechanically
 # verifiable (sha256sum -c exit code / Playwright test exit code).
-#
-# AUDIT-EVIDENCE NOTE: the `.before-2026-07-17-home-chromium-desktop.png` PNG
-# has SHARES bytes with current `home-chromium-desktop.png` (both d3e4eb2c...).
-# This is BYTE-IDENTITY-EVIDENCE that the pre-fix home-route capture and the
-# post-fix home-route capture match — which is consistent with the cascade's
-# documented scope (D-0014 + D-0015 hero recolor + mask-fix cascades did not
-# affect the home route; only the hero route's pre/post-fix siblings show
-# diverging SHAs). The byte-identity is a positive audit signal: the home
-# baseline was already correct at pre-fix time and stayed correct.
+## AUDIT-EVIDENCE NOTE: the `.before-2026-07-17-home-chromium-desktop.png` PNG
+#  SHARES bytes with current `home-chromium-desktop.png` (both d3e4eb2c...).
+#  Citation: per commit 88d5d43e stat (the D-0015 sibling-stamp commit in
+#  this cascade): 5 files modified, ALL in hero-route scope
+#  (HeroStorybookLayer.tsx + .module.css, HeroFieldTelemetry.module.css,
+#  tokens.css, apps/web/.gitignore); ZERO changes to home-route files.
+#  Byte-identity is therefore CONSISTENT WITH cascade scope (D-0014 + D-0015
+#  fixed the hero route only; home route byte-identical across pre-fix and
+#  post-fix captures because untouched), NOT coincidental.
+#  Future-steward interpretation guide:
+#    - If .before-* sibling + current home-* ever DIVERGE in bytes, that is
+#      a regression signal: either the home route changed (out-of-scope for
+#      this cascade) or the .before-* capture was made at a non-cascade-
+#      relevant moment.
+#    - Cascade-scope invariant: byte-identity holds iff hero-only (D-0014,
+#      D-0015) cascades are the active revert-set. If a future cascade
+#      touches home-route files, the .before-* capture must be re-taken.
 #
 # Cross-reference: state/ledger.yaml → cascade_reversion_chain.rollback_groups
 #                                   .visual.paths (full scope provenance).
