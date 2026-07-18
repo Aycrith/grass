@@ -17,6 +17,29 @@
 # ANY deviation between commits signals a regression OR a deliberate audit-trail
 # refresh. Stewards MUST run the verification incantation BEFORE push per
 # CLAUDE.md hard rule #2 + charter principle #3.
+#
+# SCOPE NOTE (Q4 closure, 2026-07-17):
+# The ledger's `cascade_reversion_chain.rollback_groups.visual.paths` includes
+# the brace-expansion `hero-chromium-{desktop,mobile}.png` (= 2 paths). Only
+# `hero-chromium-desktop.png` is byte-locked below. The mobile counterpart is
+# REGENERATABLE via `bun run visual:refresh` (Playwright-diff-managed
+# baseline; not SHA256-byte-managed). The `home-chromium-{desktop,mobile}.png`
+# brace-expansion IS fully byte-locked (both paths covered below).
+#
+# This asymmetry is intentional cascade partition: byte-locked PNGs are the
+# cascade's per-version anchors (current + pre/post-fix siblings);
+# regeneratable PNGs are per-route current-state baselines validated by
+# `bun run visual:test`'s Playwright screenshot-diff mechanism. The two
+# channels together cover the Charter #3 audit surface for the visual
+# rollback set: byte-lock catches cascade-revert attempts, Playwright
+# catches intent-changing new commits. Both are mechanically verifiable
+# (sha256sum -c exit code / Playwright test exit code).
+#
+# Cross-reference: state/ledger.yaml → cascade_reversion_chain.rollback_groups
+#                                   .visual.paths (full scope provenance).
+# Refresh cadence (regeneratable subset + all per-route baselines):
+#   cd apps/web && bun run visual:refresh
+# ====================================================================
 c10d841deece2481d7e4a82ba9825a648623cfbcbb7d3fd51201ec3cfc7aacac  ./hero-chromium-desktop.png
 d3e4eb2c14ac3a56f6ad28ee01b80088c7bfeb5a9d3e8335464b7ebfb653356c  ./home-chromium-desktop.png
 67f757a0f90c7787ae628ea8b7c89bdcdaf5fb760fc9f07bf8b351b128c1b4ab  ./home-chromium-mobile.png
