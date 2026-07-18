@@ -97,12 +97,14 @@ done
 echo "    noise paths correctly ignored: $NOISE_OK / 4"
 
 # Negative test: tracked baseline must NOT be ignored.
-# `git check-ignore` returns exit 1 for non-ignored patterns — that's
+# `git check-ignore` returns exit 1 for non-ignored patterns - that's
 # the test's expected outcome. Under `set -e`, a top-level exit-1
-# triggers immediate script abort, so wrap with `|| true` to read
-# the exit code explicitly without aborting.
-git check-ignore -v apps/web/visual/baselines/.before-2026-07-17-home-chromium-desktop.png >/dev/null 2>&1 || true
-R=$?
+# triggers immediate script abort, so we use the standard `R=0;
+# cmd || R=$?` idiom to capture the actual exit code without aborting.
+# (Naïve `cmd || true; R=$?` makes $? always 0 since `true` exits 0,
+# masking the real git-check-ignore exit code. Bug observed at commit 9.)
+R=0
+git check-ignore -v apps/web/visual/baselines/.before-2026-07-17-home-chromium-desktop.png >/dev/null 2>&1 || R=$?
 if [ "$R" -eq 1 ]; then
   echo "    [OK exit 1] tracked baseline correctly NOT ignored"
 else
