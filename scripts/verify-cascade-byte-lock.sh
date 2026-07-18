@@ -20,12 +20,39 @@
 #   0  all 6 checks PASS (cascade SHIP-READY-PUSH)
 #   1  one or more checks FAIL (output names which)
 #
-# Covers the 2026-07-17 cascade (D-0014 hero recolor + D-0015 viewport
-# gate + mask fix). To extend to future cascades, parameterize the
-# byte-lock file path or add an additional verify cascade block.
+# Cross-platform note: on Windows + Git Bash, non-interactive subshells
+# do not source ~/.bashrc, so ~/.bun/bin may NOT be on PATH. This script
+# prepends it explicitly (see comment at lines ~33-37). The same fix
+# works on macOS + Linux for any shell that does not inherit the
+# user's interactive shell config.
+#
+# Defensive `set -euo pipefail` + `|| true` patterns: we WANT to abort
+# on unexpected errors (typos, missing tools, permission issues), but
+# the script ALSO legitimately produces non-zero exit codes from
+# commands run for NEGATIVE TESTING (e.g., `git check-ignore` on a
+# tracked file returns 1 — that's WHAT WE WANT, not a bug). The
+# `|| true` pattern on those specific commands lets them return 1
+# without triggering set -e.
 # ============================================================
 
 set -euo pipefail
+
+# -----------------------------------------------------------
+# Cross-platform bun PATH (Windows + Git Bash + power-user shells)
+# -----------------------------------------------------------
+# Git Bash on Windows: non-interactive subshells spawn WITHOUT
+# sourcing ~/.bashrc, so the user's `export PATH="$HOME/.bun/bin:$PATH"`
+# from interactive shell config never reaches the script.
+#
+# Same pattern applies on macOS / Linux when the steward invokes the
+# script from a context that doesn't inherit the interactive shell
+# config (e.g., a CI runner, a cron job, or a fresh shell subshell).
+#
+# Prepend ~/.bun/bin if it exists. No-op for stewards who already
+# have bun elsewhere on PATH.
+if [ -d "${HOME}/.bun/bin" ]; then
+  export PATH="${HOME}/.bun/bin:${PATH}"
+fi
 
 ROOT="$(git rev-parse --show-toplevel)"
 BL_REL="apps/web/visual/audit/2026-07-17-hero-byte-lock-sha256.txt"
@@ -68,10 +95,15 @@ for path in apps/web/_working-tree-noise apps/web/_working-tree-noise/2026-07-17
   fi
 done
 echo "    noise paths correctly ignored: $NOISE_OK / 4"
-# Negative test: tracked baseline must NOT be ignored
-git check-ignore -v apps/web/visual/baselines/.before-2026-07-17-home-chromium-desktop.png >/dev/null 2>&1
+
+# Negative test: tracked baseline must NOT be ignored.
+# `git check-ignore` returns exit 1 for non-ignored patterns — that's
+# the test's expected outcome. Under `set -e`, a top-level exit-1
+# triggers immediate script abort, so wrap with `|| true` to read
+# the exit code explicitly without aborting.
+git check-ignore -v apps/web/visual/baselines/.before-2026-07-17-home-chromium-desktop.png >/dev/null 2>&1 || true
 R=$?
-if [ $R -eq 1 ]; then
+if [ "$R" -eq 1 ]; then
   echo "    [OK exit 1] tracked baseline correctly NOT ignored"
 else
   echo "    [FAIL exit $R] tracked baseline unexpectedly ignored"
@@ -101,8 +133,8 @@ echo ''
 echo '[5/6] refs/original/ hygiene (expect absent)'
 if [ -d "$ROOT/.git/refs/original" ]; then
   echo '    [WARN] refs/original/ present (filter-branch safety net intact)'
-  echo '           Not blocking; informational only — cleanup with:'
-  echo '           rm -rf '"$ROOT"'/.git/refs/original'
+  echo "           Not blocking; informational only - cleanup with:"
+  echo "           rm -rf $ROOT/.git/refs/original"
 else
   echo '    [OK] refs/original/ absent'
 fi
@@ -112,7 +144,11 @@ echo ''
 # Check 6 -- working tree clean (filter _working-tree-noise)
 # -----------------------------------------------------------
 echo '[6/6] working tree clean (filter _working-tree-noise, expect 0)'
-DIRTY=$(git status --short 2>&1 | grep -vE '^\?\? apps/web/_working-tree-noise/' | wc -l)
+# `grep -vE` returns exit 1 when there are no matches, which `pipefail`
+# propagates to the pipeline, which `set -e` then trips on. Wrap the
+# grep in `{ ... || true; }` so the pipeline's effective exit code is
+# `wc -l`'s exit (always 0).
+DIRTY=$(git status --short 2>&1 | { grep -vE '^\?\? apps/web/_working-tree-noise/' || true; } | wc -l)
 if [ "$DIRTY" -eq 0 ]; then
   echo '    [OK] working tree clean (no non-noise untracked files)'
 else
@@ -126,7 +162,7 @@ echo ''
 # Final verdict
 # -----------------------------------------------------------
 echo '======================================================'
-if [ $FAIL -eq 0 ]; then
+if [ "$FAIL" -eq 0 ]; then
   echo '  CASCADE STATUS: SHIP-READY-PUSH'
   echo '======================================================'
   echo ''
