@@ -66,6 +66,9 @@
   inset: 0;
   will-change: transform;
   transform-origin: 60% 50%;
+  /* D-0014: right-edge mask-image so the photo bleeds onto cream instead of hard-cutting. 86%->100% fall-off keeps the photo shoulder visible across the desktop content column (~0-66% of viewport) while letting the right edge fade to transparent over the page bg. */
+  -webkit-mask-image: linear-gradient(to right, black 0%, black 86%, transparent 100%);
+  mask-image: linear-gradient(to right, black 0%, black 86%, transparent 100%);
 }
 
 .photoImg {

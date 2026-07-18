@@ -34,6 +34,9 @@
   /* ---------- Expanded Pinellas-evocative palette ---------- */
   --ll-palm-shadow: #2d5a3d; /* deep green; section bg */
   --ll-palm-light: #6b9b7e; /* subdued green; tag bg */
+  --ll-grass: color-mix(in oklab, var(--ll-green) 50%, var(--ll-palm-light)); /* mid green (D-0014) */
+  --ll-grass-mow: color-mix(in oklab, var(--ll-green) 30%, var(--ll-palm-shadow)); /* freshly-cut grass (D-0014) */
+  --ll-grass-deep: color-mix(in oklab, var(--ll-palm-shadow) 70%, var(--ll-green)); /* deep grass (D-0014) */
   --ll-gulf: #2e6b8c; /* navy; secondary headings */
   --ll-sun: #e8b65a; /* warm gold; ribbon / badge */
   /* Derived sun tints — generated from the base sun + cream so the

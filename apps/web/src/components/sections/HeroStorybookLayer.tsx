@@ -132,7 +132,7 @@ export function HeroStorybookLayer({
       <motion.div className={styles.midLayer} style={{ x: midPanX }}>
         <MidLayer />
       </motion.div>
-      <Mower position={progress} />
+      {/* D-0014: Mower SVG removed - was the grey vehicle on the brown mid-band */}
       <motion.div className={styles.nearLayer} style={{ x: nearPanX }}>
         <NearLayer />
       </motion.div>
@@ -223,8 +223,8 @@ function FarLayer(): ReactNode {
       </defs>
       <path
         d="M 0 460 Q 200 440 400 450 T 800 448 T 1200 455 T 1600 440 T 2000 450 L 2000 900 L 0 900 Z"
-        fill="var(--ll-sand)"
-        opacity="0.5"
+        fill="var(--ll-palm-light)"
+        opacity="0.45"
       />
       <g fill="url(#far-palm)" opacity="0.45">
         <PalmTree x={120} y={415} h={70} />
@@ -275,12 +275,12 @@ function MidLayer(): ReactNode {
       </defs>
       <path
         d="M 0 480 Q 300 470 600 478 T 1200 480 T 1800 476 T 2000 482 L 2000 900 L 0 900 Z"
-        fill="var(--ll-sand)"
-        opacity="0.6"
+        fill="var(--ll-palm-light)"
+        opacity="0.5"
       />
       <path
         d="M 0 540 Q 400 530 800 540 T 1600 538 T 2000 544 L 2000 900 L 0 900 Z"
-        fill="var(--ll-clay)"
+        fill="var(--ll-grass)"
         opacity="0.5"
       />
 
@@ -326,81 +326,8 @@ function MidLayer(): ReactNode {
 }
 
 /* ------------------------------------------------------------------
- * The mower - drives across the screen as scroll progresses.
- * Wheels rotate, the deck bounces, and a mowed path grows behind it.
- * ----------------------------------------------------------------- */
-
-function Mower({ position }: { position: MotionValue<number> }): ReactNode {
-  const xPct = useTransform(position, (v) =>
-    `${Math.max(2, Math.min(96, v * 100))}%`,
-  );
-  const wheelRot = useTransform(position, [0, 1], [0, 720]);
-  const deckBounce = useTransform(position, (v) => Math.sin(v * Math.PI * 12) * 1.5);
-  const pathWidth = useTransform(position, (v) => `${Math.max(0, v * 100)}%`);
-
-  return (
-    <motion.div className={styles.mower} style={{ left: xPct }}>
-      <motion.div className={styles.mowedPath} style={{ width: pathWidth }} />
-      <motion.svg
-        viewBox="0 0 200 120"
-        width="100%"
-        height="100%"
-        style={{ y: deckBounce }}
-      >
-        {/* Mower deck */}
-        <rect x={50} y={50} width={108} height={36} rx={6} fill="var(--ll-green)" />
-        <rect x={50} y={50} width={108} height={10} rx={4} fill="var(--ll-palm)" />
-        {/* Bag */}
-        <rect x={120} y={36} width={36} height={20} rx={3} fill="var(--ll-palm-bark)" />
-        <rect x={124} y={40} width={28} height={4} rx={2} fill="var(--ll-clay)" />
-        {/* Handle */}
-        <line
-          x1={150}
-          y1={56}
-          x2={188}
-          y2={20}
-          stroke="var(--ll-palm-bark)"
-          strokeWidth={6}
-          strokeLinecap="round"
-        />
-        <line
-          x1={172}
-          y1={24}
-          x2={188}
-          y2={20}
-          stroke="var(--ll-palm-bark)"
-          strokeWidth={6}
-          strokeLinecap="round"
-        />
-        <circle cx={150} cy={56} r={4} fill="var(--ll-sun)" />
-        {/* Wheels - rotated by scroll progress */}
-        <motion.g style={{ rotate: wheelRot, transformOrigin: '62px 92px' }}>
-          <circle cx={62} cy={92} r={14} fill="var(--ll-palm-bark)" />
-          <circle cx={62} cy={92} r={6} fill="var(--ll-sage-muted)" />
-          <circle cx={62} cy={92} r={3} fill="var(--ll-sun)" />
-        </motion.g>
-        <motion.g style={{ rotate: wheelRot, transformOrigin: '146px 92px' }}>
-          <circle cx={146} cy={92} r={14} fill="var(--ll-palm-bark)" />
-          <circle cx={146} cy={92} r={6} fill="var(--ll-sage-muted)" />
-          <circle cx={146} cy={92} r={3} fill="var(--ll-sun)" />
-        </motion.g>
-        {/* Grass clippings flying */}
-        <g opacity="0.6">
-          <circle cx={20} cy={70} r={2} fill="var(--ll-clay)" />
-          <circle cx={30} cy={62} r={1.5} fill="var(--ll-sand)" />
-          <circle cx={10} cy={66} r={1.2} fill="var(--ll-clay)" />
-          <circle cx={40} cy={70} r={1.5} fill="var(--ll-palm-bark)" />
-        </g>
-      </motion.svg>
-      <div className={styles.mowerTrail} />
-    </motion.div>
-  );
-}
-
-/* ------------------------------------------------------------------
  * Near layer - foreground grass + wildflowers.
  * ----------------------------------------------------------------- */
-
 function NearLayer(): ReactNode {
   return (
     <div className={styles.nearInner}>
@@ -411,12 +338,12 @@ function NearLayer(): ReactNode {
       >
         <defs>
           <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--ll-clay)" />
-            <stop offset="100%" stopColor="var(--ll-palm-bark)" />
+            <stop offset="0%" stopColor="var(--ll-grass-deep)" />
+            <stop offset="100%" stopColor="var(--ll-grass-mow)" />
           </linearGradient>
           <linearGradient id="grass-tip" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--ll-sand)" />
-            <stop offset="100%" stopColor="var(--ll-clay)" />
+            <stop offset="0%" stopColor="var(--ll-grass-mow)" />
+            <stop offset="100%" stopColor="var(--ll-grass-deep)" />
           </linearGradient>
         </defs>
 
@@ -468,7 +395,6 @@ function NearLayer(): ReactNode {
     </div>
   );
 }
-
 /* ------------------------------------------------------------------
  * Scroll hint - "scroll to mow" with progress dot + arrow.
  * Hidden when the mower has crossed the screen (scroll > 0.95).
