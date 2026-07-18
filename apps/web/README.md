@@ -68,6 +68,19 @@ Auto-generated at build from `BUSINESS.service_area_zips` + service slugs
 via `src/app/sitemap.ts`. Output: `https://largolawn.pro/sitemap.xml`
 containing all 18 routes + `robots.txt` excluding `/api/` and `/gbp`.
 
+## Pre-commit hooks
+
+Husky + lint-staged are configured to run on every commit from `apps/web/`:
+
+- `lint-staged` runs `eslint --max-warnings=0 --fix` on staged JS/TS/MJS files.
+- `tsc --noEmit` type-checks the whole project.
+
+Hooks are installed automatically after `bun install` via the `prepare` script.
+They are skipped in CI environments.
+
+> This project uses **Bun**. Install it from [bun.sh](https://bun.sh) before
+> running local commands.
+
 ## Visual regression
 
 Playwright visual regression runs on every PR via the `visual` job in

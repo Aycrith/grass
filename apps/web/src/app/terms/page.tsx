@@ -52,7 +52,7 @@ export default function TermsPage() {
 
       <h2>Liability</h2>
       <p>
-        We carry $1M general liability insurance and workers' compensation coverage. Damage caused
+        We carry $1M general liability insurance and workers&apos; compensation coverage. Damage caused
         by our crew is documented, reported, and repaired at our cost. We are not responsible for
         pre-existing conditions, acts of nature, or issues outside our scope of work.
       </p>

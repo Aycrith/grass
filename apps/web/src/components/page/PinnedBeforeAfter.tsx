@@ -109,16 +109,19 @@ export function PinnedBeforeAfter({
             {useStaticLayout ? (
               <div className={styles.staticPair}>
                 <figure className={styles.staticFig}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={before} alt="Lawn before service." />
                   <figcaption>Before</figcaption>
                 </figure>
                 <figure className={styles.staticFig}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={after} alt="Lawn after service." />
                   <figcaption>After</figcaption>
                 </figure>
               </div>
             ) : (
               <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={before} alt="" className={styles.layer} />
                 <motion.div
                   className={styles.afterLayer}
@@ -129,10 +132,14 @@ export function PinnedBeforeAfter({
                       className={styles.afterLayerManual}
                       style={{ clipPath: `inset(0 0 0 ${pos}%)` }}
                     >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={after} alt="Lawn after service." />
                     </div>
                   ) : (
-                    <img src={after} alt="Lawn after service." />
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={after} alt="Lawn after service." />
+                    </>
                   )}
                 </motion.div>
                 {useManualScrub ? (

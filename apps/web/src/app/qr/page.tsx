@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import type { Metadata } from 'next';
 import QRCode from 'qrcode';
 import { BUSINESS } from '@/lib/business';

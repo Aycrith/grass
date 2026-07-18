@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /**
  * /preview index - the steward's one-stop checklist before approving
  * the $4.99 domain purchase.

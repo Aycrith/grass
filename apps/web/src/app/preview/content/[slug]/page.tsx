@@ -6,6 +6,7 @@
  * injection from the URL.
  */
 
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { renderMarkdownFromPath } from '@/lib/markdown';
 import { MarkdownPreview } from '@/components/MarkdownPreview';
@@ -106,8 +107,8 @@ export default async function PreviewContentDetail({
       </div>
       <MarkdownPreview content={html} />
       <p style={{ marginTop: '2rem', fontSize: '0.9rem', color: 'var(--gray-700)' }}>
-        ← <a href="/preview/content">Back to {entry.nav}</a> ·{' '}
-        <a href="/preview">Back to preview index</a>
+        ← <Link href="/preview/content">Back to {entry.nav}</Link> ·{' '}
+        <Link href="/preview">Back to preview index</Link>
       </p>
     </>
   );

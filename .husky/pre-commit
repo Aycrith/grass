@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+# Pre-commit hook for the Next.js app in apps/web.
+# Git executes hooks from the repository root, so we step into the app directory first.
+
+cd apps/web || exit 1
+
+# Lint and auto-fix staged JS/TS/MJS files.
+bunx lint-staged
+
+# Type-check the entire project (TypeScript cannot reliably check isolated files).
+bun run typecheck

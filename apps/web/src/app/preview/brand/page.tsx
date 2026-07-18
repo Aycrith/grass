@@ -6,6 +6,7 @@
  */
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { renderMarkdownFromPath } from '@/lib/markdown';
 import { MarkdownPreview } from '@/components/MarkdownPreview';
 
@@ -56,7 +57,7 @@ export default async function PreviewBrand() {
         }}
       >
         {/* Plain <img> on purpose: srcSet drives the responsive webp. */}
-        {/* biome-ignore lint/performance/noImgElement: srcSet is a feature here */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/illustrations/logo-mark-v3-128.webp"
           srcSet="/illustrations/logo-mark-v3-32.webp 32w, /illustrations/logo-mark-v3-64.webp 64w, /illustrations/logo-mark-v3-128.webp 128w, /illustrations/logo-mark-v3-256.webp 256w, /illustrations/logo-mark-v3-1024.webp 1024w"
@@ -95,6 +96,7 @@ export default async function PreviewBrand() {
           textAlign: 'center',
         }}
       >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/illustrations/quote-mark-v3-56.webp"
           srcSet="/illustrations/quote-mark-v3-56.webp 56w, /illustrations/quote-mark-v3-120.webp 120w, /illustrations/quote-mark-v3-240.webp 240w, /illustrations/quote-mark-v3-480.webp 480w"
@@ -128,8 +130,8 @@ export default async function PreviewBrand() {
       <MarkdownPreview content={html} />
 
       <p style={{ marginTop: '2rem', fontSize: '0.9rem', color: 'var(--gray-700)' }}>
-        ← <a href="/preview">Back to preview index</a> ·{' '}
-        <a href="/preview/decisions">Next: Decision Log →</a>
+        ← <Link href="/preview">Back to preview index</Link> ·{' '}
+        <Link href="/preview/decisions">Next: Decision Log →</Link>
       </p>
     </>
   );

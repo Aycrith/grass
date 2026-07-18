@@ -66,7 +66,6 @@ export function inServiceArea(zip: string): boolean {
 
 export function estimatedQuoteCents(
   service: keyof typeof PRICING_FLOOR_CENTS,
-  _bucket: 'small' | 'medium' | 'large' = 'medium',
 ): number {
   if (service === 'mowing_per_visit_small') return PRICING_FLOOR_CENTS.mowing_per_visit_small;
   if (service === 'mowing_per_visit_medium') return PRICING_FLOOR_CENTS.mowing_per_visit_medium;

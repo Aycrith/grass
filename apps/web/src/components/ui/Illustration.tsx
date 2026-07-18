@@ -55,6 +55,7 @@ export function Illustration({
   // declare the intrinsic dimensions for layout pre-paint and aspect-ratio
   // fallback when no CSS class overrides.
   return (
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       src={src}
       alt={alt ?? ''}

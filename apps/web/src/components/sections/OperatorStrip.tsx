@@ -104,7 +104,7 @@ export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
 
           <FadeUp as="div" className={styles.bio} delay={STAGGER_STEP_S * 1}>
             <h2 className={styles.bioHeading}>
-              Hi, I'm <em>{operator.name}</em>.
+              Hi, I&apos;m <em>{operator.name}</em>.
             </h2>
             <span className={styles.bioMeta}>
               {operator.yearsMowing} years cutting grass in 33771

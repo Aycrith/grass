@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /**
  * /preview/ads — renders autonomous-paid-acquisition.md.
  *

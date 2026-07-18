@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /**
  * /preview/design — Live visual preview of the design system spec.
  *

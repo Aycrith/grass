@@ -86,7 +86,7 @@ export function ReviewMagnet({ className }: ReviewMagnetProps): ReactNode {
         <div className="container">
           <FadeUp className={styles.card}>
             <Eyebrow tone="default" >
-              When something isn't right
+              When something isn&apos;t right
             </Eyebrow>
             <h2 className={styles.cardHeading}>{reviewPage.notRightTitle}</h2>
             <p className={styles.cardBody}>{reviewPage.notRightBody}</p>

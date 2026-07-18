@@ -34,7 +34,7 @@ export default function PrivacyPage() {
         <li>To improve our website (anonymous analytics only)</li>
       </ul>
 
-      <h2>What we don't do</h2>
+      <h2>What we don&apos;t do</h2>
       <ul>
         <li>We do not sell your information to third parties.</li>
         <li>We do not share your data with advertisers.</li>

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /**
  * /preview/compliance — renders the licensing map + the deferred-drafts
  * ladder. Every deferred item has its draft already written.

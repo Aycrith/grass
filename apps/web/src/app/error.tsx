@@ -9,6 +9,7 @@
  * message to the customer and a "try again" affordance.
  */
 
+import Link from 'next/link';
 import { useEffect } from 'react';
 
 import { Container, Section } from '@/components/site';
@@ -42,9 +43,9 @@ export default function GlobalError({
             <button type="button" onClick={reset} className={styles.primaryCta}>
               Try again
             </button>
-            <a href="/" className={styles.outlineCta}>
+            <Link href="/" className={styles.outlineCta}>
               Back to home
-            </a>
+            </Link>
           </div>
         </div>
       </Container>
