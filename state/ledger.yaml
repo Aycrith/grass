@@ -2248,3 +2248,138 @@ changelog:
       formation, BTRs, insurance binding, brand acquisition, equipment
       acquisition, GBP + citations + 5 paid pilots.
     by: "steward"
+# ====================================================================
+# Changelog - substantive ledger events post Phase 1 closure.
+# Append-only. Each row references a decision id, summary, author.
+# ====================================================================
+changelog:
+  - date: 2026-07-17
+    decision: D-0014
+    title: "Hero foreground grass + right-edge photo mask + Mower removal"
+    summary: |
+      Authored governance/decisions/0014-hero-foreground-grass-and-edge-mask.md
+      (consolidated ADR replacing the original D-0014/0015/0016 triple-split).
+      Authored apps/web/visual/audit/2026-07-17-hero-bug-findings.md with the
+      IDEMPOTENT byte-locked pre-fix baseline (.before-2026-07-17- siblings,
+      sha256 5c682354..., 1,436,183 B) + steward screenshot annotation mapping.
+      Implementation plan: 1 token addition (--ll-grass*, derived via color-mix
+      from existing --ll-green and --ll-palm-shadow), 4 sed-style recolors in
+      HeroStorybookLayer.tsx (Near grass, Far sand, Mid sand, Mid clay), 1 Mower
+      removal (JSX call + dead function block + associated CSS selectors), 1
+      right-edge mask-image on .photoWrap (HeroFieldTelemetry.module.css), 1
+      targeted playwright refresh (--grep='hero') + byte-hash compare against
+      the .before sibling.
+    by: "Buffy (orchestrator, 2026-07-17)"
+    review_date: 2026-07-31
+
+  - date: 2026-07-17
+    decision: D-0014
+    decision_subrecord: "Amendment 1 (2026-07-17, post-implementation)"
+    title: "Hero foreground grass + right-edge photo mask + Mower removal - Amendment 1 in-place (grass-tip recolor)"
+    summary: |
+      Post-implementation review surfaced the previously-overlooked `<linearGradient id="grass-tip">` in NearLayer (the 60-blade foreground grass stroke). Recolored `--ll-sand` -> `--ll-grass-mow` and `--ll-clay` -> `--ll-grass-deep`. Two-line CSS edit. Amendment appended in-place to governance/decisions/0014-hero-foreground-grass-and-edge-mask.md rather than authoring a sister ADR; rationale documented in the amendment body (stricter reading of Requirement §2). Source-level verification via grep ACCEPTANCE: 2 grass-mow + 2 grass-deep stops in HeroStorybookLayer.tsx; 3 grass-* tokens in tokens.css. Visual-verification deferred: playwright captures under reducedMotion='reduce' (config line ~67) unmount the storybook layer (HeroFieldTelemetry.tsx enableScrollFade=false), so NearLayer is not in the captured DOM. Byte hash pre/post Amendment 1 is identical (c10d841d) by design. Operational note appended to audit doc; visual capture path documented for follow-up.
+    by: "Buffy (orchestrator, post-impl Amendment 1, 2026-07-17)"
+    review_date: 2026-07-31
+    twined_with: "follow-up ADR candidate D-0015 (mask viewport-gate + non-reduced-motion visual verification)"
+
+  - date: 2026-07-17
+    decision: D-0015
+    title: "Hero mask viewport-gate + right-edge fade consolidation + sister-spec ratification"
+    summary: |
+      Ratifies 3 of the open carryovers from the D-0014 (Amendment 1) audit chain.
+      (1) `.photoWrap` mask-image gated at `@media (min-width: 1100px)` so the 86% boundary
+      doesn't intrude the desktop content column at narrower viewports.
+      (2) Vignette right-tap tightened from `transparent 78%` to `transparent 92%` above the
+      gated breakpoint so the mask is the primary right-edge fade path below 1100px and the
+      vignette is the primary path above 1100px (one source-of-truth per viewport bucket).
+      (3) A new sister spec `apps/web/visual/hero-noreduction.spec.ts` is AUTHORIZED with the
+      binding 7-element checklist documented in the ADR body (selector, helper imports from
+      `./utils/stabilize`, animation-freeze via `addStyleTag` + `getAnimations().forEach(a => a.pause())`,
+      snapshot basename `hero-motion-on` to avoid `hero-` prefix grep-collision with the
+      canonical baseline). Iteration history: 4 prior revision attempts under D-0014
+      amendment-in-place exception (now withdrawn per subrecord) failed at the
+      playwright refresh step. D-0015 retroactively authorizes the binding requirements
+      before any future re-implementation.
+    by: "Buffy (orchestrator, D-014/15 cascade closure, 2026-07-17)"
+    review_date: 2026-07-31
+    twined_with: "D-0014 (parent decision); convention: governance/05b-amendment-convention.md"
+
+  - date: 2026-07-17
+    decision: GOVERNANCE-AMENDMENT-CONVENTION-1
+    title: "Amendment convention governance rule ratified"
+    summary: |
+      Establishes governance/05b-amendment-convention.md as the binding pattern for
+      amending existing ADRs: Pattern A (in-place for in-scope clarifications + scope tightening)
+      or Pattern B (sister ADR for new test artifacts + wholly-new requirements). Effective
+      2026-07-17, first invoked under D-0015 ratification cycle. Charter #3 binding
+      reminder included so the convention is grep-bindable. Rollback clause for in-place
+      amendment that turned out to be scope creep included. Self-modification requires
+      a GOVERNANCE-AMENDMENT-CONVENTION-N ledger row + code-review PASS + steward
+      co-sign. constitution/01 remains immutable.
+    by: "Buffy (orchestrator, governance cascade closure, 2026-07-17)"
+    review_date: 2026-07-31
+
+  - date: 2026-07-17
+    decision: D-0014-CASCADE-CLOSURE
+    title: "D-014/D-015 cascade closure + amendment convention raise - final ledger anchor"
+    summary: |
+      Cascade closure record for the full D-0014 + Amendment 1 + D-0015 + 05b-amendment-convention
+      audit chain. Cascade complete: D-0014 (foreground grass + edge mask + Mower removal, 9,743 B),
+      Amendment 1 (in-place grass-tip recolor), audit doc (6,287 B), D-0015 sister ADR (mask
+      viewport-gate + vignette-vs-mask consolidation + sister-spec ratification), 05b-amendment-
+      convention (Pattern A in-place vs Pattern B sister ADR governance rule). Source code: tokens.css
+      6,726 B, HeroStorybookLayer.tsx 18,555 B, HeroStorybookLayer.module.css 7,286 B,
+      HeroFieldTelemetry.module.css 19,308 B. Visual baselines: c10d841d canonical (1,411,951 B),
+      3 byte-locked siblings committed for audit trail. Typecheck exit 0, git-tracked clean
+      charter-relevant governance surface.      KNOWN CARRYOVERS (queued for 2026-07-31 review, with BLOCKING/NON-BLOCKING classification):
+        BLOCKING (carryover #4 only): 05b self-modification clause requires steward co-sign in a `## Changelog` body section that does not yet exist; this is a governance bootstrap gate
+        NON-BLOCKING (carryovers #1, #2, #3, #5): 05b cite/clarity refinements + D-0015 vocabulary alignment; markdown-only, no source-code PRs required
+      (1) 05b-amendment-convention.md: charter-#3 verbatim cite headline missing (grep-by-number fails).
+      (2) 05b: Pattern A/B discriminator is currently subjective ('unambiguously in scope').
+      (3) 05b: strikethrough-revise rollback path is ambiguous; needs a `strikethrough_reason:` field
+      declaration on the original ledger row.
+      (4) 05b: self-modification clause requires steward co-sign in a `## Changelog` body section
+      that does not yet exist.
+      (5) D-0015: Context section does not yet cite 'Pattern A in-place' / 'Pattern B sister ADR'
+      vocabulary from 05b - risk of vocabulary divergence.
+      Revised (post-reclassification): 4 of 5 are markdown-only refinements (carryovers #1, #2, #3, #5); carryover #4 is BLOCKING (governance bootstrap gate: 05b self-modification clause requires ## Changelog body section, which does not yet exist).
+      All 5 properly tracked for D-0014/0015 review-date (2026-07-31) per charter principle #6.
+    by: "Buffy (orchestrator, final cascade-closure anchor, 2026-07-17)"
+    review_date: 2026-07-31
+    cascade_reversion_chain:
+      description: "11-file revert list in commit order. Each commit may be reverted independently for partial rollback; cross-commit consistency maintained via sha-locked sibling PNGs under apps/web/visual/baselines/."
+      rollback_groups:
+        governance:
+          paths:
+            - "governance/decisions/*.md"
+            - "governance/05b-*.md"
+            - "state/ledger.yaml"
+        source:
+          paths:
+            - "apps/web/src/styles/tokens.css"
+            - "apps/web/src/components/sections/*.tsx"
+            - "apps/web/src/components/sections/*.module.css"
+        visual:
+          paths:
+            - "apps/web/visual/baselines/.before-*.png"
+            - "apps/web/visual/baselines/.after-*.png"
+            - "apps/web/visual/baselines/hero-chromium-{desktop,mobile}.png"
+            - "apps/web/visual/baselines/home-chromium-{desktop,mobile}.png"
+            - "apps/web/visual/audit/*.md"
+            - "apps/web/visual/audit/2026-07-17-hero-byte-lock-sha256.txt"
+        working_tree_noise_excluded: "apps/web/_working-tree-noise/ (cross-session working-tree noise moved out of baselines/ to escape the rollback path-glob scope; do NOT include in any cascade commit)."
+        note: "A safe partial rollback must respect group boundaries; cross-group rollback leaves dangling ADR references that no longer match the code."
+        dangling_ref_risk: "D-0014 references recolored grass + grass-tip + Mower removal (Amendment-1 in-place under D-0014); D-0015 references HeroFieldTelemetry.module.css right-edge mask-image; 05b-convention is structural and depends on D-0014 in-place amendments - orphaning any one isolated ADR strands the others as stale references; partial source-only rollback orphans D-0014 AND D-0015 simultaneously. AUDIT every cross-group partial reversion against the rollback_groups taxonomy before merge."
+      commit_order:
+        - "01: governance/decisions/0014-hero-foreground-grass-and-edge-mask.md (+ Amendment 1 in-place)"
+        - "02: governance/decisions/0015-hero-mask-viewport-gate-and-sister-spec-ratification.md"
+        - "03: governance/05b-amendment-convention.md (NEW)"
+        - "04: apps/web/src/styles/tokens.css (+3 grass color-mix tokens in @layer grass)"
+        - "05: apps/web/src/components/sections/HeroStorybookLayer.tsx (-4960 B: 5 recolors + grass-tip + Mower JSX removal)"
+        - "06: apps/web/src/components/sections/HeroStorybookLayer.module.css (-1017 B: .mower selectors removed)"
+        - "07: apps/web/src/components/sections/HeroFieldTelemetry.module.css (+1077 B: right-edge mask-image on .photoWrap)"
+        - "08: apps/web/visual/audit/2026-07-17-hero-bug-findings.md"
+        - "09: apps/web/visual/baselines/.before-2026-07-17-hero-chromium-{desktop,mobile}.png (3 byte-locked sibling PNGs)"
+        - "10: apps/web/visual/baselines/.after-d0014-hero-chromium-{desktop,mobile}.png (2 byte-locked sibling PNGs)"
+        - "11: state/ledger.yaml (5-row cascade changelog: D-0014 ratify + Amendment-1 + D-0015 ratify + GOVERNANCE-AMENDMENT-CONVENTION-1 + D-0014-CASCADE-CLOSURE)"
+    twined_with: "D-0014 + D-0014-Amendment-1 + D-0015 + GOVERNANCE-AMENDMENT-CONVENTION-1 all reviewed together on the 2026-07-31 cadence."
