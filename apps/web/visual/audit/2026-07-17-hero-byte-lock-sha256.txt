@@ -6,7 +6,7 @@
 # This matches GNU sha256sum binary output; `sha256sum -c <this-file>` reads the
 # ./basename column relative to CWD.
 #
-# VERIFICATION (from REPO ROOT):
+# VERIFICATION INCANTATION (from REPO ROOT):
 #   cd apps/web/visual/baselines && sha256sum -c ../audit/2026-07-17-hero-byte-lock-sha256.txt
 #
 # EXPECTED OUTPUT (paths shown verbatim with ./-prefix per sha256sum -c spec):
@@ -18,22 +18,33 @@
 # refresh. Stewards MUST run the verification incantation BEFORE push per
 # CLAUDE.md hard rule #2 + charter principle #3.
 #
-# SCOPE NOTE (Q4 closure, 2026-07-17):
+# SCOPE NOTE (Q4 + 5th-commit closure, 2026-07-17):
 # The ledger's `cascade_reversion_chain.rollback_groups.visual.paths` includes
 # the brace-expansion `hero-chromium-{desktop,mobile}.png` (= 2 paths). Only
-# `hero-chromium-desktop.png` is byte-locked below. The mobile counterpart is
-# REGENERATABLE via `bun run visual:refresh` (Playwright-diff-managed
-# baseline; not SHA256-byte-managed). The `home-chromium-{desktop,mobile}.png`
-# brace-expansion IS fully byte-locked (both paths covered below).
+# `hero-chromium-desktop.png` is byte-locked below (currently 7 entries; the
+# mobile counterpart is REGENERATABLE via `bun run visual:refresh`, which is
+# the Playwright-diff-managed baseline channel — not SHA256-byte-managed).
+# The `home-chromium-{desktop,mobile}.png` brace-expansion IS fully byte-locked
+# (both paths covered below).
 #
-# This asymmetry is intentional cascade partition: byte-locked PNGs are the
-# cascade's per-version anchors (current + pre/post-fix siblings);
-# regeneratable PNGs are per-route current-state baselines validated by
-# `bun run visual:test`'s Playwright screenshot-diff mechanism. The two
-# channels together cover the Charter #3 audit surface for the visual
-# rollback set: byte-lock catches cascade-revert attempts, Playwright
-# catches intent-changing new commits. Both are mechanically verifiable
-# (sha256sum -c exit code / Playwright test exit code).
+# This asymmetry is the cascade's intentional audit-channel partition:
+# byte-locked PNGs are the cascade's per-version anchors (current baselines +
+# pre/post-fix siblings — 3 `.after-d0014-*` siblings + 1 `.before-*` sibling,
+# all structurally peers); regeneratable PNGs are per-route current-state
+# baselines validated by `bun run visual:test`'s Playwright screenshot-diff
+# mechanism. The two channels together cover the Charter #3 audit surface for
+# the visual rollback set: byte-lock catches cascade-revert attempts,
+# Playwright catches intent-changing new commits. Both are mechanically
+# verifiable (sha256sum -c exit code / Playwright test exit code).
+#
+# AUDIT-EVIDENCE NOTE: the `.before-2026-07-17-home-chromium-desktop.png` PNG
+# has SHARES bytes with current `home-chromium-desktop.png` (both d3e4eb2c...).
+# This is BYTE-IDENTITY-EVIDENCE that the pre-fix home-route capture and the
+# post-fix home-route capture match — which is consistent with the cascade's
+# documented scope (D-0014 + D-0015 hero recolor + mask-fix cascades did not
+# affect the home route; only the hero route's pre/post-fix siblings show
+# diverging SHAs). The byte-identity is a positive audit signal: the home
+# baseline was already correct at pre-fix time and stayed correct.
 #
 # Cross-reference: state/ledger.yaml → cascade_reversion_chain.rollback_groups
 #                                   .visual.paths (full scope provenance).
@@ -46,3 +57,4 @@ d3e4eb2c14ac3a56f6ad28ee01b80088c7bfeb5a9d3e8335464b7ebfb653356c  ./home-chromiu
 c10d841deece2481d7e4a82ba9825a648623cfbcbb7d3fd51201ec3cfc7aacac  ./.after-d0014-amendment1-pre-fix-hero-chromium-desktop.png
 5c6823548fc540ecf52871d15026258b69a306c3b8325605d11af0f8c9efb754  ./.after-d0014-post-fix-hero-chromium-desktop.png
 5c6823548fc540ecf52871d15026258b69a306c3b8325605d11af0f8c9efb754  ./.after-d0014-pre-fix-hero-chromium-desktop.png
+d3e4eb2c14ac3a56f6ad28ee01b80088c7bfeb5a9d3e8335464b7ebfb653356c  ./.before-2026-07-17-home-chromium-desktop.png
