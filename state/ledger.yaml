@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-17 (Day 24 — D-0040 schedule-timeline + faq-accordion in matrix, frozen-clock baselines)
+# Last updated: 2026-07-19 (Day 26 — D-0043 additive green overlay + D-0045 native 4-tier <picture> cascade + D-0044 viewport motion + ProcessSteps 3-step rework + cleanup, commit 1232fcc)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-17 (Day 24 — D-0040 schedule-timeline + faq-accordion in matrix, frozen-clock baselines)
+# Last updated: 2026-07-19 (Day 26 — D-0043 additive green overlay + D-0045 native 4-tier <picture> cascade + D-0044 viewport motion + ProcessSteps 3-step rework + cleanup, commit 1232fcc)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -536,6 +536,89 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-19"
+    day: 26
+    change: >
+      D-0043 + D-0044 + D-0045 + cleanup — additive green overlay,
+      viewport motion substrate, native 4-tier <picture> cascade,
+      ProcessSteps 3-step rework, codebase hygiene (commit 1232fcc).
+
+      Bundles three governance decisions + a body of cleanup into
+      one landing-page rebuild commit:
+
+      (1) D-0043 — Palette Rebuild, additive overlay path.
+      Quantified verification: global sand-pixel coverage 0.02%
+      (target ≤ 2,500); max grid-cell sand 0.12%; brand-distance
+      ≥ 22%; CI gate pass. Approach: two pure CSS/SVG additive
+      layers over the production photo, with no photo asset
+      modified, no cross-fade behavior changed, scroll-driven
+      opacity, hidden on mobile / coarse-pointer / prefers-
+      reduced-motion via the existing CSS gate. Originally-
+      planned catalog re-roll (alt A) was superseded by the
+      additive overlay path (alt C reclassified to primary) per
+      ADR §Status. Same R43.x metrics achieved in ~1 hour with
+      zero asset regeneration.
+
+      (2) D-0045 — Structural Cascade. Native 4-tier <picture>
+      chain (Desktop AVIF 159 KB → Desktop WebP 222 KB → Mobile
+      AVIF 98 KB → Mobile WebP 134 KB → JPEG fallback) replaces
+      the previous single next/image chain. Generated via
+      apps/comfyui/scripts/generate-hero-v2-cascade.mjs (sharp
+      pipeline: EXIF rotation, metadata strip, 250 KB per-asset
+      budget). Hero byte-stays at ~100–220 KB per request, well
+      under the 600 KB Lighthouse CI cap.
+
+      (3) D-0044 — Viewport Motion Architecture. New
+      useViewportMotion hook (apps/web/src/components/motion/
+      useViewportMotion.tsx) exposes shared scroll-coupled
+      parallax motion for the 6 hero storybook layers (sky /
+      egret / fern / mower / songbirds / gouache) at distinct
+      cadences. Gates on prefers-reduced-motion, coarse pointer,
+      and ≤768px viewport width. HeroStorybookLayer reads the
+      layerMotion prop for per-layer vertical parallax.
+
+      Plus ProcessSteps rework: 4 → 3 conversion-focused steps
+      (Coverage → Quote → Relax) with per-step micro-CTAs and a
+      section-bottom CTA, fully content-driven via
+      lib/content.ts (processSteps reshaped to { heading,
+      steps, sectionCta } const). New ProcessStepIcon hand-
+      authored SVG component.
+
+      Operational cleanup: stale D-0045 'deferred' TODO removed
+      from HeroFieldTelemetry.tsx; hardcoded "Three steps, no
+      portal." + bottom CTA moved to lib/content.ts (the curated
+      data-driven source); HeroCinematic + v1 hero image assets
+      removed (stale); audit / capture working-tree noise
+      cleaned (nul, apps/web/tmp); landing-page build specs
+      preserved as historical artifacts under docs/build-history/.
+
+      Validation: bun run build (84 static pages, 5.8s compile);
+      bun run lint (clean); bun run test:charter (3/3 —
+      lint-agents, lint-capabilities, ledger-freshness);
+      bun run visual:test (component close-ups all green, home
+      routes green on chromium-desktop after baseline refresh;
+      mobile home baselines carry forward the documented D-0040
+      setSystemTime ±1–2% variance for routeProgress rendering).
+
+      Files changed: ~100. New: 3 governance ADRs (D-0043,
+      D-0044, D-0045), useViewportMotion.tsx, ProcessStepIcon.tsx,
+      generate-hero-v2-cascade.mjs, v2 hero AVIF/WebP variants,
+      2026-07-19-landing-page-{resume,rebuild-resume}-spec.md
+      historical artifacts under docs/build-history/. Modified:
+      HeroFieldTelemetry.tsx, HeroFieldTelemetry.module.css,
+      ProcessSteps.tsx, ProcessSteps.module.css, lib/content.ts,
+      sections/index.ts, motion/index.ts, LenisProvider.tsx,
+      app/page.tsx, app/layout.tsx, app/visual-test/page.tsx,
+      app/preview/decisions/page.tsx, .gitignore, 16+ refreshed
+      Playwright baselines. Deleted: HeroCinematic.tsx +
+      .module.css; apps/web/public/hero/{desktop,mobile}.{avif,
+      webp}; apps/web/tmp/*; nul.
+
+      Refs: governance/decisions/0043-palette-rebuild.md,
+      governance/decisions/0044-viewport-motion-architecture.md,
+      governance/decisions/0045-structural-cascade.md.
+    by: "Buffy + Mavis (orchestrator, 2026-07-19)"
+
   - date: "2026-07-17"
     day: 24
     change: >
