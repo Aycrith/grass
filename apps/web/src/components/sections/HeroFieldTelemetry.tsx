@@ -166,6 +166,19 @@ export function HeroFieldTelemetry({
     setEnableScrollFade(!(reducedMotion || isCoarse));
   }, [reducedMotion]);
 
+  // ?debug=show-additive URL-param gate (D-0046). Forces additive overlay
+  // opacities to 1.0 at every scroll position so the steward can audit visual
+  // fidelity independent of scroll-progress motion gating AND the @media CSS
+  // hide gates. SSR-safe: defaults false on first render, useEffect flips
+  // client-side without React #418. URLSearchParams exact-equality on the
+  // named param; unaffected by utm_/other-prefixed querystrings.
+  const [isDebugAdditive, setIsDebugAdditive] = useState(false);
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('debug') === 'show-additive') {
+      setIsDebugAdditive(true);
+    }
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start start', 'end end'],
@@ -300,9 +313,18 @@ export function HeroFieldTelemetry({
          *   - FieldStamp is decorative passport chrome on the
          *     postcard, not dashboard chrome, so it is always a
          *     plain `<div>` regardless of scroll motion. */}
-        <LiveStatus now={now ?? undefined} uiOpacity={uiOpacity} uiY={uiY} />
+        <LiveStatus now={now ?? undefined} uiOpacity={isDebugAdditive ? 1 : uiOpacity} uiY={isDebugAdditive ? 0 : uiY} />
         <FieldStamp />
-        <TelemetryStats uiOpacity={uiOpacity} uiY={uiY} progress={smoothProgress} />
+        <TelemetryStats uiOpacity={isDebugAdditive ? 1 : uiOpacity} uiY={isDebugAdditive ? 0 : uiY} progress={smoothProgress} isDebugAdditive={isDebugAdditive} />
+        {isDebugAdditive && (
+          <div
+            className={styles.debugBanner}
+            role="status"
+            aria-live="polite"
+          >
+            debug: additive layers forced visible
+          </div>
+        )}
       </div>
     </section>
   );
@@ -484,8 +506,8 @@ function LiveStatus({
   uiY,
 }: {
   now: string | undefined;
-  uiOpacity: MotionValue<number>;
-  uiY: MotionValue<number>;
+  uiOpacity: MotionValue<number> | number;
+  uiY: MotionValue<number> | number;
 }): ReactNode {
   const reduced = useReducedMotion();
   const [minute, setMinute] = useState(() => {
@@ -591,10 +613,12 @@ function TelemetryStats({
   uiOpacity,
   uiY,
   progress,
+  isDebugAdditive,
 }: {
-  uiOpacity: MotionValue<number>;
-  uiY: MotionValue<number>;
+  uiOpacity: MotionValue<number> | number;
+  uiY: MotionValue<number> | number;
   progress: MotionValue<number>;
+  isDebugAdditive?: boolean;
 }): ReactNode {
   // D-0043 (rev 4) — per-stat micro-cascade with vertical lift.
   // Each stat rides its own narrow scroll window (0.04 step) for
@@ -641,7 +665,7 @@ function TelemetryStats({
         <motion.span
           key={stat.value}
           className={styles.telemetryItem}
-          style={{ opacity: statOpacities[i]!, y: statYs[i]! }}
+          style={{ opacity: isDebugAdditive ? 1 : statOpacities[i]!, y: isDebugAdditive ? 0 : statYs[i]! }}
         >
           <span className={styles.telemetryValue}>{stat.value}</span>
           <span className={styles.telemetryLabel}>{stat.label}</span>

@@ -251,6 +251,35 @@
 }
 
 /* ============================================================
+ * ?debug=show-addditive banner. Fixed top-center so it floats
+ * above the 4K photo + storybook + dashboard without being
+ * clipped by `.viewport`'s `overflow:hidden`. Inert unless
+ * ?debug=show-addditive is in the URL.
+ * ============================================================ */
+
+.debugBanner {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  padding: 6px 14px;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  background: color-mix(in oklab, var(--ll-palm-bark) 92%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--ll-sand-bleached);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* ============================================================
  * Scrim - dark wash for left-column text legibility.
  * Independent of the photo vignette so the storybook / photo
  * transition can run on top of it.
