@@ -2,7 +2,6 @@
  * Public exports for the homepage section components.
  */
 
-export { HeroCinematic } from './HeroCinematic';
 export { HeroFieldTelemetry } from './HeroFieldTelemetry';
 export { HeroStorybookLayer } from './HeroStorybookLayer';
 export { TrustStrip } from './TrustStrip';

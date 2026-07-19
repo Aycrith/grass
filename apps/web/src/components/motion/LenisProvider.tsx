@@ -12,7 +12,6 @@
  * not animate the document. We also respect `pointer: coarse` and ≤768px by
  * effectively disabling the smooth scroll (Lenis becomes `smoothWheel: false`).
  *
- * Phase A8 introduces this wrapper; Phase C (HeroCinematic) is the first
  * consumer. The wrapping is invisible until scroll-linked components appear.
  */
 

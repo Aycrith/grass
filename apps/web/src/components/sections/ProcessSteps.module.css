@@ -1,11 +1,11 @@
 /* ============================================================
- * ProcessSteps — 4 numbered steps horizontal desktop,
+ * ProcessSteps — 3 numbered steps horizontal desktop,
  * vertical mobile. Each step: large number + eyebrow + title
- * + 2-line description. Clays the numerals, palms the title.
+ * + body + micro-CTA. Clays the numerals, palms the title.
  *
  * D-0030 — `.headerMedia` and `.headerText` removed. The
  * decorative mowing image in the header was over-decorating
- * the section (4 step icons + 1 header image = 5 illustrations
+ * the section (3 step icons + 1 header image = 4 illustrations
  * on a single fold). Header is now a single-line heading.
  * Dashed connector line (`.grid::before`) is kept as it carries
  * a structural relationship, not decoration.
@@ -43,7 +43,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--space-5);
   position: relative;
 }
@@ -61,8 +61,8 @@
 .connector {
   position: absolute;
   top: 36px;
-  left: 56px;
-  right: 56px;
+  left: 72px;
+  right: 72px;
   height: 0;
   border-top: 2px dashed var(--ll-clay);
   opacity: 0.45;
@@ -127,4 +127,15 @@
   color: var(--ll-palm-bark);
   opacity: 0.85;
   margin: 0;
+}
+
+.cta {
+  align-self: flex-start;
+  margin-top: var(--space-2);
+}
+
+.sectionCta {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-8);
 }

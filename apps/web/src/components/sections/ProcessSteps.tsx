@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * ProcessSteps — four numbered steps describing how a quote turns
+ * ProcessSteps — three numbered steps describing how a quote turns
  * into a clean yard.
  *
  * Reads `lib/content.ts → processSteps`. The horizontal connector
@@ -15,7 +15,7 @@
  *     reusing `services.mowing.imageSlot` to "tie this section
  *     visually back to the bento above." Per the ornament cap
  *     (≤1 major illustration per fold), this section already
- *     has 4 step icons — adding a 5th illustration in the header
+ *     has 3 step icons — adding a 4th illustration in the header
  *     was over-decorating. Header is now heading-only.
  *   - StaggerGroup wrapper removed (below-fold = static per
  *     D-0030 motion gating). Steps render flat on first paint.
@@ -25,6 +25,7 @@ import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { type ReactNode, useRef } from 'react';
 
 import { Section } from '@/components/site';
+import { Button } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { processSteps } from '@/lib/content';
 
@@ -44,7 +45,7 @@ export function ProcessSteps({ className }: ProcessStepsProps): ReactNode {
     <Section rhythm="loose" className={cn(styles.root, className)} data-test-section="process-steps">
       <div className="container">
         <header className={styles.header}>
-          <h2 className={styles.headerHeading}>Four steps, no portal.</h2>
+          <h2 className={styles.headerHeading}>{processSteps.heading}</h2>
         </header>
 
         <div ref={ref} className={styles.grid}>
@@ -56,7 +57,7 @@ export function ProcessSteps({ className }: ProcessStepsProps): ReactNode {
             style={{ transformOrigin: 'left center' }}
             aria-hidden="true"
           />
-          {processSteps.map((step, i) => (
+          {processSteps.steps.map((step, i) => (
             <motion.article
               key={step.n}
               className={styles.step}
@@ -73,8 +74,24 @@ export function ProcessSteps({ className }: ProcessStepsProps): ReactNode {
               <p className={styles.label}>{step.label}</p>
               <h3 className={styles.title}>{step.title}</h3>
               <p className={styles.body}>{step.body}</p>
+              <Button as="link" href={step.cta.href} variant="outline" size="sm" className={styles.cta}>
+                {step.cta.label}
+                <span aria-hidden="true"> →</span>
+              </Button>
             </motion.article>
           ))}
+        </div>
+
+        <div className={styles.sectionCta}>
+          <Button
+            as="link"
+            href={processSteps.sectionCta.href}
+            variant="sun"
+            size="lg"
+          >
+            {processSteps.sectionCta.label}
+            <span aria-hidden="true"> →</span>
+          </Button>
         </div>
       </div>
     </Section>

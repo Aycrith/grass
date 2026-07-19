@@ -139,7 +139,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to main content
         </a>
         {/* WP19 - LenisProvider mounts smooth-scroll so the ParallaxImage
-         * in HeroCinematic (and every other scroll-coupled component
          * site-wide) actually sees a non-zero `scrollYProgress`. The
          * provider is gated for prefers-reduced-motion + coarse-pointer +
          * <=768px viewports inside LenisProvider.tsx so mobile and

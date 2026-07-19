@@ -15,7 +15,6 @@
  *   #schedule-timeline → ScheduleTimeline
  *   #faq-accordion     → FAQAccordion
  *   #final-cta-banner  → FinalCTABanner
- *   #hero-cinematic    → HeroCinematic (library fallback)
  *   #marquee-quote     → MarqueeQuote (library)
  *   #service-area-stats → ServiceAreaStats (library)
  *   #editorial-break   → EditorialBreak (library)
@@ -37,7 +36,6 @@ import {
   EditorialBreak,
   FAQAccordion,
   FinalCTABanner,
-  HeroCinematic,
   HeroFieldTelemetry,
   MarqueeQuote,
   OperatorStrip,
@@ -93,9 +91,6 @@ export default function VisualPage() {
        * campaigns; if not, drop the corresponding reduced-motion
        * spec entries from `visual/reduced-motion.spec.ts`.
        * =========================================================== */}
-      <div id="hero-cinematic-mount" aria-label="HeroCinematic visual baseline (library fallback)">
-        <HeroCinematic id="hero-cinematic" />
-      </div>
       <div id="marquee-quote" aria-label="MarqueeQuote visual baseline (library)">
         <MarqueeQuote />
       </div>

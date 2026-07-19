@@ -30,7 +30,6 @@
  *      OperatorNote + MarqueeQuote to the library (still available for
  *      /about and seasonal campaigns).
  *
- *   3. **D-XXXX (creative rebrand, 2026-07-17)**: HeroCinematic was
  *      swapped for HeroMowerScene. The storybook-painted-static-image
  *      hero felt dated and earned repeated steward pushback. The new
  *      hero is a hand-authored animated SVG landscape where a small
@@ -38,7 +37,6 @@
  *      in its mowed path. Multiple parallax layers, ambient CSS
  *      animations (drifting clouds, swaying palms, blooming wildflowers),
  *      and magnetic CTAs. The same id="hero" anchor is preserved so
- *      the ConversionRail still works. HeroCinematic is retained in
  *      the library for /visual-test and as a fallback.
  *
  * `EditorialBreak` (pretty, non-converting full-bleed image pause) and

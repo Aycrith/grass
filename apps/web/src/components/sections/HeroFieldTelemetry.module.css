@@ -72,6 +72,8 @@
 }
 
 .photoImg {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   object-position: 55% 55%;
   filter: saturate(1.08) contrast(1.03);
@@ -157,7 +159,9 @@
 @media (max-width: 767px),
        (pointer: coarse),
        (prefers-reduced-motion: reduce) {
-  .photoGrade {
+  .photoGrade,
+  .greenVignette,
+  .grassSilhouette {
     display: none;
   }
 
@@ -203,6 +207,47 @@
       transparent 78%
     );
   pointer-events: none;
+}
+
+/* ============================================================
+ * Green palette correction (D-0043 additive overlay).
+ *
+ * The production photo has ~14,200 sand-colored foreground pixels
+ * (target ≤ 2,500). These layers are purely additive: they sit on
+ * top of the existing photo and storybook without modifying either.
+ * Both are hidden on mobile / coarse-pointer / reduced-motion so
+ * the resting-state photo on those surfaces is untouched.
+ * ============================================================ */
+
+.greenVignette {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  background: linear-gradient(
+    to top,
+    color-mix(in oklab, var(--ll-green) 55%, transparent) 0%,
+    color-mix(in oklab, var(--ll-green) 15%, transparent) 25%,
+    transparent 45%
+  );
+}
+
+.grassSilhouette {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: clamp(60px, 12vh, 140px);
+  z-index: 2;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+.grassSvg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 /* ============================================================

@@ -33,11 +33,6 @@ export const hero = {
     'Local, solo-operator lawn care in Largo and the five adjacent Pinellas ZIPs. Free quotes within 24 hours. No contract, no franchise markup.',
   primaryCta: { label: 'Get a free quote', href: '/quote' },
   secondaryCta: { label: 'Call (727) 555-0123', href: 'tel:+17275550123' },
-  image: {
-    alt: 'Freshly mowed lawn in 33771 at golden hour.',
-    desktopSlot: '/hero/desktop.webp',
-    mobileSlot: '/hero/mobile.webp',
-  },
   /**
    * WP19: right-column SVG composition (replaces the photo right column
    * that was failing to render in <picture>+next/image setups).
@@ -978,32 +973,33 @@ export const reviewPage = {
   gbpUrl: 'https://g.page/r/largo-lawn/review',
 } as const;
 
-export const processSteps = [
-  {
-    n: '01',
-    label: 'Quote',
-    title: 'Tell me about your yard',
-    body: 'Free, 24-hour turnaround. Yard size, gate location, anything I should know.',
-  },
-  {
-    n: '02',
-    label: 'Schedule',
-    title: 'Pick a recurring slot',
-    body: 'Weekly, biweekly, or one-time. I keep the same day each visit so you know when I am coming.',
-  },
-  {
-    n: '03',
-    label: 'Mow',
-    title: 'I show up and mow clean',
-    body: 'Mow, edge, blow off the hard surfaces. Hose down the driveway if it needs it.',
-  },
-  {
-    n: '04',
-    label: 'Bill',
-    title: 'Per-visit pricing',
-    body: 'No subscription, no contract. Pay after each visit or set up monthly: your call.',
-  },
-] as const;
+export const processSteps = {
+  heading: 'Three steps, no portal.',
+  steps: [
+    {
+      n: '01',
+      label: 'Coverage',
+      title: 'Check your ZIP',
+      body: "Enter your ZIP or neighborhood. If you're inside 33771 or one of the five adjacent Pinellas ZIPs, you're on the route.",
+      cta: { label: 'Check your ZIP', href: '/quote?step=zip' },
+    },
+    {
+      n: '02',
+      label: 'Quote',
+      title: 'Get a flat rate',
+      body: "No portal, no subscription, no hidden fees. Pick your service and I'll send a flat rate within 24 hours.",
+      cta: { label: 'Get a quote', href: '/quote' },
+    },
+    {
+      n: '03',
+      label: 'Relax',
+      title: 'Book your first mow',
+      body: "I show up, mow, edge, and blow. You don't have to be home. Same guy, same day, every week.",
+      cta: { label: 'Book first mow', href: '/quote?intent=first-mow' },
+    },
+  ],
+  sectionCta: { label: 'Get a free quote', href: '/quote' },
+} as const;
 
 export const pricingHeader = {
   eyebrow: 'Pricing',

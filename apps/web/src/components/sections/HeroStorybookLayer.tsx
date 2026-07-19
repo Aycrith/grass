@@ -44,6 +44,8 @@ import type { MotionValue } from 'framer-motion';
 import { motion, useTransform } from 'framer-motion';
 import type { ReactNode } from 'react';
 
+import type { ViewportMotionLayerId } from '@/components/motion';
+
 import styles from './HeroStorybookLayer.module.css';
 
 interface HeroStorybookLayerProps {
@@ -51,6 +53,10 @@ interface HeroStorybookLayerProps {
   progress: MotionValue<number>;
   /** True on mobile + reduced-motion: skip scroll-scrubbed animations. */
   collapsed?: boolean;
+  /** D-0044 — per-layer vertical parallax motion values from useViewportMotion. */
+  layerMotion?: Partial<
+    Record<ViewportMotionLayerId, { y: MotionValue<number>; x: MotionValue<number> }>
+  >;
 }
 
 /**
@@ -63,6 +69,7 @@ interface HeroStorybookLayerProps {
 export function HeroStorybookLayer({
   progress,
   collapsed = false,
+  layerMotion,
 }: HeroStorybookLayerProps): ReactNode {
   // D-0043 — opacity eases 1 -> 0 across [0.10, 0.40] in 4 keys so
   // the first 10% holds the storybook as the resting state, then
@@ -74,7 +81,7 @@ export function HeroStorybookLayer({
   // fade is disabled).
   const opacity = useTransform(
     progress,
-    [0, 0.10, 0.30, 0.40],
+    [0, 0.1, 0.3, 0.4],
     collapsed ? [1, 1, 1, 1] : [1, 1, 0.5, 0],
   );
 
@@ -88,8 +95,8 @@ export function HeroStorybookLayer({
   // identity (no blur, full saturation).
   const filter = useTransform(progress, (v) => {
     if (collapsed) return 'blur(0px) saturate(100%)';
-    const start = 0.10;
-    const end = 0.40;
+    const start = 0.1;
+    const end = 0.4;
     const tRaw = (v - start) / (end - start);
     const t = Math.max(0, Math.min(1, tRaw));
     const blur = t * 14;
@@ -100,40 +107,48 @@ export function HeroStorybookLayer({
   // Each parallax layer translates horizontally as scroll progresses,
   // slower in the back, faster in the foreground. On mobile + reduced-
   // motion we lock translations to 0 so the scene is a still frame.
-  const farPanX = useTransform(progress, (v) =>
-    collapsed ? '0%' : `${-v * 6}%`,
-  );
-  const midPanX = useTransform(progress, (v) =>
-    collapsed ? '0%' : `${-v * 12}%`,
-  );
-  const nearPanX = useTransform(progress, (v) =>
-    collapsed ? '0%' : `${-v * 18}%`,
-  );
+  const farPanX = useTransform(progress, (v) => (collapsed ? '0%' : `${-v * 6}%`));
+  const midPanX = useTransform(progress, (v) => (collapsed ? '0%' : `${-v * 12}%`));
+  const nearPanX = useTransform(progress, (v) => (collapsed ? '0%' : `${-v * 18}%`));
 
   // Sky translates a touch slower than the far layer to give a 4-tier
   // depth separation (sky / far / mid / near) instead of the usual 3.
-  const skyPanX = useTransform(progress, (v) =>
-    collapsed ? '0%' : `${-v * 3}%`,
-  );
+  const skyPanX = useTransform(progress, (v) => (collapsed ? '0%' : `${-v * 3}%`));
+
+  // D-0044 — vertical parallax from useViewportMotion, mapped onto the
+  // existing storybook layers. The horizontal pan above is the legacy
+  // D-0042 motion; the vertical parallax is the new cascade layer.
+  const skyY = layerMotion?.sky?.y;
+  const farY = layerMotion?.egret?.y;
+  const midY = layerMotion?.mower?.y;
+  const nearY = layerMotion?.gouache?.y;
 
   return (
-    <motion.div
-      className={styles.layer}
-      style={{ opacity, filter }}
-      aria-hidden="true"
-    >
-      <motion.div className={styles.skyWrap} style={{ x: skyPanX }}>
+    <motion.div className={styles.layer} style={{ opacity, filter }} aria-hidden="true">
+      <motion.div
+        className={styles.skyWrap}
+        style={{ x: skyPanX, ...(skyY !== undefined && { y: skyY }) }}
+      >
         <BackgroundSky />
       </motion.div>
       <Clouds />
-      <motion.div className={styles.farLayer} style={{ x: farPanX }}>
+      <motion.div
+        className={styles.farLayer}
+        style={{ x: farPanX, ...(farY !== undefined && { y: farY }) }}
+      >
         <FarLayer />
       </motion.div>
-      <motion.div className={styles.midLayer} style={{ x: midPanX }}>
+      <motion.div
+        className={styles.midLayer}
+        style={{ x: midPanX, ...(midY !== undefined && { y: midY }) }}
+      >
         <MidLayer />
       </motion.div>
       {/* D-0014: Mower SVG removed - was the grey vehicle on the brown mid-band */}
-      <motion.div className={styles.nearLayer} style={{ x: nearPanX }}>
+      <motion.div
+        className={styles.nearLayer}
+        style={{ x: nearPanX, ...(nearY !== undefined && { y: nearY }) }}
+      >
         <NearLayer />
       </motion.div>
       <ScrollHint mowerX={progress} />
@@ -154,6 +169,7 @@ function BackgroundSky(): ReactNode {
       preserveAspectRatio="xMidYMax slice"
       style={{ width: '105%', height: '105%', left: '-2.5%', top: '-2.5%' }}
     >
+      <title>Background sky</title>
       <defs>
         <linearGradient id="hero-sky" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="var(--ll-sun-pale)" />
@@ -210,11 +226,8 @@ function Clouds(): ReactNode {
 
 function FarLayer(): ReactNode {
   return (
-    <svg
-      className={styles.layerSvg}
-      viewBox="0 0 2000 900"
-      preserveAspectRatio="xMidYMax slice"
-    >
+    <svg className={styles.layerSvg} viewBox="0 0 2000 900" preserveAspectRatio="xMidYMax slice">
+      <title>Distant palm layer</title>
       <defs>
         <linearGradient id="far-palm" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="var(--ll-palm-light)" />
@@ -250,11 +263,8 @@ function FarLayer(): ReactNode {
 
 function MidLayer(): ReactNode {
   return (
-    <svg
-      className={styles.layerSvg}
-      viewBox="0 0 2000 900"
-      preserveAspectRatio="xMidYMax slice"
-    >
+    <svg className={styles.layerSvg} viewBox="0 0 2000 900" preserveAspectRatio="xMidYMax slice">
+      <title>Midground palm layer</title>
       <defs>
         <linearGradient id="mid-trunk" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="var(--ll-clay)" />
@@ -295,22 +305,10 @@ function MidLayer(): ReactNode {
       </g>
 
       <g className={styles.swaySlow}>
-        <PalmTree
-          x={150}
-          y={280}
-          h={200}
-          trunkFill="url(#mid-trunk)"
-          frondFill="url(#mid-frond)"
-        />
+        <PalmTree x={150} y={280} h={200} trunkFill="url(#mid-trunk)" frondFill="url(#mid-frond)" />
       </g>
       <g className={styles.swaySlow} style={{ animationDelay: '-1.2s' }}>
-        <PalmTree
-          x={780}
-          y={260}
-          h={220}
-          trunkFill="url(#mid-trunk)"
-          frondFill="url(#mid-frond)"
-        />
+        <PalmTree x={780} y={260} h={220} trunkFill="url(#mid-trunk)" frondFill="url(#mid-frond)" />
       </g>
       <g className={styles.swaySlow} style={{ animationDelay: '-0.6s' }}>
         <PalmTree
@@ -331,11 +329,8 @@ function MidLayer(): ReactNode {
 function NearLayer(): ReactNode {
   return (
     <div className={styles.nearInner}>
-      <svg
-        className={styles.layerSvg}
-        viewBox="0 0 2000 900"
-        preserveAspectRatio="xMidYMax slice"
-      >
+      <svg className={styles.layerSvg} viewBox="0 0 2000 900" preserveAspectRatio="xMidYMax slice">
+        <title>Foreground grass layer</title>
         <defs>
           <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="var(--ll-grass-deep)" />
@@ -347,16 +342,14 @@ function NearLayer(): ReactNode {
           </linearGradient>
         </defs>
 
-        <path
-          d="M 0 600 Q 500 590 1000 600 T 2000 596 L 2000 900 L 0 900 Z"
-          fill="url(#grass)"
-        />
+        <path d="M 0 600 Q 500 590 1000 600 T 2000 596 L 2000 900 L 0 900 Z" fill="url(#grass)" />
         <g className={styles.blades}>
           {Array.from({ length: 60 }).map((_, i) => {
             const x = i * 34 + (i % 3) * 8;
             const h = 24 + (i % 5) * 6;
             return (
-              <g key={i} transform={`translate(${x} 680)`}>
+              // biome-ignore lint/suspicious/noArrayIndexKey: static generated grass blades
+              <g key={`blade-${i}`} transform={`translate(${x} 680)`}>
                 <path
                   d={`M 0 0 Q ${3 + (i % 3)} -${h} 6 -${h}`}
                   stroke="url(#grass-tip)"
@@ -384,8 +377,8 @@ function NearLayer(): ReactNode {
             { x: 1240, y: 656, c: 'var(--ll-sand)' },
             { x: 1620, y: 652, c: 'var(--ll-sun)' },
             { x: 1860, y: 662, c: 'var(--ll-clay)' },
-          ].map((f, i) => (
-            <g key={i} transform={`translate(${f.x} ${f.y})`}>
+          ].map((f) => (
+            <g key={`flower-${f.x}-${f.y}-${f.c}`} transform={`translate(${f.x} ${f.y})`}>
               <circle r={3} fill={f.c} />
               <circle r={1.4} fill="var(--ll-palm-bark)" />
             </g>
@@ -419,11 +412,8 @@ function ScrollHint({ mowerX }: { mowerX: MotionValue<number> }): ReactNode {
           stroke="currentColor"
           strokeWidth="2"
         >
-          <path
-            d="M12 5v14M5 12l7 7 7-7"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+          <title>Scroll hint arrow</title>
+          <path d="M12 5v14M5 12l7 7 7-7" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </span>
     </motion.div>
@@ -460,11 +450,7 @@ function PalmTree({
         {[0, 45, 90, 135, 180, 225, 270, 315].map((rot) => (
           <g key={rot} transform={`rotate(${rot})`}>
             <path d="M 0 0 Q 12 -6 24 -2 Q 18 -10 8 -8 Z" fill={frondFill} />
-            <path
-              d="M 0 0 Q 18 2 32 8 Q 24 14 14 10 Z"
-              fill={frondFill}
-              opacity={0.85}
-            />
+            <path d="M 0 0 Q 18 2 32 8 Q 24 14 14 10 Z" fill={frondFill} opacity={0.85} />
           </g>
         ))}
         <circle r={2.5} fill="#3d2814" />

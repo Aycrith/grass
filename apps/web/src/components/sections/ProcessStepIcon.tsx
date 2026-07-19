@@ -1,9 +1,9 @@
 /**
- * ProcessStepIcon — small inline SVG glyphs for the four
+ * ProcessStepIcon — small inline SVG glyphs for the three
  * ProcessSteps cards. Decorative-only (aria-hidden); the visible
  * step number and title carry the meaning.
  *
- * One component, four cases by `step` ("01" | "02" | "03" | "04").
+ * One component, three cases by `step` ("01" | "02" | "03").
  * Sized 28×28, fills via `currentColor` so the surrounding step
  * palette drives the tint.
  *
@@ -13,7 +13,7 @@
 
 import type { ReactNode } from 'react';
 
-export type ProcessStepKey = '01' | '02' | '03' | '04';
+export type ProcessStepKey = '01' | '02' | '03';
 
 interface ProcessStepIconProps {
   step: ProcessStepKey;
@@ -35,38 +35,29 @@ const COMMON = {
 export function ProcessStepIcon({ step, className }: ProcessStepIconProps): ReactNode {
   switch (step) {
     case '01':
-      // Quote — phone receiver + chat bubble.
+      // Coverage — map pin / location marker.
       return (
         // biome-ignore lint/a11y/noSvgWithoutTitle: decorative icon, parent step provides semantics
         <svg {...COMMON} className={className}>
-          <path d="M5 8.5c0-1.5 1-2.5 2.5-2.5h2.2l1.3 4-2.2 1.4a13 13 0 0 0 6.8 6.8l1.4-2.2 4 1.3v2.2c0 1.5-1 2.5-2.5 2.5C10.6 22 5 16.4 5 8.5z" />
-          <circle cx="22" cy="7" r="3.2" fill="currentColor" stroke="none" opacity="0.85" />
+          <path d="M14 3a7 7 0 0 0-7 7c0 5 7 11 7 11s7-6 7-11a7 7 0 0 0-7-7z" />
+          <circle cx="14" cy="10" r="2.5" fill="currentColor" stroke="none" opacity="0.85" />
         </svg>
       );
 
     case '02':
-      // Schedule — calendar with one marked day.
+      // Quote — clipboard / document with checkmark.
       return (
         // biome-ignore lint/a11y/noSvgWithoutTitle: decorative icon, parent step provides semantics
         <svg {...COMMON} className={className}>
-          <rect x="4" y="6.5" width="20" height="17" rx="2" />
-          <path d="M4 11h20" />
-          <path d="M9 4v5M19 4v5" />
-          <rect
-            x="13"
-            y="14"
-            width="5"
-            height="5"
-            rx="1"
-            fill="currentColor"
-            stroke="none"
-            opacity="0.85"
-          />
+          <path d="M7 4h14v20H7z" />
+          <path d="M4 8h20" />
+          <path d="M11 2v4M17 2v4" />
+          <path d="M11 14.5l2.5 2.5L17 13" />
         </svg>
       );
 
     case '03':
-      // Mow — simplified mower silhouette.
+      // Relax / mow — simplified mower silhouette.
       return (
         // biome-ignore lint/a11y/noSvgWithoutTitle: decorative icon, parent step provides semantics
         <svg {...COMMON} className={className}>
@@ -75,17 +66,6 @@ export function ProcessStepIcon({ step, className }: ProcessStepIconProps): Reac
           <path d="M11 14H7.5a2 2 0 0 1-2-2V9.5l3.5-1.5L11 11" />
           <circle cx="14.5" cy="20.2" r="1.6" fill="currentColor" stroke="none" />
           <circle cx="19.5" cy="20.2" r="1.6" fill="currentColor" stroke="none" />
-        </svg>
-      );
-
-    case '04':
-      // Bill — receipt with checkmark.
-      return (
-        // biome-ignore lint/a11y/noSvgWithoutTitle: decorative icon, parent step provides semantics
-        <svg {...COMMON} className={className}>
-          <path d="M7 3h14v22l-3-2-3 2-3-2-3 2-3-2z" />
-          <path d="M11 11h6M11 14h6" />
-          <path d="M11 17.5l1.6 1.5L15.5 16" />
         </svg>
       );
 

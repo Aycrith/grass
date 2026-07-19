@@ -13,8 +13,7 @@ apps/web/visual/
 ├── baselines/                  (16 committed PNGs)
 │   ├── home-chromium-desktop.png
 │   ├── home-chromium-mobile.png
-│   ├── hero-cinematic-chromium-desktop.png
-│   └── ... (13 more)
+│   └── ... (includes 6 PRD routes × 2 viewports + 4 component-zoom PNGs)
 ├── test-output/                (gitignored — diff + actual PNGs on failure)
 └── utils/
     ├── fixtures.ts             (PRD_ROUTES + COMPONENT_BASELINES matrices)

@@ -68,7 +68,6 @@ export const scaleIn = {
   }),
 };
 
-/** Headline word-by-word reveal — drives the HeroCinematic clip-path animation. */
 export const wordReveal = {
   hidden: { y: '110%' },
   visible: (delay = 0) => ({

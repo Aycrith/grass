@@ -150,3 +150,12 @@ apps/web/visual/baselines/*-actual.png
 apps/web/visual/baselines/*-diff.png
 apps/web/test-results/
 apps/web/playwright-report/
+
+# --- Inventory / QA-pick frame extracts (apps/web/visual/inventory/frames/)
+# Regenerated deterministically by tmp/qa-pick.py from raw MP4s at
+# C:\Users\camer\Downloads\. Do NOT commit -- rerun the tool to refresh.
+# NB: parent dir apps/web/visual/inventory/ contains tracked markdown
+# deliverables (e.g., 2026-07-17-asset-inventory-and-architectural-fit.md,
+# 2026-07-17-re-roll-picks.md); only the frames/ subdir is regenerable
+# working-tree noise. ---
+apps/web/visual/inventory/frames/

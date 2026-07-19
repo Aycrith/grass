@@ -1,0 +1,117 @@
+{
+  "image": "C:\\Users\\camer\\DEVNEW\\GRASS\\apps\\web\\visual\\baselines\\hero-chromium-desktop.png",
+  "image_size": [
+    1265,
+    801
+  ],
+  "stride": 10,
+  "total_pixels_sampled": 10287,
+  "sample_fingerprint_sha256": "5adec8ec8d53a0562b925e0d73bfb86fb1f8058a5faed2292b00fb600ae11e27",
+  "global_coverage_pct": {
+    "green": 15.86,
+    "sand": 0.02,
+    "bg": 14.21,
+    "edge": 69.9
+  },
+  "grid_3x3_pct": {
+    "top_left": {
+      "green": 30.92,
+      "sand": 0.0,
+      "bg": 29.29,
+      "edge": 39.79
+    },
+    "top_center": {
+      "green": 8.11,
+      "sand": 0.0,
+      "bg": 30.34,
+      "edge": 61.55
+    },
+    "top_right": {
+      "green": 8.73,
+      "sand": 0.0,
+      "bg": 48.68,
+      "edge": 42.59
+    },
+    "mid_left": {
+      "green": 13.35,
+      "sand": 0.0,
+      "bg": 2.84,
+      "edge": 83.81
+    },
+    "mid_center": {
+      "green": 0.88,
+      "sand": 0.0,
+      "bg": 15.17,
+      "edge": 83.95
+    },
+    "mid_right": {
+      "green": 11.2,
+      "sand": 0.18,
+      "bg": 0.62,
+      "edge": 88.01
+    },
+    "bottom_left": {
+      "green": 22.74,
+      "sand": 0.0,
+      "bg": 0.34,
+      "edge": 76.92
+    },
+    "bottom_center": {
+      "green": 25.22,
+      "sand": 0.0,
+      "bg": 0.44,
+      "edge": 74.34
+    },
+    "bottom_right": {
+      "green": 21.16,
+      "sand": 0.0,
+      "bg": 0.44,
+      "edge": 78.4
+    }
+  },
+  "right_edge_5pct": {
+    "n_sampled": 567,
+    "bg_pct": 14.11,
+    "green_pct": 22.93,
+    "mask_bleed_detected": false
+  },
+  "ci_gate": {
+    "pass": true,
+    "reasons": [],
+    "thresholds": {
+      "sand_pct_max": 5.0,
+      "bleed_must_be_false": true
+    }
+  },
+  "method": {
+    "metric": "rgb_euclidean",
+    "tolerance_delta_rgb": 30,
+    "edge_policy": "mutually_exclusive_unbinned",
+    "spatial_grid": "3x3_thirds",
+    "bleed_threshold": "bg_pct>=60 AND green_pct<=25 in rightmost 5% X slice",
+    "known_risks": [
+      "--ll-sun-deep is approximately Delta_E_RGB 38 from --ll-sand -- safely above the 30 threshold today, but a more saturated render of hero sky could produce minor sand false-positives in the top row.",
+      "D-0014 grass derivatives (--ll-grass, --ll-grass-mow, --ll-grass-deep) are anchored at the linear-RGB midpoint approximation of the oklab color-mix; the browser may render them with sub-Delta_E_RGB 5 deviation, which is still inside the 30 tolerance."
+    ]
+  },
+  "token_anchors": {
+    "GREEN_FAMILY": [
+      "#1f4e2c",
+      "#2a6638",
+      "#2d5a3d",
+      "#6b9b7e",
+      "#457455",
+      "#295638",
+      "#295637"
+    ],
+    "SAND_FAMILY": [
+      "#d4a574",
+      "#b5651d"
+    ],
+    "BG_FAMILY": [
+      "#faf6f0",
+      "#f4e8d0"
+    ]
+  },
+  "version": "v2"
+}

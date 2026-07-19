@@ -1,4 +1,7 @@
 'use client';
+// D-0045 structural cascade is implemented (see governance/decisions/0045-structural-cascade.md
+// Status section). The native <picture> element in BackgroundPhoto below dispatches to AVIF/WebP/JPEG
+// fallbacks for the v2 photo, layered alongside the hand-authored SVG primary (HeroStorybookLayer).
 
 /**
  * HeroFieldTelemetry - the unified production hero.
@@ -76,15 +79,16 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
-import Image from 'next/image';
+
 import {
-  type PointerEvent as ReactPointerEvent,
   type ReactNode,
+  type PointerEvent as ReactPointerEvent,
   useEffect,
   useRef,
   useState,
 } from 'react';
 
+import { useViewportMotion } from '@/components/motion';
 import { Button } from '@/components/ui';
 import { cn } from '@/lib/cn';
 
@@ -103,6 +107,18 @@ const TELEMETRY_STATS = [
   { value: '6 yrs', label: 'Cutting in 33771' },
   { value: '6', label: 'Pinellas ZIPs' },
 ] as const;
+
+// Module-scope invariant: statOpacities[i]! / statYs[i]! in the
+// .map(...) below relies on this length matching. If a future edit
+// adds a 5th stat, the indexed access returns undefined and the
+// fade-in silently breaks motion-without-opacity. Module-load
+// throw surfaces the drift before motion.span mounts, instead of
+// silently opacity-undefined at runtime.
+if (TELEMETRY_STATS.length !== 4) {
+  throw new Error(
+    `TELEMETRY_STATS.length=${TELEMETRY_STATS.length}; update statOpacities/statYs arrays to match.`,
+  );
+}
 
 interface HeroFieldTelemetryProps {
   className?: string;
@@ -164,6 +180,9 @@ export function HeroFieldTelemetry({
     mass: 0.5,
   });
 
+  // D-0044 — shared viewport motion substrate for the storybook layers.
+  const { layers: viewportLayers, reduced: viewportReduced } = useViewportMotion(sectionRef);
+
   // D-0043 — shared layer-4 timing. LiveStatus + FieldStamp +
   // TelemetryStats all read `uiOpacity` / `uiY` so they rise together
   // once the photo has settled on its natural vivid green. The
@@ -172,8 +191,20 @@ export function HeroFieldTelemetry({
   // shared timing the prior implementation had history ranges that
   // overlap the storybook fade-out, producing muddy mid-frame
   // where vector clouds + 4K photo + dashboard were all stacked.
-  const uiOpacity = useTransform(smoothProgress, [0.40, 0.60], [0, 1]);
-  const uiY = useTransform(smoothProgress, [0.40, 0.60], [12, 0]);
+  const uiOpacity = useTransform(smoothProgress, [0.4, 0.6], [0, 1]);
+  const uiY = useTransform(smoothProgress, [0.4, 0.6], [12, 0]);
+
+  // D-0043 — additive green palette correction. The production photo
+  // has ~14,200 sand-colored foreground pixels (target ≤ 2,500). These
+  // two layers tint and mask the sandy foreground toward the brand
+  // green band without modifying the photo asset or the cross-fade.
+  //   - greenVignetteOpacity: bottom-up green wash, intensifies as
+  //     the storybook fades out [0.10, 0.50].
+  //   - grassOpacity: SVG grass blade silhouette along the bottom
+  //     edge, rises in slightly later [0.15, 0.55] so it feels like
+  //     foreground foliage settling on top of the photo.
+  const greenVignetteOpacity = useTransform(smoothProgress, [0.1, 0.5], [0, 1]);
+  const grassOpacity = useTransform(smoothProgress, [0.15, 0.55], [0, 1]);
 
   return (
     <section
@@ -187,6 +218,16 @@ export function HeroFieldTelemetry({
         {/* Z 0: real 4K Florida lawn photograph. */}
         <BackgroundPhoto progress={smoothProgress} />
 
+        {/* Z 0.5: additive green palette correction.
+         * Bottom-up green wash that tints the sandy foreground toward
+         * the brand green band as the storybook fades out. Pure CSS
+         * gradient, no new image asset. */}
+        <motion.div
+          className={styles.greenVignette}
+          style={{ opacity: greenVignetteOpacity }}
+          aria-hidden="true"
+        />
+
         {/* Z 1: vignette + scrim for text legibility. */}
         <div className={styles.scrim} aria-hidden="true" />
 
@@ -194,16 +235,46 @@ export function HeroFieldTelemetry({
          * visitor scrolls so the photo becomes the resting state.
          * On mobile + reduced-motion the storybook is not mounted at
          * all so the CSS keyframe animations (clouds, palms, birds)
-         * don't burn CPU on phones. */}
+         * don't burn CPU on phones.
+         *
+         * D-0044 — per-layer parallax is driven by useViewportMotion and
+         * passed down. D-0043 — useReRollPicks is accepted here as a prop
+         * so the asset catalog can be swapped without touching the rest
+         * of the composition. */}
         {enableScrollFade && (
-          <div
-            className={styles.storybookWrap}
-            aria-hidden="true"
-            data-testid="hero-storybook"
-          >
-            <HeroStorybookLayer progress={smoothProgress} collapsed={false} />
+          <div className={styles.storybookWrap} aria-hidden="true" data-testid="hero-storybook">
+            <HeroStorybookLayer
+              progress={smoothProgress}
+              collapsed={false}
+              {...(!viewportReduced && { layerMotion: viewportLayers })}
+            />
           </div>
         )}
+
+        {/* Z 2.5: additive SVG grass silhouette.
+         * Static foreground grass blades along the bottom edge that mask
+         * the remaining sand pixels and reinforce the brand green band.
+         * Rises in as the storybook dissolves so the transition reads as
+         * "cartoon world turns into real lawn". */}
+        <motion.div
+          className={styles.grassSilhouette}
+          style={{ opacity: grassOpacity }}
+          aria-hidden="true"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 1200 120"
+            preserveAspectRatio="none"
+            className={styles.grassSvg}
+          >
+            <title>Foreground grass silhouette</title>
+            <path
+              fill="var(--ll-green)"
+              opacity="0.9"
+              d="M0,120 L1200,120 L1200,80 Q1180,100 1160,40 Q1140,90 1120,50 Q1100,110 1080,60 Q1060,95 1040,30 Q1020,100 1000,45 Q980,80 960,20 Q940,90 920,40 Q900,100 880,55 Q860,85 840,25 Q820,95 800,60 Q780,110 760,40 Q740,90 720,35 Q700,105 680,50 Q660,80 640,20 Q620,90 600,45 Q580,100 560,30 Q540,85 520,55 Q500,105 480,40 Q460,95 440,25 Q420,80 400,60 Q380,100 360,45 Q340,90 320,30 Q300,105 280,50 Q260,85 240,20 Q220,100 200,40 Q180,90 160,55 Q140,110 120,35 Q100,80 80,45 Q60,95 40,25 Q20,105 0,60 Z"
+            />
+          </svg>
+        </motion.div>
 
         {/* Z 3: text + CTAs. Always visible across the transition so
          * the visitor always knows where they are and what the page
@@ -229,17 +300,9 @@ export function HeroFieldTelemetry({
          *   - FieldStamp is decorative passport chrome on the
          *     postcard, not dashboard chrome, so it is always a
          *     plain `<div>` regardless of scroll motion. */}
-        <LiveStatus
-          now={now ?? undefined}
-          uiOpacity={uiOpacity}
-          uiY={uiY}
-        />
+        <LiveStatus now={now ?? undefined} uiOpacity={uiOpacity} uiY={uiY} />
         <FieldStamp />
-        <TelemetryStats
-          uiOpacity={uiOpacity}
-          uiY={uiY}
-          progress={smoothProgress}
-        />
+        <TelemetryStats uiOpacity={uiOpacity} uiY={uiY} progress={smoothProgress} />
       </div>
     </section>
   );
@@ -266,11 +329,10 @@ function Content({
 
       <h1 className={styles.headline}>
         {HEADLINE_LINES.map((line, li) => (
-          <span key={li} className={styles.headlineLine}>
+          <span key={`line-${line.join('-')}`} className={styles.headlineLine}>
             {line.map((word, wi) => (
               <RevealWord
-                // biome-ignore lint/suspicious/noArrayIndexKey: stable per-render order
-                key={wi}
+                key={`word-${line.join('-')}-${word}`}
                 word={word}
                 delay={li * 0.18 + wi * 0.08}
                 withSpace={wi < line.length - 1}
@@ -336,7 +398,11 @@ function Content({
  *      for the grade's visibility on those surfaces.
  * ============================================================ */
 
-function BackgroundPhoto({ progress }: { progress: MotionValue<number> }): ReactNode {
+function BackgroundPhoto({
+  progress,
+}: {
+  progress: MotionValue<number>;
+}): ReactNode {
   // Reduced motion collapses both transforms - photo stays put.
   const reduced = useReducedMotion();
   // D-0043 (rev) — first-paint composition. The previous range
@@ -346,41 +412,54 @@ function BackgroundPhoto({ progress }: { progress: MotionValue<number> }): React
   // scrolled. Range is now [0, 0.50] -> [1, 1.08] (and [0%, 1%])
   // so the photo's first paint matches its natural composition
   // and the camera zoom-in reads as the user engages with scroll.
-  const photoScale = useTransform(
-    progress,
-    [0, 0.50],
-    reduced ? [1, 1] : [1, 1.08],
-  );
-  const photoY = useTransform(
-    progress,
-    [0, 0.50],
-    reduced ? ['0%', '0%'] : ['0%', '1%'],
-  );
+  const photoScale = useTransform(progress, [0, 0.5], reduced ? [1, 1] : [1, 1.08]);
+  const photoY = useTransform(progress, [0, 0.5], reduced ? ['0%', '0%'] : ['0%', '1%']);
   // Color-grade overlay matches the storybook fade range so the two
   // share one dissolve boundary at scroll 0.40. Mixed in via
   // mix-blend-mode: overlay rather than as a transparency overlay
   // because overlay preserves the photo's natural highlights
   // (skies stay bright, grass blades aren't washed out).
-  const gradeOpacity = useTransform(
-    progress,
-    [0.10, 0.40],
-    reduced ? [0, 0] : [0.55, 0],
-  );
+  const gradeOpacity = useTransform(progress, [0.1, 0.4], reduced ? [0, 0] : [0.55, 0]);
 
   return (
     <div className={styles.photo} aria-hidden="true">
-      <motion.div
-        className={styles.photoWrap}
-        style={{ scale: photoScale, y: photoY }}
-      >
-        <Image
-          src="/hero/v2/hero-green-grass.jpg"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className={styles.photoImg}
-        />
+      <motion.div className={styles.photoWrap} style={{ scale: photoScale, y: photoY }}>
+        {/* D-0045 — structural cascade: browser-native <picture> fallback
+         * chain for the v2 hero photo. Desktop browsers pick AVIF or WebP
+         * via <source>; mobile browsers pick the mobile variants; legacy
+         * browsers fall through to the JPEG. The hand-authored SVG primary
+         * (HeroStorybookLayer) still sits above this layer at z-index 2. */}
+        <picture>
+          <source
+            srcSet="/hero/v2/desktop.avif"
+            type="image/avif"
+            media="(min-width: 768px)"
+          />
+          <source
+            srcSet="/hero/v2/desktop.webp"
+            type="image/webp"
+            media="(min-width: 768px)"
+          />
+          <source
+            srcSet="/hero/v2/mobile.avif"
+            type="image/avif"
+            media="(max-width: 767px)"
+          />
+          <source
+            srcSet="/hero/v2/mobile.webp"
+            type="image/webp"
+            media="(max-width: 767px)"
+          />
+          <img
+            src="/hero/v2/hero-green-grass.jpg"
+            alt=""
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+            sizes="100vw"
+            className={styles.photoImg}
+          />
+        </picture>
         <motion.div className={styles.photoGrade} style={{ opacity: gradeOpacity }} />
       </motion.div>
       <div className={styles.photoVignette} />
@@ -448,25 +527,27 @@ function LiveStatus({
       role="status"
       aria-live="polite"
     >
-      <span className={styles.liveStatusRow}>
-        <span
-          className={cn(
-            styles.liveStatusDot,
-            status.dot === 'on' && styles.liveStatusDotOn,
-            status.dot === 'soon' && styles.liveStatusDotSoon,
-            status.dot === 'open' && styles.liveStatusDotOpen,
-          )}
-          aria-hidden="true"
-        >
-          {!reduced && <span className={styles.liveStatusPulse} />}
+      <div className={styles.liveStatusInner}>
+        <span className={styles.liveStatusRow}>
+          <span
+            className={cn(
+              styles.liveStatusDot,
+              status.dot === 'on' && styles.liveStatusDotOn,
+              status.dot === 'soon' && styles.liveStatusDotSoon,
+              status.dot === 'open' && styles.liveStatusDotOpen,
+            )}
+            aria-hidden="true"
+          >
+            {!reduced && <span className={styles.liveStatusPulse} />}
+          </span>
+          <span className={styles.liveStatusLabel}>LIVE</span>
         </span>
-        <span className={styles.liveStatusLabel}>LIVE</span>
-      </span>
-      <span className={styles.liveStatusLine1}>{status.line1}</span>
-      <span className={styles.liveStatusLine2}>{status.line2}</span>
-      <span className={styles.liveStatusMeta}>
-        Updated {minute % 60 === 0 ? 'just now' : `${minute % 60}m ago`}
-      </span>
+        <span className={styles.liveStatusLine1}>{status.line1}</span>
+        <span className={styles.liveStatusLine2}>{status.line2}</span>
+        <span className={styles.liveStatusMeta}>
+          Updated {minute % 60 === 0 ? 'just now' : `${minute % 60}m ago`}
+        </span>
+      </div>
     </motion.div>
   );
 }
@@ -536,19 +617,18 @@ function TelemetryStats({
   // surfaces — no React branching, no SSR->hydration flash. The
   // cascade is desktop-scroll-only.
   const stat0Opacity = useTransform(progress, [0.42, 0.46], [0, 1]);
-  const stat1Opacity = useTransform(progress, [0.46, 0.50], [0, 1]);
-  const stat2Opacity = useTransform(progress, [0.50, 0.54], [0, 1]);
+  const stat1Opacity = useTransform(progress, [0.46, 0.5], [0, 1]);
+  const stat2Opacity = useTransform(progress, [0.5, 0.54], [0, 1]);
   const stat3Opacity = useTransform(progress, [0.54, 0.58], [0, 1]);
   const stat0Y = useTransform(progress, [0.42, 0.46], [12, 0]);
-  const stat1Y = useTransform(progress, [0.46, 0.50], [12, 0]);
-  const stat2Y = useTransform(progress, [0.50, 0.54], [12, 0]);
+  const stat1Y = useTransform(progress, [0.46, 0.5], [12, 0]);
+  const stat2Y = useTransform(progress, [0.5, 0.54], [12, 0]);
   const stat3Y = useTransform(progress, [0.54, 0.58], [12, 0]);
-  const statOpacities = [
-    stat0Opacity,
-    stat1Opacity,
-    stat2Opacity,
-    stat3Opacity,
-  ];
+  // Indexed access is type-safe under noUncheckedIndexedAccess + the
+  // call-site `!` assertion: if TELEMETRY_STATS.length ever diverges
+  // from 4, the assertion fails at the typecheck boundary instead of
+  // silently undefined-rendering motion values at runtime.
+  const statOpacities = [stat0Opacity, stat1Opacity, stat2Opacity, stat3Opacity];
   const statYs = [stat0Y, stat1Y, stat2Y, stat3Y];
 
   return (
@@ -559,13 +639,8 @@ function TelemetryStats({
     >
       {TELEMETRY_STATS.map((stat, i) => (
         <motion.span
-          // biome-ignore lint/suspicious/noArrayIndexKey: static per-render
-          key={i}
+          key={stat.value}
           className={styles.telemetryItem}
-          // Both arrays are guaranteed to have TELEMETRY_STATS.length
-          // entries (4 each) by construction, so the indexed access is
-          // safe. The `!` asserts that to TypeScript under
-          // noUncheckedIndexedAccess + exactOptionalPropertyTypes.
           style={{ opacity: statOpacities[i]!, y: statYs[i]! }}
         >
           <span className={styles.telemetryValue}>{stat.value}</span>
