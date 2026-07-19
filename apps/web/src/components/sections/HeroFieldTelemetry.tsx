@@ -500,6 +500,11 @@ function BackgroundPhoto({
  * visible on those surfaces with zero React branching.
  * ============================================================ */
 
+// D-0046 — the | number arm of MotionValue<number> | number is reachable only
+// via the ?debug=show-additive URL-param gate (never by a non-debug visitor).
+// Revert both LiveStatus and TelemetryStats props to plain MotionValue<number>
+// when D-0046 is decommissioned. See governance/decisions/0046-debug-overlay.md
+// §Trade-offs accepted for the steward-facing rationale.
 function LiveStatus({
   now,
   uiOpacity,

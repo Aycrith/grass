@@ -202,6 +202,17 @@ Lower than 0.95 because of R46.5 (the audit is incomplete on gated browsers) and
 
 Re-review trigger (earlier): any time the steward fails to confirm additive-layer visibility in a non-gated desktop browser despite the override, suggests either (a) the bundles are stale and need rebuild, or (b) a regression in one of the override call sites. Both are testable via the existing visual regression suite (`bun run visual:test`).
 
+## Trade-offs accepted (2026-07-19)
+
+- ** +  props widened to .** The
+  literal-number arm is reachable ONLY via the  URL-param gate, never
+  by a non-debug visitor. A future steward decommissioning D-0046 should revert both
+  component signatures to plain  and remove the literal-/
+  ternaries at the two call sites ({"isDebugAdditive ? 1 : uiOpacity" etc.) — otherwise
+  the call-site ternary expressions will typecheck against a single MotionValue<number>.
+  Steward-facing rationale lives next to the LiveStatus signature in
+  .
+
 ## Status: implemented 2026-07-19 (Day 26)
 
 The URL-param gate landed in commit-lane (working-tree, awaiting steward commit). Files affected:
