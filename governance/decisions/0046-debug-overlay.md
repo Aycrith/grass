@@ -180,9 +180,24 @@ Lower than 0.95 because of R46.5 (the audit is incomplete on gated browsers) and
 
 Re-review trigger (earlier): any time the steward fails to confirm additive-layer visibility in a non-gated desktop browser despite the override, suggests either (a) the bundles are stale and need rebuild, or (b) a regression in one of the override call sites. Both are testable via the existing visual regression suite (`bun run visual:test`).
 
-## Trade-offs accepted (2026-07-19)
+## Trade-offs accepted (2026-07-19, rev 2)
 
-- **`LiveStatus` + `TelemetryStats`** props widened to **`MotionValue<number> | number`**. The literal-`number` arm is reachable ONLY via the **`?debug=show-additive`** URL-param gate, never by a non-debug visitor. A future steward decommissioning D-0046 should revert both component signatures to plain **`MotionValue<number>`** and remove the literal-`1`/`-0` ternaries at the two call sites (e.g. `` <LiveStatus uiOpacity={isDebugAdditive ? 1 : uiOpacity} uiY={isDebugAdditive ? 0 : uiY} /> ``). Otherwise the call-site ternary expressions will fail typecheck against a single **`MotionValue<number>`**. Steward-facing rationale lives next to the `LiveStatus` signature in `apps/web/src/components/sections/HeroFieldTelemetry.tsx` (a 5-line `// D-0046` comment immediately preceding `function LiveStatus({...}: {…}: {uiOpacity: MotionValue<number> | number;…})` in that file explains the same trade-off in source).
+- **Framer Motion binding-subscriber bug forced abandonment of the prop-union widening approach.** The original D-0046 implementation widened `LiveStatus.uiOpacity/uiY` and `TelemetryStats.uiOpacity/uiY` from **`MotionValue<number>`** to **`MotionValue<number> | number`** so the call sites could swap to literal `1` / `0` under the gate. Steward visual sign-off FAILED because Framer Motion's style cache binds a subscriber when the prop is first a `MotionValue`; after the prop transitions to a literal number on re-render, the cache does NOT unbind — the styled style stays frozen at the MotionValue's first-paint value (effectively `0` at scroll 0 for `uiOpacity`). The dashboard widgets rendered invisibly under **`?debug=show-additive`**, defeating the gate. The fix is structural: drive the gate via `data-debug-additive='true'` on the hero `<section>` + CSS `!important` rules in `HeroFieldTelemetry.module.css` that override the inline style via specificity. This bypasses Framer Motion's style cache entirely AND overrides the `@media (pointer: coarse), (prefers-reduced-motion: reduce), (max-width: 767px)` `display: none` rule on `.greenVignette` + `.grassSilhouette`.
+
+- **Decommission procedure (revised):** removal of all six items below fully eliminates D-0046 from production while leaving the underlying scroll-driven behavior intact.
+
+  1. Remove the `data-debug-additive={isDebugAdditive ? 'true' : 'false'}` attribute from the `<section>` element in `HeroFieldTelemetry.tsx`.
+  2. Remove the `#root[data-debug-additive='true']` CSS block (the three selector rules: `.greenVignette + .grassSilhouette`, `.liveStatus + .telemetry + .telemetryItem`) in `HeroFieldTelemetry.module.css`.
+  3. Remove the `isDebugAdditive` state and the `useEffect(..., [])` URLSearchParams parser in `HeroFieldTelemetry.tsx`.
+  4. Remove the `{isDebugAdditive && <div className={styles.debugBanner}>debug: additive layers forced visible</div>}` JSX block.
+  5. `LiveStatus` + `TelemetryStats` signatures are already plain `MotionValue<number>` after the rev-2 revert. No change needed.
+  6. The inner-stat `motion.span` in `TelemetryStats` is already `` style={`{ opacity: statOpacities[i]!, y: statYs[i]! }`} `` after the rev-2 revert. No change needed.
+
+- **Why a DOM data attribute rather than a body-level attribute?** A `<section>`-scoped attribute keeps the gate's blast radius confined to the hero subtree. A `body[data-debug-additive]` selector would force visibility on any future element matching `.greenVignette` / `.grassSilhouette` / `.liveStatus` / `.telemetry` anywhere across the app — a hidden coupling that breaks the moment a non-hero component reuses one of those class names.
+
+- **Why also override the `@media (pointer: coarse), (prefers-reduced-motion: reduce), (max-width: 767px)` gate?** Steward visual sign-off requires the four layers visible regardless of viewport size, pointer type, or reduced-motion preference. A steward on a touch device should still see the additive layers under the gate; without the override, mobile / coarse-pointer / reduced-motion visitors would see only the photo + headline.
+
+- **Empty-deps eslint rule** (no `[reducedMotion, ...]`). The `useEffect` reads `window.location.search` single-shot on mount; the gate is purely client-side and never needs to re-read.
 
 ## Status: implemented 2026-07-19 (Day 26)
 

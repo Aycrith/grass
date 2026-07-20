@@ -188,6 +188,43 @@
   }
 }
 
+/* ============================================================
+ * D-0046 — ?debug=show-additive escape-hatch.
+ *
+ * Forces ALL four additive layers (vignette, grass silhouette,
+ * live status, telemetry strip + per-item) to visible at every
+ * scroll position regardless of:
+ *   - The scroll-driven MotionValue bindings (which resolve to 0
+ *     at scroll 0 and stay 0 until the user scrolls past the
+ *     respective fade-in window).
+ *   - The @media (max-width: 767px), (pointer: coarse), and
+ *     (prefers-reduced-motion: reduce) overrides above, which
+ *     set display:none on .greenVignette and .grassSilhouette.
+ *
+ * We did NOT use inline opacity/y ternaries on the motion.divs
+ * here because Framer Motion binds a subscriber when the prop is
+ * first a MotionValue<number> and — after the prop transitions
+ * to a literal number — does not unbind. The style stays frozen
+ * at the MotionValue's first-paint value (effectively 0) instead
+ * of accepting the new primitive. The data-attribute + CSS
+ * !important route bypasses the style cache entirely.
+ * See governance/decisions/0046-debug-overlay.md
+ * §Trade-offs accepted (binding subscriber bug) for the long
+ * version. */
+.root[data-debug-additive='true'] .greenVignette,
+.root[data-debug-additive='true'] .grassSilhouette {
+  display: block !important;
+  opacity: 1 !important;
+}
+
+.root[data-debug-additive='true'] .liveStatus,
+.root[data-debug-additive='true'] .telemetry,
+.root[data-debug-additive='true'] .telemetryItem {
+  display: flex !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
 .photoVignette {
   position: absolute;
   inset: 0;

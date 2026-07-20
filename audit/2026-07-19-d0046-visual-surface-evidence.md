@@ -14,11 +14,13 @@
 
 The Day 26 landing-page rebuild (D-0043 palette + D-0044 motion + D-0045 cascade + ProcessSteps rework) is **fully shipped, merged, lint-clean, typecheck-clean, build-green, and live on `localhost:3000`**. To give the steward a precise way to verify every additive layer is rendering before authorizing the `LargoLawn.pro` domain purchase (OBJ-M2-004, $4.99/yr), a debug gate (`?debug=show-additive`) was added that:
 
-1. Forces the four additive overlay opacities to `1.0` at every scroll position (so they are visible even mid-cross-fade).
+1. Sets `data-debug-additive='true'` on the hero `<section>`. A CSS escape-hatch in `HeroFieldTelemetry.module.css` then forces all four additive layers visible at every scroll position via `display: block !important; opacity: 1 !important`. The escape-hatch also beats the `@media (pointer: coarse), (prefers-reduced-motion: reduce), (max-width: 767px)` `display: none` override on `.greenVignette` + `.grassSilhouette`.
 2. Mounts a top-center banner reading `debug: additive layers forced visible` (non-interactive, `pointer-events: none`).
 3. Forces `LiveStatus` and `TelemetryStats` motion values to their resting state (`opacity: 1, y: 0`) so the dashboard widgets are visible without scroll-driven rise.
 
 Per D-0046 governing principle: the steward can load ONE URL and visually confirm that **all four D-0043 additive layers + the D-0044 motion-mounted `HeroStorybookLayer` + the D-0046 dashboard widgets** are rendering correctly, WITHOUT toggling OS-level reduced-motion / coarse-pointer / viewport-size switches.
+
+> **Post-sign-off fix (logged 2026-07-19 rev 2):** the original D-0046 implementation used inline opacity/y ternaries on the `LiveStatus` / `TelemetryStats` motion.divs (`uiOpacity={isDebugAdditive ? 1 : uiOpacity}`, etc.). This silently failed because Framer Motion's style cache binds a subscriber when the prop is first a `MotionValue<number>`, and after the prop transitions to a literal number on re-render the cache does NOT unbind — the styled style stays frozen at the MotionValue's first-paint value (`0` at scroll 0). The data-attribute + CSS `!important` approach bypasses Framer Motion's style cache entirely. See `governance/decisions/0046-debug-overlay.md` §Trade-offs accepted (binding subscriber bug) for the full diagnosis.
 
 ---
 
@@ -78,7 +80,7 @@ It must NOT block clicks on the headline or CTAs beneath it (the band has `point
 
 ### 3.3 Mobile / coarse-pointer / reduced-motion
 
-The D-0043 vignette + grass silhouette are gated by `prefers-reduced-motion` + `pointer: coarse` + `≤768px` viewport. Under the debug gate, the `isDebugAdditive` URL-param flag **does NOT override that gate** — the four additive layers still hide on mobile because they would burn CPU on phones and conflict with the storybook fade. This is documented as a deliberate D-0046 trade-off in `governance/decisions/0046-debug-overlay.md §Trade-offs accepted` — the debug gate is for desktop visual confirmation; mobile verification happens through the existing `coarse-pointer` Playwright test (`home-coarse-pointer-chromium-{desktop,mobile}.png`).
+The D-0043 vignette + grass silhouette have a baseline `@media (pointer: coarse), (prefers-reduced-motion: reduce), (max-width: 767px)` rule that sets `display: none`. The D-0046 `data-debug-additive='true'` selector **overrides** that baseline via `display: block !important; opacity: 1 !important`, so the steward sees the four layers on a touch device or reduced-motion surface too. Mobile performance verification happens through the existing `coarse-pointer` Playwright test (`home-coarse-pointer-chromium-{desktop,mobile}.png`); the debug URL is the steward-facing override.
 
 ---
 

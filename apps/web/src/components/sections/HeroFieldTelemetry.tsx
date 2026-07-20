@@ -120,6 +120,16 @@ if (TELEMETRY_STATS.length !== 4) {
   );
 }
 
+// D-0046 — the debug-additive gate forces ALL four stack layers visible via
+// a data-attribute on the root <section> + CSS escape-hatch rules. We do NOT
+// use inline opacity/y ternaries on motion.divs because Framer Motion binds
+// a subscriber when the prop is first a MotionValue, and after a re-render
+// to a literal number the subscriber does not unbind — the style stays
+// effectively at the MotionValue's frozen value at first paint (here: 0).
+// The data-attribute + CSS !important approach bypasses Framer Motion's
+// style cache entirely. See ADR governance/decisions/0046-debug-overlay.md
+// §Trade-offs accepted (binding subscriber bug) for the full rationale.
+
 interface HeroFieldTelemetryProps {
   className?: string;
   eyebrow: string;
@@ -225,6 +235,7 @@ export function HeroFieldTelemetry({
       className={cn(styles.root, className)}
       id="hero"
       data-test-section="hero"
+      data-debug-additive={isDebugAdditive ? 'true' : 'false'}
       aria-label="Largo Lawn - your neighbor's lawn mower hero"
     >
       <div className={styles.viewport}>
@@ -234,7 +245,12 @@ export function HeroFieldTelemetry({
         {/* Z 0.5: additive green palette correction.
          * Bottom-up green wash that tints the sandy foreground toward
          * the brand green band as the storybook fades out. Pure CSS
-         * gradient, no new image asset. */}
+         * gradient, no new image asset.
+         *
+         * D-0046 — under ?debug=show-additive the data-[debug-additive=true]
+         * CSS escape-hatch forces `.greenVignette` to display:block +
+         * opacity:1 !important so the steward sees it at every scroll
+         * position independent of the greenVignetteOpacity MotionValue. */}
         <motion.div
           className={styles.greenVignette}
           style={{ opacity: greenVignetteOpacity }}
@@ -268,7 +284,12 @@ export function HeroFieldTelemetry({
          * Static foreground grass blades along the bottom edge that mask
          * the remaining sand pixels and reinforce the brand green band.
          * Rises in as the storybook dissolves so the transition reads as
-         * "cartoon world turns into real lawn". */}
+         * "cartoon world turns into real lawn".
+         *
+         * D-0046 — under ?debug=show-additive the data-[debug-additive=true]
+         * CSS escape-hatch forces `.grassSilhouette` to display:block +
+         * opacity:1 !important so the steward sees it at every scroll
+         * position independent of the grassOpacity MotionValue. */}
         <motion.div
           className={styles.grassSilhouette}
           style={{ opacity: grassOpacity }}
@@ -313,9 +334,16 @@ export function HeroFieldTelemetry({
          *   - FieldStamp is decorative passport chrome on the
          *     postcard, not dashboard chrome, so it is always a
          *     plain `<div>` regardless of scroll motion. */}
-        <LiveStatus now={now ?? undefined} uiOpacity={isDebugAdditive ? 1 : uiOpacity} uiY={isDebugAdditive ? 0 : uiY} />
+        {/* D-0046 — call sites pass plain MotionValue<number>; the debug-additive
+         * gate is enforced via the section's data-debug-additive attribute +
+         * CSS escape-hatch rules in HeroFieldTelemetry.module.css. We do NOT
+         * use inline opacity/y ternaries on motion.divs here because Framer
+         * Motion's style cache stays bound to the original MotionValue after
+         * the prop transitions to a literal number — see comment block at top
+         * of file for the full binding-subscriber rationale. */}
+        <LiveStatus now={now ?? undefined} uiOpacity={uiOpacity} uiY={uiY} />
         <FieldStamp />
-        <TelemetryStats uiOpacity={isDebugAdditive ? 1 : uiOpacity} uiY={isDebugAdditive ? 0 : uiY} progress={smoothProgress} isDebugAdditive={isDebugAdditive} />
+        <TelemetryStats uiOpacity={uiOpacity} uiY={uiY} progress={smoothProgress} />
         {isDebugAdditive && (
           <div
             className={styles.debugBanner}
@@ -500,19 +528,14 @@ function BackgroundPhoto({
  * visible on those surfaces with zero React branching.
  * ============================================================ */
 
-// D-0046 — the | number arm of MotionValue<number> | number is reachable only
-// via the ?debug=show-additive URL-param gate (never by a non-debug visitor).
-// Revert both LiveStatus and TelemetryStats props to plain MotionValue<number>
-// when D-0046 is decommissioned. See governance/decisions/0046-debug-overlay.md
-// §Trade-offs accepted for the steward-facing rationale.
 function LiveStatus({
   now,
   uiOpacity,
   uiY,
 }: {
   now: string | undefined;
-  uiOpacity: MotionValue<number> | number;
-  uiY: MotionValue<number> | number;
+  uiOpacity: MotionValue<number>;
+  uiY: MotionValue<number>;
 }): ReactNode {
   const reduced = useReducedMotion();
   const [minute, setMinute] = useState(() => {
@@ -618,12 +641,10 @@ function TelemetryStats({
   uiOpacity,
   uiY,
   progress,
-  isDebugAdditive,
 }: {
-  uiOpacity: MotionValue<number> | number;
-  uiY: MotionValue<number> | number;
+  uiOpacity: MotionValue<number>;
+  uiY: MotionValue<number>;
   progress: MotionValue<number>;
-  isDebugAdditive?: boolean;
 }): ReactNode {
   // D-0043 (rev 4) — per-stat micro-cascade with vertical lift.
   // Each stat rides its own narrow scroll window (0.04 step) for
@@ -670,7 +691,7 @@ function TelemetryStats({
         <motion.span
           key={stat.value}
           className={styles.telemetryItem}
-          style={{ opacity: isDebugAdditive ? 1 : statOpacities[i]!, y: isDebugAdditive ? 0 : statYs[i]! }}
+          style={{ opacity: statOpacities[i]!, y: statYs[i]! }}
         >
           <span className={styles.telemetryValue}>{stat.value}</span>
           <span className={styles.telemetryLabel}>{stat.label}</span>
