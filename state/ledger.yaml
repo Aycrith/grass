@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-19 (Day 26 — D-0047 Wave 4 second pinned scene + Wave 3 motion restoration + Wave 5 multi-pass visual quality audit, commit 99dbf05)
+# Last updated: 2026-07-20 (Day 27 — D-0048 Wave 4 second scene replaced with Three.js 2.5D scene + grasscontent textures + Tuesday-morning copy)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-19 (Day 26 — D-0047 Wave 4 second pinned scene + Wave 3 motion restoration + Wave 5 multi-pass visual quality audit, commit 99dbf05)
+# Last updated: 2026-07-20 (Day 27 — D-0048 Wave 4 second scene replaced with Three.js 2.5D scene + grasscontent textures + Tuesday-morning copy)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -2590,3 +2590,255 @@ changelog:
       surface area is now larger so it may need a snapshot
       refresh — pending steward review).
     by: "Buffy + Mavis (orchestrator, 2026-07-19)"
+
+  - date: 2026-07-20
+    day: 27
+    change: >
+      D-0048 — Wave 4 second scene replaced with Three.js 2.5D
+      scene + grasscontent textures + Tuesday-morning copy.
+      Steward feedback that Wave 4's VEO-symmetric gouache was
+      "not artistically or visually coherent" is closed via a
+      full WebGL rebuild.
+
+      (1) Source selection — three VEO gouache variants exist in
+      C:/Users/camer/Downloads/grasscontent/. The current source
+      (Hand-painted_gouache_storybook_p…_202607171737.mp4) is
+      symmetric palms+sun with letterbox; rejected. Picked
+      Hand-painted_gouache_illustratio…_202607171636.mp4: a
+      Florida ranch house + palms + sun + mowed lawn + 2 riding
+      mowers, asymmetric, no letterbox. Source comparison report
+      at Downloads/grasscontent/probe/REPORT-source-comparison.md.
+
+      (2) Frame re-extraction — 6 frames extracted from the
+      selected mp4 via ffmpeg select + Python PIL, cropped
+      1240×680 starting at (20,20) to remove paper-cream edge.
+      Written to apps/web/public/hero/layers/v2/scene2-01..06.webp
+      (~33KB each, 198KB total). Old gouache-01..06.webp (~308KB)
+      and palms-01..06.webp (~230KB) deleted (538KB freed).
+
+      (3) Stack install — three ^0.185.1 + @react-three/fiber
+      ^9.6.1 + @react-three/drei ^10.7.7 added to
+      apps/web/package.json. React 19 + Next.js 15 compatibility
+      verified (r3f 9 supports React 19).
+
+      (4) HeroScene3D component (apps/web/src/components/sections/
+      HeroScene3D.tsx, ~310 lines) — 2.5D scene using 2D planes
+      positioned in real 3D space with the new scene2 webp frames
+      as diffuse textures. 3 planes: BG (z=-15, 48×21, widescreen
+      ranch-house), MID (z=-8, 22×24, asymmetric palms right),
+      FG (z=-3, 28×8, asymmetric grass tufts left). Per-plane
+      texture cycling cadences 10s/8s/6s de-synced via cyclePhase
+      offsets (0/2.7/5.3). Camera orbit 0°→6° scroll-driven via
+      MotionValue. Per-plane wind sway (BG 0.5°, MID 2°, FG 4°)
+      at 0.45 rad/s for a 14s meditative period. Camera roll
+      0.025 rad (1.4°) + Y-bob ±0.15 over 14s give the scene life
+      without seasickness. Cream-colored fog (near=12, far=30)
+      fades distant planes into the page background. Editorial
+      content overlay (eyebrow + opening quote glyph + Fraunces
+      headline with italic Tuesday + subhead + 2 CTAs) renders
+      as HTML on top of the Canvas, not as a 3D mesh, so text
+      stays sharp at any zoom.
+
+      (5) Composition + brand palette pass — bottom→top cream
+      gradient scrim (95% cream at bottom edge → 0% at 55%
+      height) anchors editorial text against any illustrated
+      element behind it. Plane sizes tuned: BG widescreen 16:7
+      aspect, MID more vertical to read as palm silhouette, FG
+      wide+low for foreground grass tufts.
+
+      (6) Animation + motion pass — Phase 4 tuning: camera roll
+      strengthened from 0.01 → 0.025 rad for breath, Y-axis bob
+      added (mimics operator on uneven ground), wind cadence
+      slowed 0.6 → 0.45 rad/s for meditation, frame cycling
+      de-synced per plane so texture changes don't all hit at
+      once.
+
+      (7) Perf + resilience — HeroScene3D loaded via
+      next/dynamic({ ssr: false }) to keep three.js + R3F + drei
+      (~150KB gzipped) out of the initial client bundle. Verified:
+      homepage First Load JS 468kB → 230kB (-238kB deferred). DPR
+      capped [1, 1.25] on coarse-pointer (mobile), [1, 1.75] on
+      fine-pointer (desktop). FG plane dropped on coarse-pointer
+      to save fillrate. WebGL fallback: on mount, detect WebGL
+      via canvas.getContext('webgl2'|'webgl'). On
+      'webglcontextlost' event (GPU thermal throttle, browser
+      crash, locked-down env), swap Canvas for <picture><img>
+      showing scene2-01.webp as static fallback. Static fallback
+      is coherent with scene 1 photographic style and renders
+      even in headless environments (verified: capture shows
+      Florida ranch house + palms + sun + editorial text overlay
+      with 0 console errors).
+
+      (8) Copy rewrite (steward-gated, picked "Tuesday morning
+      beat") — eyebrow "CHAPTER 2 — TUESDAY MORNING", headline
+      "Walked past Tuesday." with Tuesday italicized in Fraunces
+      via parseScene2Headline's expanded italicKeywords list,
+      subhead "Six days I plan the route. One day I cut. The
+      mower noise lasts twenty minutes; the rest of the week is
+      yours." Same CTAs (See my route → / See pricing) carry
+      forward.
+
+      (9) Out-of-scope fix in apps/web/src/components/motion/
+      variants.tsx — pre-existing TypeScript error at lines 132,
+      229 was blocking bun run build (the `motion[as] as
+      ElementType` cast was too broad; TS treated children as
+      `never`). Fixed via `as ComponentType<any>` with eslint-
+      disable comments. Documented in the cast as a real bug
+      (ElementType→ComponentType narrows props; without it, all
+      children/ref/className spreads fail type-check). Without
+      this fix, Phase 2 ship verification was impossible.
+
+      Validation: bunx tsc --noEmit clean; bun run build — 84/84
+      static pages compile, First Load JS for / = 230kB (down
+      from 468kB); HeroScene3D verified in compiled bundle
+      (.next/static/chunks/4509-*.js 124KB deferred chunk);
+      Playwright capture at 7 desktop + 3 mobile scroll positions
+      via apps/web/audit-d0048-hero3d.mjs, 0 console errors,
+      static fallback shows Florida ranch house + palms + sun +
+      lawn + editorial text overlay coherently. Headless Chromium
+      cannot sustain WebGL context (SwiftShader drops after page
+      load — see D-0048 §Risk R-LOADTIME), so the captured state
+      is the static fallback path; in a real browser the WebGL
+      scene adds parallax + wind sway + frame cycling on top of
+      the same frames.
+
+      Files changed: 8 modified, 3 new, 12 deleted. New:
+      governance/decisions/0048-hero-3d-scene-replacement.md,
+      apps/web/src/components/sections/HeroScene3D.tsx,
+      apps/web/src/components/sections/HeroScene3D.module.css,
+      apps/web/public/hero/layers/v2/scene2-01..06.webp (6 files,
+      198KB), apps/web/audit-d0048-hero3d.mjs. Modified:
+      apps/web/package.json (3 deps), apps/web/src/components/
+      sections/HeroFieldTelemetry.tsx (dynamic import +
+      parseScene2Headline italic keyword expansion), .module.css
+      (removed 243 lines of legacy secondScene CSS), lib/content.ts
+      (scene2 copy rewrite), components/motion/variants.tsx (cast
+      fix), state/ledger.yaml (this entry). Deleted:
+      apps/web/public/hero/layers/v2/gouache-*.webp (6 files,
+      308KB), palms-*.webp (6 files, 230KB).
+
+      Refs: governance/decisions/0048-hero-3d-scene-replacement.md,
+      apps/web/audit/d-0048-hero3d/scroll-45pct.png (the rendered
+      scene 2 fallback), Downloads/grasscontent/probe/REPORT-
+      source-comparison.md.
+    by: "Buffy + Mavis (orchestrator, 2026-07-20)"
+
+  - date: "2026-07-20"
+    day: 27
+    decision: D-0048
+    decision_subrecord: "Redesign (post-implementation, in-flight)"
+    title: "D-0048 redesign — texture-per-plane + real-browser review surface + cream-colored canvas"
+    summary: >
+      D-0048 first-pass produced a still-beautiful component but with
+      a fragmented/3-timestamp-mashup visual quality: all 3 planes cycled
+      through the SAME scene2 strip, producing 3 frames-at-3-different-
+      times overlaid rather than a coherent 2.5D scene. Redesign
+      addresses this at 4 layers.
+
+      (1) Texture-per-plane architecture. Each plane now owns its own
+      VEO-derived strip — re-extracted from the existing grasscontent
+      mp4 sources:
+        - BG plane  → scene2-01..06.webp  (Florida ranch house, palms,
+                                          sun, mower, asymmetric)
+        - MID plane → palms-01..06.webp   (palms framing ranch house,
+                                          right-offset)
+        - FG plane  → fern-01..06.webp    (close-up fern frond on
+                                          paper-cream bg, left-edge)
+      Three new texture arrays live in HeroScene3D.tsx (SCENE2_TEXTURES,
+      PALMS_TEXTURES, FERN_TEXTURES, each 6 frames at 1240×680). At any
+      moment the 3 planes show 3 different VEO compositions at 3 different
+      depths — true parallax depth, not a 3-frame mashup.
+
+      (2) Per-plane cycling cadence + sway tuned for visual rhythm.
+      Each plane now has its own ambient signature:
+        - BG  scene2:  cycleSec=12, swayDeg=0.5, cyclePhase=0  (slow,
+                                                             calm)
+        - MID palms:   cycleSec=9,  swayDeg=1.5, cyclePhase=3, swayPhase=π/3
+        - FG  fern:    cycleSec=6,  swayDeg=3,   cyclePhase=5, swayPhase=π/1.5
+      Asynchronous cyclePhase + swayPhase means texture swaps and wind
+      motion never align across planes — the scene reads as 3 layers
+      living separate microclimates.
+
+      (3) Cream canvas + dedicated scrim. Scene2D5 now sets
+      scene.background = new THREE.Color('#faf6f0') in useEffect so
+      any sub-pixel gaps or camera-orbit edge bleed renders as cream
+      (matching --ll-cream) instead of R3F's default black clear color.
+      A new .scrim div in HeroScene3D.module.css sits between the
+      canvas and the editorial content overlay with a cream-to-clear
+      gradient ramp (0.98 → 0.94 → 0.78 → 0.35 → 0.05 → 0) — anchors
+      the bottom editorial pull-quote against any illustrated element
+      behind it (the photo's dark stage never bleeds through during
+      the 45%/70% cross-fades). Plus: camera orbit strengthened from
+      6° → 8° so parallax between BG/MID/FG is actually perceptible;
+      cream fog (FOG_NEAR=10, FOG_FAR=22) tuned to match the camera
+      frustum so distant planes fade into the cream backdrop.
+
+      (4) /hero-3d-test route. New page at apps/web/src/app/hero-3d-test/
+      ({page,layout}.tsx + page.module.css) mounts <HeroScene3D /> in
+      isolation with mock MotionValues (opacity / contentOpacity /
+      scrollProgress all start at 1, fully revealed). A right-rail
+      debug panel exposes 3 sliders (camera orbit via scrollProgress,
+      scene opacity, content opacity) + WebGL-availability probe + a
+      3-plane legend with color-coded dots (BG deep-green / MID green /
+      FG sun). The route is the only place the WebGL scene can be
+      visually confirmed — headless Chrome drops the WebGL context
+      during page load (D-0048 §Risk R-LOADTIME confirmed). Steward
+      workflow: open /hero-3d-test in a real browser, scrub the
+      scrollProgress slider, observe parallax between 3 planes +
+      wind sway + texture cycling, then sign off on a target value
+      (the production hero drives scrollProgress via useScroll).
+
+      Steward directive that drove this redesign: "ship each wave
+      when it is ready and has been through as many visual design and
+      improvement/augmentation passes to ensure that this is as high
+      quality and artistically presentable as possible" and "do what
+      results in the best possible, highest quality animated 3d scene
+      as a result." First-pass D-0048 honored the spirit but produced
+      a fragmented visual; this redesign runs the same Three.js stack
+      with a different texture-per-plane architecture that is what the
+      directive actually wants.
+
+      Files changed: 5 modified, 3 new.
+        Modified: HeroScene3D.tsx (3-plane texture routing +
+                 per-plane cadence/sway tuning + scene.background cream
+                 + useEffect on scene fog/bg), HeroScene3D.module.css
+                 (.scrim div CSS, removed .root bg gradient), apps/web/
+                 src/components/sections/HeroScene3D.tsx (per-plane
+                 props on CycledPlane: cyclePhase, swayPhase),
+                 governance/decisions/0048-hero-3d-scene-replacement.md
+                 (R48.2/R48.3/R48.6/R48.7/R48.8 rewritten, R48.8b added).
+        New: apps/web/src/app/hero-3d-test/layout.tsx (noindex),
+             apps/web/src/app/hero-3d-test/page.tsx (~120 lines,
+             debug panel + 3 sliders + WebGL probe),
+             apps/web/src/app/hero-3d-test/page.module.css,
+             apps/web/public/hero/layers/v2/palms-01..06.webp (re-
+             extracted at 1240×680, ~38KB each, ~228KB total),
+             apps/web/public/hero/layers/v2/fern-01..06.webp (re-
+             extracted at 1240×680, ~38KB each, ~228KB total),
+             Downloads/grasscontent/prep-palms-fern-frames.py (NEW
+             extraction driver: ffmpeg select→PIL crop→chroma key→
+             webp encode for palms + fern sources).
+
+      Validation: bunx tsc --noEmit clean (no new TS errors from
+      per-plane prop interface change); HeroScene3D module-scoped
+      CSS compiles without warnings; /hero-3d-test route renders
+      200 at dev-server probe with mock MotionValues; scene2
+      illustration + content overlay reads AAA-legible against the
+      new .scrim gradient at desktop (1440×900) + mobile (393×851)
+      per apps/web/audit-d0048-hero3d.mjs + apps/web/audit-d0048-
+      prod-hero.mjs scroll-position captures. Headless Chromium
+      cannot sustain WebGL context (SwiftShader drops) so the actual
+      parallax motion is confirmed in real-browser review via
+      /hero-3d-test, not in CI.
+
+      Confidence raised from 0.78 (first-pass D-0048) → 0.82
+      (redesign). Steward browser review of /hero-3d-test would
+      raise to 0.88+. Out-of-scope: ComfyUI re-roll of palms/fern
+      sources (the existing mp4s are sufficient), hands-authored
+      SVG palms/fern (would require abandoning the painted-
+      storybook aesthetic, rejected), full procedural geometry
+      palm/fern trees (architecturally heavier than the 2.5D
+      plane approach, rejected in the original D-0048 ADR).
+    by: "Buffy + Mavis (orchestrator, 2026-07-20)"
+    review_date: "2026-08-20"
+    twined_with: "D-0048 (parent decision); /hero-3d-test review follows the same steward-gated pattern as D-0029 / D-0030 / D-0031 / D-0032 / D-0033 / D-0047 (visual diff via Playwright captures + steward sign-off)"

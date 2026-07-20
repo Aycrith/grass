@@ -1,0 +1,182 @@
+/* ============================================================
+ * HeroScene3D — D-0048 2.5D scene for the second pinned scene.
+ *
+ * Replaces the Wave 4 symmetric gouache illustration with a Three.js
+ * Canvas containing 3 planes textured with the new `illustratio` VEO
+ * variant (Florida ranch house + palms + sun + mowed lawn + 2 riding
+ * mowers). Real 3D depth via camera orbit + parallax between planes.
+ *
+ * The content overlay (eyebrow + headline + subhead + CTAs) sits on
+ * top of the Canvas with the same editorial pull-quote styling as
+ * the previous second-scene copy.
+ * ============================================================ */
+
+.root {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  /* Cream backdrop fills any sub-pixel gaps around the textured
+   * planes. The Canvas itself has alpha:true so the cream blends
+   * with the page's surrounding background. */
+  background-color: var(--ll-cream);
+}
+
+/* Content scrim — sits between the canvas and the editorial text. The
+ * canvasWrap has an opaque image filling the panel, so the .root's own
+ * background gradient never bleeds through. This scrim layer solves
+ * that by being a sibling of canvasWrap positioned absolutely inside
+ * .root, providing the cream-to-clear ramp that the text overlay
+ * relies on for AAA contrast. Anchors the bottom editorial pull-quote
+ * against the busy ranch-house + grass foreground regardless of which
+ * VEO frame is showing. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Cream-to-clear ramp that hides the scene-1 photo bleeding
+   * through during the cross-fade. The photo's dark stage shows as
+   * a vertical column when the scene-2 illustration is offset
+   * (object-position: center 60%); this scrim covers the entire
+   * panel up to ~85% height, leaving only the top 15% of the scene
+   * where palms + sun need to read against the clear backdrop. */
+  background-image: linear-gradient(
+    to top,
+    rgba(250, 246, 240, 0.98) 0%,
+    rgba(250, 246, 240, 0.94) 30%,
+    rgba(250, 246, 240, 0.78) 55%,
+    rgba(250, 246, 240, 0.35) 75%,
+    rgba(250, 246, 240, 0.05) 90%,
+    rgba(250, 246, 240, 0) 100%
+  );
+}
+
+.canvasWrap {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Static fallback shown when WebGL is unavailable or the context is
+ * lost. The <picture> fills the same area the <Canvas> would; the
+ * <img> inside is sized to "cover" so it fills the panel regardless
+ * of aspect ratio without letterboxing. */
+
+.fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.fallbackImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 60%;
+  display: block;
+}
+
+/* Editorial pull-quote content overlay — matches the second-scene
+ * layout that this component replaces (eyebrow → headline → subhead
+ * → CTAs, vertically stacked bottom of viewport). */
+
+.content {
+  position: absolute;
+  inset: auto 0 12svh 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 6vw;
+  pointer-events: auto;
+  color: var(--ll-palm-bark);
+  /* Warm brown text reads naturally on the cream sky of the new
+   * Florida-house illustration. Same color temperature as the
+   * house's roof tiles. */
+}
+
+.eyebrow {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ll-clay);
+  margin-bottom: 0.5rem;
+}
+
+.headline {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--ll-palm-bark);
+  margin: 0 0 1rem 0;
+  max-width: 24ch;
+  position: relative;
+}
+
+.openingMark {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.9em;
+  color: var(--ll-clay);
+  opacity: 0.55;
+  margin-right: 0.05em;
+  display: inline-block;
+  transform: translateY(-0.08em);
+}
+
+.italic {
+  font-style: italic;
+  font-weight: 600;
+  color: inherit;
+}
+
+.subhead {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ll-palm-bark);
+  margin: 0 0 1.5rem 0;
+  max-width: 50ch;
+  opacity: 0.85;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.ctaArrow {
+  display: inline-block;
+  margin-left: 0.5em;
+  transition: transform 0.25s var(--ease-out-quart, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+/* Mobile — reduce headline scale, keep all content visible. */
+
+@media (max-width: 768px) {
+  .headline {
+    font-size: clamp(1.5rem, 7vw, 2.25rem);
+  }
+}
+
+@media (max-width: 380px) {
+  .headline {
+    font-size: clamp(1.25rem, 7vw, 1.75rem);
+  }
+  .content {
+    bottom: 8svh;
+  }
+}

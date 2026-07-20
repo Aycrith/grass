@@ -43,10 +43,10 @@ export const hero = {
    * and brand-anchored to operator voice.
    */
   scene2: {
-    eyebrow: 'CHAPTER 2 — THE COMMITMENT',
-    headline: 'Same yard, every week.',
+    eyebrow: 'CHAPTER 2 — TUESDAY MORNING',
+    headline: 'Walked past Tuesday.',
     subhead:
-      'No swap, no franchise markup. The same operator shows up at the same address on the same day, until you say stop.',
+      'Six days I plan the route. One day I cut. The mower noise lasts twenty minutes; the rest of the week is yours.',
     primaryCta: { label: 'See my route', href: '/service-areas' },
     secondaryCta: { label: 'See pricing', href: '/pricing' },
   },

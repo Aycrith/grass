@@ -3,6 +3,8 @@
 // Status section). The native <picture> element in BackgroundPhoto below dispatches to AVIF/WebP/JPEG
 // fallbacks for the v2 photo, layered alongside the hand-authored SVG primary (HeroStorybookLayer).
 
+import dynamic from 'next/dynamic';
+
 /**
  * HeroFieldTelemetry - the unified production hero.
  *
@@ -93,6 +95,19 @@ import { Button } from '@/components/ui';
 import { cn } from '@/lib/cn';
 
 import { HeroStorybookLayer } from './HeroStorybookLayer';
+// D-0048 — dynamic import: keep the ~150KB three.js + R3F + drei bundle
+// out of the initial client bundle. HeroScene3D only loads once the user
+// approaches scene 2 (~30% scroll). ssr:false because Three.js touches
+// window/document during module init. The fallback is the static
+// <picture> image (inside HeroScene3D's own internal fallback path) —
+// visible instantly via the cream backdrop so there's no flash.
+const HeroScene3D = dynamic(
+  () => import('./HeroScene3D').then((m) => ({ default: m.HeroScene3D })),
+  {
+    ssr: false,
+    loading: () => null,
+  },
+);
 
 import styles from './HeroFieldTelemetry.module.css';
 
@@ -127,13 +142,16 @@ function parseHeadline(headline: string): readonly (readonly string[])[] {
  * into plain + italic segments. The brand keyword gets italic
  * Fraunces emphasis matching the WP81 editorial break pattern;
  * everything else reads plain. Returns ordered segments so the
- * caller can render them in sequence. */
-function parseScene2Headline(
+ * caller can render them in sequence.
+ *
+ * D-0048 — exported so HeroScene3D can reuse the same italic-keyword
+ * rule instead of duplicating it. */
+export function parseScene2Headline(
   headline: string,
 ): readonly { text: string; italic: boolean }[] {
   // Brand keywords to italicize in the second scene's editorial
   // pull-quote. Add new keywords here as scene 2 copy evolves.
-  const italicKeywords = ['yard', 'week', 'every week'];
+  const italicKeywords = ['yard', 'week', 'every week', 'Tuesday'];
   const trimmed = headline.trim();
   const tokens: { text: string; italic: boolean }[] = [];
   // Walk word-by-word, matching against the keyword list (case-
@@ -477,20 +495,23 @@ export function HeroFieldTelemetry({
         </motion.div>
 
         {/* Wave 4 — Z 3.5: second pinned scene.
-         * Gouache hand-painted storybook illustration cycling 6 frames
-         * via CSS-step animation, with chapter-2 commitment copy
-         * (eyebrow + headline + subhead + CTAs). Mounted above the
-         * photo and the existing scene-1 content; opacity is driven
-         * by secondSceneFade so it cross-fades in over [0.4, 0.7]
-         * while scene 1's content fades out. The container itself
-         * stays in the DOM at opacity 0 between renders so the
-         * browser can pre-decode the 6 gouache webp frames without
+         *
+         * D-0048 — the second scene is now a Three.js 2.5D plane stack
+         * using the `illustratio` VEO variant (Florida ranch house +
+         * palms + sun + mowed lawn + 2 riding mowers) as plane
+         * textures. Real 3D depth via camera orbit + parallax between
+         * the 3 planes. Editorial pull-quote content overlay sits on
+         * top of the Canvas. Opacity is driven by secondSceneFade so
+         * it cross-fades in over [0.4, 0.7] while scene 1's content
+         * fades out; the canvas mounts at opacity 0 between renders
+         * so the browser pre-decodes the scene2 webp textures without
          * a layout-shift flash when scene 2 begins to dissolve in.
          */}
-        <SecondScene
+        <HeroScene3D
           scene2={scene2}
           opacity={secondSceneFade}
           contentOpacity={scene2ContentFade}
+          scrollProgress={smoothProgress}
         />
 
         {/* Z 4: live status (top right), field stamp (bottom left),
@@ -932,7 +953,9 @@ function RevealWord({
  * or the photo.
  * ============================================================ */
 
-function MagneticCta({
+/* D-0048 — exported so HeroScene3D can reuse the magnetic CTA pattern
+ * without duplicating the spring/pointermove logic. */
+export function MagneticCta({
   href,
   children,
   variant,
@@ -978,143 +1001,10 @@ function MagneticCta({
 }
 
 /* ============================================================
- * SecondScene — Wave 4 second pinned scene.
- *
- * Replaces the single-story resting state at scroll progress
- * 0.4–0.7. While the photo dissolves out (Wave 4 photoFade),
- * a hand-painted gouache illustration of the same Largo
- * lawn (cycling 6 frames extracted from
- * grasscontent/Hand-painted_gouache_storybook_p*.mp4) cross-
- * fades in. On top of the illustration the chapter-2 commitment
- * copy ("Same yard, every week.") rises in, replacing the
- * chapter-1 storybook headline ("Your neighbor's lawnmower.").
- *
- * The container always mounts so the browser pre-decodes the
- * 6 gouache webp frames during scene 1; only opacity is
- * animated. contentOpacity is a separate MotionValue so the
- * text + CTAs can lag the illustration slightly (a chapter
- * reveal feels more theatrical when the picture lands first).
+ * SecondScene was removed in D-0048 — its replacement is the
+ * HeroScene3D component (apps/web/src/components/sections/HeroScene3D.tsx)
+ * imported at the top of this file. That component renders a Three.js
+ * Canvas with 3 grasscontent-textured planes + an HTML content overlay.
+ * The container opacity is still driven by secondSceneFade /
+ * scene2ContentFade passed in as MotionValues.
  * ============================================================ */
-
-function SecondScene({
-  scene2,
-  opacity,
-  contentOpacity,
-}: {
-  scene2: {
-    eyebrow: string;
-    headline: string;
-    subhead: string;
-    primaryCta: { label: string; href: string };
-    secondaryCta: { label: string; href: string };
-  };
-  opacity: MotionValue<number>;
-  contentOpacity: MotionValue<number>;
-}): ReactNode {
-  return (
-    <motion.div
-      className={styles.secondScene}
-      style={{ opacity }}
-      aria-hidden="false"
-      data-testid="hero-second-scene"
-    >
-      <div className={styles.gouacheStage} aria-hidden="true">
-        <div
-          className={`${styles.gouacheFrame} ${styles.gouacheFrame1}`}
-          style={{ backgroundImage: 'url(/hero/layers/v2/gouache-01.webp)' }}
-        />
-        <div
-          className={`${styles.gouacheFrame} ${styles.gouacheFrame2}`}
-          style={{ backgroundImage: 'url(/hero/layers/v2/gouache-02.webp)' }}
-        />
-        <div
-          className={`${styles.gouacheFrame} ${styles.gouacheFrame3}`}
-          style={{ backgroundImage: 'url(/hero/layers/v2/gouache-03.webp)' }}
-        />
-        <div
-          className={`${styles.gouacheFrame} ${styles.gouacheFrame4}`}
-          style={{ backgroundImage: 'url(/hero/layers/v2/gouache-04.webp)' }}
-        />
-        <div
-          className={`${styles.gouacheFrame} ${styles.gouacheFrame5}`}
-          style={{ backgroundImage: 'url(/hero/layers/v2/gouache-05.webp)' }}
-        />
-        <div
-          className={`${styles.gouacheFrame} ${styles.gouacheFrame6}`}
-          style={{ backgroundImage: 'url(/hero/layers/v2/gouache-06.webp)' }}
-        />
-        {/* Pass 3a — palm foreground parallax. The storybook's central
-         * motif (swaying palms) carries into scene 2 so the hero
-         * reads as one continuous painted world, not two unrelated
-         * illustrations. Palms sit above the gouache cycling but
-         * below the content layer (z-stack: gouache 1, palms 2,
-         * content 3). The 6 frames cycle on a longer 12s cadence so
-         * the palm sway reads as gentle breeze, not nervous
-         * flicking. */}
-        <div className={styles.secondScenePalms} aria-hidden="true">
-          <div
-            className={`${styles.secondScenePalmFrame} ${styles.secondScenePalmFrame1}`}
-            style={{ backgroundImage: 'url(/hero/layers/v2/palms-01.webp)' }}
-          />
-          <div
-            className={`${styles.secondScenePalmFrame} ${styles.secondScenePalmFrame2}`}
-            style={{ backgroundImage: 'url(/hero/layers/v2/palms-02.webp)' }}
-          />
-          <div
-            className={`${styles.secondScenePalmFrame} ${styles.secondScenePalmFrame3}`}
-            style={{ backgroundImage: 'url(/hero/layers/v2/palms-03.webp)' }}
-          />
-          <div
-            className={`${styles.secondScenePalmFrame} ${styles.secondScenePalmFrame4}`}
-            style={{ backgroundImage: 'url(/hero/layers/v2/palms-04.webp)' }}
-          />
-          <div
-            className={`${styles.secondScenePalmFrame} ${styles.secondScenePalmFrame5}`}
-            style={{ backgroundImage: 'url(/hero/layers/v2/palms-05.webp)' }}
-          />
-          <div
-            className={`${styles.secondScenePalmFrame} ${styles.secondScenePalmFrame6}`}
-            style={{ backgroundImage: 'url(/hero/layers/v2/palms-06.webp)' }}
-          />
-        </div>
-      </div>
-      <motion.div
-        className={styles.secondSceneContent}
-        style={{ opacity: contentOpacity }}
-      >
-        <span className={styles.secondSceneEyebrow}>{scene2.eyebrow}</span>
-        <h2 className={styles.secondSceneHeadline}>
-          {/* Pass 3b — opening-quote glyph + italic brand keyword.
-           * Editorial pull-quote ornament that mirrors the
-           * FinalCTABanner's opening marks (WP73). The first word
-           * "Same" reads plain; "yard" gets italic Fraunces emphasis
-           * matching the WP81 editorial break pattern. */}
-          <span className={styles.secondSceneOpeningMark} aria-hidden="true">
-            &ldquo;
-          </span>
-          {parseScene2Headline(scene2.headline).map((seg, i) =>
-            seg.italic ? (
-              <em key={`seg-${i}`} className={styles.secondSceneHeadlineItalic}>
-                {seg.text}
-              </em>
-            ) : (
-              <span key={`seg-${i}`}>{seg.text}</span>
-            )
-          )}
-        </h2>
-        <p className={styles.secondSceneSubhead}>{scene2.subhead}</p>
-        <div className={styles.secondSceneActions}>
-          <MagneticCta href={scene2.primaryCta.href} variant="sun" size="lg">
-            {scene2.primaryCta.label}
-            <span className={styles.ctaArrow} aria-hidden="true">
-              →
-            </span>
-          </MagneticCta>
-          <MagneticCta href={scene2.secondaryCta.href} variant="ghost" size="lg">
-            {scene2.secondaryCta.label}
-          </MagneticCta>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-}

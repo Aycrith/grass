@@ -27,7 +27,7 @@ import {
   useTransform,
 } from 'framer-motion';
 import {
-  type ElementType,
+  type ComponentType,
   type ReactNode,
   type RefObject,
   useEffect,
@@ -125,8 +125,10 @@ interface FadeUpProps extends Omit<MotionProps, 'initial' | 'animate' | 'variant
 export function FadeUp({ children, className, delay = 0, as = 'div', ...rest }: FadeUpProps) {
   const { ref, fadeUpProps } = useFadeUp(delay);
   // The dynamic `as` key produces a union type that TypeScript treats as
-  // not a JSX element. Cast to ElementType so we can render it uniformly.
-  const Component = motion[as] as ElementType;
+  // not a JSX element. Cast to ComponentType<any> so children/ref/className
+  // resolve correctly (ElementType was too broad — children resolved to never).
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const Component = motion[as] as ComponentType<any>;
 
   return (
     <Component
@@ -221,7 +223,8 @@ export function StaggerGroup({
   const ref = useRef<HTMLElement | null>(null);
   const isInView = useInView(ref, { once: true, margin: '-10% 0px' });
   const reduced = useReducedMotion();
-  const Component = motion[as] as ElementType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const Component = motion[as] as ComponentType<any>;
 
   const visible = trigger === 'inView' ? isInView || reduced : true;
 
