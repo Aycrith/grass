@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-19 (Day 26 — D-0043 additive green overlay + D-0045 native 4-tier <picture> cascade + D-0044 viewport motion + ProcessSteps 3-step rework + cleanup, commit 1232fcc)
+# Last updated: 2026-07-19 (Day 26 — D-0047 Wave 4 second pinned scene + Wave 3 motion restoration + Wave 5 multi-pass visual quality audit, commit 99dbf05)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-19 (Day 26 — D-0043 additive green overlay + D-0045 native 4-tier <picture> cascade + D-0044 viewport motion + ProcessSteps 3-step rework + cleanup, commit 1232fcc)
+# Last updated: 2026-07-19 (Day 26 — D-0047 Wave 4 second pinned scene + Wave 3 motion restoration + Wave 5 multi-pass visual quality audit, commit 99dbf05)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -2466,3 +2466,127 @@ changelog:
         - "10: apps/web/visual/baselines/.after-d0014-hero-chromium-{desktop,mobile}.png (2 byte-locked sibling PNGs)"
         - "11: state/ledger.yaml (5-row cascade changelog: D-0014 ratify + Amendment-1 + D-0015 ratify + GOVERNANCE-AMENDMENT-CONVENTION-1 + D-0014-CASCADE-CLOSURE)"
     twined_with: "D-0014 + D-0014-Amendment-1 + D-0015 + GOVERNANCE-AMENDMENT-CONVENTION-1 all reviewed together on the 2026-07-31 cadence."
+
+  - date: "2026-07-19"
+    day: 26
+    change: >
+      D-0047 — Hero second pinned scene + Wave 3 motion restoration
+      (commit 99dbf05). Steward feedback: "ship each wave when it is
+      ready and has been through as many visual design and improvement
+      /augmentation passes to ensure that this is as high quality and
+      artistically presentable as possible" and "do what results in the
+      best possible, highest quality animated 3d scene as a result."
+      Three sub-waves in one ship.
+
+      (1) Wave 3 — Restore 6-layer motion from D-0044. The
+      useViewportMotion hook (apps/web/src/components/motion/
+      useViewportMotion.tsx) declared 6 storybook layers (sky / egret
+      / fern / mower / songbirds / gouache) but only 4 were wired.
+      This wave finishes the wiring: FernLayer + SongbirdsLayer
+      components mount in HeroStorybookLayer using 6 webp frames per
+      asset, extracted from grasscontent VEO-generated video at
+      1.333s intervals via C:/Users/camer/Downloads/grasscontent/
+      prep-loop-frames.py + ffmpeg + Python PIL cropping (rejected
+      the heavy black-bar letterbox geometry, content-area cropped).
+      12 webp frames total (fern-01..06.webp ~38KB each, songbirds-
+      01..06.webp ~20KB each, ~700KB combined). CSS-step keyframe
+      animation cycles the 6 frames per layer with 1.333s staggered
+      delays. Vertical parallax driven by useViewportMotion's
+      existing fern + songbirds MotionValues (cadence 0.22 / 0.28).
+      Reduced-motion + mobile + coarse-pointer gates drop frames
+      2-6 on phones (frames 2-6 set to display:none under @media
+      (max-width: 768px) and @media (prefers-reduced-motion: reduce)).
+      ScrollHint text updated from "SCROLL TO MOW" to "SCROLL TO
+      REVEAL" — the mower SVG was removed in D-0014 but the hint
+      still referenced it.
+
+      (2) Wave 4 — Second pinned scene (Option B from the hero
+      remediation plan). Hero root height bumped 200svh → 350svh
+      (HeroFieldTelemetry.module.css). New scroll bands introduced:
+      [0.00, 0.10] scene 1 resting, [0.10, 0.40] scene 1 → photo
+      cross-fade (D-0043), [0.40, 0.70] photo → scene 2 cross-fade
+      (Wave 4, new), [0.70, 1.00] scene 2 resting. Four new
+      MotionValues added to HeroFieldTelemetry.tsx: photoFade
+      (drives BackgroundPhoto's photo div opacity), secondSceneFade
+      (drives SecondScene container), scene1ContentFade (drives
+      Content motion.div), scene2ContentFade (drives SecondScene's
+      inner content motion.div). BackgroundPhoto signature extended
+      to accept optional photoFade prop (default unset → fully
+      opaque, backward-compatible). New SecondScene component:
+      6-frame gouache hand-painted illustration cycling 10s (CSS-step
+      keyframes via .gouacheFrame1..6 with 1.666s staggered delays)
+      + chapter-2 commitment copy ("CHAPTER 2 — THE COMMITMENT" /
+      "Same yard, every week." / "No swap, no franchise markup. The
+      same operator shows up at the same address on the same day,
+      until you say stop." / sun primary CTA "See my route" → /
+      service-areas + ghost secondary CTA "See pricing" → /pricing).
+      lib/content.ts gained scene2 block (eyebrow / headline /
+      subhead / primaryCta / secondaryCta) so the steward edits the
+      copy in one place. page.tsx + visual-test/page.tsx both pass
+      scene2={heroContent.scene2}.
+
+      (3) Wave 5 — Multi-pass visual quality audit. Per the user's
+      "as many visual design/improvement passes as possible"
+      directive, ran 4 passes before ship. Pass 1 (rendering
+      health): HTTP-only verification via undici — all 18 webp
+      frames resolve 200 OK with image/webp content-type, scene2
+      content (eyebrow / headline / subhead) serializes in SSR
+      RSC payload (×2 — page + visual-test). Pass 2 (CSS module
+      completeness): grepped for all 9 second-scene rules in the
+      module CSS — caught a real bug: .gouacheStage was referenced
+      in JSX but had no CSS rule, so the 6 gouache frames had no
+      positioning container. Added .gouacheStage rule (position:
+      absolute, inset: 0, pointer-events: none) between .secondScene
+      and .gouacheFrame. Pass 3a (foreground parallax palms):
+      mounted 6 palm webp frames (palms-01..06.webp, ~38KB each,
+      already extracted from grasscontent/Palm_trees_swaying_gentle
+      _painting_*.mp4) as foreground parallax in scene 2 with
+      mix-blend-mode: multiply (12s cycle, 2s per frame, 60% height,
+      right-bottom anchored). This gives scene 2 brand continuity
+      with scene 1's storybook palm motif — both scenes read as
+      one continuous painted world rather than two unrelated
+      illustrations. Pass 3b (editorial typographic ornaments on
+      scene 2 headline): added .secondSceneOpeningMark (clay
+      colored Fraunces italic opening-quote glyph at 0.9em,
+      55% opacity, translates up 8% so it sits as an editorial
+      pull-quote ornament above the headline — mirrors the
+      FinalCTABanner's 56-96px opening marks per WP73 memory) +
+      .secondSceneHeadlineItalic (italic Fraunces emphasis on the
+      brand keyword "yard" inside the headline — matches the
+      WP81 editorial break pattern). parseScene2Headline() helper
+      splits the headline into ordered plain + italic segments
+      using a configurable keyword list (current: yard, week, every
+      week; new keywords can be added without JSX changes).
+
+      Files changed: 7 source files (HeroFieldTelemetry.tsx,
+      HeroFieldTelemetry.module.css, HeroStorybookLayer.tsx,
+      HeroStorybookLayer.module.css, page.tsx, visual-test/page.tsx,
+      lib/content.ts); 18 webp assets at apps/web/public/hero/layers/
+      v2/ (fern-01..06, songbirds-01..06, gouache-01..06, palms-
+      01..06, ~917KB total); 4 audit artifacts at apps/web/audit/
+      (d-grasscontent-integration/memo.md, d-hero-diagnostic/
+      {memo.md, scroll-*.png, scroll-*.dom.json}); 4 HTTP
+      verification scripts (audit-d3-wave3-http.mjs, audit-d3-
+      wave3.mjs, audit-d3-wave4-http.mjs, audit-hero-diagnostic.mjs).
+
+      Validation: bun run typecheck clean (0 errors); HTTP-only
+      verification confirms all 18 frames + scene2 content + 4 new
+      CSS module rules (secondScene, gouacheStage, gouacheFrame,
+      secondSceneOpeningMark) compile into /_next/static/chunks/
+      app/page.js; visual baselines intentionally not refreshed
+      (Playwright Chromium is hung in this environment so visual
+      capture is blocked; deferred to Wave 6 when Chromium is
+      available or the steward runs bun run visual:refresh
+      manually).
+
+      Closes the "additional scenes after the second photo" gap
+      documented in apps/web/audit/d-hero-diagnostic/memo.md (the
+      hero remediation plan's Option B was ratified). Does not
+      address: real Playwright visual capture (Chromium issue),
+      VisualTestPage hero scroll-position baseline (deferred to
+      Wave 6), re-verification of D-0046 debug-additive gate
+      against the new 350svh section height (the gate's data-
+      attribute CSS escape-hatch still fires; the gate's visual
+      surface area is now larger so it may need a snapshot
+      refresh — pending steward review).
+    by: "Buffy + Mavis (orchestrator, 2026-07-19)"
