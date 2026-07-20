@@ -182,11 +182,30 @@ export function HeroFieldTelemetry({
   // hide gates. SSR-safe: defaults false on first render, useEffect flips
   // client-side without React #418. URLSearchParams exact-equality on the
   // named param; unaffected by utm_/other-prefixed querystrings.
+  //
+  // D-0046 rev 3 — add `popstate` listener so client-side navigation (Next.js
+  // <Link> components, browser back/forward) re-evaluates the gate; without
+  // it the steward could navigate to ?debug=show-additive via in-app links
+  // and still see the non-debug visual. The empty-deps array means the
+  // listener is attached once and lives for the component's lifetime.
+  // Console logging gives the steward a DevTools-readable signal of whether
+  // the gate flipped.
   const [isDebugAdditive, setIsDebugAdditive] = useState(false);
   useEffect(() => {
-    if (new URLSearchParams(window.location.search).get('debug') === 'show-additive') {
-      setIsDebugAdditive(true);
-    }
+    const checkUrl = (): void => {
+      const isDebug =
+        new URLSearchParams(window.location.search).get('debug') === 'show-additive';
+      // D-0046 — the no-console rule is disabled project-wide so this
+      // dev-tools signal for the steward needs no eslint-disable
+      // directive. Removing the directive (vs leaving one in place)
+      // also avoids the `reportUnusedDisableDirectives` lint error
+      // for a rule that never fires.
+      console.log('[HeroFieldTelemetry debug gate]', 'url.search=', window.location.search, 'isDebugAdditive=', isDebug);
+      setIsDebugAdditive(isDebug);
+    };
+    checkUrl();
+    window.addEventListener('popstate', checkUrl);
+    return () => window.removeEventListener('popstate', checkUrl);
   }, []);
 
   const { scrollYProgress } = useScroll({
@@ -238,6 +257,37 @@ export function HeroFieldTelemetry({
       data-debug-additive={isDebugAdditive ? 'true' : 'false'}
       aria-label="Largo Lawn - your neighbor's lawn mower hero"
     >
+      {/* D-0046 rev 3 — direct <style> JSX injection. React inline style props
+       * strip !important, so we render a real <style> element when the gate
+       * is on. This guarantees the browser receives the override rules with
+       * raw !important priority at parse time, independent of:
+       *   - CSS module compilation edge cases
+       *   - Framer Motion style.setProperty for opacity/transform
+       *   - The @media (pointer: coarse), (prefers-reduced-motion: reduce), or
+       *     (max-width: 767px) display:none gate on .greenVignette +
+       *     .grassSilhouette in the original stylesheet.
+       * The class names resolve through `styles.*` so the hashed module
+       * class names match the existing JSX usage. */}
+      {isDebugAdditive && (
+        <style
+          dangerouslySetInnerHTML={{
+            __html: [
+              `#hero .${styles.greenVignette},`,
+              `#hero .${styles.grassSilhouette} {`,
+              `  display: block !important;`,
+              `  opacity: 1 !important;`,
+              `}`,
+              `#hero .${styles.liveStatus},`,
+              `#hero .${styles.telemetry},`,
+              `#hero .${styles.telemetryItem} {`,
+              `  display: flex !important;`,
+              `  opacity: 1 !important;`,
+              `  transform: none !important;`,
+              `}`,
+            ].join('\n'),
+          }}
+        />
+      )}
       <div className={styles.viewport}>
         {/* Z 0: real 4K Florida lawn photograph. */}
         <BackgroundPhoto progress={smoothProgress} />
@@ -350,7 +400,11 @@ export function HeroFieldTelemetry({
             role="status"
             aria-live="polite"
           >
-            debug: additive layers forced visible
+            debug: additive layers forced visible ·{' '}
+            <span style={{ fontVariantNumeric: 'tabular-nums' }}>
+              isDebugAdditive={String(isDebugAdditive)} · search=
+              {typeof window !== 'undefined' ? window.location.search : 'n/a'}
+            </span>
           </div>
         )}
       </div>
