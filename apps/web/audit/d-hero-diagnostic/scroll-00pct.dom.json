@@ -1,0 +1,68 @@
+{
+  "scrollY": 108,
+  "sectionTop": -0.46875,
+  "layers": {
+    "root": true,
+    "photoWrap": true,
+    "photoImg": true,
+    "greenVignette": true,
+    "scrim": true,
+    "storybookWrap": true,
+    "storybookMounted": true,
+    "grassSilhouette": true,
+    "content": true,
+    "eyebrow": true,
+    "headline": true,
+    "subhead": true,
+    "actions": true,
+    "liveStatus": true,
+    "stamp": true,
+    "telemetry": true,
+    "telemetryItems": 4,
+    "debugBanner": false,
+    "debugStyle": false,
+    "sectionHeight": 1800
+  },
+  "greenVignetteVis": {
+    "display": "block",
+    "opacity": "0",
+    "visibility": "visible",
+    "effectiveOpacity": false
+  },
+  "grassSilhouetteVis": {
+    "display": "block",
+    "opacity": "0",
+    "visibility": "visible",
+    "effectiveOpacity": false
+  },
+  "storybookVis": {
+    "display": "block",
+    "opacity": "1",
+    "visibility": "visible",
+    "effectiveOpacity": true
+  },
+  "liveStatusVis": {
+    "display": "flex",
+    "opacity": "0",
+    "visibility": "visible",
+    "effectiveOpacity": false
+  },
+  "telemetryVis": {
+    "display": "flex",
+    "opacity": "0",
+    "visibility": "visible",
+    "effectiveOpacity": false
+  },
+  "stampVis": {
+    "display": "block",
+    "opacity": "1",
+    "visibility": "visible",
+    "effectiveOpacity": true
+  },
+  "photoVis": {
+    "display": "block",
+    "opacity": "1",
+    "visibility": "visible",
+    "effectiveOpacity": true
+  }
+}

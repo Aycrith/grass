@@ -23,7 +23,13 @@
 .root {
   position: relative;
   width: 100%;
-  height: 200svh;
+  /* Wave 4 — height 200svh → 350svh. Original 100svh of free scroll
+   * becomes 250svh. Scroll progress ranges:
+   *   [0.00, 0.10]  Scene 1 resting (storybook fully visible)
+   *   [0.10, 0.40]  Scene 1 → photo cross-fade (D-0043)
+   *   [0.40, 0.70]  Photo → Scene 2 cross-fade (Wave 4, new)
+   *   [0.70, 1.00]  Scene 2 resting (gouache illustration visible) */
+  height: 350svh;
   background-color: var(--ll-palm-bark);
   color: var(--ll-cream);
   isolation: isolate;
@@ -748,5 +754,249 @@
   }
   .subhead {
     margin-bottom: 0.5rem;
+  }
+}
+
+/* ============================================================
+ * Wave 4 — Second pinned scene.
+ *
+ * After the photo has settled (scroll > 0.40), the visitor
+ * transitions to a second scene: a symmetric gouache palms+sun
+ * illustration (apps/web/public/hero/layers/v2/gouache-*.webp).
+ * The illustration is centered, full-bleed, and animates via the
+ * same 6-frame CSS-step loop pattern as the fern/songbirds layers.
+ *
+ * Z-stack: photo (z 0) underneath; secondScene (z 1) above photo;
+ * storybook (z 2) ABOVE secondScene so any leftover storybook
+ * artifacts don't bleed through (scroll [0.40, 0.70] should be the
+ * photo-to-gouache transition window, no storybook residue).
+ *
+ * The second scene's content (eyebrow / headline / subhead / CTAs)
+ * fades in over the same window [0.50, 0.80] so the visitor reads
+ * the new headline after the visual transition completes.
+ * ============================================================ */
+
+.secondScene {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  /* Cream backdrop fills the negative space around the symmetric
+   * painting (the source art has heavy black bars on left+right
+   * because VEO framed a 1:1 inner scene in a 16:9 letterbox). The
+   * cream blends with the page's surrounding background. */
+  background-color: var(--ll-cream);
+}
+
+.gouacheStage {
+  /* Full-bleed positioning container for the 6 gouache frames.
+   * Mirrors the .fernInner/.songbirdsInner pattern from Wave 3 but
+   * covers the entire viewport because the gouache illustration IS
+   * the resting state — there's no z-stacked foreground foliage
+   * occluding it. The cream backdrop on .secondScene bleeds through
+   * the symmetric painted scene's left/right letterbox. */
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.gouacheFrame {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  opacity: 0;
+}
+
+/* 6-frame CSS-step keyframe animation. Cycle 10s. */
+@keyframes gouacheCycle {
+  0%, 16.666%   { opacity: 1; }
+  16.667%, 100% { opacity: 0; }
+}
+.gouacheFrame1 { animation: gouacheCycle 10s steps(1, end) infinite; animation-delay: 0s; }
+.gouacheFrame2 { animation: gouacheCycle 10s steps(1, end) infinite; animation-delay: 1.666s; }
+.gouacheFrame3 { animation: gouacheCycle 10s steps(1, end) infinite; animation-delay: 3.333s; }
+.gouacheFrame4 { animation: gouacheCycle 10s steps(1, end) infinite; animation-delay: 5s; }
+.gouacheFrame5 { animation: gouacheCycle 10s steps(1, end) infinite; animation-delay: 6.666s; }
+.gouacheFrame6 { animation: gouacheCycle 10s steps(1, end) infinite; animation-delay: 8.333s; }
+
+.secondSceneContent {
+  position: absolute;
+  inset: auto 0 12svh 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 6vw;
+  pointer-events: auto;
+  color: var(--ll-palm-bark);
+  /* Light brown text on cream background — the symmetric gouache
+   * painting's palms are brown/green so this matches the dominant
+   * color temperature of the new visual. */
+}
+
+.secondSceneEyebrow {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ll-clay);
+  margin-bottom: 0.5rem;
+}
+
+.secondSceneHeadline {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--ll-palm-bark);
+  margin: 0 0 1rem 0;
+  max-width: 24ch;
+  /* Pass 3b — relative positioning so the opening-mark glyph can
+   * absolutely position itself over the top-left of the headline
+   * without disturbing the headline's normal text flow. */
+  position: relative;
+}
+
+/* Pass 3b — editorial opening-quote ornament. Mirrors the
+ * FinalCTABanner's 56-96px opening marks (WP73). Sits above the
+ * first character of the headline as a decorative pull-quote
+ * glyph in clay (--ll-clay) at half-opacity. */
+.secondSceneOpeningMark {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.9em;
+  color: var(--ll-clay);
+  opacity: 0.55;
+  margin-right: 0.05em;
+  display: inline-block;
+  transform: translateY(-0.08em);
+}
+
+/* Pass 3b — italic emphasis for the brand keyword within the
+ * headline. Slightly heavier than the surrounding regular weight
+ * so the emphasis reads even at small sizes. */
+.secondSceneHeadlineItalic {
+  font-style: italic;
+  font-weight: 600;
+  /* Inherit color so the clay-opening-mark + brown-headline +
+   * brown-italic composition stays in the warm earth palette. */
+  color: inherit;
+}
+
+.secondSceneSubhead {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ll-palm-bark);
+  margin: 0 0 1.5rem 0;
+  max-width: 50ch;
+  opacity: 0.85;
+}
+
+.secondSceneActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Pass 3a — palms as foreground parallax in scene 2. The palms
+ * share scene 2's brand continuity with scene 1's storybook.
+ * Anchored at bottom-right of the second scene viewport with
+ * mix-blend-mode: multiply so they overprint the gouache
+ * illustration like a hand-painted foreground element. The 12s
+ * cadence is slower than the gouache's 10s so the two cycles
+ * drift in/out of phase — visitors who linger on scene 2 see
+ * palm sway rhythms that don't perfectly repeat. */
+.secondScenePalms {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 60%;
+  width: 100%;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.78;
+}
+
+.secondScenePalmFrame {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  background-size: 38% auto;
+  opacity: 0;
+}
+
+/* 12s cycle, 6 frames → 2s per frame */
+@keyframes secondScenePalmCycle {
+  0%, 16.666%   { opacity: 1; }
+  16.667%, 100% { opacity: 0; }
+}
+.secondScenePalmFrame1 { animation: secondScenePalmCycle 12s steps(1, end) infinite; animation-delay: 0s; }
+.secondScenePalmFrame2 { animation: secondScenePalmCycle 12s steps(1, end) infinite; animation-delay: 2s; }
+.secondScenePalmFrame3 { animation: secondScenePalmCycle 12s steps(1, end) infinite; animation-delay: 4s; }
+.secondScenePalmFrame4 { animation: secondScenePalmCycle 12s steps(1, end) infinite; animation-delay: 6s; }
+.secondScenePalmFrame5 { animation: secondScenePalmCycle 12s steps(1, end) infinite; animation-delay: 8s; }
+.secondScenePalmFrame6 { animation: secondScenePalmCycle 12s steps(1, end) infinite; animation-delay: 10s; }
+
+/* Mobile + reduced-motion: drop the cycling animation, keep
+ * frame 01 as the resting state. */
+@media (max-width: 768px) {
+  .gouacheFrame2,
+  .gouacheFrame3,
+  .gouacheFrame4,
+  .gouacheFrame5,
+  .gouacheFrame6 {
+    display: none;
+  }
+  .secondSceneHeadline {
+    font-size: clamp(1.5rem, 7vw, 2.25rem);
+  }
+  .secondScenePalmFrame2,
+  .secondScenePalmFrame3,
+  .secondScenePalmFrame4,
+  .secondScenePalmFrame5,
+  .secondScenePalmFrame6 {
+    display: none;
+  }
+  .secondScenePalms {
+    height: 50%;
+    background-position: right bottom;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gouacheFrame2,
+  .gouacheFrame3,
+  .gouacheFrame4,
+  .gouacheFrame5,
+  .gouacheFrame6 {
+    display: none;
+  }
+  .secondScenePalmFrame2,
+  .secondScenePalmFrame3,
+  .secondScenePalmFrame4,
+  .secondScenePalmFrame5,
+  .secondScenePalmFrame6 {
+    display: none;
+  }
+}
+
+/* On mobile, the second scene would push total scroll height
+ * meaningfully. Keep the section height at 350svh (already
+ * capped) but reduce the visible content of scene 2 on phones. */
+@media (max-width: 380px) {
+  .secondSceneHeadline {
+    font-size: clamp(1.25rem, 7vw, 1.75rem);
+  }
+  .secondSceneContent {
+    padding: 0 4vw;
   }
 }

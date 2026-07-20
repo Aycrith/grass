@@ -49,6 +49,23 @@ export const hero = {
     callout: '33771 - Largo central',
     calloutHref: '/quote?zip=33771',
   },
+  /**
+   * Wave 4 — second pinned scene that appears after the photo
+   * (scroll > 0.40). Copy voice matches scene 1 but shifts from
+   * the introductory "neighbor's lawnmower" beat into the
+   * commitment beat: same yard, same day, every week. The
+   * symmetric gouache palms+sun illustration reads as a
+   * chapter-opener / editorial spread, so the copy stays quiet
+   * and brand-anchored to operator voice.
+   */
+  scene2: {
+    eyebrow: 'CHAPTER 2 — THE COMMITMENT',
+    headline: 'Same yard, every week.',
+    subhead:
+      'No swap, no franchise markup. The same operator shows up at the same address on the same day, until you say stop.',
+    primaryCta: { label: 'See my route', href: '/service-areas' },
+    secondaryCta: { label: 'See pricing', href: '/pricing' },
+  },
 } as const;
 
 export const trustStrip = {

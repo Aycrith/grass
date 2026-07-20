@@ -118,10 +118,14 @@ export function HeroStorybookLayer({
   // D-0044 — vertical parallax from useViewportMotion, mapped onto the
   // existing storybook layers. The horizontal pan above is the legacy
   // D-0042 motion; the vertical parallax is the new cascade layer.
+  // Wave 3 — fern + songbirds MotionValues are now consumed by the
+  // dedicated parallax layer components below.
   const skyY = layerMotion?.sky?.y;
   const farY = layerMotion?.egret?.y;
   const midY = layerMotion?.mower?.y;
   const nearY = layerMotion?.gouache?.y;
+  const fernY = layerMotion?.fern?.y;
+  const songbirdsY = layerMotion?.songbirds?.y;
 
   return (
     <motion.div className={styles.layer} style={{ opacity, filter }} aria-hidden="true">
@@ -132,6 +136,9 @@ export function HeroStorybookLayer({
         <BackgroundSky />
       </motion.div>
       <Clouds />
+      {/* Wave 3 — songbirds parallax. Anchored top-right between sky and
+       * far layer. The MotionValue drives vertical parallax. */}
+      <SongbirdsLayer y={songbirdsY} />
       <motion.div
         className={styles.farLayer}
         style={{ x: farPanX, ...(farY !== undefined && { y: farY }) }}
@@ -145,6 +152,9 @@ export function HeroStorybookLayer({
         <MidLayer />
       </motion.div>
       {/* D-0014: Mower SVG removed - was the grey vehicle on the brown mid-band */}
+      {/* Wave 3 — fern parallax. Anchored bottom-left between mid and near
+       * layer. The MotionValue drives vertical parallax. */}
+      <FernLayer y={fernY} />
       <motion.div
         className={styles.nearLayer}
         style={{ x: nearPanX, ...(nearY !== undefined && { y: nearY }) }}
@@ -324,6 +334,100 @@ function MidLayer(): ReactNode {
 }
 
 /* ------------------------------------------------------------------
+ * Wave 3 — FernLayer. CSS-step loop of 6 webp frames extracted
+ * from grasscontent/Fern_swaying_in_painting_*.mp4. Anchored
+ * bottom-left as foreground parallax (z-index between mid and
+ * near). Vertical translate driven by `useViewportMotion`'s
+ * `fern` MotionValue (cadence 0.22, 28px range).
+ * ----------------------------------------------------------------- */
+
+function FernLayer({ y }: { y: MotionValue<number> | undefined }): ReactNode {
+  return (
+    <motion.div
+      className={styles.fernWrap}
+      style={y !== undefined ? { y } : {}}
+      aria-hidden="true"
+      data-testid="hero-fern-layer"
+    >
+      <div className={styles.fernInner}>
+        <div
+          className={`${styles.fernStrip} ${styles.fernFrame1}`}
+          style={{
+            backgroundImage: 'url(/hero/layers/v2/fern-01.webp)',
+          }}
+        />
+        <div
+          className={`${styles.fernStrip} ${styles.fernFrame2}`}
+          style={{ backgroundImage: 'url(/hero/layers/v2/fern-02.webp)' }}
+        />
+        <div
+          className={`${styles.fernStrip} ${styles.fernFrame3}`}
+          style={{ backgroundImage: 'url(/hero/layers/v2/fern-03.webp)' }}
+        />
+        <div
+          className={`${styles.fernStrip} ${styles.fernFrame4}`}
+          style={{ backgroundImage: 'url(/hero/layers/v2/fern-04.webp)' }}
+        />
+        <div
+          className={`${styles.fernStrip} ${styles.fernFrame5}`}
+          style={{ backgroundImage: 'url(/hero/layers/v2/fern-05.webp)' }}
+        />
+        <div
+          className={`${styles.fernStrip} ${styles.fernFrame6}`}
+          style={{ backgroundImage: 'url(/hero/layers/v2/fern-06.webp)' }}
+        />
+      </div>
+    </motion.div>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Wave 3 — SongbirdsLayer. CSS-step loop of 6 webp frames extracted
+ * from grasscontent/Songbirds_flying_on_hedge_*.mp4. Anchored
+ * top-right as mid-distance parallax (z-index between sky and far).
+ * Vertical translate driven by `useViewportMotion`'s `songbirds`
+ * MotionValue (cadence 0.28, 36px range).
+ * ----------------------------------------------------------------- */
+
+function SongbirdsLayer({ y }: { y: MotionValue<number> | undefined }): ReactNode {
+  return (
+    <motion.div
+      className={styles.songbirdsWrap}
+      style={y !== undefined ? { y } : {}}
+      aria-hidden="true"
+      data-testid="hero-songbirds-layer"
+    >
+      <div className={styles.songbirdsInner}>
+        <div
+          className={`${styles.songbirdsFrame} ${styles.songbirdsFrame1}`}
+          style={{ backgroundImage: 'url(/hero/layers/v2/songbirds-01.webp)' }}
+        />
+        <div
+          className={`${styles.songbirdsFrame} ${styles.songbirdsFrame2}`}
+          style={{ backgroundImage: 'url(/hero/layers/v2/songbirds-02.webp)' }}
+        />
+        <div
+          className={`${styles.songbirdsFrame} ${styles.songbirdsFrame3}`}
+          style={{ backgroundImage: 'url(/hero/layers/v2/songbirds-03.webp)' }}
+        />
+        <div
+          className={`${styles.songbirdsFrame} ${styles.songbirdsFrame4}`}
+          style={{ backgroundImage: 'url(/hero/layers/v2/songbirds-04.webp)' }}
+        />
+        <div
+          className={`${styles.songbirdsFrame} ${styles.songbirdsFrame5}`}
+          style={{ backgroundImage: 'url(/hero/layers/v2/songbirds-05.webp)' }}
+        />
+        <div
+          className={`${styles.songbirdsFrame} ${styles.songbirdsFrame6}`}
+          style={{ backgroundImage: 'url(/hero/layers/v2/songbirds-06.webp)' }}
+        />
+      </div>
+    </motion.div>
+  );
+}
+
+/* ------------------------------------------------------------------
  * Near layer - foreground grass + wildflowers.
  * ----------------------------------------------------------------- */
 function NearLayer(): ReactNode {
@@ -389,8 +493,8 @@ function NearLayer(): ReactNode {
   );
 }
 /* ------------------------------------------------------------------
- * Scroll hint - "scroll to mow" with progress dot + arrow.
- * Hidden when the mower has crossed the screen (scroll > 0.95).
+ * Scroll hint - prompts the visitor to scroll and reveals the photo.
+ * Hidden once the storybook has fully dissolved (scroll > 0.95).
  * ----------------------------------------------------------------- */
 
 function ScrollHint({ mowerX }: { mowerX: MotionValue<number> }): ReactNode {
@@ -399,7 +503,7 @@ function ScrollHint({ mowerX }: { mowerX: MotionValue<number> }): ReactNode {
   const dotLeft = useTransform(mowerX, (v) => `${v * 100}%`);
   return (
     <motion.div className={styles.scrollHint} style={{ opacity, y }}>
-      <span className={styles.scrollHintLabel}>SCROLL TO MOW</span>
+      <span className={styles.scrollHintLabel}>SCROLL TO REVEAL</span>
       <span className={styles.scrollHintTrack}>
         <motion.span className={styles.scrollHintDot} style={{ left: dotLeft }} />
       </span>

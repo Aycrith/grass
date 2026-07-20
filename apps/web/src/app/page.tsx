@@ -85,9 +85,11 @@ export default function HomePage() {
       {/* 01 — Hero (D-0042: Field Telemetry + WebGL grass field) */}
       <HeroFieldTelemetry
         eyebrow={heroContent.eyebrow}
+        headline={heroContent.headline}
         subhead={heroContent.subhead}
         primaryCta={heroContent.primaryCta}
         secondaryCta={heroContent.secondaryCta}
+        scene2={heroContent.scene2}
       />
       <SectionDivider />
 

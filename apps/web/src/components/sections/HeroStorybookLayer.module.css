@@ -309,6 +309,141 @@
 }
 
 /* ============================================================
+ * Wave 3 — Fern parallax layer (added 2026-07-19)
+ *
+ * Foreground fern frond (1070×720 cream-bg asset) anchored
+ * bottom-left. Renders a 6-frame CSS-step loop on top of an
+ * always-on picture element so the frond actually moves as it
+ * sways. Cadence 0.22 (declared in useViewportMotion).
+ * ============================================================ */
+
+.fernWrap {
+  position: absolute;
+  z-index: 3;
+  inset: auto 0 0 0;
+  height: 65%;
+  pointer-events: none;
+  /* Sit above mid layer, below near (grass blades). */
+  mix-blend-mode: multiply;
+  opacity: 0.72;
+}
+
+.fernInner {
+  position: absolute;
+  bottom: -4%;
+  left: -8%;
+  width: 56%;
+  height: 78%;
+  pointer-events: none;
+}
+
+/* The fern asset has heavy cream background. composite it
+ * against the storybook so the cream reads as bright daytime
+ * backdrop instead of a flat panel. */
+.fernStrip {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: contain;
+  opacity: 0;
+}
+
+/* 6-frame CSS-step keyframe animation. Cycle 8s. */
+@keyframes fernCycle {
+  0%, 16.666%   { opacity: 1; }
+  16.667%, 100% { opacity: 0; }
+}
+.fernFrame1 { animation: fernCycle 8s steps(1, end) infinite; animation-delay: 0s; }
+.fernFrame2 { animation: fernCycle 8s steps(1, end) infinite; animation-delay: 1.333s; }
+.fernFrame3 { animation: fernCycle 8s steps(1, end) infinite; animation-delay: 2.666s; }
+.fernFrame4 { animation: fernCycle 8s steps(1, end) infinite; animation-delay: 4s; }
+.fernFrame5 { animation: fernCycle 8s steps(1, end) infinite; animation-delay: 5.333s; }
+.fernFrame6 { animation: fernCycle 8s steps(1, end) infinite; animation-delay: 6.666s; }
+
+/* ============================================================
+ * Wave 3 — Songbirds parallax layer (added 2026-07-19)
+ *
+ * Mid-distance palm + 2 birds perched on a hedge (870×720).
+ * Anchored top-right so the palm fronds frame the upper right
+ * corner and the 2 birds read in the upper third. Cadence 0.28
+ * (declared in useViewportMotion).
+ * ============================================================ */
+
+.songbirdsWrap {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  height: 70%;
+  width: 55%;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.85;
+}
+
+.songbirdsInner {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.songbirdsFrame {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: contain;
+  opacity: 0;
+}
+
+/* 6-frame CSS-step keyframe animation. Cycle 10s (slower than
+ * fern — birds are slower to animate than fern sway). */
+@keyframes songbirdsCycle {
+  0%, 16.666%   { opacity: 1; }
+  16.667%, 100% { opacity: 0; }
+}
+.songbirdsFrame1 { animation: songbirdsCycle 10s steps(1, end) infinite; animation-delay: 0s; }
+.songbirdsFrame2 { animation: songbirdsCycle 10s steps(1, end) infinite; animation-delay: 1.666s; }
+.songbirdsFrame3 { animation: songbirdsCycle 10s steps(1, end) infinite; animation-delay: 3.333s; }
+.songbirdsFrame4 { animation: songbirdsCycle 10s steps(1, end) infinite; animation-delay: 5s; }
+.songbirdsFrame5 { animation: songbirdsCycle 10s steps(1, end) infinite; animation-delay: 6.666s; }
+.songbirdsFrame6 { animation: songbirdsCycle 10s steps(1, end) infinite; animation-delay: 8.333s; }
+
+/* Reduced-motion: lock to the first frame; no cycling. */
+@media (prefers-reduced-motion: reduce) {
+  .fernFrame2,
+  .fernFrame3,
+  .fernFrame4,
+  .fernFrame5,
+  .fernFrame6,
+  .songbirdsFrame2,
+  .songbirdsFrame3,
+  .songbirdsFrame4,
+  .songbirdsFrame5,
+  .songbirdsFrame6 {
+    display: none;
+  }
+}
+
+/* Mobile: simplify — drop the cycling animation (frames too
+ * small to read at 393px) but keep the static first frame. */
+@media (max-width: 768px) {
+  .fernWrap,
+  .songbirdsWrap {
+    opacity: 0.6;
+  }
+  .fernFrame1 {
+    animation: none;
+    opacity: 1;
+  }
+  .songbirdsFrame1 {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* ============================================================
  * Mobile collapse - slow ambient animations to save battery.
  * The scroll-driven cross-fade is handled by the parent so the
  * storybook still appears on first paint but fades out faster.

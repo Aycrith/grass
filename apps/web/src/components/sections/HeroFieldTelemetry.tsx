@@ -96,10 +96,66 @@ import { HeroStorybookLayer } from './HeroStorybookLayer';
 
 import styles from './HeroFieldTelemetry.module.css';
 
-const HEADLINE_LINES = [
-  ['Your', "neighbor's"],
-  ['lawn', 'mower.'],
-] as const;
+// D-Wave2A — headline now sourced from `lib/content.ts → hero.headline`
+// (single source of truth) rather than hardcoded inside the component.
+// The string is split into lines on the closing period (or the last
+// word boundary) and each line is split into words so the WordReveal
+// per-word animation keeps its existing cadence.
+function parseHeadline(headline: string): readonly (readonly string[])[] {
+  const trimmed = headline.trim();
+  // Strip a trailing period if present; we'll re-attach it to the final word
+  const hasTrailingPeriod = trimmed.endsWith('.');
+  const body = hasTrailingPeriod ? trimmed.slice(0, -1) : trimmed;
+  // Split into 2 visual lines on the half-word boundary (4 words -> 2 + 2)
+  const words = body.split(/\s+/).filter(Boolean);
+  if (words.length <= 2) {
+    const lines = [words];
+    return hasTrailingPeriod && words.length > 0
+      ? [[...lines[0]!.slice(0, -1), `${lines[0]!.at(-1) ?? ''}.`]]
+      : lines;
+  }
+  const half = Math.ceil(words.length / 2);
+  const line1 = words.slice(0, half);
+  const line2 = words.slice(half);
+  if (hasTrailingPeriod && line2.length > 0) {
+    line2[line2.length - 1] = `${line2.at(-1) ?? ''}.`;
+  }
+  return [line1, line2];
+}
+
+/* Pass 3b — parseScene2Headline. Splits the second-scene headline
+ * into plain + italic segments. The brand keyword gets italic
+ * Fraunces emphasis matching the WP81 editorial break pattern;
+ * everything else reads plain. Returns ordered segments so the
+ * caller can render them in sequence. */
+function parseScene2Headline(
+  headline: string,
+): readonly { text: string; italic: boolean }[] {
+  // Brand keywords to italicize in the second scene's editorial
+  // pull-quote. Add new keywords here as scene 2 copy evolves.
+  const italicKeywords = ['yard', 'week', 'every week'];
+  const trimmed = headline.trim();
+  const tokens: { text: string; italic: boolean }[] = [];
+  // Walk word-by-word, matching against the keyword list (case-
+  // insensitive, whole-word). Whitespace is preserved between
+  // segments.
+  const wordRe = /(\s+)|([^\s]+)/g;
+  let match: RegExpExecArray | null;
+  while ((match = wordRe.exec(trimmed)) !== null) {
+    const text = match[0];
+    if (match[1] !== undefined) {
+      // whitespace — keep on previous segment
+      if (tokens.length > 0) tokens[tokens.length - 1]!.text += text;
+      else tokens.push({ text, italic: false });
+      continue;
+    }
+    const isKeyword = italicKeywords.some(
+      (kw) => text.toLowerCase() === kw.toLowerCase() || text.toLowerCase().replace(/[.,]/g, '') === kw.toLowerCase(),
+    );
+    tokens.push({ text, italic: isKeyword });
+  }
+  return tokens;
+}
 
 const TELEMETRY_STATS = [
   { value: '47', label: 'Yards on route' },
@@ -133,9 +189,20 @@ if (TELEMETRY_STATS.length !== 4) {
 interface HeroFieldTelemetryProps {
   className?: string;
   eyebrow: string;
+  /** Full headline string (with optional trailing period). Split into
+   * 2 visual lines via parseHeadline() so WordReveal keeps its cadence. */
+  headline: string;
   subhead: string;
   primaryCta: { label: string; href: string };
   secondaryCta: { label: string; href: string };
+  /** Wave 4 — second pinned scene content (scroll > 0.40). */
+  scene2: {
+    eyebrow: string;
+    headline: string;
+    subhead: string;
+    primaryCta: { label: string; href: string };
+    secondaryCta: { label: string; href: string };
+  };
   /** ISO datetime to start the "now" anchor. Defaults to current time. */
   now?: string;
 }
@@ -150,9 +217,11 @@ interface HeroFieldTelemetryProps {
 export function HeroFieldTelemetry({
   className,
   eyebrow,
+  headline,
   subhead,
   primaryCta,
   secondaryCta,
+  scene2,
   now,
 }: HeroFieldTelemetryProps): ReactNode {
   const sectionRef = useRef<HTMLElement>(null);
@@ -225,28 +294,51 @@ export function HeroFieldTelemetry({
   // D-0044 — shared viewport motion substrate for the storybook layers.
   const { layers: viewportLayers, reduced: viewportReduced } = useViewportMotion(sectionRef);
 
-  // D-0043 — shared layer-4 timing. LiveStatus + FieldStamp +
-  // TelemetryStats all read `uiOpacity` / `uiY` so they rise together
-  // once the photo has settled on its natural vivid green. The
-  // 12px y-offset matches the prior TelemetryStats offset so the
-  // stamp + live status adopted the exact same idiom. Without the
-  // shared timing the prior implementation had history ranges that
-  // overlap the storybook fade-out, producing muddy mid-frame
-  // where vector clouds + 4K photo + dashboard were all stacked.
-  const uiOpacity = useTransform(smoothProgress, [0.4, 0.6], [0, 1]);
-  const uiY = useTransform(smoothProgress, [0.4, 0.6], [12, 0]);
+  // D-0043 (Wave 2) — shared layer-4 timing. LiveStatus + FieldStamp +
+  // TelemetryStats all read `uiOpacity` / `uiY` so they rise together.
+  // Threshold lowered from [0.4, 0.6] to [0.1, 0.3] so the dashboard
+  // settles into place while the storybook is still dissolving — the
+  // visitor sees the LIVE pill + telemetry strip + EST stamp arrive
+  // together with the green wash and grass silhouette as one
+  // "front-of-house" reveal, not a separate late event after the photo
+  // has fully settled.
+  const uiOpacity = useTransform(smoothProgress, [0.1, 0.3], [0, 1]);
+  const uiY = useTransform(smoothProgress, [0.1, 0.3], [12, 0]);
 
-  // D-0043 — additive green palette correction. The production photo
-  // has ~14,200 sand-colored foreground pixels (target ≤ 2,500). These
-  // two layers tint and mask the sandy foreground toward the brand
-  // green band without modifying the photo asset or the cross-fade.
+  // D-0043 (Wave 2) — additive green palette correction. The
+  // production photo has ~14,200 sand-colored foreground pixels
+  // (target ≤ 2,500). These two layers tint and mask the sandy
+  // foreground toward the brand green band without modifying the
+  // photo asset or the cross-fade. Thresholds lowered from
+  // [0.10, 0.50] / [0.15, 0.55] to [0.05, 0.25] / [0.10, 0.30] so
+  // the green wash and grass silhouette are visible by the time the
+  // storybook is ~30% dissolved — they belong to the same reveal
+  // beat as the dashboard widgets above, not a separate late event.
   //   - greenVignetteOpacity: bottom-up green wash, intensifies as
-  //     the storybook fades out [0.10, 0.50].
+  //     the storybook fades out.
   //   - grassOpacity: SVG grass blade silhouette along the bottom
-  //     edge, rises in slightly later [0.15, 0.55] so it feels like
-  //     foreground foliage settling on top of the photo.
-  const greenVignetteOpacity = useTransform(smoothProgress, [0.1, 0.5], [0, 1]);
-  const grassOpacity = useTransform(smoothProgress, [0.15, 0.55], [0, 1]);
+  //     edge, rises in slightly later so it feels like foreground
+  //     foliage settling on top of the photo.
+  const greenVignetteOpacity = useTransform(smoothProgress, [0.05, 0.25], [0, 1]);
+  const grassOpacity = useTransform(smoothProgress, [0.1, 0.3], [0, 1]);
+
+  // Wave 4 — second pinned scene cross-fade ranges. Section height
+  // bumped 200svh → 350svh; new scroll bands introduced:
+  //   [0.00, 0.10]  Scene 1 resting (storybook fully visible)
+  //   [0.10, 0.40]  Scene 1 → photo cross-fade (D-0043)
+  //   [0.40, 0.70]  Photo → Scene 2 cross-fade (Wave 4, new)
+  //   [0.70, 1.00]  Scene 2 resting (gouache illustration visible)
+  //
+  // photoFade drives both photo opacity AND photoGrade opacity (the
+  // photo grade is a child of photo and inherits the value). The
+  // scene1 content fades out as the photo fades in, scene2 content
+  // fades in as the photo fades out. Dashboard widgets (LIVE pill,
+  // EST stamp, telemetry) persist across both scenes because their
+  // identity is scene-agnostic.
+  const photoFade = useTransform(smoothProgress, [0.4, 0.7], [1, 0]);
+  const secondSceneFade = useTransform(smoothProgress, [0.4, 0.7], [0, 1]);
+  const scene1ContentFade = useTransform(smoothProgress, [0.35, 0.55], [1, 0]);
+  const scene2ContentFade = useTransform(smoothProgress, [0.55, 0.75], [0, 1]);
 
   return (
     <section
@@ -290,7 +382,7 @@ export function HeroFieldTelemetry({
       )}
       <div className={styles.viewport}>
         {/* Z 0: real 4K Florida lawn photograph. */}
-        <BackgroundPhoto progress={smoothProgress} />
+        <BackgroundPhoto progress={smoothProgress} photoFade={photoFade} />
 
         {/* Z 0.5: additive green palette correction.
          * Bottom-up green wash that tints the sandy foreground toward
@@ -362,15 +454,44 @@ export function HeroFieldTelemetry({
 
         {/* Z 3: text + CTAs. Always visible across the transition so
          * the visitor always knows where they are and what the page
-         * is selling. */}
-        <div className={styles.content}>
+         * is selling.
+         *
+         * Wave 4 — wrapped in a motion.div so scene 1's content
+         * (the editorial "Your neighbor's lawnmower." storybook
+         * moment) dissolves out across [0.35, 0.55] as the photo
+         * fades in; scene 2's content (the "Same yard, every week."
+         * commitment) dissolves in across [0.55, 0.75] as the photo
+         * fades out. The two scenes crossfade over a 20% scroll
+         * window so neither one feels snappy. */}
+        <motion.div
+          className={styles.content}
+          style={{ opacity: scene1ContentFade }}
+        >
           <Content
             eyebrow={eyebrow}
+            headline={headline}
             subhead={subhead}
             primaryCta={primaryCta}
             secondaryCta={secondaryCta}
           />
-        </div>
+        </motion.div>
+
+        {/* Wave 4 — Z 3.5: second pinned scene.
+         * Gouache hand-painted storybook illustration cycling 6 frames
+         * via CSS-step animation, with chapter-2 commitment copy
+         * (eyebrow + headline + subhead + CTAs). Mounted above the
+         * photo and the existing scene-1 content; opacity is driven
+         * by secondSceneFade so it cross-fades in over [0.4, 0.7]
+         * while scene 1's content fades out. The container itself
+         * stays in the DOM at opacity 0 between renders so the
+         * browser can pre-decode the 6 gouache webp frames without
+         * a layout-shift flash when scene 2 begins to dissolve in.
+         */}
+        <SecondScene
+          scene2={scene2}
+          opacity={secondSceneFade}
+          contentOpacity={scene2ContentFade}
+        />
 
         {/* Z 4: live status (top right), field stamp (bottom left),
          * and telemetry stats (bottom right).
@@ -418,21 +539,24 @@ export function HeroFieldTelemetry({
 
 function Content({
   eyebrow,
+  headline,
   subhead,
   primaryCta,
   secondaryCta,
 }: {
   eyebrow: string;
+  headline: string;
   subhead: string;
   primaryCta: { label: string; href: string };
   secondaryCta: { label: string; href: string };
 }): ReactNode {
+  const headlineLines = parseHeadline(headline);
   return (
     <>
       <span className={styles.eyebrow}>{eyebrow}</span>
 
       <h1 className={styles.headline}>
-        {HEADLINE_LINES.map((line, li) => (
+        {headlineLines.map((line, li) => (
           <span key={`line-${line.join('-')}`} className={styles.headlineLine}>
             {line.map((word, wi) => (
               <RevealWord
@@ -504,8 +628,15 @@ function Content({
 
 function BackgroundPhoto({
   progress,
+  photoFade,
 }: {
   progress: MotionValue<number>;
+  // Wave 4 — photo opacity fades out across [0.4, 0.7] as scene 2
+  // (the gouache illustration) fades in. Without this, the photo
+  // would dominate the resting state and obscure the second scene.
+  // When undefined (e.g. on surfaces where wave 4 isn't engaged yet)
+  // the photo stays fully opaque.
+  photoFade?: MotionValue<number>;
 }): ReactNode {
   // Reduced motion collapses both transforms - photo stays put.
   const reduced = useReducedMotion();
@@ -526,7 +657,11 @@ function BackgroundPhoto({
   const gradeOpacity = useTransform(progress, [0.1, 0.4], reduced ? [0, 0] : [0.55, 0]);
 
   return (
-    <div className={styles.photo} aria-hidden="true">
+    <motion.div
+      className={styles.photo}
+      aria-hidden="true"
+      style={photoFade ? { opacity: photoFade } : {}}
+    >
       <motion.div className={styles.photoWrap} style={{ scale: photoScale, y: photoY }}>
         {/* D-0045 — structural cascade: browser-native <picture> fallback
          * chain for the v2 hero photo. Desktop browsers pick AVIF or WebP
@@ -567,7 +702,7 @@ function BackgroundPhoto({
         <motion.div className={styles.photoGrade} style={{ opacity: gradeOpacity }} />
       </motion.div>
       <div className={styles.photoVignette} />
-    </div>
+    </motion.div>
   );
 }
 
@@ -839,5 +974,147 @@ function MagneticCta({
         {children}
       </Button>
     </motion.span>
+  );
+}
+
+/* ============================================================
+ * SecondScene — Wave 4 second pinned scene.
+ *
+ * Replaces the single-story resting state at scroll progress
+ * 0.4–0.7. While the photo dissolves out (Wave 4 photoFade),
+ * a hand-painted gouache illustration of the same Largo
+ * lawn (cycling 6 frames extracted from
+ * grasscontent/Hand-painted_gouache_storybook_p*.mp4) cross-
+ * fades in. On top of the illustration the chapter-2 commitment
+ * copy ("Same yard, every week.") rises in, replacing the
+ * chapter-1 storybook headline ("Your neighbor's lawnmower.").
+ *
+ * The container always mounts so the browser pre-decodes the
+ * 6 gouache webp frames during scene 1; only opacity is
+ * animated. contentOpacity is a separate MotionValue so the
+ * text + CTAs can lag the illustration slightly (a chapter
+ * reveal feels more theatrical when the picture lands first).
+ * ============================================================ */
+
+function SecondScene({
+  scene2,
+  opacity,
+  contentOpacity,
+}: {
+  scene2: {
+    eyebrow: string;
+    headline: string;
+    subhead: string;
+    primaryCta: { label: string; href: string };
+    secondaryCta: { label: string; href: string };
+  };
+  opacity: MotionValue<number>;
+  contentOpacity: MotionValue<number>;
+}): ReactNode {
+  return (
+    <motion.div
+      className={styles.secondScene}
+      style={{ opacity }}
+      aria-hidden="false"
+      data-testid="hero-second-scene"
+    >
+      <div className={styles.gouacheStage} aria-hidden="true">
+        <div
+          className={`${styles.gouacheFrame} ${styles.gouacheFrame1}`}
+          style={{ backgroundImage: 'url(/hero/layers/v2/gouache-01.webp)' }}
+        />
+        <div
+          className={`${styles.gouacheFrame} ${styles.gouacheFrame2}`}
+          style={{ backgroundImage: 'url(/hero/layers/v2/gouache-02.webp)' }}
+        />
+        <div
+          className={`${styles.gouacheFrame} ${styles.gouacheFrame3}`}
+          style={{ backgroundImage: 'url(/hero/layers/v2/gouache-03.webp)' }}
+        />
+        <div
+          className={`${styles.gouacheFrame} ${styles.gouacheFrame4}`}
+          style={{ backgroundImage: 'url(/hero/layers/v2/gouache-04.webp)' }}
+        />
+        <div
+          className={`${styles.gouacheFrame} ${styles.gouacheFrame5}`}
+          style={{ backgroundImage: 'url(/hero/layers/v2/gouache-05.webp)' }}
+        />
+        <div
+          className={`${styles.gouacheFrame} ${styles.gouacheFrame6}`}
+          style={{ backgroundImage: 'url(/hero/layers/v2/gouache-06.webp)' }}
+        />
+        {/* Pass 3a — palm foreground parallax. The storybook's central
+         * motif (swaying palms) carries into scene 2 so the hero
+         * reads as one continuous painted world, not two unrelated
+         * illustrations. Palms sit above the gouache cycling but
+         * below the content layer (z-stack: gouache 1, palms 2,
+         * content 3). The 6 frames cycle on a longer 12s cadence so
+         * the palm sway reads as gentle breeze, not nervous
+         * flicking. */}
+        <div className={styles.secondScenePalms} aria-hidden="true">
+          <div
+            className={`${styles.secondScenePalmFrame} ${styles.secondScenePalmFrame1}`}
+            style={{ backgroundImage: 'url(/hero/layers/v2/palms-01.webp)' }}
+          />
+          <div
+            className={`${styles.secondScenePalmFrame} ${styles.secondScenePalmFrame2}`}
+            style={{ backgroundImage: 'url(/hero/layers/v2/palms-02.webp)' }}
+          />
+          <div
+            className={`${styles.secondScenePalmFrame} ${styles.secondScenePalmFrame3}`}
+            style={{ backgroundImage: 'url(/hero/layers/v2/palms-03.webp)' }}
+          />
+          <div
+            className={`${styles.secondScenePalmFrame} ${styles.secondScenePalmFrame4}`}
+            style={{ backgroundImage: 'url(/hero/layers/v2/palms-04.webp)' }}
+          />
+          <div
+            className={`${styles.secondScenePalmFrame} ${styles.secondScenePalmFrame5}`}
+            style={{ backgroundImage: 'url(/hero/layers/v2/palms-05.webp)' }}
+          />
+          <div
+            className={`${styles.secondScenePalmFrame} ${styles.secondScenePalmFrame6}`}
+            style={{ backgroundImage: 'url(/hero/layers/v2/palms-06.webp)' }}
+          />
+        </div>
+      </div>
+      <motion.div
+        className={styles.secondSceneContent}
+        style={{ opacity: contentOpacity }}
+      >
+        <span className={styles.secondSceneEyebrow}>{scene2.eyebrow}</span>
+        <h2 className={styles.secondSceneHeadline}>
+          {/* Pass 3b — opening-quote glyph + italic brand keyword.
+           * Editorial pull-quote ornament that mirrors the
+           * FinalCTABanner's opening marks (WP73). The first word
+           * "Same" reads plain; "yard" gets italic Fraunces emphasis
+           * matching the WP81 editorial break pattern. */}
+          <span className={styles.secondSceneOpeningMark} aria-hidden="true">
+            &ldquo;
+          </span>
+          {parseScene2Headline(scene2.headline).map((seg, i) =>
+            seg.italic ? (
+              <em key={`seg-${i}`} className={styles.secondSceneHeadlineItalic}>
+                {seg.text}
+              </em>
+            ) : (
+              <span key={`seg-${i}`}>{seg.text}</span>
+            )
+          )}
+        </h2>
+        <p className={styles.secondSceneSubhead}>{scene2.subhead}</p>
+        <div className={styles.secondSceneActions}>
+          <MagneticCta href={scene2.primaryCta.href} variant="sun" size="lg">
+            {scene2.primaryCta.label}
+            <span className={styles.ctaArrow} aria-hidden="true">
+              →
+            </span>
+          </MagneticCta>
+          <MagneticCta href={scene2.secondaryCta.href} variant="ghost" size="lg">
+            {scene2.secondaryCta.label}
+          </MagneticCta>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }

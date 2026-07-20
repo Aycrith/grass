@@ -54,9 +54,11 @@ export default function VisualPage() {
       <div id="hero" aria-label="HeroFieldTelemetry visual baseline">
         <HeroFieldTelemetry
           eyebrow={heroContent.eyebrow}
+          headline={heroContent.headline}
           subhead={heroContent.subhead}
           primaryCta={heroContent.primaryCta}
           secondaryCta={heroContent.secondaryCta}
+          scene2={heroContent.scene2}
         />
       </div>
       <div id="service-area-map" aria-label="ServiceAreaMap visual baseline">
