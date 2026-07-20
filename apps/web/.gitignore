@@ -1,3 +1,7 @@
 # Working-tree noise (cross-session prior captures moved out of baselines/
 # per cascade_reversion_chain.rollback_groups.visual.working_tree_noise_excluded)
 _working-tree-noise/
+
+# --- bun run start runtime logs (regenerated on every server start) ---
+apps/web/.server.log
+apps/web/.server.err

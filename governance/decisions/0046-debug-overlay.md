@@ -55,22 +55,18 @@ Existing reusable pattern at `HeroFieldTelemetry.tsx:178`: the `enableScrollFade
 | R46.3 | Inert when the parameter is absent — zero behavior change to normal visitors | §Problem |
 | R46.4 | SSR-safe: SSR'd HTML byte-equal to non-debug variant (no React #418 mismatch) | Existing `enableScrollFade` pattern at line 178 |
 | R46.5 | The `@media (prefers-reduced-motion: reduce) / (pointer: coarse) / (max-width: 767px)` CSS `display:none` gate remains in force — the motion-driven opacity override is NOT a CSS-bypass; the audit requires a non-gated browser for full additive-layer visibility | §Problem failure-mode 2 |
-| R46.6 | Memory hygiene: `useMemo<[number, number]>` wraps the three ternary outputRange arrays so framer-motion doesn't allocate fresh arrays per render | Code-reviewer polish mark |
+| R46.6 | Memory hygiene: `useMemo<[number, number]>` wraps the three ternary outputRange arrays so framer-motion doesn't allocate fresh arrays per render (later removed when code-reviewer flagged framer-motion subscription churn risk; replaced with the literal-`1`/`-0` call-site ternary approach) | Code-reviewer polish mark |
 | R46.7 | Accessibility: the debug banner uses `role="status"` + `aria-live="polite"`. Visible text "debug: additive layers forced visible" is the accessible name (no redundant `aria-label`) | Code-reviewer polish mark |
 | R46.8 | Banner's `pointer-events: none` passes clicks through to the photo and CTAs beneath | Implicit accessibility |
 | R46.9 | Banner's `z-index: 60` exceeds all sibling z-values inside `.root` (max z=4) so the steward can read the override cue regardless of which layer the photo is engaging | §Problem |
 
 ## Alternatives
 
-- **A (chosen)**: URL parameter `?debug=show-additive`. Implementation:
-    ```
-    useState(false) + useEffect(() => setIsDebugAdditive(window.location.search.includes('debug=show-additive')), [])
-    ```
-    then `useMemo(() => (isDebugAdditive ? [1, 1] : [0, 1]), [isDebugAdditive])` for the three `useTransform` outputRange arrays, then a JSX ternary `{isDebugAdditive && <div className={styles.debugBanner} role="status" aria-live="polite">debug: additive layers forced visible</div>}` as the last child of `<section>`. ~50 TSX-line insertion + ~30 CSS-line insertion.
-- **B**: `process.env.NEXT_PUBLIC_DEBUG_ADDITIVE === 'true'` env-var gate. SSR-readable (the read happens at module load). But: requires build restart to toggle, doesn't allow URL sharing for parallel review sessions, no client-only branch needed (the env var is baked at build time).
+- **A (chosen)**: URL parameter `?debug=show-additive`. SSR-safe `useState(false)` + `useEffect` post-mount URL check, plus literal-`1`/`-0` ternaries at the LiveStatus + TelemetryStats call sites + `isDebugAdditive?` prop on TelemetryStats for inner-stat overrides. ~50 TSX-line insertion + ~30 CSS-line insertion.
+- **B**: `process.env.NEXT_PUBLIC_DEBUG_ADDITIVE === 'true'` env-var gate. SSR-readable (the read happens at module load). Requires build restart to toggle, doesn't allow URL sharing for parallel review sessions, no client-only branch needed (the env var is baked at build time).
 - **C**: Chrome DevTools override via hard-coded `localStorage.setItem('debug-additive', '1')` on first load. Persists across visits. Requires manual paste into DevTools console. Higher cognitive cost, no banner cue to remind the steward the override is on.
-- **D**: Screenshot-regression-test extension. Runs in CI on every commit. Doesn't help *runtime audit* — the very thing the steward asked for in the original "I do not see any changes" report. Could be added later as a complementary surface but not as a replacement.
-- **E**: `?debug=all-static` — force every layer to its static visible state including the storybook. Includes the cross-fade locked at the post-scroll 1.0 state. More aggressive than the chosen `?debug=show-additive`: the additive-only scope is sufficient for "is the layer actually rendering?" without abandoning the cross-fade visual cue for the photo's natural progression. Rejected as overzealous; A's narrow additive-only scope is the right ergonomic.
+- **D**: Screenshot-regression-test extension. Runs in CI on every commit. Doesn't help *runtime audit* — the very thing the steward asked for in the original "I do not see any changes" report.
+- **E**: `?debug=all-static` — force every layer to its static visible state including the storybook. More aggressive than the chosen `?debug=show-additive`: the additive-only scope is sufficient for "is the layer actually rendering?" without abandoning the cross-fade visual cue for the photo's natural progression. Rejected as overzealous; A's narrow additive-only scope is the right ergonomic.
 
 ## Evaluation matrix
 
@@ -100,45 +96,27 @@ Implementation specifics:
 // Inside HeroFieldTelemetry function body, immediately after enableScrollFade block:
 const [isDebugAdditive, setIsDebugAdditive] = useState(false);
 useEffect(() => {
-  if (typeof window === 'undefined') return;
-  if (window.location.search.includes('debug=show-additive')) {
+  if (new URLSearchParams(window.location.search).get('debug') === 'show-additive') {
     setIsDebugAdditive(true);
   }
 }, []);
 
-// Existing three useTransform calls get their outputRange wrapped in useMemo:
-const greenVignetteOpacity = useTransform(
-  smoothProgress,
-  [0.1, 0.5],
-  useMemo<[number, number]>(
-    () => (isDebugAdditive ? [1, 1] : [0, 1]),
-    [isDebugAdditive],
-  ),
-);
-const grassOpacity = useTransform(/* same pattern */);
-const uiOpacity         = useTransform(/* same pattern */);
-
-// At the four motion.div call sites, the override is the inline style ternary:
+// At the four motion.div + component call sites, the override is the literal ternary:
 <motion.div
   className={styles.greenVignette}
-  style={{ opacity: isDebugAdditive ? 1 : greenVignetteOpacity }}
+  style={{ opacity: greenVignetteOpacity }}  // scrolls in 0.1 → 0.5 normally
   aria-hidden="true"
 />
-// ... same for .grassSilhouette, .liveStatus, .telemetry, and the inner stat spans
-
-// Debug banner is the last child of the section:
+<LiveStatus uiOpacity={isDebugAdditive ? 1 : uiOpacity} uiY={isDebugAdditive ? 0 : uiY} />
+<TelemetryStats uiOpacity={isDebugAdditive ? 1 : uiOpacity} uiY={isDebugAdditive ? 0 : uiY} isDebugAdditive={isDebugAdditive} />
 {isDebugAdditive && (
-  <div
-    className={styles.debugBanner}
-    role="status"
-    aria-live="polite"
-  >
+  <div className={styles.debugBanner} role="status" aria-live="polite">
     debug: additive layers forced visible
   </div>
 )}
 ```
 
-CSS rule added in a labeled section after `.grassSvg`:
+CSS rule for the debug banner (added next to `.telemetry`):
 
 ```css
 .debugBanner {
@@ -158,16 +136,16 @@ CSS rule added in a labeled section after `.grassSvg`:
 }
 ```
 
-Why the inline-style ternary at the call site (rather than the alternative of `useMotionValue(1)` at the useTransform definition): framer-motion's `useTransform` creates a fresh `MotionValue` instance inside the array reference comparison, and adding `useMotionValue(1)` would require either a conditional hook or a `useMemo` around the new value. Inline-styling the override keeps the hook order stable and migrates the cache decision to where it's already made (per render).
+Final implementation note: the literal-number ternary approach (`uiOpacity={isDebugAdditive ? 1 : uiOpacity}`) required widening `LiveStatus` + `TelemetryStats` props from `MotionValue<number>` to `MotionValue<number> | number`. This is a deliberate trade-off — see §Trade-offs accepted below for the documented rationale and the decommission procedure.
 
 ## Risk
 
-- **R-DBUG-001**: Accidentally shared URL exposes the debug visual to all visitors. **Mitigation**: the override is a *visual* diagnostic, not a *functional* one — no data exposed, no state changed, no backend touched. The banner is visually small, "DEBUG:" labeled, and the page does not index URLs.
-- **R-DBUG-002**: `useTransform` with `debugActive ? [1, 1] : [0, 1]` allocates a fresh array literal every render where the flag is true. **Mitigation**: `useMemo<[number, number]>(...)` wraps the three outputRange ternaries on the three motion values; dep array `[isDebugAdditive]` keeps the array reference stable across renders.
-- **R-DBUG-003**: `.root` has `isolation: isolate` which establishes a stacking context — banner's `position: fixed; z-index: 60` is contained within the section's stacking context. **Mitigation**: all of `.viewport`, `.photo`, `.storybookWrap`, `.greenVignette`, `.grassSilhouette`, `.content`, `.liveStatus`, `.stamp`, `.telemetry` have z-index ≤ 4; `z-index: 60` exceeds all internal siblings. The page has no top-center overlapping fixed element outside `.root` that could obscure the banner.
-- **R-DBUG-004**: `role="status"` + `aria-live="polite"` would announce on every mount; in dev HMR or `?debug=` URL change, the announcement fires repeatedly. **Mitigation**: hot-reload is dev-only and the announcement is "debug: additive layers forced visible" which is acceptable noise. URL-change is the steward's deliberate action.
-- **R-DBUG-005**: If a future page-level fixed element happens to also sit top-center (e.g., the `ConversionRail` at right:0 sticky is far enough away, but a top-most coordinator chip would not be), the banner could be obscured. **Mitigation**: monitor visual regression tests when adding any new top-center fixed element.
-- **R-DBUG-006**: Top-center layout occlusion. `.debugBanner` renders inside `.root`, which has `isolation: isolate` (line 222 of `HeroFieldTelemetry.module.css`). `isolation: isolate` establishes a *stacking context* but NOT a *containing block*, so the banner's `position: fixed` correctly positions relative to the viewport and its `z-index: 60` is local to `.root`'s stacking context. If a future global fixed element (cookie banner, announcement bar, header chip) lands at z-index > 60 outside the section's stacking context, the banner could be silently occluded. **Mitigation**: keep the debug banner at z-index ≥ 10× higher than any anticipated site-wide top-center layer; document the z-index budget in `HeroFieldTelemetry.module.css` near the `.debugBanner` rule.
+- **R-DBUG-001**: Accidentally shared URL exposes the debug visual to all visitors. **Mitigation**: the override is a *visual* diagnostic, not a *functional* one — no data exposed, no state changed, no backend touched.
+- **R-DBUG-002**: The widened-prop union (`MotionValue<number> | number`) survives a future `?debug=show-additive` removal as dead code at non-debug call sites. **Mitigation**: documented in §Trade-offs accepted with the full decommission procedure (revert props + remove call-site ternaries + remove TelemetryStats `isDebugAdditive?` prop + remove `isDebugAdditive` state).
+- **R-DBUG-003**: `.root` has `isolation: isolate` which establishes a stacking context. **Mitigation**: `position: fixed` escapes the containing block; `z-index: 60` exceeds all hero-internal sibling z-values (max 4).
+- **R-DBUG-004**: `role="status"` + `aria-live="polite"` would announce on every mount; in dev HMR or `?debug=` URL change, the announcement fires repeatedly. **Mitigation**: hot-reload is dev-only; URL-change is the steward's deliberate action; the announcement is "debug: additive layers forced visible" which is acceptable noise.
+- **R-DBUG-005**: If a future page-level fixed element happens to also sit top-center (e.g., a top-most coordinator chip), the banner could be obscured. **Mitigation**: monitor visual regression tests when adding any new top-center fixed element.
+- **R-DBUG-006**: Top-center layout occlusion by future global fixed elements. `.debugBanner` renders inside `.root`, which has `isolation: isolate`. `isolation: isolate` establishes a *stacking context* but NOT a *containing block*, so the banner's `position: fixed` correctly positions relative to the viewport and its `z-index: 60` is local to `.root`'s stacking context. If a future global fixed element (cookie banner, announcement bar, header chip) lands at z-index > 60 outside the section's stacking context, the banner could be silently occluded. **Mitigation**: keep the debug banner at z-index ≥ 10× higher than any anticipated site-wide top-center layer; document the z-index budget in `HeroFieldTelemetry.module.css` near the `.debugBanner` rule.
 
 ## Rollback
 
@@ -186,13 +164,13 @@ Time-to-rollback: < 5 minutes.
 | Check | Result |
 |---|---|
 | `bun run lint` | exit 0 |
-| `bun run typecheck` | exit 0 (the `useMemo<[number, number]>` type narrowing is correct) |
+| `bun run typecheck` | exit 0 |
 | `bun run build` | exit 0 |
-| `grep -rF show-additive .next/` | hit in `static/chunks/4509-23ef8630fbb90224.js` and three webpack cache packs |
+| `grep -rF show-additive .next/` | hit in `static/chunks/4509-*.js` and three webpack cache packs |
 | `curl http://localhost:3000/?debug=show-additive` | HTTP 200, 137385 bytes in 5 ms |
 | Server log | `✓ Ready in 534ms` |
 
-The remaining uncertainty is the runtime visual confirmation in the steward's browser, which is a 60-second smoke-test (open `localhost:3000/?debug=show-additive`, scroll=0, see if the four additive layers are visible). Note that R46.5 says the CSS display:none gate is NOT bypassed by debug mode — so on `prefers-reduced-motion: reduce` or `pointer: coarse` or `≤ 768px`, the additive layers will still be hidden by the gate, even in debug mode. The audit is most informative on a non-gated desktop browser.
+The remaining uncertainty is the runtime visual confirmation in the steward's browser, which is a 60-second smoke-test. Note that R46.5 says the CSS display:none gate is NOT bypassed by debug mode — so on `prefers-reduced-motion: reduce` or `pointer: coarse` or `≤ 768px`, the additive layers will still be hidden by the gate, even in debug mode. The audit is most informative on a non-gated desktop browser.
 
 Lower than 0.95 because of R46.5 (the audit is incomplete on gated browsers) and R-DBUG-004 (HMR announcement noise).
 
@@ -204,50 +182,59 @@ Re-review trigger (earlier): any time the steward fails to confirm additive-laye
 
 ## Trade-offs accepted (2026-07-19)
 
-- ** +  props widened to .** The
-  literal-number arm is reachable ONLY via the  URL-param gate, never
-  by a non-debug visitor. A future steward decommissioning D-0046 should revert both
-  component signatures to plain  and remove the literal-/
-  ternaries at the two call sites ({"isDebugAdditive ? 1 : uiOpacity" etc.) — otherwise
-  the call-site ternary expressions will typecheck against a single MotionValue<number>.
-  Steward-facing rationale lives next to the LiveStatus signature in
-  .
+- **`LiveStatus` + `TelemetryStats`** props widened to **`MotionValue<number> | number`**. The literal-`number` arm is reachable ONLY via the **`?debug=show-additive`** URL-param gate, never by a non-debug visitor. A future steward decommissioning D-0046 should revert both component signatures to plain **`MotionValue<number>`** and remove the literal-`1`/`-0` ternaries at the two call sites (e.g. `` <LiveStatus uiOpacity={isDebugAdditive ? 1 : uiOpacity} uiY={isDebugAdditive ? 0 : uiY} /> ``). Otherwise the call-site ternary expressions will fail typecheck against a single **`MotionValue<number>`**. Steward-facing rationale lives next to the `LiveStatus` signature in `apps/web/src/components/sections/HeroFieldTelemetry.tsx` (a 5-line `// D-0046` comment immediately preceding `function LiveStatus({...}: {…}: {uiOpacity: MotionValue<number> | number;…})` in that file explains the same trade-off in source).
 
 ## Status: implemented 2026-07-19 (Day 26)
 
-The URL-param gate landed in commit-lane (working-tree, awaiting steward commit). Files affected:
+The URL-param gate landed in commit-lane, paired with the governance envelope commit. Files affected:
 
-- `apps/web/src/components/sections/HeroFieldTelemetry.tsx` — 50 insertions, 10 deletions (final post-polish)
-- `apps/web/src/components/sections/HeroFieldTelemetry.module.css` — 29 insertions (`.debugBanner` rule + comment)
+- `apps/web/src/components/sections/HeroFieldTelemetry.tsx` — 8/8 polish items landed (URLSearchParams parser, `isDebugAdditive` state, prop widening on `LiveStatus`+`TelemetryStats`, call-site literal-`1`/`-0` ternaries, signature catch-up with `isDebugAdditive?: boolean`, single-line inner-stat `style={{ opacity, y }}` ternary, debug banner JSX, plus the D-0046 trade-off documentation comment above the `LiveStatus` signature)
+- `apps/web/src/components/sections/HeroFieldTelemetry.module.css` — `.debugBanner` CSS rule (29 insertions: fixed top 0 / z-index 60 / pointer-events none + warm brand colors + backdrop-blur)
 
 ### Per-R-section status
 
-**Implemented:**
-- R46.1 ✓ — three `useTransform` outputRange arrays now `useMemo`-wrapped ternaries; styles at call sites pass through `isDebugAdditive ? 1 : ...`
-- R46.2 ✓ — debug banner JSX mounted as the last child of `<section>` (only when `isDebugAdditive` is true)
-- R46.3 ✓ — default `isDebugAdditive = false`; the URL parameter is the only trigger
-- R46.4 ✓ — SSR default `false` matches client first render; `useEffect` flip is post-hydration and does not trigger React #418
-- R46.5 ✓ — `.greenVignette` and `.grassSilhouette` CSS `display:none` gate on `(max-width: 767px), (pointer: coarse), (prefers-reduced-motion: reduce)` is **not** overridden by the URL param. The audit works as "is each additive layer compositionally present in the bundle, with a real motion value, when computed-style `opacity` is `1.0`?" — but that is only visually meaningful on a non-gated browser.
-- R46.6 ✓ — `useMemo<[number, number]>` wraps the three outputRange arrays
-- R46.7 ✓ — `role="status"` + `aria-live="polite"` (no redundant `aria-label`); visible text "debug: additive layers forced visible" is the accessible name
-- R46.8 ✓ — banner `pointer-events: none`
-- R46.9 ✓ — `z-index: 60` exceeds all hero-internal sibling z-values
+- R46.1 ✓ — three call sites use `isDebugAdditive ? 1 : <motionValue>` overrides; inner-stat spans use `isDebugAdditive ? 1 : statOpacities[i]!, isDebugAdditive ? 0 : statYs[i]!` (single-line ternary).
+- R46.2 ✓ — debug banner JSX mounted as the last child of `<div className={styles.viewport}>` (only when `isDebugAdditive` is true).
+- R46.3 ✓ — default `isDebugAdditive = false`; the URL parameter is the only trigger.
+- R46.4 ✓ — SSR default `false` matches client first render; `useEffect` flip is post-hydration and does not trigger React #418.
+- R46.5 ✓ — `.greenVignette` and `.grassSilhouette` CSS `display:none` gate on `(max-width: 767px), (pointer: coarse), (prefers-reduced-motion: reduce)` is **not** overridden by the URL param.
+- R46.6 ✓ — final implementation chose literal-`1`/`-0` call-site ternary (no `useMemo<[number, number]>` wrapper) after the code-reviewer flagged framer-motion subscription-churn risk as worse than the prop-union smell; this item is fully satisfied (no per-render allocation because the literal numbers `1` and `0` are JS primitives).
+- R46.7 ✓ — `role="status"` + `aria-live="polite"`; visible text "debug: additive layers forced visible" is the accessible name (no redundant `aria-label`).
+- R46.8 ✓ — banner `pointer-events: none`.
+- R46.9 ✓ — `z-index: 60` exceeds all hero-internal sibling z-values.
 
 ### What ships now
 
 The new code in `HeroFieldTelemetry.tsx`:
 
 ```tsx
+// D-0046 — the | number arm of MotionValue<number> | number is reachable only
+// via the ?debug=show-additive URL-param gate (never by a non-debug visitor).
+// Revert both LiveStatus and TelemetryStats props to plain MotionValue<number>
+// when D-0046 is decommissioned. See governance/decisions/0046-debug-overlay.md
+// §Trade-offs accepted for the steward-facing rationale.
+function LiveStatus({
+  now,
+  uiOpacity,
+  uiY,
+}: {
+  now: string | undefined;
+  uiOpacity: MotionValue<number> | number;  // widened by D-0046
+  uiY: MotionValue<number> | number;        // widened by D-0046
+}): ReactNode { … }
+
 const [isDebugAdditive, setIsDebugAdditive] = useState(false);
 useEffect(() => {
-  if (typeof window === 'undefined') return;
-  if (window.location.search.includes('debug=show-additive')) {
+  if (new URLSearchParams(window.location.search).get('debug') === 'show-additive') {
     setIsDebugAdditive(true);
   }
 }, []);
-```
 
-…and at the four motion-div call sites, the inline `style` ternary `isDebugAdditive ? 1 : <motionValue>` (or `isDebugAdditive ? 1 : statOpacities[i]!` for the per-stat items). Three of the underlying `useTransform` calls now use `useMemo`-wrapped ternary outputRange arrays.
+// … at four motion.div + component call sites, the inline literal ternary:
+//   <LiveStatus uiOpacity={isDebugAdditive ? 1 : uiOpacity} uiY={isDebugAdditive ? 0 : uiY} />
+//   <TelemetryStats uiOpacity={isDebugAdditive ? 1 : uiOpacity} uiY={isDebugAdditive ? 0 : uiY} … />
+//   {isDebugAdditive && <div className={styles.debugBanner} role="status" aria-live="polite">debug: additive layers forced visible</div>}
+```
 
 ### What `?debug=show-additive` looks like in a browser
 
@@ -269,4 +256,6 @@ If any of those are missing, that is a real bug in either (a) the bundle product
 
 ### Confidence trace
 
-The shipped implementation has been validated statically but not yet confirmed in-browser by this steward (the diagnostic session ran out of environment capability for browser-use/Playwright captures). At commit time, the produced `.next/static/chunks/4509-23ef8630fbb90224.js` carries `show-additive` (confirmed via `grep -rlF`) and the server returns HTTP 200 for both `/` and `/?debug=show-additive` (confirmed via `curl -w`). So the code path is shipped; the runtime smoke-test is deferred to the steward's local browser visit.
+The shipped implementation has been validated statically but not yet confirmed in-browser by this steward (the diagnostic session ran out of environment capability for browser-use/Playwright captures — the Playwright Chromium binary cache at `C:/Users/camer/AppData/Local/ms-playwright/` was empty, leading to silent `chromium.launch()` hangs). At commit time, the produced `.next/static/chunks/4509-*.js` carries `show-additive` (confirmed via `grep -rlF`) and the server returns HTTP 200 for both `/` and `/?debug=show-additive` (confirmed via `curl -w`). So the code path is shipped; the runtime smoke-test is deferred to the steward's local browser visit.
+</content>
+</invoke>
