@@ -34,22 +34,6 @@ export const hero = {
   primaryCta: { label: 'Get a free quote', href: '/quote' },
   secondaryCta: { label: 'Call (727) 555-0123', href: 'tel:+17275550123' },
   /**
-   * WP19: right-column SVG composition (replaces the photo right column
-   * that was failing to render in <picture>+next/image setups).
-   * WP21: removed the inline sun arc (the palm SVG has its own sun baked
-   * in; the second sun created "two suns" incoherence). The composition is
-   * now four layers: pinellas-palm (with internal sun), solo mower,
-   * foreground grass, and a 33771 callout pill. Copy tweaks live here so
-   * the steward edits one file, not the component.
-   */
-  composition: {
-    palmAriaLabel: 'Pinellas palm tree against a deep-green Florida stage.',
-    mowerAriaLabel: 'Solo push mower mid-cut on the route.',
-    grassAriaLabel: 'Foreground grass tufts anchoring the composition.',
-    callout: '33771 - Largo central',
-    calloutHref: '/quote?zip=33771',
-  },
-  /**
    * Wave 4 — second pinned scene that appears after the photo
    * (scroll > 0.40). Copy voice matches scene 1 but shifts from
    * the introductory "neighbor's lawnmower" beat into the
