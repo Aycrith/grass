@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 340" role="img" aria-label="Pressed specimen of Zoysiagrass, Zoysia japonica">
+  <title>Zoysiagrass — Zoysia spp.</title>
+
+  <!-- Aged paper background -->
+  <rect x="0" y="0" width="340" height="340" fill="var(--ll-aged-paper, #ede4d0)" />
+
+  <!-- Press rings -->
+  <g opacity="0.08" fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.3">
+    <circle cx="170" cy="160" r="125" />
+    <circle cx="170" cy="160" r="105" />
+    <circle cx="170" cy="160" r="85" />
+    <circle cx="170" cy="160" r="65" />
+  </g>
+
+  <!-- Border -->
+  <rect x="14" y="14" width="312" height="312" fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.5" opacity="0.4" />
+
+  <!-- ZOYSIA SEEDHEAD: small terminal spike (less showy than Bermuda) -->
+  <g transform="translate(170 96)">
+    <line x1="0" y1="0" x2="0" y2="-6" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.5" stroke-linecap="round" />
+    <!-- Spike body -->
+    <path d="M -1.5 -6 Q -2 -14 -1.5 -22 Q -0.5 -28 0 -32 Q 0.5 -28 1.5 -22 Q 2 -14 1.5 -6 Z"
+          fill="var(--ll-aged-paper, #ede4d0)" fill-opacity="0.6" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.4" />
+    <!-- Scale cross-hatches -->
+    <line x1="-1.2" y1="-12" x2="1.2" y2="-12" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.2" opacity="0.55" />
+    <line x1="-1.4" y1="-18" x2="1.4" y2="-18" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.2" opacity="0.55" />
+    <line x1="-1" y1="-24" x2="1" y2="-24" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.2" opacity="0.55" />
+  </g>
+
+  <!-- 5 STIFF, NEEDLE-LIKE blades (Zoysia is stiff and dense — diagnostic) -->
+  <!-- Blade 1: leftmost, stiff lean left -->
+  <g>
+    <path d="M 170 220 Q 156 165 150 95 L 149 88 L 152 86 L 155 88 L 155 96 Q 162 165 170 220 Z"
+          fill="var(--ll-olive, #6b7d4a)" fill-opacity="0.15" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.5" />
+    <line x1="153" y1="96" x2="166" y2="210" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.2" opacity="0.55" />
+  </g>
+  <!-- Blade 2: center-left -->
+  <g>
+    <path d="M 170 220 Q 165 150 162 80 L 162 72 L 166 70 L 170 72 L 170 80 Q 172 150 170 220 Z"
+          fill="var(--ll-olive, #6b7d4a)" fill-opacity="0.15" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.5" />
+    <line x1="166" y1="80" x2="170" y2="210" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.2" opacity="0.55" />
+  </g>
+  <!-- Blade 3: center (with seedhead) - TALLEST -->
+  <g>
+    <path d="M 170 220 Q 170 140 170 96 L 170 50 L 174 48 L 178 50 L 178 96 Q 176 140 170 220 Z"
+          fill="var(--ll-olive, #6b7d4a)" fill-opacity="0.15" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.5" />
+    <line x1="174" y1="60" x2="174" y2="210" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.2" opacity="0.55" />
+  </g>
+  <!-- Blade 4: center-right -->
+  <g>
+    <path d="M 170 220 Q 175 150 178 80 L 178 72 L 182 70 L 186 72 L 186 80 Q 178 150 170 220 Z"
+          fill="var(--ll-olive, #6b7d4a)" fill-opacity="0.15" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.5" />
+    <line x1="180" y1="80" x2="178" y2="210" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.2" opacity="0.55" />
+  </g>
+  <!-- Blade 5: rightmost -->
+  <g>
+    <path d="M 170 220 Q 184 165 190 95 L 191 88 L 188 86 L 185 88 L 185 96 Q 180 165 170 220 Z"
+          fill="var(--ll-olive, #6b7d4a)" fill-opacity="0.15" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.5" />
+    <line x1="187" y1="96" x2="174" y2="210" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.2" opacity="0.55" />
+  </g>
+
+  <!-- AGGRESSIVE stolons + rhizomes (Zoysia is the most aggressive spreader) -->
+  <path d="M 170 222 Q 125 228 75 236 Q 55 240 35 246"
+        fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="1.8" stroke-linecap="round" />
+  <path d="M 170 222 Q 215 228 265 236 Q 285 240 305 246"
+        fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="1.8" stroke-linecap="round" />
+  <!-- Prominent stolon nodes -->
+  <circle cx="125" cy="228" r="2" fill="var(--ll-sepia, #5a3e1f)" />
+  <circle cx="75" cy="236" r="2" fill="var(--ll-sepia, #5a3e1f)" />
+  <circle cx="215" cy="228" r="2" fill="var(--ll-sepia, #5a3e1f)" />
+  <circle cx="265" cy="236" r="2" fill="var(--ll-sepia, #5a3e1f)" />
+  <!-- Tiny blade sprouts at nodes (Zoysia's "new plantlet" growth) -->
+  <g transform="translate(125 228)">
+    <line x1="0" y1="0" x2="-2" y2="-6" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.4" stroke-linecap="round" />
+    <path d="M -2 -6 Q -4 -3 -5 0 L -3 1 L -1 -5 Z" fill="var(--ll-olive, #6b7d4a)" fill-opacity="0.2" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.3" />
+  </g>
+  <g transform="translate(215 228)">
+    <line x1="0" y1="0" x2="2" y2="-6" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.4" stroke-linecap="round" />
+    <path d="M 2 -6 Q 4 -3 5 0 L 3 1 L 1 -5 Z" fill="var(--ll-olive, #6b7d4a)" fill-opacity="0.2" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.3" />
+  </g>
+
+  <!-- Soil line -->
+  <line x1="35" y1="250" x2="305" y2="250" stroke="var(--ll-soil, #8a6a3a)" stroke-width="0.7" stroke-dasharray="2 3" opacity="0.6" />
+
+  <!-- RHIZOMES below -->
+  <path d="M 170 252 Q 130 260 90 268 Q 70 272 50 280"
+        fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="1.8" stroke-linecap="round" />
+  <path d="M 170 252 Q 210 260 250 268 Q 270 272 290 280"
+        fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="1.8" stroke-linecap="round" />
+  <circle cx="130" cy="260" r="1.8" fill="var(--ll-sepia, #5a3e1f)" />
+  <circle cx="210" cy="260" r="1.8" fill="var(--ll-sepia, #5a3e1f)" />
+  <circle cx="170" cy="252" r="1.8" fill="var(--ll-sepia, #5a3e1f)" />
+
+  <!-- Corner stamp -->
+  <g transform="translate(28 32) rotate(-3)" opacity="0.7">
+    <rect x="0" y="0" width="50" height="22" fill="none" stroke="var(--ll-clay, #b5651d)" stroke-width="0.7" rx="2" />
+    <text x="25" y="15" text-anchor="middle" font-family="serif" font-size="9" font-style="italic" fill="var(--ll-clay, #b5651d)">FL-04</text>
+  </g>
+
+  <!-- Specimen tag -->
+  <g transform="translate(170 280)">
+    <rect x="0" y="0" width="160" height="50" fill="var(--ll-label-tan, #f0e6d0)" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.5" />
+    <text x="6" y="13" font-family="Georgia, serif" font-size="9" font-style="italic" fill="var(--ll-sepia, #5a3e1f)">Zoysia spp.</text>
+    <text x="6" y="24" font-family="sans-serif" font-size="7.5" fill="var(--ll-sepia, #5a3e1f)">Zoysiagrass · Empire / JaMur</text>
+    <text x="6" y="34" font-family="sans-serif" font-size="6.5" fill="var(--ll-sepia, #5a3e1f)" opacity="0.85">1.75–2.5 in · 10–14 d · stolons + rhizomes</text>
+    <text x="6" y="44" font-family="sans-serif" font-size="6" fill="var(--ll-sepia, #5a3e1f)" opacity="0.7">Largo FL · 2026-07-21</text>
+  </g>
+</svg>
