@@ -61,6 +61,7 @@
  */
 import {
   FAQAccordion,
+  FieldLog,
   FinalCTABanner,
   HeroFieldTelemetry,
   OperatorStrip,
@@ -105,6 +106,13 @@ export default function HomePage() {
        * the demoted ServiceAreaStats: "47 yards on the route" +
        * "18h median quote turnaround" — see OperatorStrip.tsx). */}
       <OperatorStrip />
+
+      {/* 03.5 — D-0055 editorial "field log" section. Stand-alone
+       * editorial moment between the operator intro and the service
+       * grid: hand-drawn route map of the 6 ZIPs + pull-quote +
+       * passport stamp. No CTA — pure breathing room + voice anchor.
+       * See governance/decisions/0055-field-log-section.md. */}
+      <FieldLog />
 
       {/* 04 — Service grid (6 cards, no dividers between light
        * editorial sections) */}

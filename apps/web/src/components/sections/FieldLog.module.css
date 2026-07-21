@@ -1,0 +1,314 @@
+/* ============================================================
+ * FieldLog — D-0055 editorial "field log" section.
+ *
+ * Single column, max-width 920px, centered. 5 vertical zones:
+ *   1. eyebrow ("FIELD LOG · WEEK 28")
+ *   2. pull-quote (large Fraunces italic)
+ *   3. hand-drawn route SVG (720x280 viewBox, 6 houses + path)
+ *   4. field note (right-aligned, italic)
+ *   5. passport stamp (bottom-right corner, tilted -2deg)
+ *
+ * Background: cream + paper-grain texture (5% opacity, inherited
+ * from globals.css body::before — no new asset, no new rule).
+ *
+ * Animations (all gated by prefers-reduced-motion):
+ *   - quoteBlock fade-up   : opacity 0→1 + y 16→0 over 0.6s
+ *   - routePath draw-in    : stroke-dashoffset PATH_LENGTH→0 over 1.6s
+ *   - truck fade-in        : opacity 0→1 over 0.4s (delay 0.7s)
+ *   - fieldNote fade-up    : opacity 0→1 + y 8→0 over 0.5s (delay 0.9s)
+ *   - stamp slam           : scale 1.4→1 + rotate -12→-2 over 0.4s
+ *
+ * Layout rhythm uses the 8pt grid (var(--space-*) tokens) and the
+ * existing motion easings (var(--motion-easing-*)) so the section
+ * feels continuous with the rest of the page.
+ * ============================================================ */
+
+.root {
+  position: relative;
+  /* D-0055 — sand-bleached background reads as a "page from the
+   * field notebook" against the cream sections above + below. The
+   * warm bone color (--ll-sand-bleached) is the same one the hero
+   * uses, so the section feels like a return to the storybook
+   * tone after the operator bio. */
+  background: var(--ll-sand-bleached);
+  /* Isolation so the passport stamp's absolute positioning doesn't
+   * escape the section's box. */
+  isolation: isolate;
+  /* Padding generous — the section is editorial breathing room,
+   * not a content slot. */
+  padding-block: var(--space-13);
+  /* Subtle paper-grain texture overlay at 5% opacity — inherited
+   * from globals.css body::before so we don't double up the
+   * feTurbulence. The page-wide grain is already in place; this
+   * section just feels slightly more "tactile" because the
+   * sand-bleached base shows the grain more than the cream base
+   * does. */
+  overflow: hidden;
+}
+
+.inner {
+  position: relative;
+  max-width: 920px;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-7);
+}
+
+/* ============================================================
+ * Zone 1+2: eyebrow + pull-quote
+ * ============================================================ */
+
+.quoteBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  /* No max-width here — the .quote below is the width constraint.
+   * A max-width on .quoteBlock (in ch units) would be measured at
+   * the body font size, making the wrapper much narrower than the
+   * quote it contains (the quote is at 52px Fraunces, so 1ch ≈
+   * 27px; the body is 16px, so 1ch ≈ 10px — 32ch at body = 320px,
+   * which constrains the quote to 12ch, breaking the line rhythm). */
+  width: 100%;
+}
+
+.eyebrow {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ll-clay);
+}
+
+.eyebrowDot {
+  display: inline-block;
+  margin-inline: 0.25em;
+  color: var(--ll-sun);
+}
+
+.quote {
+  margin: 0;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--ll-palm-bark);
+  /* 18ch so the line breaks at a natural editorial point and
+   * "The operator does." gets its own line for emphasis at desktop.
+   * The previous 22ch was being constrained to 12ch by the parent
+   * .quoteBlock's max-width (ch units are font-size-dependent —
+   * body 16px = 10px/ch, Fraunces 52px = 27px/ch). */
+  max-width: 18ch;
+  text-align: center;
+}
+
+.quoteEm {
+  /* The second clause of the quote — slightly different visual
+   * treatment to break the symmetry. Uses clay color (warm brick)
+   * so the eye lands on "the operator does" — the punchline. */
+  color: var(--ll-clay);
+}
+
+/* ============================================================
+ * Zone 3: hand-drawn route SVG
+ * ============================================================ */
+
+.routeFrame {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  margin-block: var(--space-3);
+}
+
+.route {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Subtle drop shadow so the route lifts off the page like a
+   * notebook page, not a flat print. The shadow is the same
+   * --elevation-2 used on operator cards. */
+  filter: drop-shadow(0 2px 12px color-mix(in oklab, var(--ll-palm-shadow) 8%, transparent));
+}
+
+.routePath {
+  fill: none;
+  stroke: var(--ll-palm-bark);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  /* opacity 0.6 so the path is visible but secondary to the houses
+   * (the houses are the destinations; the path is the route
+   * connecting them). */
+  opacity: 0.6;
+  /* D-0055 — path draw-in animation. The stroke-dasharray +
+   * stroke-dashoffset values are set inline in FieldLog.tsx based
+   * on the `animated` prop. The CSS transition handles the
+   * 1.6s ease-out draw-in. */
+  transition: stroke-dashoffset 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.truck {
+  /* The truck fade-in is handled via the inline `opacity` style
+   * (set by Framer Motion's transition). The CSS here just
+   * ensures the transition is smooth. */
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.routeTitle {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  fill: var(--ll-clay);
+  opacity: 0.7;
+}
+
+/* House group — 28x28 base. The base class is on every house;
+ * the .houseToday modifier highlights the today destination. */
+.house {
+  /* The houses are static — no animation, just a static composition
+   * that the path draws into. */
+}
+
+.house text {
+  font-family: var(--font-inter), sans-serif;
+}
+
+.houseZip {
+  font-size: 10px;
+  font-weight: 700;
+  fill: var(--ll-palm-bark);
+}
+
+.houseDay {
+  font-size: 8px;
+  font-weight: 400;
+  fill: var(--gray-700);
+  opacity: 0.75;
+}
+
+.houseToday text {
+  /* The today house has both labels at higher weight so the
+   * "active" destination reads as a CTA without being one. */
+  font-weight: 700;
+}
+
+.houseToday .houseDay {
+  fill: var(--ll-clay);
+  opacity: 1;
+}
+
+/* ============================================================
+ * Zone 4: field note (right-aligned, italic)
+ * ============================================================ */
+
+.fieldNote {
+  margin: 0;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ll-palm-bark);
+  opacity: 0.78;
+  max-width: 42ch;
+  /* The field note sits in the "right column" visually because
+   * the passport stamp occupies the bottom-right corner. The note
+   * is centered to feel like a quiet editorial aside, not a
+   * sidebar. */
+  text-align: center;
+}
+
+/* ============================================================
+ * Zone 5: passport stamp (bottom-right, tilted)
+ * ============================================================ */
+
+.stamp {
+  position: absolute;
+  /* Bottom-right of the .inner container, with enough margin to
+   * not crowd the field note text. */
+  right: -10px;
+  bottom: -20px;
+  z-index: 1;
+  /* The stamp is decorative — pointer-events: none so it doesn't
+   * interfere with the rest of the section. */
+  pointer-events: none;
+  /* 100px base size, scales down on mobile. */
+  width: 100px;
+  height: 100px;
+}
+
+.stampImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ============================================================
+ * Responsive — mobile reflow
+ * ============================================================ */
+
+@media (max-width: 720px) {
+  .root {
+    padding-block: var(--space-10);
+  }
+
+  .quote {
+    /* On mobile, the clamp() resolves to the lower bound so the
+     * quote is ~2rem, which wraps to 4-5 lines naturally. */
+    max-width: 100%;
+  }
+
+  .stamp {
+    /* The stamp shrinks to 60px on mobile and moves to the
+     * bottom-right corner of the section (not the .inner) so it
+     * doesn't overlap the field note text. The -2deg tilt is
+     * preserved. */
+    width: 60px;
+    height: 60px;
+    right: 12px;
+    bottom: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .inner {
+    gap: var(--space-5);
+  }
+
+  .routeTitle {
+    /* The title strip can read on a 360px viewport, but the
+     * letter-spacing tightens to fit. */
+    letter-spacing: 0.12em;
+  }
+
+  .fieldNote {
+    /* On mobile, the field note gets extra right-padding so the
+     * passport stamp in the bottom-right doesn't overlap the text. */
+    padding-right: 60px;
+  }
+}
+
+/* ============================================================
+ * Reduced motion — collapse all animations to identity
+ * ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .routePath {
+    /* The path is drawn (no animation); the inline style on the
+     * path sets stroke-dashoffset to 0 when `animated` is true,
+     * so it appears fully drawn on first paint. */
+    transition: none;
+  }
+  .truck {
+    transition: none;
+  }
+}
