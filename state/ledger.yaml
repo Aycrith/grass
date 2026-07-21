@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-21 (Day 28 — D-0055 Field Log section + D-0056 pre-flight note in today card)
+# Last updated: 2026-07-21 (Day 28 — D-0057 Specimen Plate section: 4 pressed-herbarium turf grass SVGs + 2x2 grid section)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-21 (Day 28 — D-0055 Field Log section + D-0056 pre-flight note in today card)
+# Last updated: 2026-07-21 (Day 28 — D-0057 Specimen Plate section: 4 pressed-herbarium turf grass SVGs + 2x2 grid section)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -3331,5 +3331,70 @@ changelog:
       - "apps/web/audit/d-0056-preflight/schedule-timeline-with-preflight.png"
       - "apps/web/audit/d-0056-preflight/preflight-verify.png"
     commit: "613536e"
+
+  - date: "2026-07-21"
+    day: 28
+    decision: D-0057
+    title: "D-0057 - Specimen Plate section (4 pressed-herbarium turf grasses of Pinellas County)"
+    summary: >
+      New section between ServiceBento and PricingTiers. 2x2 grid of
+      4 hand-authored pressed-herbarium turf grass specimens: St.
+      Augustinegrass (Stenotaphrum secundatum, Floratam), Bermudagrass
+      (Cynodon dactylon), Zoysiagrass (Zoysia spp.), Bahiagrass
+      (Paspalum notatum). Each plate is a 340x340 viewBox SVG in
+      sepia line art + light olive wash on aged cream paper — a NEW
+      visual register the page didn't have (folk-cartoon + painted
+      VEO + scientific botanical).
+
+      Closes a specific gap: the page shows the operator mowing
+      lawns, but never shows the operator's PLANT knowledge. The
+      four specimens answer "what's actually growing in my yard, and
+      do you know how to mow it properly?" with real, falsifiable
+      UF/IFAS data (mowing heights, frequencies, growth habits).
+
+      Aesthetic: herbarium-sheet style (vintage field guides), NOT
+      Curtis magazine style. Turf grasses don't have ornamental
+      flowers; the herbarium sheet is more honest. Each plate has:
+      parallel-veined blades, 4 faint press rings, FL-04 corner
+      stamp (clay), specimen tag with scientific name (italic
+      Georgia), common name, care row, and "Largo FL · 2026-07-21"
+      date.
+
+      Section has 5 vertical zones: eyebrow, H2, subhead, 2x2 grid,
+      closing line. Background is a slightly-more-aged wash so it
+      reads as a different page in the same field notebook. 5 entry
+      animations on viewport entry (header fade-up, 4 specimens
+      staggered 0.1/0.2/0.3/0.4s, closing fade-up at 0.6s delay),
+      all gated by prefers-reduced-motion: reduce. Hover/focus
+      rotates each plate -0.5deg + deepens drop shadow (museum
+      'exhibition card' pattern).
+
+      The brand-true kicker: closing line "If you don't know what's
+      in your yard, send a photo. I'll tell you before I quote."
+      The operator is a turf grass identifier, not just a mower.
+
+      Lesson learned: the first iteration used flat-fill with strong
+      olive saturation — the plates read as "modern flat icons" too
+      close to the page's existing register. Switched to sepia
+      outlines + 0.15 fill-opacity (translucent pressed look) +
+      parallel veining. The veining is what reads as "botanical
+      illustration" — grass blades are parallel-veined, and visible
+      veining is the hallmark of a field-guide illustration.
+    by: "Mavis (orchestrator, 2026-07-21)"
+    review_date: "2026-10-21"
+    twined_with: "D-0049 (style-mismatch lesson: hand-authored SVG, not painted VEO or AI); D-0055 (FieldLog editorial voice: 5-zone single-column pattern reused)"
+    audit_artifacts:
+      - "apps/web/audit/d-0057-specimen-plate/memo.md"
+      - "apps/web/audit/d-0057-specimen-plate/specimen-plate-clean.png"
+      - "apps/web/audit/d-0057-specimen-plate/specimen-plate-desktop.png"
+      - "apps/web/audit/d-0057-specimen-plate/specimen-plate-mobile.png"
+      - "apps/web/audit/d-0057-specimen-plate/specimen-plate-grid.png"
+      - "apps/web/audit/d-0057-specimen-plate/context-specimen-with-bento.png"
+      - "apps/web/audit/d-0057-specimen-plate/specimen-hover-state.png"
+      - "apps/web/audit/d-0057-specimen-plate/specimens/st-augustine.png"
+      - "apps/web/audit/d-0057-specimen-plate/specimens/bermuda.png"
+      - "apps/web/audit/d-0057-specimen-plate/specimens/zoysia.png"
+      - "apps/web/audit/d-0057-specimen-plate/specimens/bahia.png"
+    commit: "dae6db0+specimen-plate-phase23"
 
 
