@@ -37,6 +37,68 @@
 }
 
 /* ============================================================
+ * D-0052 — animated cartoon sun. Three coordinated CSS keyframe
+ * animations make the static sun (previously two circles) feel
+ * alive: 12 rays rotate around the sun, the core breathes
+ * scale, the halo pulses opacity slightly out-of-phase.
+ *
+ * All three share `transform-box: view-box` so the rotation
+ * pivot and scale center use SVG viewBox coordinates directly
+ * (matches the operatorSway pattern). Without that, the
+ * transform-origin would be measured in CSS pixels relative
+ * to the parent <div>, which scales with the SVG and gives
+ * the wrong pivot.
+ *
+ * Cadence: 20s ray rotation, 4.4s core/halo breath. Different
+ * periods so the animations don't visibly loop in lockstep.
+ *
+ * Reduced-motion: all three animations collapse to identity
+ * via the @media block at the bottom of the file.
+ * ============================================================ */
+
+.sunRays {
+  transform-box: view-box;
+  transform-origin: 352px 252px;
+  animation: sunRaysRotate 20s linear infinite;
+}
+
+.sunCore {
+  transform-box: view-box;
+  transform-origin: 352px 252px;
+  animation: sunCoreBreathe 4.4s ease-in-out infinite;
+}
+
+.sunHalo {
+  transform-box: view-box;
+  transform-origin: 352px 252px;
+  animation: sunHaloPulse 4.4s ease-in-out infinite;
+  animation-delay: -0.6s;
+}
+
+@keyframes sunRaysRotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes sunCoreBreathe {
+  0%, 100% { transform: scale(1);    opacity: 0.9; }
+  50%      { transform: scale(1.03); opacity: 1;   }
+}
+
+@keyframes sunHaloPulse {
+  0%, 100% { transform: scale(1);    opacity: 0.18; }
+  50%      { transform: scale(1.06); opacity: 0.30; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sunRays,
+  .sunCore,
+  .sunHalo {
+    animation: none;
+  }
+}
+
+/* ============================================================
  * Drifting clouds - pure CSS, GPU-friendly. Positioned across
  * the upper half of the viewport.
  * ============================================================ */

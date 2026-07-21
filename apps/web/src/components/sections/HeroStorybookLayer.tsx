@@ -222,8 +222,70 @@ function BackgroundSky(): ReactNode {
       </defs>
       <rect width="1600" height="900" fill="url(#hero-sky)" />
       <rect width="1600" height="900" fill="url(#hero-sun)" />
-      <circle cx="352" cy="252" r="72" fill="var(--ll-cream)" opacity="0.9" />
-      <circle cx="352" cy="252" r="120" fill="var(--ll-sun)" opacity="0.18" />
+      {/* D-0052 — animated cartoon sun. The sun was previously two
+       * static circles (core + halo). Three coordinated CSS
+       * animations now give it life:
+       *
+       *   - .sunRays   rotates the 12-ray group around (352, 252) at
+       *                20s/360deg linear. Slow enough to read as
+       *                ambient motion, not a windmill.
+       *   - .sunCore   breathes scale 1.0 → 1.03 at 4.4s ease-in-out.
+       *                The 3% scale is just below the threshold of
+       *                "is the sun winking at me?" — registers as
+       *                warmth without being a button.
+       *   - .sunHalo   pulses opacity 0.18 → 0.30 at 4.4s, slightly
+       *                out-of-phase from the core (delay 0.6s) so the
+       *                glow appears to swell from the edge inward.
+       *
+       * The rays are hand-authored flat-fill SVG to match the
+       * existing cartoon style (no gradients, no soft edges — same
+       * lesson as the D-0049 operator: painted VEO brushwork would
+       * clash with hand-authored SVG). Each ray is a 5px-wide
+       * tapered line from r=128 to r=170 around the sun center.
+       *
+       * transform-box: view-box (the same SVG-coordinate trick the
+       * operatorSway class uses) lets the rotation pivot be
+       * expressed in SVG viewBox units (352px, 252px) without
+       * fighting the parent div's CSS layout. */}
+      <g
+        className={styles.sunRays}
+        stroke="var(--ll-sun)"
+        strokeWidth="5"
+        strokeLinecap="round"
+        opacity="0.85"
+      >
+        {Array.from({ length: 12 }).map((_, i) => {
+          const angle = (i * 30 * Math.PI) / 180;
+          const inner = 128;
+          const outer = 170;
+          return (
+            // biome-ignore lint/suspicious/noArrayIndexKey: static generated sun rays
+            <line
+              key={i}
+              x1={352 + inner * Math.cos(angle)}
+              y1={252 + inner * Math.sin(angle)}
+              x2={352 + outer * Math.cos(angle)}
+              y2={252 + outer * Math.sin(angle)}
+            />
+          );
+        })}
+      </g>
+      <circle
+        className={styles.sunHalo}
+        cx="352"
+        cy="252"
+        r="120"
+        fill="var(--ll-sun)"
+        opacity="0.18"
+      />
+      <circle
+        className={styles.sunCore}
+        cx="352"
+        cy="252"
+        r="72"
+        fill="var(--ll-cream)"
+        opacity="0.9"
+      />
       {/* Birds (V-shapes) drift gently via CSS animation. */}
       <g
         className={styles.birds}
