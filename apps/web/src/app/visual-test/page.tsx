@@ -59,6 +59,7 @@ export default function VisualPage() {
           primaryCta={heroContent.primaryCta}
           secondaryCta={heroContent.secondaryCta}
           scene2={heroContent.scene2}
+          callout={heroContent.callout}
         />
       </div>
       <div id="service-area-map" aria-label="ServiceAreaMap visual baseline">

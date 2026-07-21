@@ -216,6 +216,11 @@ interface HeroFieldTelemetryProps {
     primaryCta: { label: string; href: string };
     secondaryCta: { label: string; href: string };
   };
+  /** D-0050 Phase 1a — small service-area callout pill rendered in
+   * scene 1 (the cartoon storybook), below the eyebrow. Clickable
+   * hint that anchors the visitor's mental map to a specific ZIP
+   * + neighborhood label. Fades out with scene 1. */
+  callout: { label: string; href: string };
   /** ISO datetime to start the "now" anchor. Defaults to current time. */
   now?: string;
 }
@@ -235,6 +240,7 @@ export function HeroFieldTelemetry({
   primaryCta,
   secondaryCta,
   scene2,
+  callout,
   now,
 }: HeroFieldTelemetryProps): ReactNode {
   const sectionRef = useRef<HTMLElement>(null);
@@ -499,6 +505,7 @@ export function HeroFieldTelemetry({
             subhead={subhead}
             primaryCta={primaryCta}
             secondaryCta={secondaryCta}
+            callout={callout}
           />
         </motion.div>
 
@@ -575,17 +582,43 @@ function Content({
   subhead,
   primaryCta,
   secondaryCta,
+  callout,
 }: {
   eyebrow: string;
   headline: string;
   subhead: string;
   primaryCta: { label: string; href: string };
   secondaryCta: { label: string; href: string };
+  callout: { label: string; href: string };
 }): ReactNode {
   const headlineLines = parseHeadline(headline);
   return (
     <>
       <span className={styles.eyebrow}>{eyebrow}</span>
+
+      {/* D-0050 Phase 1a — service-area callout pill. Below the
+       * eyebrow, above the headline. Sits in the same scene-1
+       * content column as the eyebrow so the editorial block reads
+       * top-down: section → service area → headline. */}
+      <a
+        href={callout.href}
+        className={styles.calloutPill}
+        aria-label={`Service area: ${callout.label} (opens area page)`}
+      >
+        <svg
+          className={styles.calloutPillIcon}
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path
+            d="M8 1.5c-2.485 0-4.5 2.015-4.5 4.5 0 3.375 4.5 8.5 4.5 8.5s4.5-5.125 4.5-8.5c0-2.485-2.015-4.5-4.5-4.5zm0 6.125a1.625 1.625 0 1 1 0-3.25 1.625 1.625 0 0 1 0 3.25z"
+            fill="currentColor"
+          />
+        </svg>
+        <span className={styles.calloutPillLabel}>{callout.label}</span>
+      </a>
 
       <h1 className={styles.headline}>
         {headlineLines.map((line, li) => (

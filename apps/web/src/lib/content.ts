@@ -52,6 +52,27 @@ export const hero = {
     primaryCta: { label: 'See my route', href: '/service-areas' },
     secondaryCta: { label: 'See pricing', href: '/pricing' },
   },
+  /**
+   * D-0050 Phase 1a — scene 1 service-area callout pill.
+   *
+   * Sits below the eyebrow in scene 1 (the cartoon storybook) as a
+   * small, clickable hint that anchors the visitor's mental map:
+   * "this is happening in 33771, central Largo." The pill is NOT
+   * meant to be the primary conversion path; it is an editorial
+   * breadcrumb for the homeowner who has been thinking about their
+   * address and wants to confirm "yes, this is my area" before
+   * scrolling further.
+   *
+   * Renders only in scene 1; fades out with the cartoon during
+   * scene 1 → photo cross-fade ([0.35, 0.55]). Reuses the same
+   * neighborhood label convention as `serviceAreaMap.pinLocations`
+   * ("Largo (central)") so the visual + copy language stays
+   * consistent across the site.
+   */
+  callout: {
+    label: '33771 · Largo (central)',
+    href: '/areas/33771',
+  },
 } as const;
 
 export const trustStrip = {

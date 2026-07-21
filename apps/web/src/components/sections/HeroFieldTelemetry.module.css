@@ -418,6 +418,74 @@
   line-height: 1;
 }
 
+/* D-0050 Phase 1a — service-area callout pill.
+ *
+ * Sits below the eyebrow, above the headline, in the same scene-1
+ * content column. Same family as `.eyebrow` (pill border, palm-bark
+ * tint, blur backdrop) but with three intentional differences so
+ * the visitor reads it as a clickable hint, not a duplicate label:
+ *
+ *   1. The pin SVG icon at the leading edge is a strong visual
+ *      signal of "this is a location/area, click for more".
+ *   2. The cream tint is shifted ~10% lighter (cream 22% vs the
+ *      eyebrow's palm-bark 45% so the icon and the area name read
+ *      as a distinct second beat in the editorial column.
+ *   3. The text is sentence-case with a small dot separator rather
+ *      than the eyebrow's all-caps + wide letter-spacing, so the
+ *      pill matches the voice of "the address I'm thinking of" —
+ *      lower friction than a marketing label.
+ *
+ * No transition: the parent `<motion.div style={{ opacity:
+ * scene1ContentFade }}>` wrapper already drives the fade-out
+ * across [0.35, 0.55], so the pill inherits the same dissolve
+ * as the eyebrow + headline without its own opacity track. */
+.calloutPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+  padding: 0.4rem 0.75rem 0.4rem 0.625rem;
+  border: 1px solid color-mix(in oklab, var(--ll-cream) 38%, transparent);
+  border-radius: var(--radius-pill);
+  background: color-mix(in oklab, var(--ll-palm-bark) 32%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--ll-cream);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  width: fit-content;
+  /* Subtle hover lift so the visitor can tell it's clickable. */
+  transition: background-color 220ms ease, border-color 220ms ease,
+    transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.calloutPill:hover {
+  background: color-mix(in oklab, var(--ll-palm-bark) 50%, transparent);
+  border-color: color-mix(in oklab, var(--ll-cream) 60%, transparent);
+  transform: translateY(-1px);
+}
+
+.calloutPill:focus-visible {
+  outline: 2px solid var(--ll-sun);
+  outline-offset: 3px;
+}
+
+.calloutPillIcon {
+  width: 0.85rem;
+  height: 0.85rem;
+  flex: 0 0 auto;
+  color: var(--ll-sun);
+}
+
+.calloutPillLabel {
+  white-space: nowrap;
+}
+
 .headline {
   font-family: var(--font-fraunces), Georgia, serif;
   font-weight: 700;
