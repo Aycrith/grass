@@ -246,6 +246,35 @@
   }
 }
 
+/* D-0050 Phase 1b — cartoon operator sway.
+ *
+ * Subtle ±1.2° rotation around the operator's feet (transform-
+ * origin set to the feet in SVG viewBox coordinates so the head
+ * + mower arc together) over 5.2s. Faster than the mid-layer
+ * palm sway (8s) so the operator reads as an active worker, not
+ * a passive prop.
+ *
+ * On prefers-reduced-motion the rotation stops entirely, matching
+ * the .swaySlow behavior. SVG <g> elements default to
+ * transform-box: view-box, so the transform-origin uses SVG
+ * coordinates directly (no need for fill-box). */
+.operatorSway {
+  transform-origin: 1300px 692px;
+  transform-box: view-box;
+  animation: operatorSway 5.2s ease-in-out infinite;
+}
+
+@keyframes operatorSway {
+  0%, 100% { transform: rotate(-1.2deg); }
+  50% { transform: rotate(1.2deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .operatorSway {
+    animation: none;
+  }
+}
+
 /* ============================================================
  * Scroll hint
  * ============================================================ */

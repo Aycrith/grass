@@ -426,7 +426,6 @@ function NearLayer(): ReactNode {
           {[
             { x: 240, y: 650, c: 'var(--ll-sun)' },
             { x: 580, y: 660, c: 'var(--ll-clay)' },
-            { x: 920, y: 648, c: 'var(--ll-sun)' },
             { x: 1240, y: 656, c: 'var(--ll-sand)' },
             { x: 1620, y: 652, c: 'var(--ll-sun)' },
             { x: 1860, y: 662, c: 'var(--ll-clay)' },
@@ -436,6 +435,81 @@ function NearLayer(): ReactNode {
               <circle r={1.4} fill="var(--ll-palm-bark)" />
             </g>
           ))}
+        </g>
+        {/* D-0050 Phase 1b — cartoon operator + walk-behind mower in
+         * the foreground, positioned in the empty middle area
+         * (viewBox x ≈ 1200-1340) between the centered editorial
+         * column (right edge ≈ x=1150) and the right-side ranch
+         * house (left edge ≈ x=1400). The operator faces LEFT
+         * (toward the editorial column) so the visitor reads the
+         * scene as "the operator is mowing the lawn in your
+         * storybook."
+         *
+         * Hand-authored flat-fill SVG, matching the existing
+         * `PalmTree` / `House` primitive style (no gradients, no
+         * painted detail, no soft edges). This is the D-0049 rev 4
+         * lesson: only hand-authored SVG cartoon belongs in the
+         * storybook; the painted VEO fern/songbirds assets are
+         * incompatible with this style.
+         *
+         * The .operatorSway class applies a 5.2s subtle rotation
+         * (-1.2° → +1.2°) to suggest the operator is leaning into
+         * the mower; the rotation pivot is around the operator's
+         * feet so the head + mower translate together. Aria-hidden
+         * because the operator is decorative, not interactive. */}
+        <g className={styles.operatorSway} aria-hidden="true">
+          {/* Walk-behind mower (left of operator, on the grass) */}
+          <rect x={1200} y={650} width={36} height={18} rx={2} fill="var(--ll-palm)" />
+          <rect x={1206} y={640} width={20} height={10} rx={1.5} fill="var(--ll-sun)" />
+          <circle cx={1208} cy={672} r={4} fill="var(--ll-palm-bark)" />
+          <circle cx={1232} cy={672} r={4} fill="var(--ll-palm-bark)" />
+          {/* Mower handle — angled line from mower top up to the
+           * operator's hands. Single 2.5px stroke for a thin
+           * handle bar (visible against the dark grass). */}
+          <line
+            x1={1236}
+            y1={641}
+            x2={1272}
+            y2={612}
+            stroke="var(--ll-palm-bark)"
+            strokeWidth={2.5}
+            strokeLinecap="round"
+          />
+          {/* Operator body / shirt — flat trapezoid in sand-bleached
+           * (warm cream) so the figure pops against the dark green
+           * near-layer grass below. A palm-green shirt would blend
+           * with the grass; the cream shirt reads as a clean
+           * silhouette and matches the warm-palette balance of the
+           * sky above. Narrower than a typical person (72 viewBox
+           * units wide) because at this scale a wide body reads as
+           * a blob, not a person. */}
+          <path d="M 1270 600 L 1336 600 L 1342 658 L 1264 658 Z" fill="var(--ll-sand-bleached)" />
+          {/* Operator arm reaching forward to mower handle. The arm
+           * is a curved stroke that lands on the handle, suggesting
+           * the operator is gripping the bar. */}
+          <path
+            d="M 1274 606 Q 1256 618 1244 624"
+            stroke="var(--ll-sand-bleached)"
+            strokeWidth={6}
+            strokeLinecap="round"
+            fill="none"
+          />
+          {/* Operator pants / legs — split skirt shape so the legs
+           * read as two, not one block. */}
+          <path
+            d="M 1264 658 L 1342 658 L 1338 692 L 1308 692 L 1304 678 L 1300 692 L 1268 692 Z"
+            fill="var(--ll-palm-bark)"
+          />
+          {/* Operator shoes — two small dark ellipses at the feet */}
+          <ellipse cx={1278} cy={694} rx={6} ry={2} fill="var(--ll-palm-bark)" />
+          <ellipse cx={1322} cy={694} rx={6} ry={2} fill="var(--ll-palm-bark)" />
+          {/* Operator head — small sand-bleached circle */}
+          <circle cx={1302} cy={590} r={8} fill="var(--ll-sand-bleached)" />
+          {/* Operator hat — wide-brim sun hat in palm-bark. Two
+           * stacked shapes (brim ellipse + crown path) give the hat
+           * its classic flat-cartoon silhouette. */}
+          <ellipse cx={1302} cy={576} rx={15} ry={2.5} fill="var(--ll-palm-bark)" />
+          <path d="M 1294 577 Q 1294 568 1302 565 Q 1310 568 1310 577 Z" fill="var(--ll-palm-bark)" />
         </g>
       </svg>
     </div>

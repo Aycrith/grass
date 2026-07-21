@@ -73,6 +73,18 @@ export const hero = {
     label: '33771 · Largo (central)',
     href: '/areas/33771',
   },
+  /**
+   * D-0050 Phase 1b — scene 1 cartoon operator aria-label.
+   *
+   * The operator is a decorative SVG element in the storybook
+   * near-layer (currently aria-hidden in the JSX because the
+   * storybook is purely decorative). This label is kept here as
+   * documentation + a future a11y upgrade path: if the operator
+   * is ever promoted to a navigable element (e.g. linking to
+   * /about), the aria-label is already authored.
+   */
+  operatorCartoonAriaLabel:
+    'A small cartoon operator pushing a walk-behind mower in the storybook scene.',
 } as const;
 
 export const trustStrip = {
