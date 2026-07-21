@@ -71,9 +71,58 @@ interface OperatorStripProps {
 // Stagger step for the three-column scroll reveal (portrait → bio → equipment).
 const STAGGER_STEP_S = 0.12;
 
+/**
+ * D-0053 — OperatorStrip ambient painted-palms background.
+ *
+ * The 6 painted VEO `palms-01..06.webp` frames (full Florida scenes
+ * with house + sun + palms + bird bath) cycle at 10s/frame behind
+ * the operator bio. The frames are NEAR-IDENTICAL painted scenes
+ * with subtle differences (sun rays shift, clouds drift, grass
+ * blade tip wobbles) — cycling them at 10s/frame with
+ * `steps(1, end)` produces a meditative hand-painted stillness.
+ *
+ * The painted scenes are CSS-bleached down to 7% opacity with
+ * `mix-blend-mode: multiply` so they integrate with the cream
+ * `--ll-shell` backdrop without overwhelming the bio content.
+ * The portrait column, bio, and equipment column all sit on top
+ * (z >= 1) of the ambient stage (z = 0). The painted content
+ * reads as "the operator's world" without competing for the
+ * reader's attention.
+ *
+ * The 6-frame CSS-step pattern is the same one SecondScene uses
+ * for its scene2-*.webp cycle (D-0049). Both cycles share the
+ * `sceneCycle` cadence + `prefers-reduced-motion` lock-to-frame-1
+ * pattern. The D-0049 lesson — painted VEO is fine as a full-
+ * bleed or subtle backdrop but clashes with the hand-authored
+ * SVG cartoon when both are in the same panel at the same time
+ * — is honored here: the painted palms are SUBTLE (7% opacity)
+ * and the bio content is TEXT (not hand-authored SVG cartoon).
+ */
+const PALMS_FRAMES = [
+  '/hero/layers/v2/palms-01.webp',
+  '/hero/layers/v2/palms-02.webp',
+  '/hero/layers/v2/palms-03.webp',
+  '/hero/layers/v2/palms-04.webp',
+  '/hero/layers/v2/palms-05.webp',
+  '/hero/layers/v2/palms-06.webp',
+] as const;
+
 export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
   return (
     <Section rhythm="loose" className={cn(styles.root, className)} data-test-section="operator-strip">
+      {/* D-0053 — ambient painted-palms background. 6-frame CSS-step
+       * cycle at 7% opacity with mix-blend-mode: multiply, sitting
+       * behind the operator bio column. See PALMS_FRAMES doc above
+       * for the why-painted-7%-and-not-100% rationale. */}
+      <div className={styles.ambientPalms} aria-hidden="true">
+        {PALMS_FRAMES.map((src, i) => (
+          <div
+            key={src}
+            className={`${styles.ambientPalmsFrame} ${styles[`ambientPalmsFrame${i + 1}`]}`}
+            style={{ backgroundImage: `url(${src})` }}
+          />
+        ))}
+      </div>
       <div className="container">
         <div className={styles.inner}>
           <FadeUp as="div" className={styles.portrait} delay={STAGGER_STEP_S * 0}>

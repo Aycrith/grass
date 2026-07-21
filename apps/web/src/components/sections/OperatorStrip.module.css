@@ -22,6 +22,70 @@
 .root {
   background: var(--ll-shell);
   padding-block: var(--space-10);
+  position: relative;
+  isolation: isolate;
+  /* D-0053 — overflow:hidden clips the ambient palms cycle to the
+   * section bounds. Without it, the painted scenes' wider aspect
+   * ratio would bleed into adjacent sections at desktop viewports
+   * (the painted scenes are ~1.82:1, narrower than most desktop
+   * viewports, so background-size: cover crops top/bottom — no
+   * horizontal bleed in practice — but overflow:hidden is cheap
+   * insurance against future asset swaps). */
+  overflow: hidden;
+}
+
+/* D-0053 — ambient painted-palms background. Sits behind the
+ * inner grid (z=0) and the foreground content (.inner) sits on
+ * top (z>=1). The 6 painted VEO frames cycle at 10s/frame via
+ * the same CSS-step pattern SecondScene uses for its scene2-*
+ * cycle (D-0049). 7% opacity + mix-blend-mode: multiply so the
+ * painted scenes integrate with the cream --ll-shell backdrop
+ * without competing with the bio text. */
+.ambientPalms {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.ambientPalmsFrame {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  opacity: 0;
+  /* will-change on opacity to keep the cycle cheap on the
+   * compositor. */
+  will-change: opacity;
+  mix-blend-mode: multiply;
+}
+
+@keyframes ambientPalmsCycle {
+  0%, 16.666% { opacity: 0.07; }
+  16.667%, 100% { opacity: 0; }
+}
+
+.ambientPalmsFrame1 { animation: ambientPalmsCycle 10s steps(1, end) infinite; animation-delay: 0s; }
+.ambientPalmsFrame2 { animation: ambientPalmsCycle 10s steps(1, end) infinite; animation-delay: 1.666s; }
+.ambientPalmsFrame3 { animation: ambientPalmsCycle 10s steps(1, end) infinite; animation-delay: 3.333s; }
+.ambientPalmsFrame4 { animation: ambientPalmsCycle 10s steps(1, end) infinite; animation-delay: 5s; }
+.ambientPalmsFrame5 { animation: ambientPalmsCycle 10s steps(1, end) infinite; animation-delay: 6.666s; }
+.ambientPalmsFrame6 { animation: ambientPalmsCycle 10s steps(1, end) infinite; animation-delay: 8.333s; }
+
+/* D-0053 — reduced motion: lock to the first frame. No cycling. */
+@media (prefers-reduced-motion: reduce) {
+  .ambientPalmsFrame2,
+  .ambientPalmsFrame3,
+  .ambientPalmsFrame4,
+  .ambientPalmsFrame5,
+  .ambientPalmsFrame6 {
+    display: none;
+  }
+  .ambientPalmsFrame1 {
+    animation: none;
+    opacity: 0.07;
+  }
 }
 
 .inner {
@@ -32,6 +96,15 @@
   grid-template-columns: minmax(280px, 0.9fr) 1.5fr 0.9fr;
   gap: var(--space-7);
   align-items: start;
+  /* D-0053 — sit above the ambient painted-palms background. The
+   * .ambientPalms div is at z=0; without this z-index, the
+   * absolutely-positioned painted frames at z=0 could sit on top
+   * of the .inner content (which has no z-index of its own, so
+   * its stacking context is "auto" — below explicitly-positioned
+   * siblings). z-index: 1 forces a stacking context above the
+   * ambient stage. */
+  position: relative;
+  z-index: 1;
 }
 
 @media (max-width: 980px) {
