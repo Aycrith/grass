@@ -371,6 +371,18 @@ export function HeroFieldTelemetry({
   const secondSceneFade = useTransform(smoothProgress, [0.4, 0.7], [0, 1]);
   const scene1ContentFade = useTransform(smoothProgress, [0.35, 0.55], [1, 0]);
   const scene2ContentFade = useTransform(smoothProgress, [0.55, 0.75], [0, 1]);
+  // D-0050 Phase 2 — route pin fade. Pin sits on the photo and
+  // should appear AFTER the photo settles (scroll 0.5+), stay
+  // visible briefly while the photo is dominant, then fade out
+  // before the photo's tail at scroll 0.7. The 0.5-0.65 window
+  // (5%-fades-in, 5%-holds, 5%-fades-out) keeps the pin quiet and
+  // unassertive — it's a "by the way, I'm here right now" hint,
+  // not a focal point that competes with the editorial column.
+  const routePinFade = useTransform(
+    smoothProgress,
+    [0, 0.5, 0.55, 0.6, 0.65, 1],
+    [0, 0, 1, 1, 0, 0],
+  );
 
   return (
     <section
@@ -415,6 +427,23 @@ export function HeroFieldTelemetry({
       <div className={styles.viewport}>
         {/* Z 0: real 4K Florida lawn photograph. */}
         <BackgroundPhoto progress={smoothProgress} photoFade={photoFade} />
+
+        {/* D-0050 Phase 2 — "currently here" route pin.
+         *
+         * Subtle, brand-tinted location pin rendered over the
+         * lower-right of the photo (the open freshly-mowed lawn).
+         * Matches the callout pill's pin icon so the visual
+         * language is consistent across scene 1 (callout pill) and
+         * scene 2 (this pin). Pulse ring is a separate concentric
+         * circle that scales + fades on a 1.8s cycle, suggesting
+         * "live, right now" without being noisy.
+         *
+         * Fades in at scroll 0.5-0.55 (after the photo has settled
+         * into the rest of the cross-fade) and fades out at 0.6-0.65
+         * (before the photo's tail at 0.7). The 5%-in / 5%-hold /
+         * 5%-out window is intentionally brief — this is a
+         * supporting visual hint, not a primary CTA. */}
+        <RoutePin opacity={routePinFade} />
 
         {/* Z 0.5: additive green palette correction.
          * Bottom-up green wash that tints the sandy foreground toward
@@ -852,6 +881,65 @@ function LiveStatus({
           Updated {minute % 60 === 0 ? 'just now' : `${minute % 60}m ago`}
         </span>
       </div>
+    </motion.div>
+  );
+}
+
+/* ============================================================
+ * RoutePin - "currently mowing this lawn" indicator.
+ *
+ * D-0050 Phase 2 — small, brand-tinted location pin rendered over
+ * the lower-right of the photo (the open freshly-mowed lawn). The
+ * pin's location-pulse ring (a separate concentric circle that
+ * scales + fades on a 1.8s cycle) suggests "live, right now"
+ * without being noisy.
+ *
+ * Position: `right: 14%; bottom: 26%` — the open grass area in the
+ * lower-right of the photo, well clear of the ranch house (which
+ * is in the left third) and the right-side palm trees (which are
+ * in the upper-right). The pin tip points DOWN at the lawn, so
+ * the visual reads as "the operator is on this exact patch of
+ * grass."
+ *
+ * The 5%-in / 5%-hold / 5%-out fade window (scroll 0.5-0.65) is
+ * intentionally brief — the pin is a supporting visual hint, not
+ * a primary CTA. It coincides with the photo's dominant visibility
+ * window (scroll 0.4-0.7) so the visitor sees the pin when the
+ * photo is the resting state.
+ *
+ * Mobile + reduced-motion: the pin is a `motion.div` driven by
+ * the same `routePinFade` MotionValue as desktop, so it fades
+ * naturally. The pulse ring animation is CSS and is overridden
+ * to `none` under prefers-reduced-motion.
+ *
+ * Aria-label points to the same status the LIVE pill carries
+ * ("Mowing now") so screen readers report a single, consistent
+ * status regardless of which visual element the user encounters.
+ * ============================================================ */
+
+function RoutePin({ opacity }: { opacity: MotionValue<number> }): ReactNode {
+  return (
+    <motion.div
+      className={styles.routePin}
+      style={{ opacity }}
+      role="status"
+      aria-label="Currently mowing this lawn"
+    >
+      <span className={styles.routePinPulse} aria-hidden="true" />
+      <svg
+        className={styles.routePinIcon}
+        viewBox="0 0 24 32"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <title>Operator location</title>
+        <path
+          d="M12 2c-4.97 0-9 4.03-9 9 0 6.75 9 19 9 19s9-12.25 9-19c0-4.97-4.03-9-9-9zm0 12.25a3.25 3.25 0 1 1 0-6.5 3.25 3.25 0 0 1 0 6.5z"
+          fill="var(--ll-sun)"
+          stroke="var(--ll-palm-bark)"
+          strokeWidth="1.25"
+        />
+      </svg>
     </motion.div>
   );
 }
