@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-20 (Day 27 — D-0049 rev 2 + rev 3: dropped palms parallax; re-encoded fern/songbirds WebP with alpha to kill black-letterbox bleed through mix-blend-mode: multiply)
+# Last updated: 2026-07-21 (Day 28 — D-0051 schedule todayMower cascade fix + D-0052/53/54 animated sun + ambient palms + mower idle)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-20 (Day 27 — D-0049 rev 2 + rev 3: dropped palms parallax; re-encoded fern/songbirds WebP with alpha to kill black-letterbox bleed through mix-blend-mode: multiply)
+# Last updated: 2026-07-21 (Day 28 — D-0051 schedule todayMower cascade fix + D-0052/53/54 animated sun + ambient palms + mower idle)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -417,6 +417,36 @@ knowledge_gaps:
     severity: "blocking"
     due: "2026-07-17"
     owner_agent: "research"
+    status: "partially_resolved"
+    status_note: >
+      Cross-project equipment procurement scout run 2026-07-21 via
+      GarbageGoober multi-platform scrapers (FB Marketplace primary; CL
+      direct HTTP) + eBay comps via web_search. Live market data for the
+      10-item starter kit now exists in
+      C:/Users/camer/DEVNEW/GarbageGoober/output/procurement/scans/2026-07-21T103018/
+      (see procurement_summary.md). Findings: FB Marketplace is the
+      dominant local channel; CL Tampa is a thin market for commercial
+      equipment; OfferUp + Mercari are no-ops for this domain (KS geo +
+      fashion-only respectively). Live 60" zero-turn median is ~$5,000
+      (commercial Exmark/Scag/Hustler), trailer median is $5,300
+      (significantly above the supplier-yaml $1.5-2.5K target). See
+      procurement_summary.md "Limitations" section for corrected used-price
+      bands. Steward review still required before any purchase.
+    resolution_status: "data_acquired; steward_review_pending"
+    resolved_by:
+      run_id: "2026-07-21T103018"
+      report_path: "C:/Users/camer/DEVNEW/GarbageGoober/output/procurement/scans/2026-07-21T103018/procurement_summary.md"
+      per_item_csv_glob: "C:/Users/camer/DEVNEW/GarbageGoober/output/procurement/scans/2026-07-21T103018/*.csv"
+      total_kept_listings: 279
+      distinct_items: 10
+      tools_used: ["scrapers_v3.py:ScraperFacebookMarketplace",
+                   "scrapers_v3.py:ScraperCraigslist",
+                   "ebay_comps_agent.py (web_search fallback)"]
+      cross_project: true
+      cross_project_note: >
+        Run via GarbageGoober's existing scraper stack -- no new code in
+        GRASS repo. Driver: GarbageGoober/procurement_scan.py (added 2026-07-21).
+        Aggregator: GarbageGoober/procurement_aggregate.py (added 2026-07-21).
 
 # -------------------------------------------------------------------
 # Implementation backlog (engineering division owns)
@@ -2976,4 +3006,232 @@ changelog:
     by: "Mavis (orchestrator, 2026-07-20)"
     review_date: "2026-10-10"
     twined_with: "D-0049 (parent); D-0044 (fern/songbirds parallax layer creator, original Wave 3 addition)"
+
+  - date: "2026-07-21"
+    day: 28
+    change: >
+      Cross-project equipment procurement scout (GRASS Mission 1, 10-item
+      starter kit) using GarbageGoober's multi-platform scraper stack.
+      Closes GAP-006 (Equipment dealers within 30 mi) at the data level --
+      steward review still required before any purchase.
+
+      (1) Built two new drivers in GarbageGoober (no new code in GRASS):
+      `procurement_scan.py` -- procurement-tuned variant of `daily_scan.py`
+      with per-item price bands (min_price floor to skip diecast/parts
+      noise, max_price ceiling per GRASS supplier yaml), brand
+      preference annotation, exclude-keyword list (for parts / not running
+      / diecast / replica / stand-on / enclosed), dedicated seen file
+      (procurement-specific TTL, not the flip-hunter's). `procurement_aggregate.py`
+      -- joins per-item listings with hand-curated eBay comps, scores each
+      listing as GOOD DEAL (<=80% comps median) / FAIR / OVERPRICED,
+      emits markdown + per-listing CSV + final JSON.
+
+      (2) Ran the full 10-item crawl against FB Marketplace (Camoufox) +
+      Craigslist (direct HTTP) + OfferUp + Mercari. OfferUp and Mercari
+      skipped by default (KS geolocation per `scrapers_v3.py` gotcha +
+      fashion-only respectively). Result: 367 raw listings, 279 kept
+      after the procurement filter across 10 items. All real procurement
+      data was from FB Marketplace; CL Tampa returned 1 valid result
+      across 40 queries.
+
+      (3) Ran eBay fair-price comps via web_search fallback (eBay scraper
+      IP-blocked per `scrapers_v3.py:ScraperEbaySold` docstring; web_search
+      is the recommended fallback per `ebay_comps_agent.py`). Manual
+      price extraction from snippets; n=2-11 per item.
+
+      (4) Key findings: GRASS supplier yaml's used-price targets are
+      OPTIMISTIC for 5 of 10 items:
+        - Stihl FS 91 trimmer: yaml $180-250 vs market median $350 (yaml 40% low)
+        - Stihl HS 56 hedge trimmer: yaml $150-220 vs market median $287 (yaml 30% low)
+        - Stihl FC 91 edger: yaml $150-200 vs market median ~$380 (yaml 50% low; n=1 caveat)
+        - Open landscape trailer: yaml $1,500-2,500 vs market median $5,299 (yaml 60% low)
+        - Stihl MS 250 chainsaw: yaml $150-220 vs market median $275 (yaml 10% low)
+      Implication: the GRASS budget estimate of `~$6,650-9,650 used` in
+      `research/suppliers/largo.yaml` is likely 20-30% UNDER actual
+      market for the Stihl + trailer line items. Recommend revising the
+      yaml before any purchase, or considering lower-tier Stihl models
+      (FS 56 / FS 40) and a smaller 12-ft utility trailer.
+
+      (5) Caveat: every item was flagged "GOOD DEAL" because local FB
+      Marketplace runs 10-30% cheaper than eBay national comps. This is
+      a structural feature of comparing local FB to national eBay, not
+      a finding that every listing is a hidden gem. Treat the GOOD DEAL
+      flag as a shortlist signal, not a buy recommendation. In-person
+      inspection (hour-meter, blade condition, engine health) is
+      mandatory before any purchase.
+
+      (6) Compliance: this was a research-side scout, NOT an equipment
+      purchase. OBJ-M2-005 (Equipment access handled outside GRASS --
+      borrow/rent short-term) remains DEFERRED per steward direction.
+      No money was spent; no new equipment was acquired. The report is
+      preparation for when the steward decides to reactivate
+      equipment acquisition (trigger: equipment-related incident OR
+      first full-time hire OR $500+ equipment expense).
+
+      Files added: GarbageGoober/procurement_scan.py,
+      GarbageGoober/procurement_aggregate.py, plus per-scan output in
+      GarbageGoober/output/procurement/scans/2026-07-21T103018/ (10 item
+      CSVs, 10 item JSONs, 1 manifest, 1 scored CSV, 1 final JSON, 1
+      summary MD), plus GarbageGoober/output/procurement/ebay_comps_2026-07-21.json
+      (hand-curated eBay comps).
+      Files modified: GRASS/state/ledger.yaml (this entry + GAP-006
+      status update).
+
+      Recommendation for steward review:
+      - Read procurement_summary.md "Limitations" section first
+      - Decide whether to revise research/suppliers/largo.yaml used-price
+        targets based on the corrected bands
+      - Decide whether to reactivate OBJ-M2-005 now that live market data
+        exists, or keep deferring per the original cash-constrained Phase 2
+        plan
+    by: "Mavis (orchestrator, 2026-07-21)"
+    cross_project: true
+    references:
+      - "GarbageGoober/output/procurement/scans/2026-07-21T103018/procurement_summary.md"
+      - "GarbageGoober/output/procurement/ebay_comps_2026-07-21.json"
+      - "GarbageGoober/procurement_scan.py"
+      - "GarbageGoober/procurement_aggregate.py"
+      - "GRASS/research/suppliers/largo.yaml (existing -- needs update based on findings)"
+
+  - date: "2026-07-21"
+    day: 28
+    decision: D-0051
+    title: "D-0051 - Schedule today-card mower cascade fix (CSS specificity bump)"
+    summary: >
+      Today-card mower was rendering at 986×986px (overflowing the
+      card) instead of the designed 88×88px. Root cause: the
+      Illustration wrapper class (.Illustration_illustration__z_0h7)
+      has { max-width: 100%; } in its CSS module, and that rule is
+      duplicated into layout.css + page.css + loading.css. Loading.css
+      loads AFTER page.css, and the same-specificity (0,1,0) cascade
+      gives the later-loaded .illustration rule the win, restoring
+      max-width: 100% on the img and overriding the consumer's
+      max-width: 5.5rem (88px).
+
+      Other Illustration consumers (bioSignatureMark, headerOrnamentMark,
+      openingMark, brandMark) are unaffected because they don't have
+      a hard cap smaller than their parent — the restored
+      max-width: 100% happens to produce the intended size for them.
+      Only .todayMower wants a hard cap that's smaller than the
+      parent, and that's exactly where the cascade bug bit.
+
+      Fix: bumped consumer selector to .todayCardFoot > .todayMower
+      (specificity 0,2,0). Now beats .illustration (0,1,0) regardless
+      of stylesheet load order. The mobile @media rule also gets the
+      same qualification for consistency.
+    by: "Mavis (orchestrator, 2026-07-21)"
+    review_date: "2026-10-21"
+    twined_with: "WP34 (Illustration inline-style removal)"
+    audit_artifacts:
+      - "apps/web/audit/d-schedule-repair/capture-all.log"
+      - "apps/web/audit/d-schedule-repair/schedule-timeline-current.png"
+    commit: "a57db30"
+
+  - date: "2026-07-21"
+    day: 28
+    decision: D-0052
+    title: "D-0052 - Animated cartoon sun in hero scene 1 (rotating rays + breathing core/halo)"
+    summary: >
+      Hero scene 1 cartoon sun was static (two circles). Drifting clouds,
+      swaying palms, swaying operator — all animated. The sun was the
+      only static element in the upper sky. Three coordinated CSS
+      keyframe animations now give it life:
+
+      - .sunRays   - 12 hand-authored sun-yellow rays (matching the
+                     existing flat-fill cartoon style, D-0049 lesson)
+                     rotate around (352, 252) at 20s/360deg linear.
+      - .sunCore   - breathes scale 1.0 → 1.03 at 4.4s ease-in-out.
+      - .sunHalo   - opacity 0.18 → 0.30 at 4.4s, slightly
+                     out-of-phase (delay -0.6s) from the core.
+
+      All three use transform-box: view-box (the same SVG-coordinate
+      trick operatorSway uses) so the rotation pivot + scale center
+      are expressed in SVG viewBox units (352px, 252px) instead of
+      fighting the parent <div>'s CSS layout.
+
+      Cadence mismatch: 20s ray rotation vs 4.4s core/halo breath.
+      Different periods so the animations don't visibly loop in
+      lockstep - the rays drift slowly past the pulsing core.
+
+      prefers-reduced-motion: all three animations collapse to
+      identity via the @media block at the bottom of the sun section.
+    by: "Mavis (orchestrator, 2026-07-21)"
+    review_date: "2026-10-21"
+    twined_with: "D-0049 (hero storybook cartoon style)"
+    audit_artifacts:
+      - "apps/web/audit/d-0052-sun/hero-y0.png"
+      - "apps/web/audit/d-0052-sun/hero-y0-t2.5.png"
+      - "apps/web/audit/d-0052-sun/hero-y0-t5.png"
+    commit: "3a9c1e0"
+
+  - date: "2026-07-21"
+    day: 28
+    decision: D-0053
+    title: "D-0053 - OperatorStrip ambient painted-palms background (6-frame VEO cycle)"
+    summary: >
+      Added the painted VEO palms-01..06.webp frames as a subtle
+      ambient background to the OperatorStrip. The 6 frames are
+      near-identical painted Florida scenes (ranch house, sun,
+      palms, bird bath) that cycle at 10s/frame via the same
+      CSS-step pattern SecondScene uses for its scene2-* cycle
+      (D-0049).
+
+      The painted content is CSS-bleached down to 7% opacity with
+      mix-blend-mode: multiply, so it integrates with the cream
+      --ll-shell backdrop without competing with the bio text.
+      The painted frames read as 'the operator's world' rather
+      than as content.
+
+      D-0049 lesson honored: painted VEO brushwork clashes with
+      hand-authored SVG cartoon when both are in the same panel.
+      The painted palms are SUBTLE (7% opacity, multiply blend)
+      and the bio content is TEXT (not hand-authored SVG cartoon),
+      so the two styles don't collide visually.
+
+      Stacking: .ambientPalms z=0, .inner z=1. The bio text sits
+      above the painted frames so readability is not affected.
+
+      prefers-reduced-motion: frames 2-6 are display:none, only
+      frame 1 stays at 0.07 opacity (no animation, no flicker).
+    by: "Mavis (orchestrator, 2026-07-21)"
+    review_date: "2026-10-21"
+    twined_with: "D-0049 (scene2 6-frame cycle pattern); D-0049 (style-mismatch lesson)"
+    audit_artifacts:
+      - "apps/web/audit/d-0053-ambient-palms/operator-strip-t0.png"
+      - "apps/web/audit/d-0053-ambient-palms/operator-strip-t2.png"
+    commit: "a23e6f2"
+
+  - date: "2026-07-21"
+    day: 28
+    decision: D-0054
+    title: "D-0054 - Engine-running vibration on ScheduleTimeline today-card mower"
+    summary: >
+      Added a 0.6s engine-idle vibration to the today-card mower
+      illustration. The vibration is intentionally tiny (±0.4px
+      translateY, 0.5° rotate) — the mower is a 88px accent in a
+      ~6-inch card footer, not a focal element. A larger amplitude
+      would read as the mower 'having a seizure' instead of 'idling'.
+
+      Period choice: 0.6s → 1.67 Hz. Real small engines idle at
+      ~600-1000 rpm → 10-16 Hz, way too fast to animate (the eye
+      would lock onto a strobing image). 1.67 Hz reads as 'running'
+      without being distracting.
+
+      Transform pivot: center bottom (44px 88px in the 88×88 box)
+      so the mower bobs from its wheels, not its center. The up-down
+      reads as engine vibration, the rotate reads as a slight tilt
+      under load.
+
+      Asymmetric keyframe phasing: translateY peaks at 25% and 75%,
+      rotate peaks at 50%. The motion doesn't look like a pure
+      sine wave.
+
+      prefers-reduced-motion: animation: none → static image.
+    by: "Mavis (orchestrator, 2026-07-21)"
+    review_date: "2026-10-21"
+    twined_with: "D-0051 (todayMower at 88px after cascade fix)"
+    audit_artifacts:
+      - "apps/web/audit/d-0054-mower-idle/today-foot-zoom.png"
+      - "apps/web/audit/d-0054-mower-idle/schedule-timeline-t0.png"
+    commit: "58ff312"
 
