@@ -508,7 +508,14 @@
   flex: 1 1 auto;
 }
 
-.todayMower {
+/* Qualified with the parent class so specificity (0,2,0) beats the
+ * `.Illustration_illustration` rule (0,1,0). Without this, the
+ * illustration wrapper's `max-width: 100%` (duplicated across
+ * layout/page/loading stylesheets) wins the cascade over our
+ * `max-width: 5.5rem`, and the mower renders at 100% of the
+ * 986px flex parent instead of the intended 88px. See
+ * D-0051 schedule-today-card-mower-repair. */
+.todayCardFoot > .todayMower {
   display: block;
   width: 100%;
   max-width: 5.5rem;
@@ -523,7 +530,7 @@
     flex-direction: column;
     align-items: stretch;
   }
-  .todayMower {
+  .todayCardFoot > .todayMower {
     display: none;
   }
 }
