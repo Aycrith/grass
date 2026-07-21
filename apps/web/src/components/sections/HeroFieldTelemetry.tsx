@@ -216,6 +216,13 @@ interface HeroFieldTelemetryProps {
     primaryCta: { label: string; href: string };
     secondaryCta: { label: string; href: string };
   };
+  /** D-0050 Phase 3 — per-ZIP card strip rendered at the bottom
+   * of scene 3 (the painted ranch house). 6 cards, one per
+   * service area ZIP, each with painted area image + ZIP + label. */
+  perZipStrip: {
+    eyebrow: string;
+    cards: ReadonlyArray<{ zip: string; label: string; href: string }>;
+  };
   /** D-0050 Phase 1a — small service-area callout pill rendered in
    * scene 1 (the cartoon storybook), below the eyebrow. Clickable
    * hint that anchors the visitor's mental map to a specific ZIP
@@ -240,6 +247,7 @@ export function HeroFieldTelemetry({
   primaryCta,
   secondaryCta,
   scene2,
+  perZipStrip,
   callout,
   now,
 }: HeroFieldTelemetryProps): ReactNode {
@@ -382,6 +390,46 @@ export function HeroFieldTelemetry({
     smoothProgress,
     [0, 0.5, 0.55, 0.6, 0.65, 1],
     [0, 0, 1, 1, 0, 0],
+  );
+
+  // D-0050 Phase 3 — per-ZIP card strip fade. Renders at the
+  // bottom of scene 3 (the painted ranch house), fading in
+  // across [0.70, 0.85] as the scene settles into its resting
+  // state. The 5%-fades-in / 15%-holds window keeps the strip
+  // visible long enough for the visitor to read the labels and
+  // make a click decision. The strip persists until the section
+  // ends (no fade-out — the section's natural end takes over).
+  const perZipStripFade = useTransform(
+    smoothProgress,
+    [0, 0.7, 0.85, 1],
+    [0, 0, 1, 1],
+  );
+
+  // D-0050 Phase 3 — dashboard fade-out as the per-ZIP strip
+  // fades in. The dashboard (LIVE pill + FieldStamp + telemetry
+  // strip) is the scene 1 / photo UI; in scene 3 the painted
+  // ranch house is the resting state and the per-ZIP strip
+  // becomes the new bottom-UI. Hiding the dashboard in scene 3
+  // prevents overlap with the strip and gives the strip the
+  // full bottom area. Fade-out is [0.70, 0.80] (slightly ahead
+  // of the strip's fade-in [0.70, 0.85]) so the handoff reads
+  // as a clean scene transition, not a cross-fade.
+  const dashboardFadeOut = useTransform(
+    smoothProgress,
+    [0, 0.7, 0.8, 1],
+    [1, 1, 0, 0],
+  );
+
+  // D-0050 Phase 3 — combined dashboard opacity (in-fade + out-fade).
+  // The dashboard widgets (LIVE pill + FieldStamp + telemetry) fade
+  // in at [0.1, 0.3] (D-0043) and fade out at [0.7, 0.8] (Phase 3,
+  // so the per-ZIP strip can take over the bottom area in scene 3).
+  // The combined value is the product of the two MotionValues so
+  // both transitions apply correctly (the widget is visible only
+  // when both are non-zero).
+  const dashboardCombined = useTransform(
+    [uiOpacity, dashboardFadeOut] as MotionValue<number>[],
+    ([inV, outV]: readonly number[]) => (inV ?? 0) * (outV ?? 0),
   );
 
   return (
@@ -559,6 +607,8 @@ export function HeroFieldTelemetry({
           scene2={scene2}
           opacity={secondSceneFade}
           contentOpacity={scene2ContentFade}
+          perZipStrip={perZipStrip}
+          perZipStripOpacity={perZipStripFade}
         />
 
         {/* Z 4: live status (top right), field stamp (bottom left),
@@ -580,9 +630,9 @@ export function HeroFieldTelemetry({
          * Motion's style cache stays bound to the original MotionValue after
          * the prop transitions to a literal number — see comment block at top
          * of file for the full binding-subscriber rationale. */}
-        <LiveStatus now={now ?? undefined} uiOpacity={uiOpacity} uiY={uiY} />
-        <FieldStamp />
-        <TelemetryStats uiOpacity={uiOpacity} uiY={uiY} progress={smoothProgress} />
+        <LiveStatus now={now ?? undefined} uiOpacity={dashboardCombined} uiY={uiY} />
+        <FieldStamp dashboardCombined={dashboardCombined} />
+        <TelemetryStats uiOpacity={dashboardCombined} uiY={uiY} progress={smoothProgress} />
         {isDebugAdditive && (
           <div
             className={styles.debugBanner}
@@ -817,6 +867,10 @@ function LiveStatus({
   uiY,
 }: {
   now: string | undefined;
+  /** D-0043 fade-in + D-0050 Phase 3 fade-out combined. The
+   * call site passes `dashboardCombined` (the product of the
+   * in-fade and out-fade MotionValues) under this name so the
+   * widget doesn't need to know about the combined logic. */
   uiOpacity: MotionValue<number>;
   uiY: MotionValue<number>;
 }): ReactNode {
@@ -955,9 +1009,21 @@ function RoutePin({ opacity }: { opacity: MotionValue<number> }): ReactNode {
  * comes in after the dissolve.
  * ============================================================ */
 
-function FieldStamp(): ReactNode {
+function FieldStamp({
+  dashboardCombined,
+}: {
+  /** D-0050 Phase 3 — combined in-fade + out-fade MotionValue so
+   * the stamp fades out in scene 3 to make room for the per-ZIP
+   * strip. Previously a static <div>; promoted to motion.div
+   * with the scroll-driven opacity. */
+  dashboardCombined: MotionValue<number>;
+}): ReactNode {
   return (
-    <div className={styles.stamp} aria-hidden="true">
+    <motion.div
+      className={styles.stamp}
+      style={{ opacity: dashboardCombined }}
+      aria-hidden="true"
+    >
       <span className={styles.stampInner}>
         <span>EST · 2026</span>
         <span className={styles.stampDot}>·</span>
@@ -965,7 +1031,7 @@ function FieldStamp(): ReactNode {
         <span className={styles.stampDot}>·</span>
         <span>FL</span>
       </span>
-    </div>
+    </motion.div>
   );
 }
 

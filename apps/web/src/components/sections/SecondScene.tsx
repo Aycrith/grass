@@ -75,12 +75,25 @@ interface SecondSceneProps {
   /** Content overlay opacity. Lag scene fade slightly so the
    *  picture lands first, then the chapter copy. */
   contentOpacity: MotionValue<number>;
+  /** D-0050 Phase 3 — per-ZIP card strip rendered at the bottom
+   * of the scene. Each card links to /areas/[zip] and shows the
+   * painted area image + ZIP + label. */
+  perZipStrip: {
+    eyebrow: string;
+    cards: ReadonlyArray<{ zip: string; label: string; href: string }>;
+  };
+  /** D-0050 Phase 3 — strip fade opacity. Fades in across
+   * [0.70, 0.85] so the strip appears as scene 3 settles into
+   * its resting state, well after the photo has faded out. */
+  perZipStripOpacity: MotionValue<number>;
 }
 
 export function SecondScene({
   scene2,
   opacity,
   contentOpacity,
+  perZipStrip,
+  perZipStripOpacity,
 }: SecondSceneProps): ReactNode {
   return (
     <motion.div
@@ -133,6 +146,57 @@ export function SecondScene({
           <MagneticCta href={scene2.secondaryCta.href} variant="ghost" size="lg">
             {scene2.secondaryCta.label}
           </MagneticCta>
+        </div>
+      </motion.div>
+
+      {/* D-0050 Phase 3 — per-ZIP card strip.
+       *
+       * 6 cards in a horizontal row at the bottom of the scene,
+       * one per service area ZIP. Each card shows the painted
+       * area image (top 60%) + ZIP code + neighborhood label,
+       * and links to /areas/[zip]. The cream-tinted card
+       * background with backdrop blur separates the strip from
+       * the painted grass below it.
+       *
+       * Renders only in scene 3 (the painted ranch house),
+       * fading in across scroll [0.70, 0.85] — the resting
+       * state of the scene, well after the photo has faded out
+       * and the route pin is gone. Stays out of the photo
+       * cross-fade window so it doesn't compete with the route
+       * pin in scene 2.
+       *
+       * The strip's z-index is 1 inside the SecondScene root
+       * (which itself is at z 1 of the hero), so the strip
+       * sits above the painted scene stage but below the
+       * editorial pull-quote (z 2). On mobile the strip drops
+       * to a 3x2 grid via the @media (max-width: 767px) rule
+       * in the module CSS. */}
+      <motion.div
+        className={styles.perZipStrip}
+        style={{ opacity: perZipStripOpacity }}
+        aria-labelledby="per-zip-strip-eyebrow"
+      >
+        <span id="per-zip-strip-eyebrow" className={styles.perZipStripEyebrow}>
+          {perZipStrip.eyebrow}
+        </span>
+        <div className={styles.perZipStripGrid}>
+          {perZipStrip.cards.map((card) => (
+            <a key={card.zip} href={card.href} className={styles.perZipCard}>
+              <span className={styles.perZipCardImageWrap}>
+                <img
+                  src={`/areas/${card.zip}.webp`}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  className={styles.perZipCardImage}
+                />
+              </span>
+              <span className={styles.perZipCardText}>
+                <span className={styles.perZipCardZip}>{card.zip}</span>
+                <span className={styles.perZipCardLabel}>{card.label}</span>
+              </span>
+            </a>
+          ))}
         </div>
       </motion.div>
     </motion.div>

@@ -90,6 +90,7 @@ export default function HomePage() {
         primaryCta={heroContent.primaryCta}
         secondaryCta={heroContent.secondaryCta}
         scene2={heroContent.scene2}
+        perZipStrip={heroContent.scene3.perZipStrip}
         callout={heroContent.callout}
       />
       <SectionDivider />

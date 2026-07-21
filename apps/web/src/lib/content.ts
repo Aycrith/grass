@@ -53,6 +53,36 @@ export const hero = {
     secondaryCta: { label: 'See pricing', href: '/pricing' },
   },
   /**
+   * D-0050 Phase 3 — per-ZIP card strip rendered at the bottom of
+   * scene 3 (the painted ranch house). 6 cards, one per service
+   * area ZIP, each with the painted area image + ZIP + label.
+   * Clickable hint that anchors the visitor's "I want to see MY
+   * area" intent: scroll past the editorial column, then pick a
+   * ZIP to dive into the area page.
+   *
+   * The cards reuse the existing `serviceAreaMap.pinLocations`
+   * labels and `areaImages` images, so adding/removing a ZIP only
+   * needs one edit in this file (and the corresponding area page).
+   *
+   * Renders only in scene 3; fades in across scroll [0.70, 0.85]
+   * (during the resting state of the painted scene) and persists
+   * until the section ends. Stays out of the photo cross-fade
+   * window so it doesn't compete with the route pin in scene 2.
+   */
+  scene3: {
+    perZipStrip: {
+      eyebrow: 'Where this lives.',
+      cards: [
+        { zip: '33756', label: 'Belleair / Clearwater', href: '/areas/33756' },
+        { zip: '33770', label: 'Belleair Bluffs / Largo', href: '/areas/33770' },
+        { zip: '33771', label: 'Largo (central)', href: '/areas/33771' },
+        { zip: '33773', label: 'Largo (east)', href: '/areas/33773' },
+        { zip: '33774', label: 'Largo / Ridgecrest', href: '/areas/33774' },
+        { zip: '33778', label: 'Seminole / Largo West', href: '/areas/33778' },
+      ] as const,
+    },
+  },
+  /**
    * D-0050 Phase 1a — scene 1 service-area callout pill.
    *
    * Sits below the eyebrow in scene 1 (the cartoon storybook) as a
