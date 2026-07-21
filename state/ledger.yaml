@@ -2948,3 +2948,32 @@ changelog:
     review_date: "2026-10-10"
     twined_with: "D-0049 (parent); D-0044 (fern/songbirds parallax layer creator)"
 
+  - date: "2026-07-20"
+    day: 27
+    decision: D-0049-rev-4
+    decision_subrecord: "Remove FernLayer + SongbirdsLayer from storybook (style mismatch)"
+    title: "D-0049 rev 4 — remove FernLayer + SongbirdsLayer from storybook JSX; painted parallax clashed with hand-authored SVG cartoon"
+    summary: >
+      The D-0049 rev 3 fix made the songbirds-01..06.webp / fern-01..06.webp
+      content fully visible (black letterbox was the only thing hiding the
+      painted detail). The next steward review flagged that the painted
+      brushwork palm + brushwork leaves + painted birds did NOT match the
+      hand-authored SVG cartoon's flat-vector style — they read as a
+      separate painting pasted on top of the cartoon, not as foreground
+      depth. Two completely different visual languages mashed together.
+      Fix: removed <FernLayer /> and <SongbirdsLayer /> from the
+      HeroStorybookLayer JSX. The cartoon storybook already has its own
+      depth cascade (sky + drifting clouds + far palms + swaying mid
+      palms + ranch houses + foreground grass + wildflowers); the
+      painted parallax was unnecessary "more is more" that broke
+      coherence. The FernLayer/SongbirdsLayer function components, the
+      useViewportMotion subscription, the CSS, and the WebP assets all
+      stay in the repo (in case future re-painted-cartoon-style assets
+      want to be slotted back in). Visual evidence:
+      apps/web/audit/d-0049-second-scene/hero-y0.png — clean flat-vector
+      cartoon, all elements in the same hand-authored style, no painted
+      parallax clashing.
+    by: "Mavis (orchestrator, 2026-07-20)"
+    review_date: "2026-10-10"
+    twined_with: "D-0049 (parent); D-0044 (fern/songbirds parallax layer creator, original Wave 3 addition)"
+

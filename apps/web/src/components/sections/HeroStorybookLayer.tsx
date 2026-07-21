@@ -124,8 +124,13 @@ export function HeroStorybookLayer({
   const farY = layerMotion?.egret?.y;
   const midY = layerMotion?.mower?.y;
   const nearY = layerMotion?.gouache?.y;
-  const fernY = layerMotion?.fern?.y;
-  const songbirdsY = layerMotion?.songbirds?.y;
+  // D-0049 rev 4 — fernY + songbirdsY intentionally unused
+  // (FernLayer / SongbirdsLayer were removed from the storybook
+  // JSX because the painted VEO assets clashed with the hand-
+  // authored SVG cartoon). The MotionValues are still computed
+  // by useViewportMotion (it's all-or-nothing per hook call) so
+  // we just don't consume them. If a re-painted-cartoon-style
+  // asset is slotted back in later, re-add these two bindings.
 
   return (
     <motion.div className={styles.layer} style={{ opacity, filter }} aria-hidden="true">
@@ -136,9 +141,33 @@ export function HeroStorybookLayer({
         <BackgroundSky />
       </motion.div>
       <Clouds />
-      {/* Wave 3 — songbirds parallax. Anchored top-right between sky and
-       * far layer. The MotionValue drives vertical parallax. */}
-      <SongbirdsLayer y={songbirdsY} />
+      {/* D-0049 rev 4 — SongbirdsLayer REMOVED from the storybook.
+       *
+       * The Wave 3 songbirds-01..06.webp + fern-01..06.webp parallax
+       * assets are VEO-painted detailed Florida scenery (brushwork
+       * palm, brushwork leaves, painted birds on a hill). They were
+       * originally added in D-0044 as foreground depth over the
+       * storybook cartoon — but the painted style and the hand-
+       * authored SVG cartoon style are at completely different
+       * fidelity levels. Rendered together they read as a mash-up of
+       * two scenes in one panel, not as depth. The cartoon storybook
+       * already has its own depth cascade (sky + drifting clouds +
+       * far palms + swaying mid palms + ranch houses + foreground
+       * grass + wildflowers); the painted parallax was unnecessary
+       * "more is more" that broke visual coherence.
+       *
+       * The SongbirdsLayer and FernLayer function components + the
+       * useViewportMotion subscription stay in the file (in case
+       * future re-painted-cartoon-style assets want to be slotted
+       * back in) but the JSX is no longer mounted. The
+       * /public/hero/layers/v2/fern-* and songbirds-* assets stay
+       * on disk for the same reason.
+       *
+       * See governance/decisions/0049-second-scene-css-revert.md
+       * §rev 4 for the steward review that triggered the removal
+       * (the dark-letterbox fix in rev 3 made the painted content
+       * fully visible, which exposed the style mismatch that the
+       * black letterbox was previously hiding). */}
       <motion.div
         className={styles.farLayer}
         style={{ x: farPanX, ...(farY !== undefined && { y: farY }) }}
@@ -152,9 +181,6 @@ export function HeroStorybookLayer({
         <MidLayer />
       </motion.div>
       {/* D-0014: Mower SVG removed - was the grey vehicle on the brown mid-band */}
-      {/* Wave 3 — fern parallax. Anchored bottom-left between mid and near
-       * layer. The MotionValue drives vertical parallax. */}
-      <FernLayer y={fernY} />
       <motion.div
         className={styles.nearLayer}
         style={{ x: nearPanX, ...(nearY !== undefined && { y: nearY }) }}
@@ -333,99 +359,22 @@ function MidLayer(): ReactNode {
   );
 }
 
-/* ------------------------------------------------------------------
- * Wave 3 — FernLayer. CSS-step loop of 6 webp frames extracted
- * from grasscontent/Fern_swaying_in_painting_*.mp4. Anchored
- * bottom-left as foreground parallax (z-index between mid and
- * near). Vertical translate driven by `useViewportMotion`'s
- * `fern` MotionValue (cadence 0.22, 28px range).
- * ----------------------------------------------------------------- */
-
-function FernLayer({ y }: { y: MotionValue<number> | undefined }): ReactNode {
-  return (
-    <motion.div
-      className={styles.fernWrap}
-      style={y !== undefined ? { y } : {}}
-      aria-hidden="true"
-      data-testid="hero-fern-layer"
-    >
-      <div className={styles.fernInner}>
-        <div
-          className={`${styles.fernStrip} ${styles.fernFrame1}`}
-          style={{
-            backgroundImage: 'url(/hero/layers/v2/fern-01.webp)',
-          }}
-        />
-        <div
-          className={`${styles.fernStrip} ${styles.fernFrame2}`}
-          style={{ backgroundImage: 'url(/hero/layers/v2/fern-02.webp)' }}
-        />
-        <div
-          className={`${styles.fernStrip} ${styles.fernFrame3}`}
-          style={{ backgroundImage: 'url(/hero/layers/v2/fern-03.webp)' }}
-        />
-        <div
-          className={`${styles.fernStrip} ${styles.fernFrame4}`}
-          style={{ backgroundImage: 'url(/hero/layers/v2/fern-04.webp)' }}
-        />
-        <div
-          className={`${styles.fernStrip} ${styles.fernFrame5}`}
-          style={{ backgroundImage: 'url(/hero/layers/v2/fern-05.webp)' }}
-        />
-        <div
-          className={`${styles.fernStrip} ${styles.fernFrame6}`}
-          style={{ backgroundImage: 'url(/hero/layers/v2/fern-06.webp)' }}
-        />
-      </div>
-    </motion.div>
-  );
-}
-
-/* ------------------------------------------------------------------
- * Wave 3 — SongbirdsLayer. CSS-step loop of 6 webp frames extracted
- * from grasscontent/Songbirds_flying_on_hedge_*.mp4. Anchored
- * top-right as mid-distance parallax (z-index between sky and far).
- * Vertical translate driven by `useViewportMotion`'s `songbirds`
- * MotionValue (cadence 0.28, 36px range).
- * ----------------------------------------------------------------- */
-
-function SongbirdsLayer({ y }: { y: MotionValue<number> | undefined }): ReactNode {
-  return (
-    <motion.div
-      className={styles.songbirdsWrap}
-      style={y !== undefined ? { y } : {}}
-      aria-hidden="true"
-      data-testid="hero-songbirds-layer"
-    >
-      <div className={styles.songbirdsInner}>
-        <div
-          className={`${styles.songbirdsFrame} ${styles.songbirdsFrame1}`}
-          style={{ backgroundImage: 'url(/hero/layers/v2/songbirds-01.webp)' }}
-        />
-        <div
-          className={`${styles.songbirdsFrame} ${styles.songbirdsFrame2}`}
-          style={{ backgroundImage: 'url(/hero/layers/v2/songbirds-02.webp)' }}
-        />
-        <div
-          className={`${styles.songbirdsFrame} ${styles.songbirdsFrame3}`}
-          style={{ backgroundImage: 'url(/hero/layers/v2/songbirds-03.webp)' }}
-        />
-        <div
-          className={`${styles.songbirdsFrame} ${styles.songbirdsFrame4}`}
-          style={{ backgroundImage: 'url(/hero/layers/v2/songbirds-04.webp)' }}
-        />
-        <div
-          className={`${styles.songbirdsFrame} ${styles.songbirdsFrame5}`}
-          style={{ backgroundImage: 'url(/hero/layers/v2/songbirds-05.webp)' }}
-        />
-        <div
-          className={`${styles.songbirdsFrame} ${styles.songbirdsFrame6}`}
-          style={{ backgroundImage: 'url(/hero/layers/v2/songbirds-06.webp)' }}
-        />
-      </div>
-    </motion.div>
-  );
-}
+/* D-0049 rev 4 — FernLayer and SongbirdsLayer function components
+ * were REMOVED. The painted VEO assets (detailed brushwork palm +
+ * leaves + birds) clashed with the hand-authored SVG cartoon at
+ * incompatible fidelity levels — rendered together they read as a
+ * mash-up of two scenes, not as foreground depth.
+ *
+ * The original component source is preserved in git history (commit
+ * b330cf8 just before this commit). If a re-painted-cartoon-style
+ * asset is generated later and wants to be slotted back into the
+ * storybook, re-add the components and the corresponding MotionValue
+ * bindings above (fernY / songbirdsY).
+ *
+ * The CSS classes (.fernWrap, .fernInner, .fernStrip, .fernFrame1..6,
+ * .songbirdsWrap, .songbirdsInner, .songbirdsFrame1..6) and the WebP
+ * assets in apps/web/public/hero/layers/v2/fern-* and songbirds-*
+ * are kept for the same reason. */
 
 /* ------------------------------------------------------------------
  * Near layer - foreground grass + wildflowers.

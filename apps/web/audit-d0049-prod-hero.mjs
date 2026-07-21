@@ -25,7 +25,30 @@ const ctx = await browser.newContext({
 const page = await ctx.newPage();
 page.on('pageerror', (err) => console.error('[pageerror]', err.message));
 
-await page.goto('http://localhost:3005/', { waitUntil: 'networkidle', timeout: 60000 });
+// D-0049 rev 4 — try 3005 first, fall back to whatever the dev
+// server is on. Skip 3000 (stale dev processes from other repos
+// on shared machines). Accept 3001+ (port Next.js auto-falls back
+// to when 3000 is busy, which is where the dev server usually
+// lands in this workspace).
+let connectedPort = null;
+for (const port of [3005, 3001, 3002, 3003, 3004, 3006]) {
+  try {
+    await page.goto(`http://localhost:${port}/`, { waitUntil: 'domcontentloaded', timeout: 8000 });
+    // Wait for hydration. The first request on a fresh dev
+    // server triggers an on-demand compile (10s+), so allow up
+    // to 30s for the [data-test-section="hero"] attribute to
+    // appear after hydration completes.
+    await page.waitForSelector('[data-test-section="hero"]', { timeout: 30000, state: 'attached' });
+    connectedPort = port;
+    break;
+  } catch (e) {
+    console.log(`port ${port} did not respond with GRASS hero: ${e.message.split('\n')[0]}`);
+  }
+}
+if (connectedPort === null) {
+  throw new Error('Could not connect to a GRASS dev server on any port 3001-3006');
+}
+console.log('connected on port', connectedPort);
 // Force a full reload to ensure no cache from previous dev session.
 await page.reload({ waitUntil: 'networkidle' });
 await page.waitForTimeout(2000);

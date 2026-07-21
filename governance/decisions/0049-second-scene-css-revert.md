@@ -210,6 +210,33 @@ as black saw-teeth.
 > dark column is gone, the painted palm + birds are now visible
 > as foreground parallax depth over the cartoon.
 
+> **D-0049 rev 4 (style-mismatch removal):** The rev 3 fix made
+> the songbirds-01..06.webp content fully visible — but that
+> exposed a deeper problem the black letterbox had been
+> hiding. The fern + songbirds assets are VEO-painted detailed
+> Florida scenery (brushwork palm with 8 individually drawn
+> fronds, brushwork leaves with shadow gradients, painted
+> birds with feather detail, a hill with painterly brushwork).
+> The storybook cartoon is hand-authored SVG vector art
+> (flat colors, simple shapes, no texture). Rendered together
+> they read as **a mash-up of two scenes in one panel** — the
+> painted assets look like a separate painting slapped on top
+> of the cartoon, not as foreground depth. The cartoon already
+> has its own depth cascade (sky + drifting clouds + far palms
+> + swaying mid palms + ranch houses + foreground grass +
+> wildflowers); the painted parallax was unnecessary "more is
+> more" that broke visual coherence. Fix: removed
+> `<FernLayer />` and `<SongbirdsLayer />` from the storybook
+> JSX. The function components + the useViewportMotion
+> subscription + the CSS stay in the file (in case future
+> re-painted-cartoon-style assets want to be slotted back in)
+> and the assets stay on disk for the same reason. Visual
+> evidence: `apps/web/audit/d-0049-second-scene/hero-y0.png`
+> now shows a coherent flat-vector cartoon with sun + drifting
+> clouds + 7 distant palms + 1 swaying palm + 2 ranch houses
+> + foreground grass — every element in the same hand-authored
+> style, no painted parallax clashing.
+
 ## Requirements
 
 | ID | Requirement | Source |
@@ -226,6 +253,7 @@ as black saw-teeth.
 | R49.10 | `prefers-reduced-motion` drops both cycle animations, locks both layers to frame 01. Coarse-pointer (mobile/touch) drops the palms parallax layer to save fillrate | §Accessibility |
 | R49.11 | `/hero-3d-test` route (kept for backwards compat with steward's bookmark) renders the new SecondScene in isolation with mock MotionValues + 2 sliders | §Validation |
 | R49.12 | (rev 3) All 12 fern + songbirds WebP assets re-encoded with alpha channel — solid-black pixels (R+G+B < 30) become alpha=0 so the `mix-blend-mode: multiply` on `.fernWrap` / `.songbirdsWrap` doesn't bleed the VEO letterbox bars through as a dark column. Idempotent script at `apps/web/scripts/fix-v2-asset-letterbox.py` | §rev 3 |
+| R49.13 | (rev 4) `<FernLayer />` and `<SongbirdsLayer />` removed from the storybook JSX. The painted VEO assets (detailed brushwork palm + leaves + birds) and the hand-authored SVG cartoon are at incompatible fidelity levels — rendered together they read as a mash-up of two scenes, not as depth. The cartoon already has its own depth cascade. Components + assets kept in the repo for potential future re-painted-cartoon-style substitution. | §rev 4 |
 
 ## Validation
 
