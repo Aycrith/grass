@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 1000" width="700" height="1000" role="img" aria-label="Vintage illustrated pocket map of the operator's service area in Pinellas County, Florida">
+  <title>Pocket Map — Operator's Service Area, Pinellas County</title>
+
+  <defs>
+    <!-- Aged paper background -->
+    <radialGradient id="paperBg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#f4e8d0" />
+      <stop offset="100%" stop-color="#d8c89a" />
+    </radialGradient>
+    <!-- Water wash (faded blue-grey) -->
+    <linearGradient id="waterWash" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#b8c8d0" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#a8b8c0" stop-opacity="0.35" />
+    </linearGradient>
+    <!-- Pinellas peninsula land wash (faded olive) -->
+    <linearGradient id="landWash" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#d4d0a0" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#c4be8a" stop-opacity="0.6" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background: aged paper -->
+  <rect x="0" y="0" width="700" height="1000" fill="url(#paperBg)" />
+
+  <!-- Decorative outer border (art-deco / WPA double rule) -->
+  <rect x="14" y="14" width="672" height="972" fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="1.5" />
+  <rect x="22" y="22" width="656" height="956" fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.5" opacity="0.6" />
+
+  <!-- Title cartouche (top center) -->
+  <g transform="translate(350 70)">
+    <text text-anchor="middle" y="0" font-family="Georgia, serif" font-size="11" font-weight="700" letter-spacing="0.18em" fill="var(--ll-faded-red, #6b3a1d)">POCKET MAP · NO. 06</text>
+    <text text-anchor="middle" y="22" font-family="Georgia, serif" font-size="22" font-style="italic" font-weight="500" fill="var(--ll-palm-bark, #1a1f1b)">The Operator's Service Area</text>
+    <text text-anchor="middle" y="40" font-family="Georgia, serif" font-size="10" letter-spacing="0.12em" fill="var(--ll-sepia, #5a3e1f)" opacity="0.85">PINELLAS COUNTY · FLORIDA</text>
+    <!-- Decorative flourish under title -->
+    <line x1="-50" y1="50" x2="50" y2="50" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.4" />
+    <circle cx="0" cy="50" r="2" fill="var(--ll-sepia, #5a3e1f)" />
+    <circle cx="-50" cy="50" r="1.2" fill="var(--ll-sepia, #5a3e1f)" />
+    <circle cx="50" cy="50" r="1.2" fill="var(--ll-sepia, #5a3e1f)" />
+  </g>
+
+  <!-- Water wash (under the land) -->
+  <rect x="22" y="130" width="656" height="780" fill="url(#waterWash)" />
+
+  <!-- The Pinellas peninsula (real OSM boundary) -->
+  <path d="M 62.5 52.4 L 100.4 51.9 L 109.8 51.7 L 109.9 52.2 L 138.9 51.8 L 146.1 51.7 L 153.4 52.7 L 158.5 52.6 L 183.6 52.2 L 210.2 52.0 L 220.3 51.9 L 221.6 51.9 L 230.3 51.8 L 232.5 51.8 L 233.1 51.5 L 233.6 51.4 L 233.9 51.4 L 234.3 51.3 L 234.8 51.3 L 235.7 51.2 L 236.3 51.2 L 238.0 51.0 L 238.9 51.1 L 239.2 51.1 L 239.6 51.1 L 240.1 51.0 L 240.6 51.0 L 241.1 51.0 L 241.7 50.9 L 241.9 50.8 L 242.4 50.9 L 242.7 51.0 L 242.8 51.1 L 243.1 51.1 L 243.4 51.3 L 243.8 51.5 L 244.1 51.5 L 244.2 51.6 L 244.9 51.7 L 245.9 51.7 L 246.1 51.7 L 247.4 51.7 L 249.2 51.8 L 249.8 51.9 L 251.2 51.5 L 251.5 51.5 L 251.8 51.5 L 252.4 51.5 L 252.9 51.5 L 253.0 51.4 L 252.9 51.2 L 254.3 50.9 L 255.8 50.8 L 256.8 50.8 L 256.9 50.8 L 258.7 50.8 L 262.0 50.8 L 263.0 50.8 L 264.0 50.8 L 265.3 50.7 L 266.8 50.8 L 268.9 50.7 L 270.6 50.7 L 270.7 50.7 L 271.8 50.8 L 273.3 50.8 L 273.4 50.8 L 277.2 50.8 L 281.3 50.7 L 281.3 50.7 L 281.3 50.7 L 285.0 50.7 L 285.0 50.7 L 289.6 50.7 L 289.8 50.7 L 291.1 50.7 L 291.1 50.7 L 291.7 50.7 L 293.8 50.7 L 293.8 50.7 L 297.3 50.6 L 297.3 50.6 L 305.0 50.7 L 308.9 50.6 L 309.0 50.7 L 309.1 50.8 L 309.3 50.9 L 316.1 50.9 L 319.0 50.9 L 319.7 50.9 L 320.4 50.9 L 324.4 50.9 L 324.9 50.9 L 325.4 50.8 L 326.0 50.8 L 329.0 50.2 L 336.3 50.4 L 338.9 50.3 L 343.1 50.3 L 350.7 50.2 L 351.1 50.2 L 351.4 50.2 L 352.9 50.3 L 353.2 50.3 L 353.5 50.3 L 354.3 50.2 L 354.9 50.3 L 355.0 50.3 L 356.5 50.2 L 357.8 50.3 L 358.6 50.3 L 359.4 50.3 L 359.4 50.3 L 360.7 50.3 L 366.3 50.2 L 366.8 50.3 L 371.1 50.2 L 371.5 50.2 L 372.0 50.2 L 381.8 50.2 L 391.1 50.2 L 391.6 50.1 L 398.9 50.1 L 399.1 50.1 L 406.8 50.0 L 410.8 50.0 L 417.3 50.0 L 419.6 50.0 L 422.6 50.0 L 425.2 50.0 L 430.4 50.1 L 430.6 50.1 L 433.1 50.1 L 433.6 50.1 L 434.1 50.0 L 438.8 50.0 L 443.9 50.0 L 464.2 50.1 L 467.6 50.1 L 467.7 53.7 L 467.7 60.8 L 467.8 64.6 L 467.8 69.0 L 467.8 69.5 L 467.9 80.6 L 468.5 95.4 L 468.5 96.8 L 469.7 132.1 L 469.7 133.4 L 469.7 133.8 L 469.8 135.2 L 469.8 135.9 L 469.8 136.6 L 469.8 137.1 L 469.8 137.8 L 469.9 138.5 L 469.9 139.0 L 470.0 141.6 L 470.2 148.7 L 470.9 169.0 L 470.9 174.4 L 470.9 177.0 L 471.0 181.4 L 471.1 199.5 L 471.1 201.6 L 471.1 201.7 L 471.1 202.0 L 471.1 203.6 L 471.2 213.4 L 471.2 214.5 L 471.2 225.6 L 471.3 228.0 L 471.5 228.8 L 471.6 230.0 L 471.7 230.4 L 471.7 231.1 L 471.8 231.5 L 471.8 231.7 L 471.9 232.5 L 472.1 236.7 L 472.0 236.8 L 472.2 236.8 L 471.8 237.4 L 471.6 237.7 L 471.6 238.2 L 471.6 238.7 L 472.0 238.7 L 472.2 238.8 L 472.1 239.4 L 472.1 240.4 L 471.9 254.7 L 471.9 256.0 L 471.8 256.2 L 471.8 265.8 L 471.9 273.6 L 471.9 273.6 L 471.8 273.7 L 471.8 276.0 L 471.8 277.0 L 471.9 284.3 L 471.9 284.7 L 471.9 288.1 L 471.9 289.6 L 471.8 290.7 L 471.9 293.3 L 471.9 295.4 L 471.9 296.8 L 471.8 297.9 L 471.9 298.6 L 471.9 298.7 L 471.9 298.9 L 471.4 359.8 L 471.5 373.3 L 471.6 379.1 L 471.7 379.7 L 471.7 380.3 L 471.7 380.9 L 472.2 411.2 L 513.3 418.0 L 528.8 421.4 L 547.1 427.3 L 550.2 428.9 L 553.9 430.7 L 562.8 437.2 L 568.9 441.7 L 578.5 452.2 L 585.4 461.3 L 591.9 472.5 L 597.3 487.1 L 599.4 498.3 L 600.7 512.7 L 600.7 513.0 L 601.5 532.1 L 602.5 554.0 L 603.6 609.3 L 604.1 618.6 L 605.4 625.4 L 607.6 635.7 L 614.0 648.5 L 615.9 650.7 L 623.9 657.1 L 634.6 660.8 L 642.4 666.2 L 644.3 670.7 L 642.9 675.2 L 639.9 682.7 L 637.6 687.5 L 634.6 694.7 L 633.8 696.3 L 627.1 711.7 L 624.4 717.7 L 615.1 737.5 L 597.4 775.9 L 585.0 800.8 L 580.6 808.6 L 577.2 816.9 L 574.7 822.6 L 573.4 826.1 L 539.6 896.7 L 509.7 896.5 L 477.3 895.8 L 448.5 895.0 L 434.6 895.0 L 433.7 895.1 L 433.2 894.9 L 432.8 894.9 L 395.0 895.0 L 394.9 900.5 L 394.9 901.2 L 394.8 904.1 L 394.4 904.7 L 391.6 909.1 L 387.8 919.3 L 386.6 922.7 L 383.4 926.0 L 382.8 926.5 L 378.9 929.6 L 372.3 931.9 L 367.1 934.9 L 360.6 937.6 L 350.6 941.0 L 349.4 941.6 L 343.0 944.2 L 338.4 946.9 L 334.8 949.2 L 333.3 950.0 L 331.9 950.0 L 330.9 949.0 L 329.1 948.4 L 325.7 946.6 L 325.1 945.3 L 325.5 944.0 L 327.1 937.1 L 324.9 927.5 L 322.3 912.2 L 319.2 911.1 L 317.1 909.5 L 315.5 907.5 L 314.5 905.8 L 314.5 903.3 L 314.4 901.3 L 314.8 893.6 L 310.4 893.3 L 261.9 893.3 L 208.4 893.3 L 205.2 879.1 L 209.6 845.8 L 210.4 843.9 L 222.8 816.6 L 220.6 791.6 L 205.8 773.0 L 161.0 716.6 L 156.6 711.4 L 109.9 655.8 L 108.9 654.2 L 100.7 641.4 L 92.5 627.9 L 79.4 607.8 L 67.8 584.2 L 63.0 568.9 L 59.1 553.1 L 57.0 539.5 L 56.2 526.4 L 55.7 513.7 L 55.7 502.8 L 57.2 493.4 L 58.2 484.5 L 60.8 479.1 L 60.7 473.6 L 62.8 460.7 L 66.1 443.7 L 69.3 429.3 L 73.3 416.0 L 78.1 406.0 L 83.4 393.9 L 88.8 385.1 L 87.9 377.4 L 89.0 370.3 L 91.0 362.0 L 94.0 355.3 L 93.5 350.8 L 93.8 346.6 L 94.4 342.0 L 95.6 338.3 L 95.8 336.5 L 95.3 333.1 L 95.4 326.6 L 91.7 315.0 L 91.0 310.2 L 91.4 305.2 L 92.2 300.6 L 93.3 296.1 L 94.7 293.3 L 94.3 291.7 L 93.9 290.2 L 94.3 287.6 L 95.5 282.8 L 98.0 272.5 L 101.5 263.7 L 104.9 258.6 L 102.1 257.2 L 96.5 252.8 L 91.1 248.0 L 85.5 241.3 L 82.2 234.3 L 78.6 225.2 L 76.2 217.3 L 75.2 210.7 L 74.8 203.6 L 75.3 198.7 L 77.0 188.6 L 78.9 177.0 L 79.9 167.9 L 80.5 161.6 L 81.2 157.1 L 82.8 154.5 L 81.0 153.4 L 75.4 146.8 L 70.3 139.4 L 66.8 133.6 L 64.8 126.8 L 63.6 120.6 L 62.6 111.5 L 61.9 101.1 L 62.6 92.7 L 63.9 85.2 L 66.1 77.0 L 66.8 69.1 L 66.8 65.9 L 66.1 62.6 L 63.7 56.2 L 62.5 52.4 Z" fill="url(#landWash)" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="1.4" stroke-linejoin="round" />
+
+  <!-- Water labels -->
+  <g font-family="Georgia, serif" font-style="italic" fill="var(--ll-sepia, #5a3e1f)" opacity="0.7">
+    <text x="80" y="500" font-size="14" transform="rotate(-90 80 500)">GULF OF MEXICO</text>
+    <text x="650" y="500" font-size="14" transform="rotate(90 650 500)">TAMPA BAY</text>
+  </g>
+
+  <!-- 6 ZIP markers (the operator's service area) — icon + ZIP only, names in legend below -->
+  
+  <g key="zip-0">
+    <g transform="translate(245.1 375.1)">
+    <path d="M 0 10 L 0 4 L 7 0 L 14 4 L 14 10 Z" fill="var(--ll-cream, #faf6f0)" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.8" />
+    <rect x="5" y="6" width="4" height="4" fill="var(--ll-sepia, #5a3e1f)" />
+  </g>
+    <text x="264.1" y="386.1" text-anchor="start" font-family="Georgia, serif" font-size="9.5" font-weight="700" fill="var(--ll-palm-bark, #1a1f1b)">33756</text>
+  </g>
+  <g key="zip-1">
+    <g transform="translate(190.8 449.5)">
+    <path d="M 0 10 L 0 4 L 7 0 L 14 4 L 14 10 Z" fill="var(--ll-cream, #faf6f0)" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.8" />
+    <rect x="5" y="6" width="4" height="4" fill="var(--ll-sepia, #5a3e1f)" />
+  </g>
+    <text x="185.8" y="460.5" text-anchor="end" font-family="Georgia, serif" font-size="9.5" font-weight="700" fill="var(--ll-palm-bark, #1a1f1b)">33770</text>
+  </g>
+  <g key="zip-2">
+    <g transform="translate(249.9 471.7)">
+      <path d="M 0 -10 L 2.94 -3.09 L 9.51 -3.09 L 4.28 1.18 L 5.88 8.09 L 0 3.82 L -5.88 8.09 L -4.28 1.18 L -9.51 -3.09 L -2.94 -3.09 Z"
+            fill="var(--ll-sun, #e8b65a)" stroke="var(--ll-clay, #b5651d)" stroke-width="0.8" />
+      <circle r="3" fill="var(--ll-clay, #b5651d)" />
+    </g>
+    <text x="249.9" y="493.7" text-anchor="middle" font-family="Georgia, serif" font-size="9.5" font-weight="700" fill="var(--ll-palm-bark, #1a1f1b)">33771</text>
+  </g>
+  <g key="zip-3">
+    <g transform="translate(297.7 467)">
+    <path d="M 0 10 L 0 4 L 7 0 L 14 4 L 14 10 Z" fill="var(--ll-cream, #faf6f0)" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.8" />
+    <rect x="5" y="6" width="4" height="4" fill="var(--ll-sepia, #5a3e1f)" />
+  </g>
+    <text x="292.7" y="478" text-anchor="end" font-family="Georgia, serif" font-size="9.5" font-weight="700" fill="var(--ll-palm-bark, #1a1f1b)">33773</text>
+  </g>
+  <g key="zip-4">
+    <g transform="translate(253 502)">
+    <path d="M 0 10 L 0 4 L 7 0 L 14 4 L 14 10 Z" fill="var(--ll-cream, #faf6f0)" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.8" />
+    <rect x="5" y="6" width="4" height="4" fill="var(--ll-sepia, #5a3e1f)" />
+  </g>
+    <text x="272" y="513" text-anchor="start" font-family="Georgia, serif" font-size="9.5" font-weight="700" fill="var(--ll-palm-bark, #1a1f1b)">33774</text>
+  </g>
+  <g key="zip-5">
+    <g transform="translate(225.6 558.2)">
+    <path d="M 0 10 L 0 4 L 7 0 L 14 4 L 14 10 Z" fill="var(--ll-cream, #faf6f0)" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.8" />
+    <rect x="5" y="6" width="4" height="4" fill="var(--ll-sepia, #5a3e1f)" />
+  </g>
+    <text x="220.6" y="569.2" text-anchor="end" font-family="Georgia, serif" font-size="9.5" font-weight="700" fill="var(--ll-palm-bark, #1a1f1b)">33778</text>
+  </g>
+
+  <!-- Landmarks (in light sepia, smaller) -->
+  
+  <g key="lm-0">
+    <g transform="translate(185.6 362.9)">
+      <circle r="2.5" fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.8" />
+      <path d="M -5 1 Q -2 -1 0 1 Q 2 3 5 1" fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.6" />
+    </g>
+    <text x="191.6" y="365.9" font-family="Georgia, serif" font-size="8" fill="var(--ll-sepia, #5a3e1f)" opacity="0.7">Clearwater Beach</text>
+  </g>
+  
+  <g key="lm-1">
+    <g transform="translate(180.8 226.4)">
+      <ellipse rx="4" ry="2" fill="var(--ll-olive, #6b7d4a)" fill-opacity="0.3" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.6" />
+    </g>
+    <text x="186.8" y="229.4" font-family="Georgia, serif" font-size="8" fill="var(--ll-sepia, #5a3e1f)" opacity="0.7">Honeymoon Island</text>
+  </g>
+  
+  <g key="lm-2">
+    <g transform="translate(196.5 280.7)">
+      <ellipse rx="4" ry="2" fill="var(--ll-olive, #6b7d4a)" fill-opacity="0.3" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.6" />
+    </g>
+    <text x="202.5" y="283.7" font-family="Georgia, serif" font-size="8" fill="var(--ll-sepia, #5a3e1f)" opacity="0.7">Caladesi Island</text>
+  </g>
+  
+  <g key="lm-3">
+    <g transform="translate(156.9 493.3)">
+      <circle r="2.5" fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.8" />
+      <path d="M -5 1 Q -2 -1 0 1 Q 2 3 5 1" fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.6" />
+    </g>
+    <text x="162.9" y="496.3" font-family="Georgia, serif" font-size="8" fill="var(--ll-sepia, #5a3e1f)" opacity="0.7">Indian Rocks Beach</text>
+  </g>
+  
+  <g key="lm-4">
+    <g transform="translate(280.1 696.3)">
+      <circle r="2.5" fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.8" />
+      <path d="M -5 1 Q -2 -1 0 1 Q 2 3 5 1" fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.6" />
+    </g>
+    <text x="286.1" y="699.3" font-family="Georgia, serif" font-size="8" fill="var(--ll-sepia, #5a3e1f)" opacity="0.7">Treasure Island</text>
+  </g>
+  
+  <g key="lm-5">
+    <g transform="translate(485 698.5)">
+    <rect x="-2" y="-2" width="4" height="4" fill="var(--ll-sepia, #5a3e1f)" />
+  </g>
+    <text x="490" y="701.5" font-family="Georgia, serif" font-size="8" fill="var(--ll-sepia, #5a3e1f)" opacity="0.7">St. Petersburg</text>
+  </g>
+  
+  <g key="lm-6">
+    <g transform="translate(777.7 406)">
+    <rect x="-2" y="-2" width="4" height="4" fill="var(--ll-sepia, #5a3e1f)" />
+  </g>
+    <text x="782.7" y="409" font-family="Georgia, serif" font-size="8" fill="var(--ll-sepia, #5a3e1f)" opacity="0.7">Tampa</text>
+  </g>
+  
+
+  <!-- Compass rose (bottom-left, decorative) -->
+  <g transform="translate(80 870)">
+    <circle r="32" fill="var(--ll-aged-paper, #ede4d0)" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.8" />
+    <circle r="24" fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.4" opacity="0.6" />
+    <!-- 8-point compass star -->
+    <g stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.8" fill="var(--ll-aged-paper, #ede4d0)">
+      <!-- N -->
+      <path d="M 0 -28 L 4 -4 L 0 0 L -4 -4 Z" fill="var(--ll-palm-bark, #1a1f1b)" />
+      <!-- S -->
+      <path d="M 0 28 L 4 4 L 0 0 L -4 4 Z" />
+      <!-- E -->
+      <path d="M 28 0 L 4 4 L 0 0 L 4 -4 Z" />
+      <!-- W -->
+      <path d="M -28 0 L -4 4 L 0 0 L -4 -4 Z" />
+      <!-- NE -->
+      <path d="M 18 -18 L 3 -1 L 0 0 L 1 -3 Z" opacity="0.5" />
+      <!-- SE -->
+      <path d="M 18 18 L 3 1 L 0 0 L 1 3 Z" opacity="0.5" />
+      <!-- SW -->
+      <path d="M -18 18 L -3 1 L 0 0 L -1 3 Z" opacity="0.5" />
+      <!-- NW -->
+      <path d="M -18 -18 L -3 -1 L 0 0 L -1 -3 Z" opacity="0.5" />
+    </g>
+    <text y="-36" text-anchor="middle" font-family="Georgia, serif" font-size="9" font-weight="700" fill="var(--ll-palm-bark, #1a1f1b)">N</text>
+    <text y="44" text-anchor="middle" font-family="Georgia, serif" font-size="8" fill="var(--ll-sepia, #5a3e1f)">S</text>
+    <text x="38" y="3" text-anchor="middle" font-family="Georgia, serif" font-size="8" fill="var(--ll-sepia, #5a3e1f)">E</text>
+    <text x="-38" y="3" text-anchor="middle" font-family="Georgia, serif" font-size="8" fill="var(--ll-sepia, #5a3e1f)">W</text>
+  </g>
+
+  <!-- Scale bar (moved up to avoid legend overlap) -->
+  <g transform="translate(570 910)">
+    <text y="-4" text-anchor="middle" font-family="Georgia, serif" font-size="7" letter-spacing="0.12em" fill="var(--ll-sepia, #5a3e1f)" opacity="0.7">SCALE OF MILES</text>
+    <g>
+      <rect x="0" y="0" width="14" height="5" fill="var(--ll-sepia, #5a3e1f)" />
+      <rect x="14" y="0" width="14" height="5" fill="var(--ll-aged-paper, #ede4d0)" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.3" />
+      <rect x="28" y="0" width="14" height="5" fill="var(--ll-sepia, #5a3e1f)" />
+      <rect x="42" y="0" width="14" height="5" fill="var(--ll-aged-paper, #ede4d0)" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.3" />
+      <rect x="56" y="0" width="14" height="5" fill="var(--ll-sepia, #5a3e1f)" />
+      <rect x="70" y="0" width="14" height="5" fill="var(--ll-aged-paper, #ede4d0)" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.3" />
+      <text x="0" y="14" font-family="Georgia, serif" font-size="6.5" fill="var(--ll-sepia, #5a3e1f)">0</text>
+      <text x="42" y="14" text-anchor="middle" font-family="Georgia, serif" font-size="6.5" fill="var(--ll-sepia, #5a3e1f)">5</text>
+      <text x="84" y="14" text-anchor="middle" font-family="Georgia, serif" font-size="6.5" fill="var(--ll-sepia, #5a3e1f)">10</text>
+    </g>
+  </g>
+
+  <!-- Legend (right side, the 6 ZIPs and what they mean) -->
+  <g transform="translate(500 730)">
+    <rect x="0" y="0" width="180" height="156" fill="var(--ll-aged-paper, #ede4d0)" fill-opacity="0.85" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.6" />
+    <text x="90" y="14" text-anchor="middle" font-family="Georgia, serif" font-size="8" font-weight="700" letter-spacing="0.16em" fill="var(--ll-faded-red, #6b3a1d)">LEGEND</text>
+    <line x1="10" y1="20" x2="170" y2="20" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.3" />
+    <!-- Operator's home base -->
+    <g transform="translate(15 32)">
+      <path d="M 0 -5 L 1.5 -1.5 L 5 -1.5 L 2.2 0.6 L 3 4 L 0 2 L -3 4 L -2.2 0.6 L -5 -1.5 L -1.5 -1.5 Z" fill="var(--ll-sun, #e8b65a)" stroke="var(--ll-clay, #b5651d)" stroke-width="0.5" />
+      <text x="14" y="3" font-family="Georgia, serif" font-size="8" font-weight="600" fill="var(--ll-palm-bark, #1a1f1b)">Operator's home base</text>
+    </g>
+    <!-- House icon -->
+    <g transform="translate(15 50)">
+      <path d="M -4 4 L -4 1 L 0 -2 L 4 1 L 4 4 Z" fill="var(--ll-cream, #faf6f0)" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.6" />
+      <rect x="-1" y="1" width="2" height="3" fill="var(--ll-sepia, #5a3e1f)" />
+      <text x="14" y="3" font-family="Georgia, serif" font-size="8" font-weight="600" fill="var(--ll-palm-bark, #1a1f1b)">Service ZIP</text>
+    </g>
+    <line x1="10" y1="62" x2="170" y2="62" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.3" opacity="0.5" />
+    <!-- 6 ZIPs listed -->
+    <g transform="translate(10 78)" font-family="Georgia, serif" font-size="7.5">
+      <text y="0" font-weight="700" fill="var(--ll-palm-bark, #1a1f1b)">33756</text>
+      <text x="40" y="0" opacity="0.85" fill="var(--ll-sepia, #5a3e1f)">Belleair / Clearwater</text>
+      <text y="12" font-weight="700" fill="var(--ll-palm-bark, #1a1f1b)">33770</text>
+      <text x="40" y="12" opacity="0.85" fill="var(--ll-sepia, #5a3e1f)">Belleair Bluffs</text>
+      <text y="24" font-weight="700" fill="var(--ll-clay, #b5651d)">33771 ★</text>
+      <text x="40" y="24" font-weight="600" fill="var(--ll-palm-bark, #1a1f1b)">Largo (central)</text>
+      <text y="36" font-weight="700" fill="var(--ll-palm-bark, #1a1f1b)">33773</text>
+      <text x="40" y="36" opacity="0.85" fill="var(--ll-sepia, #5a3e1f)">Largo (east)</text>
+      <text y="48" font-weight="700" fill="var(--ll-palm-bark, #1a1f1b)">33774</text>
+      <text x="40" y="48" opacity="0.85" fill="var(--ll-sepia, #5a3e1f)">Largo / Ridgecrest</text>
+      <text y="60" font-weight="700" fill="var(--ll-palm-bark, #1a1f1b)">33778</text>
+      <text x="40" y="60" opacity="0.85" fill="var(--ll-sepia, #5a3e1f)">Seminole / Largo W.</text>
+    </g>
+  </g>
+
+  <!-- Footer note -->
+  <text x="350" y="960" text-anchor="middle" font-family="Georgia, serif" font-size="8" font-style="italic" fill="var(--ll-sepia, #5a3e1f)" opacity="0.6">Surveyed &amp; mowed · Largo FL · 2026-07-21</text>
+</svg>
