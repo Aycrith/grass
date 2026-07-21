@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-21 (Day 28 — D-0057 Specimen Plate section: 4 pressed-herbarium turf grass SVGs + 2x2 grid section)
+# Last updated: 2026-07-21 (Day 28 — D-0058 Pocket Map section: vintage illustrated Pinellas map with real OSM data)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-21 (Day 28 — D-0057 Specimen Plate section: 4 pressed-herbarium turf grass SVGs + 2x2 grid section)
+# Last updated: 2026-07-21 (Day 28 — D-0058 Pocket Map section: vintage illustrated Pinellas map with real OSM data)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -3396,5 +3396,63 @@ changelog:
       - "apps/web/audit/d-0057-specimen-plate/specimens/zoysia.png"
       - "apps/web/audit/d-0057-specimen-plate/specimens/bahia.png"
     commit: "dae6db0+specimen-plate-phase23"
+
+  - date: "2026-07-21"
+    day: 28
+    decision: D-0058
+    title: "D-0058 - Pocket Map section (vintage illustrated service area map of Pinellas County)"
+    summary: >
+      New section between OperatorStrip (3) and FieldLog (3.5).
+      The page's FOURTH visual register: a 1920s-30s WPA /
+      pictorial pocket map of the operator's actual service area
+      in Pinellas County, FL. Closes the geography gap — the page
+      showed the operator's bio and the route, but never the
+      territory the route runs through.
+
+      The map's boundary is REAL OpenStreetMap data (relation
+      1210726, 392-point MultiPolygon), projected to SVG via
+      equirectangular projection. Per the project memory: 'D-0024
+      hand-authored Pinellas SVG was rejected for incoherence;
+      use real OSM data.' Used polygons.openstreetmap.fr to fetch
+      the GeoJSON.
+
+      Map components: aged paper radial gradient background, art-
+      deco double-rule border, title cartouche ('POCKET MAP · NO.
+      06 / The Operator's Service Area / PINELLAS COUNTY · FLORIDA'),
+      the actual Pinellas peninsula hook shape, water labels
+      ('GULF OF MEXICO' + 'TAMPA BAY'), 6 ZIP markers at their
+      actual positions, 1 operator's home base at 33771 (sun-
+      yellow 5-point star + clay dot — matches the FieldLog's
+      truck marker color vocabulary), 7 landmarks (Honeymoon
+      Island, Caladesi Island, Clearwater Beach, Indian Rocks
+      Beach, Treasure Island, St. Petersburg, Tampa), compass
+      rose (8-point star), scale bar, legend listing all 6 ZIPs.
+
+      Section copy: 'Six ZIPs, one operator, no franchises.' is
+      the brand-true kicker. The closing line: 'If you're inside
+      the line, you're on the route. If you're outside, you're
+      outside — and I'll tell you that, too.' Commits to the
+      geography as a literal boundary.
+
+      3 entry animations on viewport entry (header, map, closing),
+      all gated by prefers-reduced-motion: reduce. Hover/focus:
+      map rotates -0.4deg + translateY -2px + drop shadow deepens
+      (matches the SpecimenPlate hover idiom).
+
+      Section background: SAME aged wash as SpecimenPlate (D-0057)
+      so the two precision sections stack as a 'we are precise'
+      mini-cluster, even though the map is a different visual
+      register.
+    by: "Mavis (orchestrator, 2026-07-21)"
+    review_date: "2026-10-21"
+    twined_with: "D-0047 (Six-ZIP service area: 33771/70/73/74/78/56); D-0049 (style-mismatch lesson: real OSM data, not hand-drawn); D-0057 (SpecimenPlate register: shares the aged-paper background, the sepia palette, and the precision-cluster position)"
+    audit_artifacts:
+      - "apps/web/audit/d-0058-pocket-map/memo.md"
+      - "apps/web/audit/d-0058-pocket-map/pocket-map-v1.png"
+      - "apps/web/audit/d-0058-pocket-map/pocket-map-desktop.png"
+      - "apps/web/audit/d-0058-pocket-map/pocket-map-mobile.png"
+      - "apps/web/audit/d-0058-pocket-map/pocket-map-context.png"
+      - "apps/web/audit/d-0058-pocket-map/pocket-map-hover.png"
+    commit: "eebedde+pocket-map-phase23"
 
 
