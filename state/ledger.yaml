@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-21 (Day 28 — D-0051 schedule todayMower cascade fix + D-0052/53/54 animated sun + ambient palms + mower idle)
+# Last updated: 2026-07-21 (Day 28 — D-0055 Field Log section + D-0056 pre-flight note in today card)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-21 (Day 28 — D-0051 schedule todayMower cascade fix + D-0052/53/54 animated sun + ambient palms + mower idle)
+# Last updated: 2026-07-21 (Day 28 — D-0055 Field Log section + D-0056 pre-flight note in today card)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -3234,4 +3234,102 @@ changelog:
       - "apps/web/audit/d-0054-mower-idle/today-foot-zoom.png"
       - "apps/web/audit/d-0054-mower-idle/schedule-timeline-t0.png"
     commit: "58ff312"
+
+  - date: "2026-07-21"
+    day: 28
+    decision: D-0055
+    title: "D-0055 - Editorial Field Log section (pull-quote + hand-drawn route map + field note + stamp)"
+    summary: >
+      Added a stand-alone editorial section between OperatorStrip and
+      ServiceBento. The section has five vertical zones in a single
+      920px-max-width column: eyebrow ('FIELD LOG · WEEK 28'),
+      pull-quote ('The yard never knows the difference. The operator
+      does.' in Fraunces italic), hand-drawn route SVG (720×280
+      viewBox, 6 houses + 2 palms + 1 sun + sun-yellow truck marker
+      at 33771), field note ('Forty-seven yards, six ZIPs, the same
+      truck, every week. You'll know my face before you know my
+      name.'), and the existing passport-stamp.svg asset at -2°
+      tilt bottom-right.
+
+      This is the page's first stand-alone editorial moment — all
+      other sections are operational. It serves three diagnostic
+      functions: (1) the 6 ZIPs finally appear as a spatial route
+      instead of a list, (2) the operator's voice gets a poetic
+      moment instead of just functional copy, (3) the page's
+      visual signatures (passport-stamp, paper-grain, hand-drawn
+      cartoon) get repeated so they read as a language.
+
+      Three CSS animations on viewport entry (all gated by
+      prefers-reduced-motion): quoteBlock fade-up (0.6s), routePath
+      draw-in (1.6s, stroke-dashoffset 720→0), stamp slam (0.4s,
+      scale 1.4→1 + rotate -12°→-2°), fieldNote fade-up (0.5s,
+      delay 0.9s). The stamp slam is timed to peak when the path
+      draw-in is at 80% — the stamp "validates" the route as the
+      path completes.
+
+      Lesson learned (the font-size trap): ch units are font-size
+      dependent. 1ch at body 16px ≈ 10px, but 1ch at Fraunces 52px
+      ≈ 27px. The first implementation used max-width: 22ch on
+      the pull-quote parent, which resolved to ~220px instead of
+      the expected width. Fixed by dropping to 18ch (~480px, the
+      visual width I wanted). Documented in the ADR for future
+      sections that use ch inside large-font parents.
+    by: "Mavis (orchestrator, 2026-07-21)"
+    review_date: "2026-10-21"
+    twined_with: "D-0049 (style-mismatch lesson: hand-authored SVG cartoon, not painted VEO); D-0050 (per-ZIP strip sets up the 6 ZIPs the route connects); D-0053 (ambient palms cycle pattern reused elsewhere on page)"
+    audit_artifacts:
+      - "apps/web/audit/d-0055-field-log/field-log-final.png"
+      - "apps/web/audit/d-0055-field-log/field-log-context.png"
+      - "apps/web/audit/d-0055-field-log/field-log-mid-anim.png"
+      - "apps/web/audit/d-0055-field-log/field-log-mobile.png"
+      - "apps/web/audit/d-0055-field-log/memo.md"
+      - "apps/web/audit/d-0055-field-log/route-svg-sketch.svg"
+    commit: "c9423f1"
+
+  - date: "2026-07-21"
+    day: 28
+    decision: D-0056
+    title: "D-0056 - Pre-flight note in ScheduleTimeline today card (operator voice in the schedule moment)"
+    summary: >
+      Added a small editorial row at the top of the today-card body,
+      above the ETA pill: 18px sun icon + 'Pre-flight · Tue 21'
+      eyebrow + 'Mower tuned last night, fresh fuel in the tank.
+      Should be a clean cut all day.' in Fraunces italic.
+
+      The page has been accumulating operator voice in the editorial
+      sections (FieldLog, OperatorStrip, SecondScene) but the schedule
+      itself was pure machinery: yards, ZIPs, ETAs. The pre-flight
+      note is the "small talk" between the bio (above) and the CTA
+      (below) — the operator's voice in the operational moment.
+
+      The note uses three specific, falsifiable claims ("Mower tuned
+      last night", "fresh fuel in the tank", "should be a clean cut
+      all day") — same honesty pattern as SecondScene's "mowing this
+      lawn" route pin and D-0055's "forty-seven yards" line. The
+      date is dynamic (now.getDate()) but the body is static, so
+      the note reads as a recurring ritual, not a one-time line.
+
+      Sun-yellow tint card (10% background, 25% border), 6-ray
+      outline sun icon at 18px (different from the hero scene 1
+      12-ray filled sun — the schedule is functional, the hero is
+      editorial). The icon matches the existing DAY_ICON register
+      from D-0046.
+
+      Lesson learned (the runtime error): the first implementation
+      used today?.getDate() for the day number, which crashed the
+      server render with TypeError because today is a DayKey string
+      ('Mon', 'Tue'), NOT a Date object. The ?. optional chaining
+      was masking the type confusion. Fixed by using now.getDate()
+      (the actual Date object) + a !now && guard on the wrapper.
+      Same today-is-DayKey, now-is-Date type confusion that nearly
+      caught the schedule in D-0046.
+    by: "Mavis (orchestrator, 2026-07-21)"
+    review_date: "2026-10-21"
+    twined_with: "D-0051 (todayMower 88px is the visual anchor of the today card); D-0054 (mower idle vibration continues to work alongside the pre-flight note); D-0055 (FieldLog editorial voice pattern extended into the schedule)"
+    audit_artifacts:
+      - "apps/web/audit/d-0056-preflight/today-card-zoom.png"
+      - "apps/web/audit/d-0056-preflight/schedule-timeline-with-preflight.png"
+      - "apps/web/audit/d-0056-preflight/preflight-verify.png"
+    commit: "613536e"
+
 
