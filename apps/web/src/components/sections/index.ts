@@ -6,6 +6,7 @@ export { HeroFieldTelemetry } from './HeroFieldTelemetry';
 export { HeroStorybookLayer } from './HeroStorybookLayer';
 export { TrustStrip } from './TrustStrip';
 export { FieldLog } from './FieldLog';
+export { PocketMap } from './PocketMap';
 export { SpecimenPlate } from './SpecimenPlate';
 export { OperatorStrip } from './OperatorStrip';
 export { ServiceBento } from './ServiceBento';

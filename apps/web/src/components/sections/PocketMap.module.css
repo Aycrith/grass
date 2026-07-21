@@ -1,0 +1,203 @@
+/* ============================================================
+ * PocketMap — D-0058 editorial "pocket map" section.
+ *
+ * 5 vertical zones:
+ *   1. eyebrow ("POCKET MAP · 06 · THE TERRITORY")
+ *   2. H2 ("Six ZIPs, one operator, no franchises.")
+ *   3. subhead (3 sentences, the operator's voice)
+ *   4. the vintage map itself (centered, with caption credit)
+ *   5. closing line ("If you're inside the line...")
+ *
+ * Background: SAME aged wash as SpecimenPlate (D-0057) so the
+ * two precision sections stack visually as "we are precise"
+ * mini-cluster. The pocket map is a NEW visual register (1920s
+ * WPA pictorial map) so the section feels different but the
+ * background continuity signals they belong together.
+ *
+ * The map SVG itself carries the full vintage aesthetic — this
+ * CSS module is the FRAME that holds it.
+ *
+ * Animations (all gated by prefers-reduced-motion):
+ *   - header fade-up:   opacity 0→1 + y 16→0 over 0.6s
+ *   - map fade-up:      opacity 0→1 + y 12→0, delay 0.2s, 0.7s
+ *   - closing fade-up:  opacity 0→1 + y 8→0, delay 0.5s, 0.5s
+ * ============================================================ */
+
+.root {
+  position: relative;
+  background: #e8dcc0;
+  isolation: isolate;
+  padding-block: var(--space-11);
+}
+
+.root::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ll-aged-paper, #ede4d0);
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.inner {
+  position: relative;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 var(--space-5);
+}
+
+/* --- Zone 1-3: header (eyebrow + H2 + subhead) --- */
+
+.header {
+  text-align: center;
+  margin-bottom: var(--space-9);
+}
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ll-faded-red, #6b3a1d);
+  margin-bottom: var(--space-5);
+}
+
+.eyebrowDot {
+  display: inline-block;
+  margin-inline: 0.25em;
+  color: var(--ll-clay, #b5651d);
+  opacity: 0.6;
+}
+
+.headline {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: clamp(2rem, 5vw, 2.875rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--ll-palm-bark, #1a1f1b);
+  margin: 0 auto var(--space-5);
+  max-width: 18ch;
+  letter-spacing: -0.01em;
+}
+
+.subhead {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 1rem;
+  line-height: 1.65;
+  font-weight: 400;
+  color: var(--ll-palm-bark, #1a1f1b);
+  opacity: 0.78;
+  max-width: 60ch;
+  margin: 0 auto;
+}
+
+/* --- Zone 4: the map --- */
+
+.mapFrame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: var(--space-9);
+}
+
+.mapImage {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  border-radius: 2px;
+  background: transparent;
+  box-shadow:
+    0 1px 0 color-mix(in oklab, var(--ll-sepia, #5a3e1f) 8%, transparent),
+    0 16px 32px -16px color-mix(in oklab, var(--ll-sepia, #5a3e1f) 35%, transparent);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mapImage:hover,
+.mapImage:focus-visible {
+  transform: translateY(-2px) rotate(-0.4deg);
+  box-shadow:
+    0 1px 0 color-mix(in oklab, var(--ll-sepia, #5a3e1f) 10%, transparent),
+    0 22px 44px -16px color-mix(in oklab, var(--ll-sepia, #5a3e1f) 45%);
+  outline: none;
+}
+
+.mapCaption {
+  margin-top: var(--space-3);
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.75rem;
+  color: var(--ll-palm-bark, #1a1f1b);
+  opacity: 0.55;
+  font-style: italic;
+  text-align: center;
+}
+
+.mapCaptionLink {
+  color: var(--ll-clay, #b5651d);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in oklab, var(--ll-clay, #b5651d) 35%, transparent);
+  transition: border-color 0.2s ease-out, color 0.2s ease-out;
+}
+
+.mapCaptionLink:hover {
+  color: var(--ll-faded-red, #6b3a1d);
+  border-bottom-color: var(--ll-faded-red, #6b3a1d);
+}
+
+/* --- Zone 5: closing line (the brand-true kicker) --- */
+
+.closing {
+  text-align: right;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.125rem;
+  line-height: 1.55;
+  color: var(--ll-palm-bark, #1a1f1b);
+  opacity: 0.85;
+  max-width: 50ch;
+  margin: 0 0 0 auto;
+  padding-right: var(--space-2);
+}
+
+/* --- Mobile layout --- */
+
+@media (max-width: 640px) {
+  .root {
+    padding-block: var(--space-9);
+  }
+
+  .inner {
+    padding: 0 var(--space-4);
+  }
+
+  .header {
+    margin-bottom: var(--space-7);
+  }
+
+  .mapImage {
+    max-width: 100%;
+  }
+
+  .closing {
+    text-align: left;
+    padding-right: 0;
+    max-width: none;
+  }
+}
+
+/* --- Reduced motion --- */
+
+@media (prefers-reduced-motion: reduce) {
+  .mapImage {
+    transition: none;
+  }
+  .mapImage:hover,
+  .mapImage:focus-visible {
+    transform: none;
+  }
+}

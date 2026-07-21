@@ -65,6 +65,7 @@ import {
   FinalCTABanner,
   HeroFieldTelemetry,
   OperatorStrip,
+  PocketMap,
   PricingTiers,
   ProcessSteps,
   ScheduleTimeline,
@@ -108,7 +109,19 @@ export default function HomePage() {
        * "18h median quote turnaround" — see OperatorStrip.tsx). */}
       <OperatorStrip />
 
-      {/* 03.5 — D-0055 editorial "field log" section. Stand-alone
+      {/* 03.5 — D-0058 editorial "pocket map" section. Vintage
+       * illustrated map of the operator's actual service area in
+       * Pinellas County, FL. Real OpenStreetMap boundary (relation
+       * 1210726, 392-point polygon), 1920s-30s WPA / pictorial map
+       * aesthetic. The page's FOURTH visual register (folk-cartoon
+       * + painted VEO + pressed-herbarium + pocket map). Bridges
+       * the operator bio (where the operator is introduced) to
+       * the FieldLog (where the operator describes the route).
+       * See governance/decisions/0058-pocket-map-section.md and
+       * apps/web/audit/d-0058-pocket-map/memo.md. */}
+      <PocketMap />
+
+      {/* 04 — D-0055 editorial "field log" section. Stand-alone
        * editorial moment between the operator intro and the service
        * grid: hand-drawn route map of the 6 ZIPs + pull-quote +
        * passport stamp. No CTA — pure breathing room + voice anchor.
