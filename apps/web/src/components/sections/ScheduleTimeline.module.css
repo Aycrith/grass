@@ -383,6 +383,75 @@
   gap: var(--space-3);
 }
 
+/* D-0056 — pre-flight note. A small editorial row above the ETA
+ * pill: weather icon (sun rays) + "Pre-flight · Tue 28" eyebrow
+ * + operator's note in Fraunces italic. Static editorial content
+ * (not real weather data) but the date is computed at render time.
+ *
+ * The pre-flight note is intentionally subtle: a small icon + a
+ * short paragraph in palm-bark at 75% opacity. It reads as "the
+ * operator's note from this morning", not as a marketing line.
+ * The 6×6 sun icon (the small one, not the hero cartoon sun) is
+ * the same idiom as the day card icons (DAY_ICON.mow etc.) so it
+ * belongs visually. */
+.todayCardPreflight {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: color-mix(in oklab, var(--ll-sun) 10%, transparent);
+  border: 1px solid color-mix(in oklab, var(--ll-sun) 25%, transparent);
+  border-radius: var(--radius-md);
+}
+
+.todayCardPreflightIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: var(--ll-clay);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.todayCardPreflightIcon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.todayCardPreflightText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.todayCardPreflightEyebrow {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--ll-clay);
+}
+
+.todayCardPreflightDot {
+  display: inline-block;
+  margin-inline: 0.15em;
+  color: var(--ll-sun);
+}
+
+.todayCardPreflightNote {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--ll-palm-bark);
+  opacity: 0.78;
+}
+
 .todayCardEta {
   display: inline-flex;
   align-items: center;

@@ -541,6 +541,36 @@ export function ScheduleTimeline({ className }: ScheduleTimelineProps): ReactNod
                 </span>
               </div>
               <div className={styles.todayCardBody}>
+                {/* D-0056 — pre-flight note. A small editorial row
+                 * above the ETA pill: weather icon + operator's
+                 * note about the day's preparation. Static
+                 * editorial content (not real weather data) but
+                 * the date is computed at render time so the note
+                 * reads as "this morning's prep". Adds operator
+                 * voice to the schedule moment — the bio is on
+                 * the page above, the schedule is below, the
+                 * pre-flight note is the small talk in between. */}
+                {!todayRow.closed && now && (
+                  <div className={styles.todayCardPreflight}>
+                    <span className={styles.todayCardPreflightIcon} aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                        <circle cx="12" cy="12" r="4" />
+                        <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4l1.4-1.4M17 7l1.4-1.4" strokeLinecap="round" />
+                      </svg>
+                    </span>
+                    <div className={styles.todayCardPreflightText}>
+                      <span className={styles.todayCardPreflightEyebrow}>
+                        Pre-flight{' '}
+                        <span className={styles.todayCardPreflightDot} aria-hidden="true">·</span>{' '}
+                        {DAY_LONG[todayDayKey].slice(0, 3)} {now.getDate()}
+                      </span>
+                      <span className={styles.todayCardPreflightNote}>
+                        Mower tuned last night, fresh fuel in the tank. Should be a clean cut all day.
+                      </span>
+                    </div>
+                  </div>
+                )}
+
                 {!todayRow.closed && todayMeta.etaStart && todayMeta.etaEnd && (
                   <div className={styles.todayCardEta}>
                     <span className={styles.todayCardEtaIcon} aria-hidden="true">
