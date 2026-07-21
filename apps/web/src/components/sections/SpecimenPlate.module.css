@@ -1,0 +1,242 @@
+/* ============================================================
+ * SpecimenPlate — D-0057 editorial "field guide" section.
+ *
+ * Layout: 5 vertical zones in a 920px-max-width centered column.
+ *   1. eyebrow ("FIELD GUIDE · 06 · TURF GRASSES OF PINELLAS COUNTY")
+ *   2. H2 ("Four species, four heights.")
+ *   3. subhead paragraph (3 sentences, the diagnostic explanation)
+ *   4. 2x2 grid of 4 pressed-herbarium specimens
+ *   5. closing line ("If you don't know what's in your yard...")
+ *
+ * Background: a "more aged" page wash — slightly darker than the
+ * sand-bleached sections above + below. Reads as the next page
+ * in the same field notebook. Inherits the paper-grain.svg
+ * texture from globals.css body::before (no new background asset).
+ *
+ * Animations (all gated by prefers-reduced-motion):
+ *   - header fade-up:   opacity 0→1 + y 16→0 over 0.6s
+ *   - specimen stagger: opacity 0→1 + y 8→0, 4 cards at 0.1/0.2/0.3/0.4s
+ *   - hover rotate:     rotate(0)→rotate(-0.5deg) on hover/focus
+ *   - closing fade-up:  opacity 0→1 + y 8→0, delay 0.6s
+ * ============================================================ */
+
+.root {
+  position: relative;
+  background: #e8dcc0;
+  isolation: isolate;
+  padding-block: var(--space-11);
+}
+
+.root::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ll-aged-paper, #ede4d0);
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.inner {
+  position: relative;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 var(--space-5);
+}
+
+/* --- Zone 1-3: header (eyebrow + H2 + subhead) --- */
+
+.header {
+  text-align: center;
+  margin-bottom: var(--space-9);
+}
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ll-faded-red, #6b3a1d);
+  margin-bottom: var(--space-5);
+}
+
+.eyebrowDot {
+  display: inline-block;
+  margin-inline: 0.25em;
+  color: var(--ll-clay, #b5651d);
+  opacity: 0.6;
+}
+
+.headline {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: clamp(2rem, 5vw, 2.875rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--ll-palm-bark, #1a1f1b);
+  margin: 0 0 var(--space-5);
+  max-width: 16ch;
+  margin-left: auto;
+  margin-right: auto;
+  letter-spacing: -0.01em;
+}
+
+.subhead {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 1rem;
+  line-height: 1.65;
+  font-weight: 400;
+  color: var(--ll-palm-bark, #1a1f1b);
+  opacity: 0.78;
+  max-width: 56ch;
+  margin: 0 auto;
+}
+
+/* --- Zone 4: 2x2 grid --- */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-6) var(--space-5);
+  margin-bottom: var(--space-9);
+}
+
+.specimen {
+  position: relative;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: default;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+
+.specimen:hover,
+.specimen:focus-visible {
+  transform: rotate(-0.5deg) translateY(-2px);
+}
+
+.specimenImage {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+  aspect-ratio: 1 / 1;
+  background: var(--ll-aged-paper, #ede4d0);
+  border: 1px solid color-mix(in oklab, var(--ll-sepia, #5a3e1f) 30%, transparent);
+  box-shadow:
+    0 1px 0 color-mix(in oklab, var(--ll-sepia, #5a3e1f) 8%, transparent),
+    0 12px 24px -16px color-mix(in oklab, var(--ll-sepia, #5a3e1f) 35%, transparent);
+  border-radius: 2px;
+  overflow: hidden;
+  transition: box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.specimen:hover .specimenImage,
+.specimen:focus-visible .specimenImage {
+  box-shadow:
+    0 1px 0 color-mix(in oklab, var(--ll-sepia, #5a3e1f) 10%, transparent),
+    0 18px 36px -16px color-mix(in oklab, var(--ll-sepia, #5a3e1f) 45%, transparent);
+}
+
+.specimenImageInner {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.caption {
+  margin-top: var(--space-4);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.captionName {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  font-style: italic;
+  color: var(--ll-palm-bark, #1a1f1b);
+  letter-spacing: 0.005em;
+}
+
+.captionNote {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--ll-palm-bark, #1a1f1b);
+  opacity: 0.6;
+  line-height: 1.4;
+}
+
+/* --- Zone 5: closing line (the brand-true kicker) --- */
+
+.closing {
+  text-align: right;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--ll-palm-bark, #1a1f1b);
+  opacity: 0.82;
+  max-width: 48ch;
+  margin: 0 0 0 auto;
+  padding-right: var(--space-2);
+}
+
+.closingLink {
+  color: var(--ll-clay, #b5651d);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in oklab, var(--ll-clay, #b5651d) 35%, transparent);
+  transition: border-color 0.2s ease-out, color 0.2s ease-out;
+}
+
+.closingLink:hover {
+  color: var(--ll-faded-red, #6b3a1d);
+  border-bottom-color: var(--ll-faded-red, #6b3a1d);
+}
+
+/* --- Mobile layout --- */
+
+@media (max-width: 640px) {
+  .root {
+    padding-block: var(--space-9);
+  }
+
+  .inner {
+    padding: 0 var(--space-4);
+  }
+
+  .header {
+    margin-bottom: var(--space-7);
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-7);
+  }
+
+  .closing {
+    text-align: left;
+    padding-right: 0;
+    max-width: none;
+  }
+}
+
+/* --- Reduced motion --- */
+
+@media (prefers-reduced-motion: reduce) {
+  .specimen,
+  .specimenImage {
+    transition: none;
+  }
+  .specimen:hover,
+  .specimen:focus-visible {
+    transform: none;
+  }
+}

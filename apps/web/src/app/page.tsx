@@ -70,6 +70,7 @@ import {
   ScheduleTimeline,
   ServiceAreaMap,
   ServiceBento,
+  SpecimenPlate,
 } from '@/components/sections';
 import { ConversionRail } from '@/components/site';
 import { SectionDivider } from '@/components/ui';
@@ -117,6 +118,16 @@ export default function HomePage() {
       {/* 04 — Service grid (6 cards, no dividers between light
        * editorial sections) */}
       <ServiceBento />
+
+      {/* 04.5 — D-0057 editorial "field guide" section. 2x2 grid of
+       * pressed-herbarium turf grass specimens (St. Augustine, Bermuda,
+       * Zoysia, Bahia) with the species' actual diagnostic features
+       * (blade width, seedhead, growth habit). Closes the gap between
+       * "we mow lawns" and "we know what's growing in your yard at the
+       * species level." Uses real UF/IFAS data for mowing heights and
+       * frequencies. See governance/decisions/0057-specimen-plate-section.md
+       * and apps/web/audit/d-0057-specimen-plate/memo.md. */}
+      <SpecimenPlate />
 
       {/* 05 — Pricing */}
       <PricingTiers />
