@@ -34,19 +34,21 @@ export const hero = {
   primaryCta: { label: 'Get a free quote', href: '/quote' },
   secondaryCta: { label: 'Call (727) 555-0123', href: 'tel:+17275550123' },
   /**
-   * Wave 4 — second pinned scene that appears after the photo
+   * D-0049 — second pinned scene that appears after the photo
    * (scroll > 0.40). Copy voice matches scene 1 but shifts from
    * the introductory "neighbor's lawnmower" beat into the
-   * commitment beat: same yard, same day, every week. The
-   * symmetric gouache palms+sun illustration reads as a
-   * chapter-opener / editorial spread, so the copy stays quiet
-   * and brand-anchored to operator voice.
+   * commitment beat: same yard, same day, every week. The painted
+   * Florida-ranch-house illustration reads as a chapter-opener /
+   * editorial spread, so the copy stays quiet and brand-anchored
+   * to operator voice. Restored from D-0047 (the "Walked past
+   * Tuesday." draft was a copy regression that didn't match the
+   * painted illustration's character).
    */
   scene2: {
-    eyebrow: 'CHAPTER 2 — TUESDAY MORNING',
-    headline: 'Walked past Tuesday.',
+    eyebrow: 'CHAPTER 2 — THE COMMITMENT',
+    headline: 'Same yard, every week.',
     subhead:
-      'Six days I plan the route. One day I cut. The mower noise lasts twenty minutes; the rest of the week is yours.',
+      'No swap, no franchise markup. The same operator shows up at the same address on the same day, until you say stop.',
     primaryCta: { label: 'See my route', href: '/service-areas' },
     secondaryCta: { label: 'See pricing', href: '/pricing' },
   },

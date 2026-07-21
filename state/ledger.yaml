@@ -2842,3 +2842,57 @@ changelog:
     by: "Buffy + Mavis (orchestrator, 2026-07-20)"
     review_date: "2026-08-20"
     twined_with: "D-0048 (parent decision); /hero-3d-test review follows the same steward-gated pattern as D-0029 / D-0030 / D-0031 / D-0032 / D-0033 / D-0047 (visual diff via Playwright captures + steward sign-off)"
+
+  - date: "2026-07-20"
+    day: 27
+    decision: D-0049
+    decision_subrecord: "Three.js revert — pure-CSS SecondScene"
+    title: "D-0049 — Revert D-0048 Three.js 2.5D; restore pure-CSS SecondScene using scene2-01..06.webp frames as full-bleed background"
+    summary: >
+      D-0048's Three.js plane stack produced a black-column visual bug
+      in production (BG scene2 plane geometry didn't cover the visible
+      panel, leaving a dark vertical strip in the center of the
+      "Walked past Tuesday." scene). D-0049 drops the entire Three.js
+      stack (~150KB three.js + R3F + drei) and restores a pure-CSS
+      approach modeled on the D-0047 Wave 4 SecondScene, but using the
+      new (better) scene2-01..06.webp frames that were already
+      extracted. The painted frames ARE coherent complete Florida
+      ranch house scenes — they were always meant to fill the panel
+      edge-to-edge as a single full-bleed background, not be split
+      into Three.js planes with depth math.
+
+      Replaces (history):
+        - HeroScene3D (D-0048 Three.js 2.5D plane stack) — DELETED
+        - The "Walked past Tuesday." copy — REVERTED to D-0047's
+          "Same yard, every week." which actually answers the
+          conversion question a Largo homeowner has.
+
+      Adds:
+        - SecondScene component (~190 lines) — 6 painted scene2
+          frames as CSS-step background-image cycle @ 10s + 6 palms
+          frames as foreground parallax @ 12s (mix-blend-mode:
+          multiply) + editorial pull-quote content overlay.
+        - grassOpacity + greenVignetteOpacity extended with
+          fade-out legs [0.4, 0.7] so the dark brand-green grass
+          silhouette dissolves as scene 2 cross-fades in.
+          Without this, the silhouette reads as a black saw-tooth
+          stripe across the bottom of the bright painted scene 2.
+        - .root + .viewport background-color switched to
+          var(--ll-cream). Removes the pre-existing "dark column"
+          bug from the storybook's transparent areas + photo's
+          right-edge mask.
+
+      Removes:
+        - HeroScene3D component (~440 lines) — DELETED
+        - @react-three/drei, @react-three/fiber, three from
+          package.json + bun.lock (regenerated)
+
+      Validation: bunx tsc --noEmit clean; bun run build 84/84
+      pages; 8 Playwright captures at desktop scroll positions
+      0/600/1200/1700/1900/2100/2500/2900 verify the new scene 2
+      fills the panel coherently with the editorial pull-quote
+      text overlay. The D-0048 black column bug is gone.
+    by: "Mavis (orchestrator, 2026-07-20)"
+    review_date: "2026-10-10"
+    twined_with: "D-0048 (predecessor, reverted); /hero-3d-test route preserved (URL kept for steward bookmark compat) but now mounts the pure-CSS SecondScene; D-0047 (Wave 4 gouache) for the editorial pull-quote ornament pattern"
+

@@ -28,13 +28,24 @@
    *   [0.00, 0.10]  Scene 1 resting (storybook fully visible)
    *   [0.10, 0.40]  Scene 1 → photo cross-fade (D-0043)
    *   [0.40, 0.70]  Photo → Scene 2 cross-fade (Wave 4, new)
-   *   [0.70, 1.00]  Scene 2 resting (2.5D Florida-house scene, D-0048) */
+   *   [0.70, 1.00]  Scene 2 resting (painted Florida-house scene, D-0049)
+   *
+   * D-0049 — background switched to cream. The previous palm-bark
+   * root bg was the source of the pre-existing "dark column" visual
+   * bug: the storybook SVG has transparent areas between its cartoon
+   * elements, the photo has a right-edge mask that's transparent
+   * from 86-100%, and the scene 2 transition has brief moments where
+   * the photo + painted scene are both at partial opacity. All three
+   * scenarios exposed the dark --ll-palm-bark bg, producing black
+   * vertical strips at the center of the hero. Switching to cream
+   * makes the bg match the brand palette and the painted scene 2
+   * sky. The .root bg is only visible if the .viewport is scrolled
+   * past (350svh), so the dark "Where I Mow" section below still
+   * reads as a deliberate dark→light→dark rhythm. */
   height: 350svh;
-  background-color: var(--ll-palm-bark);
+  background-color: var(--ll-cream);
   color: var(--ll-cream);
   isolation: isolate;
-  /* The viewport is sticky, so the root needs to NOT collapse its
-   * overflow in a way that would clip the sticky child. */
 }
 
 .viewport {
@@ -43,7 +54,11 @@
   width: 100%;
   height: 100svh;
   overflow: hidden;
-  background-color: var(--ll-palm-bark);
+  /* Cream backdrop fills the gaps between cartoon storybook
+   * elements, the photo's right-edge mask, and the scene 2
+   * transition. Matches --ll-cream so any sub-pixel gaps render
+   * as cream (not the previous dark --ll-palm-bark). */
+  background-color: var(--ll-cream);
 }
 
 /* ============================================================

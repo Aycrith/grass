@@ -1,0 +1,244 @@
+/* ============================================================
+ * SecondScene — D-0049 second pinned scene.
+ *
+ * Replaces the D-0048 Three.js 2.5D plane stack with a pure-CSS
+ * approach. The painted VEO frames (scene2-01..06.webp) are
+ * complete, coherent scenes — Florida ranch house, terracotta
+ * roof, sun, palms, mower on the lawn. They were meant to
+ * FULL-BLEED the panel, not be split into Three.js planes.
+ *
+ * Z-stack (bottom to top):
+ *   0  .sceneStage     - 6 painted frames as background-image, CSS-step cycle
+ *   1  .palmsLayer     - 6 palms frames as foreground parallax (mix-blend-mode: multiply)
+ *   2  .content        - editorial pull-quote
+ *
+ * Animation:
+ *   - scene2 cycling 10s/frame (steps(1, end) - no smooth interpolation)
+ *   - palms cycling 12s/frame (slower, drifts in/out of phase)
+ *   - Both lock to frame 01 under prefers-reduced-motion
+ *   - Palms layer hidden on coarse pointer (mobile fillrate)
+ * ============================================================ */
+
+.root {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  /* Cream backdrop fills any sub-pixel gaps around the painted
+   * scene edges. Matches --ll-cream so the page background
+   * bleeds seamlessly. */
+  background-color: var(--ll-cream);
+}
+
+/* Full-bleed painted scene. Frames cover the entire viewport
+ * via background-size: cover. The painted scene's own aspect
+ * ratio (1.82:1) is close to most viewport aspects so the
+ * cover-fit crops naturally without losing the central subject. */
+.sceneStage {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.sceneFrame {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  /* cover (not contain) so the painted scene fills the panel
+   * edge-to-edge. Most viewport aspects are close to the
+   * scene's natural 1.82:1 so the crop is minimal. */
+  background-size: cover;
+  opacity: 0;
+  /* will-change on opacity to keep the cycle cheap on the
+   * compositor. */
+  will-change: opacity;
+}
+
+/* 6-frame CSS-step keyframe animation. Cycle 10s total → 1.667s
+ * per frame. steps(1, end) means each frame is a hard cut, not
+ * a smooth fade between frames — the painted frames are so
+ * similar that smooth interpolation would look like a smear. */
+@keyframes sceneCycle {
+  0%, 16.666% { opacity: 1; }
+  16.667%, 100% { opacity: 0; }
+}
+
+.sceneFrame1 { animation: sceneCycle 10s steps(1, end) infinite; animation-delay: 0s; }
+.sceneFrame2 { animation: sceneCycle 10s steps(1, end) infinite; animation-delay: 1.666s; }
+.sceneFrame3 { animation: sceneCycle 10s steps(1, end) infinite; animation-delay: 3.333s; }
+.sceneFrame4 { animation: sceneCycle 10s steps(1, end) infinite; animation-delay: 5s; }
+.sceneFrame5 { animation: sceneCycle 10s steps(1, end) infinite; animation-delay: 6.666s; }
+.sceneFrame6 { animation: sceneCycle 10s steps(1, end) infinite; animation-delay: 8.333s; }
+
+/* Foreground palms parallax. Anchored at bottom-right so the
+ * palms frame the painted scene like a hand-painted foreground
+ * element. mix-blend-mode: multiply overprints the scene's
+ * colors with the palms' brown/green palette. */
+.palmsLayer {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 70%;
+  width: 100%;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.85;
+  will-change: opacity;
+}
+
+.palmsFrame {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  /* The palms strip is wider than tall; size it as a percentage
+   * of the container width so it scales naturally. 42% gives a
+   * visible-but-not-overwhelming right-side palm cluster. */
+  background-size: 42% auto;
+  opacity: 0;
+}
+
+/* 12s cycle, 6 frames → 2s per frame. Slower than the scene
+ * cycle (10s) so the two cycles drift in/out of phase over
+ * the 60s LCM. Visitors who linger on scene 2 see palm sway
+ * rhythms that don't perfectly repeat. */
+@keyframes palmsCycle {
+  0%, 16.666% { opacity: 1; }
+  16.667%, 100% { opacity: 0; }
+}
+
+.palmsFrame1 { animation: palmsCycle 12s steps(1, end) infinite; animation-delay: 0s; }
+.palmsFrame2 { animation: palmsCycle 12s steps(1, end) infinite; animation-delay: 2s; }
+.palmsFrame3 { animation: palmsCycle 12s steps(1, end) infinite; animation-delay: 4s; }
+.palmsFrame4 { animation: palmsCycle 12s steps(1, end) infinite; animation-delay: 6s; }
+.palmsFrame5 { animation: palmsCycle 12s steps(1, end) infinite; animation-delay: 8s; }
+.palmsFrame6 { animation: palmsCycle 12s steps(1, end) infinite; animation-delay: 10s; }
+
+/* Editorial pull-quote content overlay.
+ * Bottom 12svh, centered. Warm-brown text reads naturally on
+ * the cream sky of the painted scene. */
+.content {
+  position: absolute;
+  inset: auto 0 12svh 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 6vw;
+  pointer-events: auto;
+  color: var(--ll-palm-bark);
+}
+
+.eyebrow {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ll-clay);
+  margin-bottom: 0.5rem;
+}
+
+.headline {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--ll-palm-bark);
+  margin: 0 0 1rem 0;
+  max-width: 24ch;
+  position: relative;
+  text-shadow: 0 2px 24px color-mix(in oklab, var(--ll-cream) 60%, transparent);
+}
+
+.openingMark {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.9em;
+  color: var(--ll-clay);
+  opacity: 0.85;
+  margin-right: 0.05em;
+  display: inline-block;
+  transform: translateY(-0.08em);
+}
+
+.italic {
+  font-style: italic;
+  font-weight: 600;
+  color: inherit;
+}
+
+.subhead {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ll-palm-bark);
+  margin: 0 0 1.5rem 0;
+  max-width: 50ch;
+  opacity: 0.9;
+  text-shadow: 0 1px 12px color-mix(in oklab, var(--ll-cream) 70%, transparent);
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.ctaArrow {
+  display: inline-block;
+  margin-left: 0.5em;
+  transition: transform 0.25s var(--ease-out-quart, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+/* ============================================================
+ * Reduced motion + mobile + coarse-pointer gates.
+ * ============================================================ */
+
+/* prefers-reduced-motion: drop the cycling animation, lock both
+ * layers to frame 01. The visitor sees a single, beautiful,
+ * static scene. */
+@media (prefers-reduced-motion: reduce) {
+  .sceneFrame2, .sceneFrame3,
+  .sceneFrame4, .sceneFrame5, .sceneFrame6 {
+    display: none;
+  }
+  .palmsFrame2, .palmsFrame3,
+  .palmsFrame4, .palmsFrame5, .palmsFrame6 {
+    display: none;
+  }
+}
+
+/* Coarse pointer (mobile / touch): drop the palms parallax layer
+ * to save fillrate. The painted scene's bottom-right is part of
+ * the cream sky so the loss is invisible. Scene2 cycling still
+ * runs at the slow 10s cadence. */
+@media (pointer: coarse) {
+  .palmsLayer {
+    display: none;
+  }
+}
+
+/* Mobile: scale headline down, tighten bottom positioning. */
+@media (max-width: 768px) {
+  .headline {
+    font-size: clamp(1.5rem, 7vw, 2.25rem);
+  }
+  .subhead {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .headline {
+    font-size: clamp(1.25rem, 7vw, 1.75rem);
+  }
+  .content {
+    bottom: 8svh;
+  }
+}

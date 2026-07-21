@@ -2,8 +2,7 @@
 // D-0045 structural cascade is implemented (see governance/decisions/0045-structural-cascade.md
 // Status section). The native <picture> element in BackgroundPhoto below dispatches to AVIF/WebP/JPEG
 // fallbacks for the v2 photo, layered alongside the hand-authored SVG primary (HeroStorybookLayer).
-
-import dynamic from 'next/dynamic';
+// D-0049 — second scene is now SecondScene (pure CSS, no Three.js).
 
 /**
  * HeroFieldTelemetry - the unified production hero.
@@ -95,19 +94,11 @@ import { Button } from '@/components/ui';
 import { cn } from '@/lib/cn';
 
 import { HeroStorybookLayer } from './HeroStorybookLayer';
-// D-0048 — dynamic import: keep the ~150KB three.js + R3F + drei bundle
-// out of the initial client bundle. HeroScene3D only loads once the user
-// approaches scene 2 (~30% scroll). ssr:false because Three.js touches
-// window/document during module init. The fallback is the static
-// <picture> image (inside HeroScene3D's own internal fallback path) —
-// visible instantly via the cream backdrop so there's no flash.
-const HeroScene3D = dynamic(
-  () => import('./HeroScene3D').then((m) => ({ default: m.HeroScene3D })),
-  {
-    ssr: false,
-    loading: () => null,
-  },
-);
+// D-0049 — SecondScene is a pure-CSS component (no Three.js, no dynamic
+// import). Renders the painted scene2-01..06.webp frames as full-bleed
+// background-image with a CSS-step cycle. Replaces the D-0048 HeroScene3D
+// (which produced a black-column rendering bug in production).
+import { SecondScene } from './SecondScene';
 
 import styles from './HeroFieldTelemetry.module.css';
 
@@ -144,14 +135,18 @@ function parseHeadline(headline: string): readonly (readonly string[])[] {
  * everything else reads plain. Returns ordered segments so the
  * caller can render them in sequence.
  *
- * D-0048 — exported so HeroScene3D can reuse the same italic-keyword
+ * D-0049 — exported so SecondScene can reuse the same italic-keyword
  * rule instead of duplicating it. */
 export function parseScene2Headline(
   headline: string,
 ): readonly { text: string; italic: boolean }[] {
   // Brand keywords to italicize in the second scene's editorial
   // pull-quote. Add new keywords here as scene 2 copy evolves.
-  const italicKeywords = ['yard', 'week', 'every week', 'Tuesday'];
+  // D-0049 — restored to D-0047's "yard" / "every week" / "week"
+  // list. The D-0048 "Tuesday" keyword was a copy regression
+  // around the "Walked past Tuesday." draft; "yard" matches the
+  // restored "Same yard, every week." pull-quote.
+  const italicKeywords = ['yard', 'week', 'every week'];
   const trimmed = headline.trim();
   const tokens: { text: string; italic: boolean }[] = [];
   // Walk word-by-word, matching against the keyword list (case-
@@ -337,8 +332,21 @@ export function HeroFieldTelemetry({
   //   - grassOpacity: SVG grass blade silhouette along the bottom
   //     edge, rises in slightly later so it feels like foreground
   //     foliage settling on top of the photo.
-  const greenVignetteOpacity = useTransform(smoothProgress, [0.05, 0.25], [0, 1]);
-  const grassOpacity = useTransform(smoothProgress, [0.1, 0.3], [0, 1]);
+  //     D-0049 — added a fade-out leg [0.4, 0.7] so the silhouette
+  //     dissolves as scene 2 (the painted ranch house) cross-fades
+  //     in. Without this the dark brand-green grass reads as a
+  //     black saw-tooth stripe across the bottom of the bright
+  //     scene 2 illustration.
+  const greenVignetteOpacity = useTransform(
+    smoothProgress,
+    [0.05, 0.25, 0.4, 0.7],
+    [0, 1, 1, 0],
+  );
+  const grassOpacity = useTransform(
+    smoothProgress,
+    [0.1, 0.3, 0.4, 0.7],
+    [0, 1, 1, 0],
+  );
 
   // Wave 4 — second pinned scene cross-fade ranges. Section height
   // bumped 200svh → 350svh; new scroll bands introduced:
@@ -496,22 +504,25 @@ export function HeroFieldTelemetry({
 
         {/* Wave 4 — Z 3.5: second pinned scene.
          *
-         * D-0048 — the second scene is now a Three.js 2.5D plane stack
-         * using the `illustratio` VEO variant (Florida ranch house +
-         * palms + sun + mowed lawn + 2 riding mowers) as plane
-         * textures. Real 3D depth via camera orbit + parallax between
-         * the 3 planes. Editorial pull-quote content overlay sits on
-         * top of the Canvas. Opacity is driven by secondSceneFade so
-         * it cross-fades in over [0.4, 0.7] while scene 1's content
-         * fades out; the canvas mounts at opacity 0 between renders
-         * so the browser pre-decodes the scene2 webp textures without
-         * a layout-shift flash when scene 2 begins to dissolve in.
-         */}
-        <HeroScene3D
+         * D-0049 — the second scene is now a pure-CSS component
+         * (SecondScene.tsx) that renders the painted VEO frames
+         * (scene2-01..06.webp) as a full-bleed background-image
+         * cycling at 10s/frame. The painted frames ARE complete,
+         * coherent Florida-ranch-house scenes — they were always
+         * meant to fill the panel, not be split into Three.js planes.
+         * Editorial pull-quote content overlay sits on top with
+         * "Same yard, every week." copy + a 12s-cycle palms
+         * foreground parallax layer at bottom-right.
+         *
+         * Z-stack: scene 0 (photo) underneath; this scene (z 1) above
+         * photo; storybook (z 2) above this scene so any leftover
+         * storybook artifacts don't bleed through the [0.40, 0.70]
+         * cross-fade window. Content overlay sits at z 2 inside the
+         * scene. */}
+        <SecondScene
           scene2={scene2}
           opacity={secondSceneFade}
           contentOpacity={scene2ContentFade}
-          scrollProgress={smoothProgress}
         />
 
         {/* Z 4: live status (top right), field stamp (bottom left),
@@ -953,7 +964,7 @@ function RevealWord({
  * or the photo.
  * ============================================================ */
 
-/* D-0048 — exported so HeroScene3D can reuse the magnetic CTA pattern
+/* D-0049 — exported so SecondScene can reuse the magnetic CTA pattern
  * without duplicating the spring/pointermove logic. */
 export function MagneticCta({
   href,
@@ -1001,10 +1012,15 @@ export function MagneticCta({
 }
 
 /* ============================================================
- * SecondScene was removed in D-0048 — its replacement is the
- * HeroScene3D component (apps/web/src/components/sections/HeroScene3D.tsx)
- * imported at the top of this file. That component renders a Three.js
- * Canvas with 3 grasscontent-textured planes + an HTML content overlay.
- * The container opacity is still driven by secondSceneFade /
- * scene2ContentFade passed in as MotionValues.
+ * D-0049 — HeroScene3D (the D-0048 Three.js 2.5D plane stack) was
+ * removed. The second scene is now the pure-CSS SecondScene component
+ * (apps/web/src/components/sections/SecondScene.tsx) imported at the
+ * top of this file. That component renders scene2-01..06.webp as a
+ * full-bleed background-image with CSS-step cycle + a palms parallax
+ * foreground layer + the editorial pull-quote content overlay.
+ *
+ * See governance/decisions/0049-second-scene-css-revert.md for the
+ * full rationale (D-0048's Three.js approach produced a black-column
+ * rendering bug in production; the painted frames are coherent
+ * complete scenes that work better as a single full-bleed image).
  * ============================================================ */

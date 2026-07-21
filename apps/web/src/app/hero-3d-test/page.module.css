@@ -96,16 +96,14 @@
   margin-top: 4px;
 }
 
-.dot[data-strip='bg'] {
-  background: #0e3b2e;
+.dot[data-strip='scene'] {
+  /* Painted ranch house — the brand palm-bark color */
+  background: #6b4a2b;
 }
 
-.dot[data-strip='mid'] {
+.dot[data-strip='palms'] {
+  /* Foreground palms — the brand palm green */
   background: #2d6a3e;
-}
-
-.dot[data-strip='fg'] {
-  background: #f4b942;
 }
 
 @media (max-width: 900px) {
