@@ -26,6 +26,8 @@ const page = await ctx.newPage();
 page.on('pageerror', (err) => console.error('[pageerror]', err.message));
 
 await page.goto('http://localhost:3005/', { waitUntil: 'networkidle', timeout: 60000 });
+// Force a full reload to ensure no cache from previous dev session.
+await page.reload({ waitUntil: 'networkidle' });
 await page.waitForTimeout(2000);
 
 const positions = [0, 600, 1200, 1700, 1900, 2100, 2500, 2900];

@@ -2,7 +2,7 @@
 
 > **Decision template**: `governance/05-decision-framework.md`
 > **Spec-of-record**: this ADR
-> **Library substrate**: `apps/web/src/components/sections/SecondScene.tsx`, `SecondScene.module.css`, `HeroFieldTelemetry.tsx`, `HeroFieldTelemetry.module.css`, `apps/web/src/lib/content.ts`, `apps/web/src/app/hero-3d-test/page.tsx`, `apps/web/package.json`
+> **Library substrate**: `apps/web/src/components/sections/SecondScene.tsx`, `SecondScene.module.css`, `HeroFieldTelemetry.tsx`, `HeroFieldTelemetry.module.css`, `apps/web/src/lib/content.ts`, `apps/web/src/app/hero-3d-test/page.tsx`, `apps/web/package.json`, `apps/web/scripts/fix-v2-asset-letterbox.py`, `apps/web/public/hero/layers/v2/{fern,songbirds}-*.webp`
 > **Commit of record**: pending (Phase 7 commit)
 
 ---
@@ -160,12 +160,11 @@ The unified hero composition now reads as a 3-scene story:
 
 3. **Photo → Scene 2 (40-70% scroll)** — Photo fades out as
    the painted Florida ranch house scene fades in (full-bleed
-   1240×680, 6-frame cycle @ 10s). Foreground palms overlay
-   fades in (mix-blend-mode: multiply, 12s cycle, drifts).
-   Headline shifts from "Your neighbor's lawn mower." to
-   "Same yard, every week." Subhead shifts to "No swap, no
-   franchise markup. The same operator shows up at the same
-   address on the same day, until you say stop."
+   1240×680, 6-frame cycle @ 10s). Headline shifts from
+   "Your neighbor's lawn mower." to "Same yard, every week."
+   Subhead shifts to "No swap, no franchise markup. The same
+   operator shows up at the same address on the same day,
+   until you say stop."
 
 4. **Scene 2 (70-100% scroll)** — Painted ranch house resting
    state. Subtle ambient cycling. "See my route" / "See pricing"
@@ -175,12 +174,48 @@ The grass silhouette + green vignette now fade out across
 [0.4, 0.7] so they don't bleed into the bright painted scene
 as black saw-teeth.
 
+> **D-0049 rev 2 (palms removal):** The earlier draft of
+> SecondScene overlaid a `palms-01..06.webp` foreground parallax
+> at bottom-right with `mix-blend-mode: multiply`. The D-0048
+> re-extraction of `palms-*.webp` produced **full painted Florida
+> scenes** (1240×680 — house, big sun, palm trees, bird bath)
+> instead of the slim letterboxed strips the Wave 4 pattern
+> assumed. Re-using the same `background-size: 42% auto, right
+> bottom` pattern put a giant palm tree + sun on top of the
+> painted scene 2 instead of a slim frond. The painted scene 2
+> is already complete with its own palms, sun, and house — no
+> foreground overlay is needed. The palms layer was dropped;
+> the SecondScene is now a single full-bleed painted background
+> + editorial content overlay (cleaner composition, no risk of
+> double-painting the same Florida house twice).
+
+> **D-0049 rev 3 (asset black-letterbox fix):** After the rev 2
+> palms removal, the steward reviewed a fresh capture set and
+> flagged a dark vertical column at ~50% of panel width on the
+> storybook stage. Root cause was different from the D-0048
+> Three.js column: the `.fernWrap` and `.songbirdsWrap` layers
+> apply `mix-blend-mode: multiply`, and the `fern-01..06.webp` /
+> `songbirds-01..06.webp` assets are VEO extractions encoded as
+> **RGB WebP without an alpha channel** — the painted scene
+> has black letterbox bars on the left and right sides. Under
+> `multiply` blend, black × any-color = black, so the letterbox
+> bled through as a solid dark column at the left edge of the
+> songbirds image. Fix: re-encode all 12 fern + songbirds WebP
+> files with the solid-black pixels converted to alpha=0
+> (threshold R+G+B < 30 preserves the dark-green palm leaves
+> and hill shadows at full opacity, since their RGB sums are
+> 120-210). Idempotent script at
+> `apps/web/scripts/fix-v2-asset-letterbox.py`. Visual evidence
+> in `apps/web/audit/d-0049-second-scene/hero-y*.png` — the
+> dark column is gone, the painted palm + birds are now visible
+> as foreground parallax depth over the cartoon.
+
 ## Requirements
 
 | ID | Requirement | Source |
 |---|---|---|
 | R49.1 | New `<SecondScene />` component renders 6 painted VEO frames (scene2-01..06.webp) as full-bleed background-image with CSS-step cycle @ 10s | §Solution |
-| R49.2 | Foreground palms layer (palms-01..06.webp) at bottom-right, 6 frames @ 12s cycle, `mix-blend-mode: multiply` at 0.85 opacity, `bottom-right` background-position | §Solution |
+| R49.2 | (rev 2 — REMOVED) The earlier draft had a foreground palms layer (palms-01..06.webp) at bottom-right, 6 frames @ 12s cycle, `mix-blend-mode: multiply` at 0.85 opacity. Dropped because the D-0048 re-extracted palms frames are full painted scenes, not slim strips — overlaying them on top of scene 2 produced a double-painted Florida house. | §rev 2 |
 | R49.3 | Editorial pull-quote content overlay matches D-0047's ornament (opening-mark glyph + italic brand keyword): "yard" / "week" / "every week" italicized in Fraunces | D-0047 restoration |
 | R49.4 | Scene 2 copy restored to D-0047: "CHAPTER 2 — THE COMMITMENT" / "Same yard, every week." / "No swap, no franchise markup. The same operator shows up at the same address on the same day, until you say stop." | D-0047 restoration |
 | R49.5 | HeroScene3D (D-0048 Three.js component) deleted. three.js + @react-three/fiber + @react-three/drei removed from package.json | §Cleanup |
@@ -190,6 +225,7 @@ as black saw-teeth.
 | R49.9 | Mobile (393×851) + desktop (1440×900) Playwright captures at 8 scroll positions verify the new scene 2 fills the panel coherently with editorial text overlay | §Validation |
 | R49.10 | `prefers-reduced-motion` drops both cycle animations, locks both layers to frame 01. Coarse-pointer (mobile/touch) drops the palms parallax layer to save fillrate | §Accessibility |
 | R49.11 | `/hero-3d-test` route (kept for backwards compat with steward's bookmark) renders the new SecondScene in isolation with mock MotionValues + 2 sliders | §Validation |
+| R49.12 | (rev 3) All 12 fern + songbirds WebP assets re-encoded with alpha channel — solid-black pixels (R+G+B < 30) become alpha=0 so the `mix-blend-mode: multiply` on `.fernWrap` / `.songbirdsWrap` doesn't bleed the VEO letterbox bars through as a dark column. Idempotent script at `apps/web/scripts/fix-v2-asset-letterbox.py` | §rev 3 |
 
 ## Validation
 
@@ -245,10 +281,11 @@ Shipped on Day 27 (2026-07-20) per commit (pending Phase 7).
 ### Files changed
 
 **New** (3):
-- `apps/web/src/components/sections/SecondScene.tsx` (NEW, ~190 lines)
-- `apps/web/src/components/sections/SecondScene.module.css` (NEW, ~200 lines)
+- `apps/web/src/components/sections/SecondScene.tsx` (NEW, ~190 lines; rev 2 dropped the palms parallax, ~150 lines effective)
+- `apps/web/src/components/sections/SecondScene.module.css` (NEW, ~200 lines; rev 2 dropped the palms keyframes, ~180 lines effective)
+- `apps/web/scripts/fix-v2-asset-letterbox.py` (NEW, rev 3 — idempotent asset re-encoder; ~80 lines)
 - `governance/decisions/0049-second-scene-css-revert.md` (NEW, this ADR)
-- `apps/web/audit/d-0049-second-scene/hero-y*.png` (NEW, 8 captures)
+- `apps/web/audit/d-0049-second-scene/hero-y*.png` (NEW, 8 captures per rev)
 
 **Modified** (6):
 - `apps/web/src/components/sections/HeroFieldTelemetry.tsx`
@@ -259,6 +296,8 @@ Shipped on Day 27 (2026-07-20) per commit (pending Phase 7).
 - `apps/web/src/app/hero-3d-test/page.module.css`
 - `apps/web/package.json` (three deps removed)
 - `apps/web/bun.lock` (regenerated)
+- `apps/web/public/hero/layers/v2/fern-01..06.webp` (rev 3 — re-encoded with alpha)
+- `apps/web/public/hero/layers/v2/songbirds-01..06.webp` (rev 3 — re-encoded with alpha)
 
 **Deleted** (2):
 - `apps/web/src/components/sections/HeroScene3D.tsx`

@@ -13,8 +13,7 @@
  *
  * Layer stack (z-index, bottom to top):
  *   0  .sceneStage     - 6 painted frames as background-image, CSS-step cycle
- *   1  .palmsLayer     - 6 palms frames as foreground parallax (mix-blend-mode: multiply)
- *   2  .content        - editorial pull-quote (eyebrow + headline + subhead + CTAs)
+ *   1  .content        - editorial pull-quote (eyebrow + headline + subhead + CTAs)
  *
  * The 6 frames in scene2-01..06.webp are near-identical painted scenes
  * with subtle differences (mower position shifts slightly, sun has
@@ -22,15 +21,17 @@
  * produces a meditative hand-painted stillness — the visitor sees a
  * subtle ambient update every ~1.7s, not a jarring flipbook.
  *
- * The palms strip (palms-01..06.webp) sits at bottom-right with
- * mix-blend-mode: multiply so it overprints the painted background
- * like a hand-painted foreground element. 12s cadence (slower than
- * scene2's 10s) so the two cycles drift in/out of phase over the
- * 60s LCM.
- *
- * Reduced motion: drops the cycling animation, locks both layers to
- * frame 01. Coarse pointer (mobile): drops palms layer to save
- * fillrate, scene2 cycling still runs at the slow 10s cadence.
+ * D-0049 (rev 2) — dropped the palms foreground parallax layer. The
+ * previous version overlaid palms-01..06.webp at bottom-right with
+ * mix-blend-mode: multiply, which worked under D-0047 (when palms-*
+ * were slim letterboxed strips from a different VEO source). The
+ * D-0048 re-extracted palms-01..06.webp at higher quality as full
+ * Florida scenes (house, big sun, palm trees, bird bath) — using
+ * the same "background-size: 42% auto, right bottom" pattern put
+ * a giant palm tree + sun on top of the painted scene 2 instead
+ * of a slim frond. The painted scene 2 IS already complete with
+ * its own palms, sun, and house. Adding a foreground overlay
+ * destroys the composition.
  *
  * Why this works and the D-0048 Three.js version didn't:
  *   - No WebGL context required (no headless-Chrome SwiftShader drop)
@@ -58,15 +59,6 @@ const SCENE2_FRAMES = [
   '/hero/layers/v2/scene2-04.webp',
   '/hero/layers/v2/scene2-05.webp',
   '/hero/layers/v2/scene2-06.webp',
-] as const;
-
-const PALMS_FRAMES = [
-  '/hero/layers/v2/palms-01.webp',
-  '/hero/layers/v2/palms-02.webp',
-  '/hero/layers/v2/palms-03.webp',
-  '/hero/layers/v2/palms-04.webp',
-  '/hero/layers/v2/palms-05.webp',
-  '/hero/layers/v2/palms-06.webp',
 ] as const;
 
 interface SecondSceneProps {
@@ -107,19 +99,6 @@ export function SecondScene({
             style={{ backgroundImage: `url(${src})` }}
           />
         ))}
-        {/* Foreground parallax — palms strip at bottom-right with
-         * mix-blend-mode: multiply. 12s cadence so the two cycles
-         * drift in/out of phase. Overprints the painted scene
-         * like a hand-painted foreground element. */}
-        <div className={styles.palmsLayer} aria-hidden="true">
-          {PALMS_FRAMES.map((src, i) => (
-            <div
-              key={src}
-              className={`${styles.palmsFrame} ${styles[`palmsFrame${i + 1}`]}`}
-              style={{ backgroundImage: `url(${src})` }}
-            />
-          ))}
-        </div>
       </div>
 
       {/* Editorial pull-quote content overlay.
@@ -159,3 +138,4 @@ export function SecondScene({
     </motion.div>
   );
 }
+

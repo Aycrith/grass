@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-20 (Day 27 — D-0048 Wave 4 second scene replaced with Three.js 2.5D scene + grasscontent textures + Tuesday-morning copy)
+# Last updated: 2026-07-20 (Day 27 — D-0049 rev 2 + rev 3: dropped palms parallax; re-encoded fern/songbirds WebP with alpha to kill black-letterbox bleed through mix-blend-mode: multiply)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-20 (Day 27 — D-0048 Wave 4 second scene replaced with Three.js 2.5D scene + grasscontent textures + Tuesday-morning copy)
+# Last updated: 2026-07-20 (Day 27 — D-0049 rev 2 + rev 3: dropped palms parallax; re-encoded fern/songbirds WebP with alpha to kill black-letterbox bleed through mix-blend-mode: multiply)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -2895,4 +2895,56 @@ changelog:
     by: "Mavis (orchestrator, 2026-07-20)"
     review_date: "2026-10-10"
     twined_with: "D-0048 (predecessor, reverted); /hero-3d-test route preserved (URL kept for steward bookmark compat) but now mounts the pure-CSS SecondScene; D-0047 (Wave 4 gouache) for the editorial pull-quote ornament pattern"
+
+  - date: "2026-07-20"
+    day: 27
+    decision: D-0049-rev-2
+    decision_subrecord: "Drop palms foreground parallax"
+    title: "D-0049 rev 2 — drop palms-01..06 foreground parallax from SecondScene"
+    summary: >
+      The D-0049 first pass overlaid palms-01..06.webp at bottom-right
+      with mix-blend-mode: multiply (the D-0047 Wave 4 pattern). The
+      D-0048 re-extracted palms frames are FULL painted Florida scenes
+      (1240×680 — house, big sun, palm trees, bird bath), not the slim
+      letterbox strips the Wave 4 pattern assumed. Reusing the same
+      "background-size: 42% auto, right bottom" pattern put a giant
+      palm tree + sun on top of the painted scene 2 instead of a slim
+      frond. The painted scene 2 IS already complete with its own
+      palms, sun, and house — adding a foreground overlay destroys
+      the composition. Dropped. SecondScene is now a single full-bleed
+      painted background + editorial content overlay (cleaner, no risk
+      of double-painting the same Florida house twice).
+    by: "Mavis (orchestrator, 2026-07-20)"
+    review_date: "2026-10-10"
+    twined_with: "D-0049 (parent); D-0048 (asset source)"
+
+  - date: "2026-07-20"
+    day: 27
+    decision: D-0049-rev-3
+    decision_subrecord: "Fix fern + songbirds black-letterbox bleed"
+    title: "D-0049 rev 3 — re-encode fern-01..06 + songbirds-01..06 WebP with alpha channel (black letterbox → transparent)"
+    summary: >
+      After the rev 2 palms removal, the steward flagged a dark vertical
+      column at ~50% of panel width on the storybook stage (separate
+      from the D-0048 Three.js column; visible through the cartoon
+      itself, not below it). Root cause: .fernWrap and .songbirdsWrap
+      apply mix-blend-mode: multiply, and the fern-01..06.webp /
+      songbirds-01..06.webp assets are VEO extractions encoded as RGB
+      WebP WITHOUT an alpha channel — the painted scene has black
+      letterbox bars on the left and right sides. Under multiply, black
+      × any-color = black, so the letterbox bled through as a solid
+      dark column at the left edge of the songbirds image (visible at
+      ~50% of panel width on the storybook stage and through the
+      [0.10, 0.40] cross-fade window). Fix: re-encode all 12 fern +
+      songbirds WebP files with the solid-black pixels (R+G+B < 30)
+      converted to alpha=0. Threshold preserves the dark-green palm
+      leaves and hill shadows at full opacity (their RGB sums are
+      120-210). Idempotent script at
+      apps/web/scripts/fix-v2-asset-letterbox.py. Visual evidence in
+      apps/web/audit/d-0049-second-scene/hero-y*.png — the dark column
+      is gone, the painted palm + birds are now visible as foreground
+      parallax depth over the cartoon.
+    by: "Mavis (orchestrator, 2026-07-20)"
+    review_date: "2026-10-10"
+    twined_with: "D-0049 (parent); D-0044 (fern/songbirds parallax layer creator)"
 
