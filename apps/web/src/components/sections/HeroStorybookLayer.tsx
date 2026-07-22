@@ -261,8 +261,70 @@ function BackgroundSky(): ReactNode {
     <svg
       className={styles.sky}
       viewBox="0 0 1600 900"
-      preserveAspectRatio="xMidYMax slice"
-      style={{ width: '105%', height: '105%', left: '-2.5%', top: '-2.5%' }}
+      /* D-0059 rev9 — preserveAspectRatio changed from xMidYMax to
+       * xMidYMid to keep the sun visible after the skyWrap widening.
+       *
+       * Background: the pre-rev9 sky used `xMidYMax slice` (bottom-
+       * aligned) and the skyWrap was 100% of the .layer. At 1920x800
+       * the .layer is 1905x800, the SVG was 2000.25x840 (105% of
+       * skyWrap), and the viewBox scaled by 1.250x. With yMax
+       * alignment, the top 225 viewBox units were clipped — the sun
+       * at viewBox y=252 was just inside the visible top (margin of
+       * 27 units, ~21 screen pixels of sun core showing).
+       *
+       * rev9 widened the skyWrap to -10%/110% (matching the
+       * far/mid/near layers) to fix the right-edge gray strip. The
+       * wider skyWrap (2286px at 1920x800) pushes the viewBox scale
+       * to 1.429x. With yMax alignment, the top 486 viewBox units
+       * are now clipped — the sun at y=252 is fully above the
+       * visible top, so the entire sun disappears at 1920x800.
+       *
+       * Fix: switch to xMidYMid slice. The viewBox is now
+       * center-aligned vertically, so the top 243 and bottom 243
+       * viewBox units are clipped symmetrically. The sun at y=252
+       * is now just inside the visible top (margin of 9 units, ~7
+       * screen pixels of sun core showing — the halo and rays are
+       * clipped above, but the warm core glow stays visible).
+       *
+       * Tradeoff: the bottom of the sky gradient
+       * (var(--ll-sand-bleached) at y=900) is now also clipped by
+       * 243 viewBox units. But the bottom of the hero is the
+       * MidLayer's green path fill + NearLayer's grass blades, so
+       * the sand-bleached stop was never visible in the first
+       * place — the change is invisible to the visitor.
+       *
+       * At 1280x800 the .layer is 1265x800 and the skyWrap is
+       * 1518px wide. ViewBox scale 0.949x, visible top moves from
+       * 54 (xMidYMax) to 27 (xMidYMid). Both keep the sun
+       * visible. */
+      preserveAspectRatio="xMidYMid slice"
+      /* D-0059 rev9 — sky now uses 100% width on the SVG.
+       *
+       * The pre-rev9 sky tried to be 105% wide (extending 2.5% past
+       * the skyWrap on each side) to cover the full viewport when the
+       * storybook's `filter` compositing layer caused sub-pixel
+       * edge effects at the right edge. But CSS `width: 105%` on
+       * an <svg> with a viewBox but no explicit width attribute
+       * collapsed to 100% in the browser's SVG layout pass — the
+       * sky was rendering at exactly the skyWrap's width (1905px),
+       * leaving a 48px gap on the right where the .layer's cream
+       * background showed through.
+       *
+       * The fix is to make the skyWrap itself wider (matching the
+       * other layers' -10%/+10% overflow) and let the sky be 100%
+       * of the skyWrap. The skyWrap CSS now has:
+       *   left: -10%; right: -10%;
+       * so the skyWrap is 120% of the .layer's width (2286px at
+       * 1905px layer). The sky at 100% of that is 2286px wide,
+       * which extends 190.5px past the .layer on each side. The
+       * .layer's overflow:hidden clips the sky at the .layer's
+       * edges, so the visible sky is exactly 1905px wide and
+       * covers the full .layer.
+       *
+       * The inline `left: -2.5% / top: -2.5%` is dropped — it was
+       * redundant with the wider skyWrap and was being normalized
+       * to 0 by the browser anyway. */
+      style={{ width: '100%', height: '100%' }}
     >
       <title>Background sky</title>
       <defs>
@@ -866,27 +928,61 @@ function PalmTree({
         fill="none"
         strokeLinecap="round"
       />
-      {/* Fronds — pivoted at the trunk-top attach point. The
-       * SVG `transform="translate(0 -h)"` puts the group's local
-       * origin at the top of the trunk. CSS `transform-box: fill-box;
-       * transform-origin: 50% 50%` then resolves the rotation pivot
-       * to the CENTER of the fronds' bounding box — which is the
-       * trunk-top attach point (the 8 fronds radiate from 0,0 in
-       * their local space, so their bbox is a square centered on
-       * the local origin). The fronds sweep around the fixed
-       * trunk-top, not around the viewBox bottom-center. */}
-      <g
-        className={anim ? styles.palmFronds : undefined}
-        transform={`translate(0 -${h})`}
-        style={anim ? { animationDelay: phase } : undefined}
-      >
-        {[0, 45, 90, 135, 180, 225, 270, 315].map((rot) => (
-          <g key={rot} transform={`rotate(${rot})`}>
-            <path d="M 0 0 Q 12 -6 24 -2 Q 18 -10 8 -8 Z" fill={frondFill} />
-            <path d="M 0 0 Q 18 2 32 8 Q 24 14 14 10 Z" fill={frondFill} opacity={0.85} />
-          </g>
-        ))}
-        <circle r={2.5} fill="#3d2814" />
+      {/* D-0059 rev9 — frond positioning is on an OUTER group,
+       * animation is on the INNER group.
+       *
+       * rev8 (the prior commit) put BOTH the SVG `transform=
+       * "translate(0 -h)"` AND the CSS `animation: palmFrondsSway`
+       * on the same <g> element. The CSS animation sets
+       * `transform: rotate(±7deg)`, which in modern browsers
+       * REPLACES the SVG transform attribute (per CSS Transforms
+       * Level 1 §6: "the value of the transform property, if not
+       * none, takes precedence over the SVG transform attribute").
+       * The fronds therefore rendered at the parent PalmTree's
+       * local (0, 0) — which is the BASE of the trunk — instead
+       * of at (0, -h), the TOP of the trunk. The visual result
+       * was "upside-down palm trees" with the canopy underground:
+       * a vertical trunk going up from a frond cluster at the
+       * bottom. The steward caught this on the 1920x800 desktop
+       * review screenshot.
+       *
+       * rev9 splits the two concerns:
+       *   - Outer <g transform="translate(0 -h)">: positions the
+       *     fronds at the trunk-top attach point. No CSS transform
+       *     is ever applied to this group, so the SVG attribute
+       *     is preserved.
+       *   - Inner <g className={styles.palmFronds}>: carries the
+       *     CSS animation. The CSS transform only sets
+       *     `rotate(±7deg)`, which rotates the fronds around
+       *     the transform-origin (50% 50% of the fronds bbox,
+       *     = the trunk-top attach point). The inner group has
+       *     no SVG transform attribute, so there's nothing for
+       *     the CSS transform to override.
+       *
+       * The DOM diagnostic in rev8 (anim-audit.mjs) confirmed
+       * the CSS side was correct — `transform-origin: 32px 32px`
+       * resolved to the center of the 64x64 fronds bbox. What
+       * the diagnostic did NOT catch was the visual position
+       * bug, because it only reported the computed CSS values
+       * and not the rendered DOM geometry. The lesson is that
+       * CSS-confirmation scripts are necessary but not
+       * sufficient: a single visual QA capture of the rendered
+       * scene at one time point would have caught the upside-
+       * down palms immediately. See the §15 addendum for the
+       * improved visual verification protocol. */}
+      <g transform={`translate(0 -${h})`}>
+        <g
+          className={anim ? styles.palmFronds : undefined}
+          style={anim ? { animationDelay: phase } : undefined}
+        >
+          {[0, 45, 90, 135, 180, 225, 270, 315].map((rot) => (
+            <g key={rot} transform={`rotate(${rot})`}>
+              <path d="M 0 0 Q 12 -6 24 -2 Q 18 -10 8 -8 Z" fill={frondFill} />
+              <path d="M 0 0 Q 18 2 32 8 Q 24 14 14 10 Z" fill={frondFill} opacity={0.85} />
+            </g>
+          ))}
+          <circle r={2.5} fill="#3d2814" />
+        </g>
       </g>
     </g>
   );

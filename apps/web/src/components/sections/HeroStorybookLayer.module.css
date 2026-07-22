@@ -15,6 +15,34 @@
   pointer-events: none;
   overflow: hidden;
   isolation: isolate;
+  /* D-0059 rev9 — sky-tone backdrop on the storybook layer.
+   *
+   * The pre-rev9 .layer had no background. The .layer relies on its
+   * child SVGs (BackgroundSky fills the full layer via a 105%-wide
+   * rect with the hero-sky gradient) to cover the full viewport.
+   * That SHOULD be enough — but the .layer also has a CSS filter
+   * (`filter: blur(0px) saturate(100%)` at scroll y=0, animating to
+   * a real blur+saturate during the cross-fade). The filter creates
+   * a separate compositing layer for the .layer, and on the 1920x800
+   * desktop review the steward caught a ~35px-wide vertical band on
+   * the right edge where the storybook was semi-transparent: the
+   * photo's mask-image (which fades the photo to transparent from
+   * 86% to 100% width) was bleeding through the storybook's
+   * compositing layer at the right edge. Pixel-sampling at x=1880
+   * y=300 returned #f6f3ee (≈ cream background) instead of the
+   * storybook's #f0d099 (warm peach) at that y — proof that the
+   * storybook's pixels were ~90% transparent at the right edge.
+   *
+   * The fix is to give the .layer an opaque backdrop that matches
+   * the storybook's bottom-band tone (the palm-light / cream where
+   * the foreground grass sits). This way, even if the storybook's
+   * SVG content has sub-pixel gaps at the right edge due to the
+   * compositing layer, the .layer's backdrop shows through and
+   * the color matches the rest of the scene's bottom band rather
+   * than a different gray tone. The user-facing visual is the same
+   * warm gradient that the SVG already paints; the backdrop is a
+   * safety net, not a visible design element. */
+  background: var(--ll-cream);
 }
 
 /* ============================================================
@@ -24,7 +52,18 @@
 
 .skyWrap {
   position: absolute;
-  inset: 0;
+  /* D-0059 rev9 — skyWrap now extends -10% to 110% of the .layer
+   * (matching the far/mid/near layers' overflow). The BackgroundSky
+   * SVG is 100% of this skyWrap, so the sky renders at 120% of the
+   * .layer's width and is clipped at the .layer's edges by
+   * overflow:hidden. The previous 105% / -2.5% approach on the SVG
+   * itself was being normalized to 100% by the browser's SVG layout
+   * pass, leaving a 48px gap on the right edge where the cream
+   * background showed through. */
+  left: -10%;
+  right: -10%;
+  top: 0;
+  height: 100%;
   z-index: 0;
 }
 
