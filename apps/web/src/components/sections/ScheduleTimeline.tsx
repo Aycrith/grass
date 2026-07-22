@@ -64,7 +64,7 @@ import {
 } from 'react';
 
 import { Section } from '@/components/site';
-import { Button, Illustration } from '@/components/ui';
+import { Button } from '@/components/ui';
 import {
   type DayKey,
   buildMonthMatrix,
@@ -641,13 +641,18 @@ export function ScheduleTimeline({ className }: ScheduleTimelineProps): ReactNod
                     &rarr;
                   </span>
                 </Button>
-                <Illustration
-                  src="/illustrations/mower-side-profile-v3-120.webp"
-                  alt=""
-                  width={120}
-                  height={120}
-                  className={styles.todayMower}
-                />
+                {/* D-0059 rev4 — mower-side-profile illustration REMOVED.
+                 * The 120x120 painted mower was sitting in the bottom-
+                 * right of the today card, separated from the CTA.
+                 * Without a connection to any other element it read
+                 * as a stray icon (a "small cartoon lawn mower on
+                 * a cream background"), not as a brand mark. The
+                 * week strip already has per-day service icons at
+                 * the top of each day card (mower, edger, trimmer,
+                 * blower) — the today card doesn't need its own
+                 * decoration. The "Book this mow" CTA carries the
+                 * conversion alone. The illustration asset stays on
+                 * disk in case a future section wants it. */}
               </div>
             </motion.div>
           );
