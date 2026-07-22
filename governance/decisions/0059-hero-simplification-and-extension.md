@@ -1,0 +1,1014 @@
+# D-0059 — Hero simplification (Path A) and re-extension (Path B)
+
+**Date:** 2026-07-21
+**Status:** RATIFIED 2026-07-21 — steward sign-off complete; Path A ready to execute.
+**Author:** Mavis (orchestrator)
+**Scope:** the unified hero on `/` (the most-SEO-critical page on the site), specifically
+`apps/web/src/components/sections/HeroFieldTelemetry.tsx` +
+`HeroStorybookLayer.tsx` + `SecondScene.tsx` + `lib/content.ts` + `app/page.tsx`.
+**Review date:** 2026-10-21 (90 days post-ship)
+**Confidence (ratified):** 0.85 (A) / 0.80 (B)
+
+---
+
+## 0. Why this ADR exists as one document, not two
+
+The D-0043 → D-0058 burst produced 14 governance decisions in 6 days
+on the hero, with one rollback (D-0048). The visible result in
+`apps/web/audit/d-0050-final/scene-pct-{020,040,060}.png` is real
+cross-fade incoherence:
+
+- **20% / 40% scroll** — cartoon ranch-house silhouettes + cartoon
+  sun + cartoon mower bleed through the [0.10, 0.40] storybook → photo
+  cross-fade, sitting visibly on top of the real 4K Florida ranch
+  house photo. The visitor sees *two houses* and *two suns*.
+- **60% scroll** — the same cartoon clouds + sun persist into the
+  [0.40, 0.70] photo → scene 2 cross-fade, sitting on top of the
+  painted scene 2. Black-saw-tooth band along the bottom is the
+  D-0049 grass-silhouette + green-vignette whose fade-out leg is too
+  narrow.
+- **0% / 5% / 80% / 100% scroll** — coherent. The storybook resting
+  state and the painted scene 2 resting state both work as
+  stand-alone compositions.
+
+The root cause is the **D-0049 rev 4 lesson, applied one level up.**
+D-0049 rev 4 proved that painted VEO brushwork and hand-authored SVG
+cartoon are at incompatible fidelity levels; rendering them together
+in one panel reads as a mash-up of two scenes. The D-0050 wave did
+the same thing on a different axis: it added four overlay layers
+(cartoon operator + callout pill + route pin + per-ZIP strip) that
+all live *inside* the same 350svh hero section, and the existing
+two cross-fade windows (storybook → photo, photo → scene 2) cannot
+absorb them without ghost-bleed. Each addition was rational in
+isolation — D-0050's brief §5.6 even has a 9-criterion matrix that
+scored the hybrid extension at 27/35 — but the matrix scored the
+additions, not the *interaction with the existing cross-fade*. Nobody
+audited the cross-fade window with all four new elements in place.
+
+This ADR therefore:
+
+1. **Path A** (this week, ~6 hours of work) — roll the hero back to
+   the D-0043 + D-0049 base. Three clean scenes, no overlays inside
+   the cross-fade windows. The D-0050 additions (operator, route
+   pin, per-ZIP strip, callout pill) are deleted because the data
+   they carried already lives in the sections below the hero
+   (§2.3). Net: 14 hero-related decisions collapse to the 3 that
+   work, and the visible ghost-bleed is gone.
+
+2. **Path B** (next 5-7 days, design-led) — after Path A is in
+   production and you've seen it for a week, re-extend the hero
+   using **scroll-locked pinned scenes** instead of overlays-on-
+   cross-fade. The route pin, the operator scene, the per-ZIP strip
+   each get their own 100svh scene with a hard enter/exit, so the
+   cross-fade windows stay clean (only one visual language
+   dissolving into the next). Net: more content, *and* the existing
+   coherence is preserved.
+
+3. **Design & art direction** (woven through both paths) — both
+   paths get the full design pass, not a quick fix. The storybook
+   cartoon gets a proper painterly refinish (the cartoon currently
+   reads as flat-fill with a few gradients; the brand standard is
+   gouache / hand-drawn), the cross-fade gets tuned with motion-
+   design discipline (the [0.10, 0.40] band is too long and
+   too cross-faded simultaneously), the second scene gets a
+   proper editorial-frame treatment (the editorial pull-quote is
+   under-styled against the painted illustration), and the per-ZIP
+   strip gets a card-system redesign that earns its place on the
+   page instead of competing with the painted scene.
+
+This isn't a quality complaint about D-0050. Each phase (1a, 1b,
+2, 3) was per-phase validated, coordinated with existing motion
+values, and visually verified at 8 scroll positions. Specifically:
+
+- **Phase 1a callout** was designed with three visual distinctions
+  from the eyebrow (sun-yellow pin, lighter bg, sentence case) so
+  it wouldn't read as a duplicate label. Its fade was deliberately
+  tied to the eyebrow's `scene1ContentFade` MotionValue — "the
+  pill inherits the same dissolve as the eyebrow + headline without
+  its own opacity track" (D-0050 §Phase 1a).
+- **Phase 1b operator** was placed in a specific empty area
+  (x=1200-1342, y=565-694) to NOT overlap the editorial column,
+  with a 5.2s ±1.2° sway and reduced-motion override.
+- **Phase 2 route pin** has aria-label "Currently mowing this
+  lawn" that POINTS to the same status the LIVE pill carries
+  (D-0050 §Phase 2: "Aria-label ... points to the same status the
+  LIVE pill carries, so screen readers report a single, consistent
+  status regardless of which visual element the visitor encounters").
+- **Phase 3 per-ZIP strip** has a coordinated handoff: dashboard
+  fades out [0.70, 0.80] slightly ahead of the strip's fade-in
+  [0.70, 0.85] so the transition reads as a clean scene change, not
+  a cross-fade (D-0050 §Phase 3).
+
+The lesson is the same as D-0049 rev 4: **in-isolation validation
+misses interaction effects across the whole composition**. D-0050
+validated each phase against its own scroll window, but nobody
+audited the cross-fade window with all four new elements stacked
+on top of the existing D-0043 + D-0049 motion substrate. The plan
+respects the D-0050 work — the items are not deleted as "bad
+work," they're deleted because the data they carried already lives
+in the sections below, and the cross-fade window can't absorb the
+duplicate visual language. Path A is a *recomposition*, not a
+rejection.
+
+This is the unifying principle: **every addition must answer a
+question the visitor has, in the visual language of the scene it's
+in, with a transition that doesn't fight the cross-fade window.** A
+section earns its 100svh of vertical space by being a coherent
+*answer* to one question. A section that asks three questions in
+three visual languages across one 350svh is incoherent, regardless
+of how good each individual element is.
+
+---
+
+## 1. The visitor's mental map (the design ground-truth)
+
+Before any design work, what questions does a Largo homeowner have
+when they hit `/`?
+
+| Order | Question | Best surface | Why |
+|---|---|---|---|
+| 1 | "Is this a real local operation, or another lead-gen site?" | **Hero scene 1** (cartoon storybook) | The first paint has to feel personal, not corporate. Cartoon reads as "this person drew this" — that's the trust signal. |
+| 2 | "What does the actual work look like?" | **Hero scene 2** (the 4K photo) | After the cartoon establishes voice, the photo grounds it in reality. This is "I see what you're actually doing." |
+| 3 | "Will you actually keep coming back?" (**emotional** form) | **Hero scene 3** (painted ranch house + "Same yard, every week.") | The hero answers the **emotional** form ("Same yard, every week."). The page below answers the **transactional** form: ServiceBento (recurring plans), PricingTiers (recurring vs one-time discount), ScheduleTimeline (ongoing weekly schedule), and the D-0047 subhead ("No swap, no franchise markup. The same operator shows up at the same address on the same day, until you say stop."). The hero's job is to set the emotional register; the sections below make the operational case. |
+| 4 | "Do you cover my address?" | **ServiceAreaMap section** (below hero) | Needs a form, not a visual hint. The ZIP or neighborhood input is the conversion action. |
+| 5 | "Who actually shows up?" | **OperatorStrip section** (below hero) | The portrait + bio + equipment list answers this. |
+| 6 | "What do you charge?" | **PricingTiers section** (below hero) | Self-explanatory. |
+| 7 | "When can you start?" | **ScheduleTimeline section** | Self-explanatory. |
+| 8 | "What if I have doubts?" | **FAQAccordion section** | Self-explanatory. |
+
+The hero's job is questions 1-3. The page below answers 4-8. **The
+D-0050 overlays tried to answer 4 and 5 from inside the hero, which
+(a) duplicates the sections that already do it better and (b) breaks
+the cross-fade.** Path A deletes those overlays; Path B re-extends
+the hero with a new scene for the operator (composited per §3.3 to
+avoid the ranch-house-matching risk).
+
+---
+
+## 2. Path A — Hero simplification (ship this week)
+
+### 2.1 What gets reverted
+
+Revert these decisions, in order:
+
+| Decision | What it added | Revert action |
+|---|---|---|
+| D-0050 Phase 1a | Callout pill in scene 1 | Drop the pill; the eyebrow "Lawn care in 33771" already carries the same signal. |
+| D-0050 Phase 1b | Cartoon operator + walk-behind mower in scene 1 near-layer | Drop the operator SVG from `HeroStorybookLayer.tsx`. Keep the file in git history. The metaphor ("your neighbor's lawnmower") is in the headline — the visual is redundant. |
+| D-0050 Phase 2 | Route pin in scene 2 (the photo) | Drop the route pin from `HeroFieldTelemetry.tsx`. The LIVE pill (top-right) already carries the same status. |
+| D-0050 Phase 3 | Per-ZIP card strip in scene 3 | Drop the `<PerZipStrip>` from `SecondScene.tsx`. The ServiceAreaMap section below the hero IS the per-ZIP navigation. |
+| D-0052 | Animated cartoon sun (rotating rays, breathing core/halo) | Drop the sun animation. The static sun reads as more confident and less needy. Keep the 12-ray geometry. |
+| D-0049's grass-silhouette + green-vignette fade-out legs | The [0.4, 0.7] fade-out is too narrow, leaving a black saw-tooth at 60% | Widen the fade-out leg to [0.4, 0.75] and lower the silhouette's contrast against scene 2 (the painted scene 2 has its own grass; the silhouette is fighting it). |
+
+Keep these decisions unchanged:
+
+| Decision | Why it stays |
+|---|---|
+| D-0043 cinematic cross-fade | The blur+saturate dissolve is the right mechanism. We just need to make sure no new overlays compete with it. |
+| D-0044 useViewportMotion | The parallax architecture is sound; the issue is what was layered on top, not the motion substrate. |
+| D-0045 structural cascade | The 4-tier AVIF/WebP cascade is a perf win, no reason to undo. |
+| D-0047 Wave 4 second pinned scene | The painted Florida ranch house is the strongest single visual in the whole library. Keep it. |
+| D-0049 D-0047 copy restoration | "Same yard, every week." is the right copy. Keep it. |
+| D-0049 cream viewport bg | Fixes the dark-column bug. Keep it. |
+
+### 2.2 What the design pass adds (this is the "design and artistic
+development and refinement" part)
+
+Path A is not a quick revert. The revert clears the canvas. The
+design pass paints it properly. Three things get real attention:
+
+**2.2.1 The storybook storybook scene 1 needs painterly refinement.**
+
+The current hand-authored SVG cartoon is *flat-fill with a few
+gradients*. Looking at `scene-pct-000.png` and the 6 mid-layer palm
+trees + 3 ranch houses, every shape is a single fill with no
+texture, no brushwork, no second-value suggestion. The brand
+standard (per `apps/comfyui/prompts/_style-block.md`) is gouache /
+hand-drawn, with visible brushwork at 100% zoom.
+
+Two design decisions:
+
+1. **Add a paper-grain overlay to the storybook layer.** A 200x200
+   SVG noise pattern, `mix-blend-mode: multiply` at 0.08 opacity,
+   applied via a `<defs><filter>` to the whole storybook SVG. This
+   alone moves the cartoon from "flat vector" to "printed storybook
+   page" without changing any of the geometry. Total cost: ~30 lines
+   of SVG + CSS. Visible difference: significant.
+
+2. **Replace the 3 ranch houses with hand-authored gouache-style
+   houses.** The current `House` component in `HeroStorybookLayer.tsx`
+   is a flat-fill rect + polygon + window cutouts. Replace each
+   surface with a two-stop gradient (`var(--ll-sand-bleached)` →
+   `var(--ll-clay)` at 0.4 opacity, applied with `mix-blend-mode:
+   multiply`) and add a single 1px stroke line in
+   `var(--ll-palm-bark)` at 0.6 opacity to suggest the eave and
+   the wall corner. This is the same hand-drawn linework convention
+   the operator portrait uses, applied to the ranch houses. Total
+   cost: ~80 lines of SVG in the `House` component.
+
+**2.2.2 The cross-fade [0.10, 0.40] window needs motion-design
+discipline.**
+
+The current cross-fade is a single 30% window with three things
+happening simultaneously: storybook opacity 1→0, storybook
+blur 0→14px, storybook saturate 100%→0%. This is *too much at once*,
+which is why the cartoon elements feel like ghosts on the photo
+rather than dissolving into it.
+
+Motion-design fix: **split the cross-fade into two overlapping
+phases.**
+
+| Phase | Scroll window | What happens |
+|---|---|---|
+| Phase 1 (soft-fade) | [0.10, 0.25] | Storybook opacity 1→0.6, blur 0→4px, saturate 100%→85%. The cartoon gets *softer* but is still mostly visible. |
+| Phase 2 (dissolve) | [0.25, 0.40] | Storybook opacity 0.6→0, blur 4→14px, saturate 85%→0%. The cartoon *dissolves into* the photo. The visitor reads it as "the storybook is becoming the photo," not "the storybook is fading away." |
+
+Cost: 4-line change in `HeroStorybookLayer.tsx` (replace the
+single useTransform with two sequential ones via
+`useTransform.compose` or just two useTransform calls with their
+opacity multiplied). This is the same Framer Motion pattern the
+D-0043 spec already uses for the green-vignette; we just apply it
+to the storybook too.
+
+**2.2.3 The editorial pull-quote in scene 2 needs to read as an
+editorial pull-quote, not a centered headline.**
+
+Look at `scene-pct-080.png` and `scene-pct-100.png`: "Same yard,
+every week." is centered, white-on-painted, with no editorial
+framing. It reads as a hero headline repeated. The painted scene 2
+is an *illustration*; the copy should read as a *caption* on the
+illustration, not a third hero headline.
+
+Design fix: **add editorial-page chrome around the pull-quote.**
+
+- A thin `var(--ll-clay)` 1px horizontal rule above the eyebrow and
+  below the subhead (32px width, centered). This is the magazine /
+  editorial spread convention for chapter openers.
+- The eyebrow "CHAPTER 2 — THE COMMITMENT" gets a small
+  `var(--ll-clay)` square to the left of it (8x8px, the same
+  convention the brand uses for the per-ZIP card markers).
+- The headline's opening curly quote (already in the JSX as
+  `&ldquo;`) gets a `font-size: 1.4em` boost and a slight
+  `translateY(-0.1em)` so it reads as a typographic ornament, not
+  a stray character.
+- The CTAs get a thin `1px solid var(--ll-clay)` underline on hover
+  (the editorial-spread convention for "click to continue").
+
+Cost: ~40 lines of CSS in `SecondScene.module.css`. The semantic
+shift is from "centered hero text" to "editorial caption on a
+painting."
+
+### 2.3 What gets deleted (the data already lives in the sections below)
+
+> **Naming note:** this section is "What gets deleted," not "What
+> gets re-homed." Three of the four D-0050 additions were
+> duplicates of data the page below already carries. The fourth
+> (cartoon operator) is a *style* duplicate, not a data duplicate.
+> None of the four requires new work in the sections below — the
+> sections are already correct. Path A is pure deletion in the hero
+> + the design pass in §2.2.
+
+| Was in the hero (D-0050) | Already in the page below | Why the hero addition was redundant |
+|---|---|---|
+| Callout pill "33771 · Largo (central)" | ServiceAreaMap form (D-0031, D-0032) — accepts the ZIP, has a `<datalist>` of all 6 ZIPs + neighborhood names, subhead says "type your ZIP" | The form IS the answer. The hero pill was a visual echo of the same data, attached to a different click target. |
+| Cartoon operator + walk-behind mower (D-0050 1b) | OperatorStrip section — operator portrait + bio + equipment metabar (D-0029, D-0039) | The section IS the operator answer. The hero operator was a second portrait in a different visual style (cartoon SVG vs painted VEO), reading as a duplicate identity. |
+| Route pin on the photo (D-0050 2) | LIVE pill top-right (per D-0050 §Phase 2: aria-label "Currently mowing this lawn" points to the same status) | The pill IS the status indicator. The route pin was a visual echo of the same data; the screen-reader label was explicitly tied to the pill for consistency. |
+| Per-ZIP card strip 6 cards (D-0050 3) | ServiceAreaMap — 6 ZIP chips (D-0031 §Layout item 4) + the form routes to `/quote?zip=` | The form + chips IS the per-ZIP navigation. The strip was the 7th representation of the same 6-ZIP list on a page that already had 6. |
+
+No new work in the sections below is required — these items are
+already in place. The only cost is the deletion in §2.1 + the
+design pass in §2.2.
+
+### 2.4 Path A acceptance criteria (the gate — Path A does not ship
+until every line passes)
+
+1. **No ghost-bleed in the [0.10, 0.40] window.** The
+   `apps/web/audit/d-0059-path-a/` capture set at 8 scroll
+   positions (0, 10, 20, 30, 40, 60, 80, 100) shows zero cartoon
+   ranch-house silhouettes, zero cartoon sun, zero cartoon mower on
+   top of the photo.
+2. **No ghost-bleed in the [0.40, 0.70] window.** The same capture
+   set at 60% shows zero cartoon clouds or cartoon sun on top of
+   the painted scene 2. The black-saw-tooth band at the bottom is
+   gone (the grass-silhouette fade-out leg widens to [0.4, 0.75]
+   with a lower contrast).
+3. **Paper-grain overlay visible at 100% zoom** on the storybook
+   layer. Verified by side-by-side compare of the
+   `scene-pct-000.png` capture against a paper-grain-on baseline.
+4. **Two-stop gradient + 1px linework visible on the ranch houses.**
+   Verified by 200% zoom capture in `apps/web/audit/d-0059-path-a/zoom-ranch-house.png`.
+5. **Two-phase cross-fade softens the [0.10, 0.25] band before
+   dissolving [0.25, 0.40].** Verified by the 8-position capture set
+   showing a readable "becoming photo" arc rather than a snap-fade.
+6. **Editorial chrome around the scene 2 pull-quote** (clay square,
+   horizontal rules, opening-quote boost). Verified by the
+   `scene-pct-080.png` capture showing the editorial framing.
+7. **All hero assets pass the Lighthouse perf budget** (≥95 perf,
+   ≥95 a11y) on the desktop run. The paper-grain overlay adds ~5KB
+   of SVG, the ranch-house gradient adds ~3KB of inline CSS — both
+   are well under the per-component budget.
+8. **The 4 sections below the hero (ServiceAreaMap, OperatorStrip,
+   ServiceBento, PricingTiers) are unchanged.** The D-0050 data
+   they already carry stays where it is, with no redesign.
+9. **Typecheck clean, charter 3/3, Playwright 32/32 (after baseline
+   refresh for the paper-grain + editorial-chrome + cross-fade
+   changes).**
+10. **Visual regression suite covers the 4 ghost-bleed scroll
+    positions** (20%, 30%, 40%, 60%) as named baselines in
+    `apps/web/visual/baselines/`. Future reverts or additions
+    surface the bleed immediately.
+
+### 2.5 Path A rollback (if the design pass breaks something)
+
+Each of the three design additions is independently revertable:
+
+- Paper-grain overlay → remove the `<filter>` block from
+  `HeroStorybookLayer.tsx`. The storybook reverts to flat-fill.
+- Two-stop gradient on ranch houses → remove the gradient defs +
+  the stroke linework from the `House` component. The houses
+  revert to flat-fill.
+- Two-phase cross-fade → merge the two `useTransform` calls back
+  into the single original call. The cross-fade reverts to the
+  D-0043 single-phase behavior.
+- Editorial chrome on scene 2 → remove the clay square + horizontal
+  rules + opening-quote boost. The pull-quote reverts to the
+  D-0049 centered-headline behavior.
+
+Each revert is a 1-3 line change. Confidence after Path A: **0.85**
+(higher than the original 0.82 proposal, matching the D-0049
+ship-time confidence of 0.85; Path A is mostly deletion of D-0050
+work plus four small polish additions, each independently
+revertable, so the regression risk is *lower* than D-0049's
+architectural Three.js → pure-CSS shift, not the same).
+
+---
+
+## 3. Path B — Re-extension with scroll-locked pinned scenes
+(after Path A ships, if you want more)
+
+### 3.1 What Path B is, and what it isn't
+
+Path B is **NOT** "add more overlays to the existing cross-fade."
+Path B is **"each new content element gets its own scene with a
+hard enter/exit, so the cross-fade window stays clean."** The
+mechanical pattern is the same as D-0047 / D-0049 used to add the
+painted scene 2: extend the hero section from 350svh to ~500-550svh,
+add a new scroll band, add a new `motion.div` at the right z-index
+with its own opacity MotionValue that goes 0→1→0 over a tight scroll
+window.
+
+### 3.2 The four candidate scenes (pick one, or none)
+
+| # | Scene | What it adds | Scroll band | Section height impact |
+|---|---|---|---|---|
+| 1 | **Operator arrival** | The cartoon storybook's promise ("your neighbor's lawnmower") is delivered as a literal painted operator portrait pushing a walk-behind mower on a real Florida lawn. Painted VEO style matches scene 2/3, so the cross-fade from scene 2 to scene 4 is clean. | [0.70, 0.85] | +100svh → 450svh |
+| 2 | **Route pin moment** | A "currently mowing this lawn" overhead satellite-style map snippet showing 6 painted ZIP dots + 1 active pin pulsing. Sits between the operator's commitment and the per-ZIP detail. | [0.70, 0.80] | +100svh → 450svh |
+| 3 | **Per-ZIP pre-flight** | One painted ZIP card full-bleed, fades in, fades out. Cycles through 6 ZIPs over 6 scroll positions (each ZIP gets ~10% of the hero). | [0.70, 0.95] | +150svh → 500svh |
+| 4 | **Equipment close-up** | A single equipment illustration (mower, edger, blower, or trimmer) full-bleed, with copy naming the tool and its use. Cycles through 4 tools. | [0.70, 0.95] | +150svh → 500svh |
+
+**My pick:** Scene 1 (operator arrival) only. It's the cleanest
+answer to "who shows up" and uses the existing
+`apps/comfyui/curated/operator-portrait.png` (1.4 MB) + a new
+painted "operator on the lawn" asset to be generated. The other
+three either duplicate the ServiceAreaMap / OperatorStrip sections
+below (scenes 2 and 3) or add complexity without answering a new
+question (scene 4). Path B is "add scene 1, ship, see if you want
+scene 4 later."
+
+### 3.3 Scene 1 (operator arrival) — full design
+
+**Visual structure (top to bottom):**
+
+```
+┌────────────────────────────────────────────────────┐
+│                                                    │
+│  [painted sky — same palette as scene 2/3]         │   ← 40% height
+│                                                    │
+│  [painted Florida ranch house, mid-distance]       │   ← 30% height
+│  [the same ranch house from scene 2, re-framed]    │
+│                                                    │
+│  [painted operator + walk-behind mower on lawn]    │   ← 20% height
+│  [from behind, pushing right-to-left]              │
+│                                                    │
+│  [painted foreground grass band]                   │   ← 10% height
+│                                                    │
+└────────────────────────────────────────────────────┘
+```
+
+**Copy:**
+
+- Eyebrow: `CHAPTER 3 — THE OPERATOR` (continues the chapter
+  numbering from scene 2's `CHAPTER 2 — THE COMMITMENT`)
+- Headline: `Same operator, every week.`
+- Subhead: `Honda HRX217. EGO 56V. Greenworks 40V. Echo PAS-225.
+  The same hands, the same route, the same six years on the same
+  six ZIPs.`
+- Primary CTA: `Meet me → /about`
+- Secondary CTA: `Quote me → /quote`
+
+**Scroll choreography:**
+
+| Scroll band | What happens |
+|---|---|
+| [0.00, 0.10] | Scene 1 (storybook) resting. Unchanged. |
+| [0.10, 0.25] | Storybook soft-fade (Path A's two-phase cross-fade). |
+| [0.25, 0.40] | Storybook dissolve into photo. Unchanged from D-0043. |
+| [0.40, 0.70] | Photo dissolve into scene 2 (painted ranch house). Unchanged from D-0049. |
+| [0.70, 0.78] | Scene 2 holds. New hard-cut transition begins: scene 2 opacity 1→0, scene 4 (operator arrival) opacity 0→1. No cross-fade — a hard 0.08-wide band keeps the visual languages separate. |
+| [0.78, 0.88] | Scene 4 (operator arrival) resting. Operator on the lawn, editorial chrome around the copy. |
+| [0.88, 0.95] | Scene 4 hard-cut out, scene 5 (the next section below the hero) takes over. |
+
+**Section height: 350svh → 460svh (+110svh for the new scene +
+hard-cut transitions).**
+
+**Asset work (this is the design + art direction):**
+
+> **Approach: composite, not regenerate.** The D-0049 rev 4 lesson
+> proved that painted VEO + hand-authored SVG cartoon = fidelity
+> mismatch. The original brief asked for a new full-scene
+> generation that included a ranch house matching scene 2's — but
+> the matching risk is real (a re-generated ranch house will not
+> be the same asset as scene 2's, and the hard-cut will read as
+> "two different houses" instead of "same house, two framings").
+> The safer path: **use scene 2's existing painted frame as the
+> background, composite a NEW painted operator overlay on top.**
+> The ranch house IS scene 2's ranch house by definition (same
+> asset); the operator's painting style must match scene 2's
+> (painted VEO, not hand-authored SVG, to avoid the D-0049
+> fidelity-mismatch lesson).
+
+The composited scene 4 has two layers:
+
+- **Background layer:** `apps/web/public/hero/layers/v2/scene2-01..06.webp`
+  (existing asset, used as-is). A wider crop than the current
+  scene 2 viewport — the ranch house mid-distance instead of
+  filling the frame, leaving the foreground grass visible for
+  the operator. The crop is mechanical (Photoshop / PIL) on the
+  existing master; no new generation.
+- **Operator overlay:** a new ComfyUI generation of the
+  operator + Honda HRX217, painted in the same gouache style
+  as scene 2 (no IP-Adapter reference to the operator-portrait,
+  which is hand-authored SVG — that would be a fidelity
+  mismatch). The overlay occupies the bottom 40% of the frame,
+  composited with sharpening + saturation matching so the
+  painted brushwork reads as a single hand-painted scene.
+
+**Generation brief (operator overlay only — no ranch house):**
+
+```
+[ComfyUI generation brief — see apps/comfyui/prompts/hero-operator-arrival.md]
+
+SUBJECT: A solo lawn-care operator seen from behind, pushing a
+walk-behind Honda HRX217 mower across a freshly-cut St Augustine
+lawn foreground. Three-quarter rear view, mid-stride (right foot
+forward, left foot back), both hands on the mower handle, the
+mower deck emitting a faint trail of cut grass clippings.
+Operator occupies the bottom 40% of the frame; the top 60% is
+empty (sky + distant landscape that will be cropped or
+painted-over by the compositing step).
+
+Operator wears:
+- Wide-brim straw sun hat (slightly tilted forward, casting
+  shadow on the upper back)
+- Sand-bleached short-sleeve work shirt
+- Palm-bark work pants
+- Soft-soled work boots (palm-bark)
+No detailed facial features (matches the operator-portrait
+spec — brand-anchored, no AI face). No skin texture, no eyes,
+no mouth. Hat brim + back-of-neck silhouette carry the
+identity.
+
+LIGHTING: Soft golden-hour light from upper-right, matching
+scene 2's lighting direction. The operator casts a soft shadow
+on the foreground grass to the lower-left.
+
+PALETTE: Same 9 tokens as _style-block.md. No new colors.
+
+STYLE: Hand-drawn gouache, painterly brushwork, ~218MB
+storybook-landscapes-xl LoRA at 0.80, NO IP-Adapter (the
+operator must be a fresh generation, not a style clone of the
+keeper anchor — and especially NOT the hand-authored
+operator-portrait style, which is a fidelity mismatch with
+the painted VEO background).
+
+RESOLUTION: 2400x1500 master, cropped 2400x1200 desktop and
+1200x1500 mobile per the same v2 pattern.
+
+SEED: 4500 (off-family from the 4242 master so this doesn't
+inherit any of the master's failure modes).
+```
+
+The generation follows the same D-0008 / D-0045 process:
+generate 4 candidates, score against the brief's acceptance
+criteria, re-roll on failure, escalate after 3 failed re-rolls.
+
+The compositing step: the operator overlay is layered onto the
+scene 2 background via the existing `mix-blend-mode: multiply`
+pattern (same as the Wave 4 palms parallax, which the D-0049
+rev 2 drop showed was correct for "painted + painted"
+composites). A small saturation + sharpening pass (PIL /
+sharpened-webp encoding at q=82) matches the operator's
+brushwork to the scene 2 background's brushwork. A
+side-by-side 50% alpha blend of scene 2 alone and the
+composited scene 4 must read as a single image — if the
+composite reads as "two images stacked," the operator overlay
+is re-rolled or the compositing parameters are tuned.
+
+**Cost: ~2 hours of generation time on the RTX 3090 (focused
+single-subject brief, fewer re-rolls than the full-scene
+version) + ~1 hour of compositing + post-processing (PIL crop
+of scene 2 master, multiply-blend compositing, PNG → WebP at
+q=82, mobile + desktop crops, hand-tuned brightness/contrast
+to match scene 2's lighting).**
+
+**Code work:**
+
+1. **Extend the hero section from 350svh to 460svh.** Single-line
+   CSS change in `HeroFieldTelemetry.module.css`.
+
+2. **Add a new `OperatorArrival` component** at
+   `apps/web/src/components/sections/OperatorArrival.tsx` + matching
+   `.module.css`. Renders the painted asset as a full-bleed
+   background, the editorial copy as a centered column, the chapter
+   chrome as horizontal rules.
+
+3. **Add 3 new MotionValues in `HeroFieldTelemetry.tsx`**:
+   - `operatorArrivalFade` = useTransform(smoothProgress, [0.70, 0.78, 0.88, 0.95], [0, 1, 1, 0])
+   - The hard-cut keyframes (no easing) are intentional — the
+     transition is a scene change, not a dissolve.
+   - The chapter chrome's opacity follows the same pattern.
+
+4. **Add the `<OperatorArrival>` to the hero JSX** at z-index 1.5
+   (between the photo and the storybook, so the storybook can never
+   bleed on top of it during the cross-fade). Aria-label the
+   painted asset for screen readers.
+
+5. **Update `lib/content.ts` `hero.scene3`** (rename to `hero.scene4`
+   for accuracy) with the new copy: `CHAPTER 3 — THE OPERATOR` /
+   `Same operator, every week.` / etc.
+
+6. **Update `app/page.tsx` no props change** — the new scene is
+   internal to the hero component, so the page composition is
+   unchanged.
+
+### 3.4 Path B acceptance criteria
+
+1. **The composited "operator arrival" scene reads as a single
+   painted Florida scene** at 100% zoom. Verified by: (a) the
+   50% alpha blend of scene 2 alone and scene 4 composite reads
+   as a single image, not "two images stacked" (the D-0049 rev 4
+   fidelity-mismatch test), (b) no AI-face artifacts, no painted
+   people uncanny valley, no flat-vector elements breaking the
+   gouache style. The operator overlay must be PAINTED VEO, not
+   hand-authored SVG cartoon — the hand-authored style is a
+   fidelity mismatch with the painted background.
+2. **The hard-cut transition at 0.70-0.78 reads as a deliberate
+   scene change**, not a missed cross-fade. Because scene 4
+   shares the scene 2 ranch house as the background asset
+   (different crop + operator overlay added), the hard-cut
+   reads as "the ranch house gets closer and reveals the
+   operator" — verified by visual review of the 8-position
+   capture set.
+3. **The new copy answers a question the existing copy doesn't.**
+   Scene 1 = WHO (your neighbor's lawnmower). Scene 2 = WHAT (the
+   real work, on a real lawn). Scene 3 = COMMITMENT (same yard,
+   every week). Scene 4 = WHO+HOW (same operator, same tools, six
+   years, six ZIPs). Each scene earns its 100svh.
+4. **Lighthouse perf stays ≥95.** The composited asset is
+   ~300-400KB (similar to the existing scene 2 asset), and it's
+   `loading="lazy"` so it doesn't enter the initial bundle.
+5. **Typecheck clean, charter 3/3, Playwright 32/32 (after baseline
+   refresh).**
+6. **The operator overlay respects the 9-token brand palette**
+   (verified by automated palette-coverage audit, same script as
+   D-0043). The scene 2 background asset is unchanged and
+   trivially passes this audit.
+
+### 3.5 Path B rollback
+
+Single-commit revert. The `OperatorArrival` component + the 3
+MotionValues + the section-height CSS change are all small and
+isolated. Confidence after Path B: **0.80** (up from the original
+0.75 because the composited approach removes the ranch-house-
+matching risk; the remaining 0.20 risk is the new painted
+operator generation itself — a single-subject brief is the
+lowest-risk ComfyUI generation pattern in this codebase, but it
+is still a new asset that hasn't been seen in production).
+
+---
+
+## 4. Why Path A first, Path B second
+
+The D-0043 → D-0058 burst taught us three things:
+
+1. **Each addition to the hero is a forced choice about cross-fade
+   window.** The current windows are 30% and 30%. Adding anything
+   that wants to live in those windows breaks the existing layers.
+2. **Visual languages don't mix in transition.** The D-0049 rev 4
+   lesson, applied one level up: the [0.10, 0.40] band can't
+   contain cartoon + photo + cartoon overlay + cartoon glow
+   simultaneously. Each one wants the window for itself.
+3. **The page below the hero is already strong.** ServiceAreaMap,
+   OperatorStrip, ServiceBento, PricingTiers, ProcessSteps,
+   ScheduleTimeline, FAQAccordion, FinalCTABanner — these 8
+   sections answer every question a Largo homeowner has. Adding
+   "WHERE" or "WHO" inside the hero duplicates work that's
+   already done better below.
+
+Path A deletes the D-0050 additions because the sections below
+already carry their data, and uses the freed hero capacity to do
+the design refinements (paper grain, ranch-house gouache,
+two-phase cross-fade, editorial chrome) that the cross-fade
+problem obscured. Ship that, see it in production, get the
+charter's 2-week KPI data on it.
+
+Path B is the right way to *re-extend* once Path A is in
+production. The hard-cut scene pattern is a known motion-design
+technique (used in editorial sites like NYT and Verge longform
+pieces) that lets each scene have its own visual language and its
+own question, with the section-height budget as the only cost.
+The risk is real but contained: if Path B's hard-cut reads as
+jarring, we revert the new component and we're back to Path A.
+
+---
+
+## 5. The art-direction backbone (applies to both paths)
+
+Both paths share a single design philosophy, lifted from the
+existing brand and from `_style-block.md`:
+
+**5.1 Three visual languages, one transition rule.**
+
+The site has three visual languages, each tied to one section
+position:
+
+| Position | Language | Where it lives |
+|---|---|---|
+| Cartoon (flat vector) | Scene 1 of the hero, the eyebrows, the operator portrait, the icons | A 1px stroke in `var(--ll-palm-bark)` suggests hand-drawn linework. Two-stop gradients on the ranch houses (per Path A 2.2.1) suggest painterly depth without breaking the flat-vector convention. |
+| Documentary photo (4K, real) | Scene 2 of the hero, the area scenes below | Natural sunlight, real architecture, no stylization. The warmth-grade overlay (D-0043) is the only treatment. |
+| Painted (gouache / hand-drawn) | Scene 2/3 of the hero, the service scenes, the area scenes, the operator arrival scene (Path B) | The storybook-landscapes-xl LoRA's brushwork. Soft edges, warm palette, painterly texture. |
+
+The transition rule: **at any scroll position, the visitor should
+see exactly one visual language dominating the viewport, with the
+next language either completely absent or mostly transparent.**
+Cross-fade windows are 30% scroll wide. In Path A's two-phase
+cross-fade (§2.2.2) the dominant language is at >60% opacity for
+the first half of each window — 0.10-0.25 in the [0.10, 0.40]
+band, 0.40-0.55 in the [0.40, 0.70] band. These are the "I'm in
+language X" zones. The second half (0.25-0.40 and 0.55-0.70) is
+the actual dissolve — the dominant language drops from 60% to 0%
+and the next language rises from 0% to 100%. Below 60%, the
+visitor is reading for the next scene. The D-0043 implementation
+gets close (it does have the asymmetric soft-fade) but the
+additions in D-0050 violated the rule by adding overlay layers
+that *never* dropped below 60% during the window — they sat on
+top of the storybook for the entire [0.10, 0.40] band.
+
+This is the same motion-design discipline editorial sites use.
+The D-0043 implementation gets close (it does have the asymmetric
+soft-fade) but the additions in D-0050 violated the rule by
+adding overlay layers that *never* dropped to 30% during the
+window.
+
+**5.2 The hand-drawn linework convention.**
+
+Every flat-vector element in the site (operator portrait, ranch
+houses, palms, icons, callout pills) gets a 1px stroke in
+`var(--ll-palm-bark)` at 0.5-0.7 opacity. This is the
+"every illustration has a hand-drawn outline" convention that
+makes the flat vector feel painted rather than generated. Path A
+extends this to the ranch houses (currently unstroked). The cost
+is ~3KB of inline SVG per house; the visual difference is
+significant.
+
+**5.3 The editorial chrome convention.**
+
+Any section that hosts an "editorial pull-quote" (currently just
+scene 2 of the hero, but later the editorial break sections like
+FieldLog) gets:
+
+- A `var(--ll-clay)` 8x8px square to the left of the eyebrow
+- 1px horizontal rules above the eyebrow and below the subhead
+- A 1.4em opening curly quote with `translateY(-0.1em)`
+- A `var(--ll-clay)` 1px underline on CTA hover
+
+This is the magazine / editorial-spread convention, applied as
+a single CSS module that any "editorial" section can drop in. The
+first application is Path A's scene 2 polish. The module lives
+at `apps/web/src/components/ui/EditorialChrome.tsx` (Path A
+work).
+
+**5.4 The color-tokens discipline.**
+
+The 9-token brand palette in `_style-block.md` is binding for all
+generated assets. The automated palette-coverage audit from D-0043
+runs on every new asset before it's accepted (the script lives at
+`apps/web/visual/audit/2026-07-17-hero-palette-coverage-audit.py`).
+Any new color in a new asset that doesn't match a token is a
+rejection criterion. This is the same discipline that prevented
+D-0048's painted house from having a "the dusk sky was teal"
+mood.
+
+---
+
+## 6. File-by-file change list
+
+### 6.1 Path A files
+
+**Reverted (back to pre-D-0050 / D-0052 state):**
+
+- `apps/web/src/components/sections/HeroStorybookLayer.tsx`
+  - Drop the `<g className={styles.operatorSway}>` block
+    (lines ~501-575) — the cartoon operator
+  - Drop the 12-ray sun animation CSS class application
+    (D-0052's `styles.sunRays`, `styles.sunCore`,
+    `styles.sunHalo`) — keep the geometry, drop the
+    animation
+- `apps/web/src/components/sections/HeroFieldTelemetry.tsx`
+  - Drop the `callout` prop, the `<a className={styles.calloutPill}>`
+    JSX, and the `parseScene2Headline` content (the
+    `parseScene2Headline` is still used by SecondScene, just
+    drop the hero's callout usage)
+  - Drop the `<RoutePin />` JSX, the `routePinFade` MotionValue,
+    and the `RoutePin` function component (lines ~974-999)
+  - Drop the `dashboardCombined` MotionValue and the
+    `dashboardFadeOut` MotionValue — the dashboard now uses
+    `uiOpacity` directly (back to D-0043 single-fade behavior)
+- `apps/web/src/components/sections/SecondScene.tsx`
+  - Drop the `perZipStrip` prop, the `perZipStripOpacity` prop,
+    and the `<motion.div className={styles.perZipStrip}>` JSX
+    block (lines ~174-201) — the per-ZIP strip is gone
+- `apps/web/src/lib/content.ts`
+  - Drop `hero.callout` (lines ~102-105)
+  - Drop `hero.scene3.perZipStrip` (lines ~72-84)
+  - Drop `hero.operatorCartoonAriaLabel` (lines ~116-117)
+  - Keep `hero.scene2` unchanged (the painted scene 2 still
+    carries "Same yard, every week.")
+- `apps/web/src/app/page.tsx`
+  - Drop the `callout={heroContent.callout}` and
+    `perZipStrip={heroContent.scene3.perZipStrip}` props on
+    `<HeroFieldTelemetry>`
+
+**Modified (Path A design pass):**
+
+- `apps/web/src/components/sections/HeroStorybookLayer.tsx`
+  - Add paper-grain overlay (`<defs><filter>` with feTurbulence
+    noise pattern, applied to a wrapping `<g>` with
+    `mix-blend-mode: multiply` at 0.08 opacity)
+  - Refactor the `House` component: replace the single
+    `var(--ll-cream)` body fill with a two-stop gradient
+    (`var(--ll-sand-bleached)` → `var(--ll-clay)` at 0.4
+    opacity) and add a 1px stroke in `var(--ll-palm-bark)` at
+    0.6 opacity
+- `apps/web/src/components/sections/HeroFieldTelemetry.tsx`
+  - Refactor the `useTransform` for `opacity` and `filter` on
+    the storybook to two-phase (soft-fade [0.10, 0.25] then
+    dissolve [0.25, 0.40])
+  - Widen the grass-silhouette + green-vignette fade-out leg
+    from [0.4, 0.7] to [0.4, 0.75] and lower the silhouette
+    contrast against the painted scene 2
+- `apps/web/src/components/sections/SecondScene.module.css`
+  - Add editorial chrome: 8x8px clay square, 1px horizontal
+    rules, opening-quote boost, CTA hover underline
+- `apps/web/src/components/ui/EditorialChrome.tsx` (NEW)
+  - A reusable editorial chrome component that any "editorial
+    pull-quote" section can drop in. Renders the clay square,
+    horizontal rules, and opening-quote boost as a single
+    fragment
+
+**Capture + verify (Path A acceptance):**
+
+- `apps/web/audit/d-0059-path-a/` (NEW)
+  - `hero-y000.png` through `hero-y100.png` (8 captures at
+    0, 10, 20, 30, 40, 60, 80, 100)
+  - `zoom-ranch-house.png` (200% zoom on the ranch house for
+    the gradient + linework verification)
+  - `compare-pct-020.png` (side-by-side with the pre-Path A
+    `d-0050-final/scene-pct-020.png` for the "no ghost-bleed"
+    verification)
+  - `audit.md` (the audit memo, ~150 lines, walking through
+    each acceptance criterion with the visual evidence)
+
+**Test + governance:**
+
+- `apps/web/visual/baselines/hero-chromium-{desktop,mobile}.png`
+  - Refresh after the paper-grain + editorial-chrome + cross-
+    fade changes (the visual regression suite catches the
+    delta; the byte-lock cascade from D-0014 verifies the
+    source-of-truth)
+- `apps/web/visual/baselines/hero-ghost-bleed-chromium-desktop.png`
+  (NEW) — a named baseline at scroll 20% to catch future ghost-
+  bleed regressions
+- `governance/decisions/0059-hero-simplification-and-extension.md`
+  (this file) — already written
+- `state/ledger.yaml` — add a changelog entry for D-0059 Path A
+  ship
+
+### 6.2 Path B files (if/when Path B runs)
+
+**New:**
+
+- `apps/web/src/components/sections/OperatorArrival.tsx` + `.module.css`
+  - Renders the painted "operator on the lawn" asset as a
+    full-bleed background, the editorial copy as a centered
+    column, the chapter chrome as horizontal rules
+- `apps/comfyui/prompts/hero-operator-arrival.md`
+  - The ComfyUI generation brief for the new asset
+- `apps/web/public/hero/operator-arrival/{desktop,mobile}.{avif,webp}`
+  + `apps/web/public/hero/operator-arrival/operator-arrival.jpg`
+  - The 4-tier `<picture>` cascade (same pattern as D-0045)
+- `apps/web/audit/d-0059-path-b/` (NEW)
+  - 8-position capture set, zoom on the operator silhouette,
+    hard-cut transition review, palette audit
+
+**Modified:**
+
+- `apps/web/src/components/sections/HeroFieldTelemetry.tsx`
+  - Add `operatorArrivalFade` MotionValue
+  - Add `<OperatorArrival />` JSX at z-index 1.5
+  - Rename `scene2` prop references to `scene4` for accuracy
+- `apps/web/src/components/sections/HeroFieldTelemetry.module.css`
+  - Bump section height from 350svh to 460svh
+- `apps/web/src/lib/content.ts`
+  - Rename `hero.scene2` to `hero.scene4` (the painted ranch
+    house becomes "scene 4" once scene 3 is the hard-cut
+    transition, scene 4 is the operator arrival)
+  - Add `hero.scene4` content (CHAPTER 3 — THE OPERATOR, Same
+    operator every week, the equipment list, the CTAs)
+- `apps/web/src/app/page.tsx` — no props change (OperatorArrival
+  is internal to the hero component)
+
+**Test + governance:**
+
+- `apps/web/visual/baselines/hero-chromium-{desktop,mobile}.png`
+  - Refresh again
+- `apps/web/visual/baselines/operator-arrival-chromium-{desktop,mobile}.png`
+  (NEW) — per-component baselines for the new scene
+- `state/ledger.yaml` — add a changelog entry for D-0059 Path B
+  ship
+
+---
+
+## 7. Confidence and risk
+
+### 7.1 Path A confidence: 0.85
+
+The revert is mostly deleting code (low risk of regression). The
+design pass is small (~120 lines of new SVG + CSS) and isolated.
+The capture set will catch the ghost-bleed in the first round of
+visual review. The Lighthouse perf budget is comfortable (the
+additions are tiny). Confidence 0.85 (up from the original 0.82
+proposal) because the D-0049 ship-time confidence was already
+0.85, and Path A is *less* risky than D-0049 (mostly deletion +
+small additions vs D-0049's architectural Three.js → pure-CSS
+shift).
+
+Risk: the editorial chrome + paper-grain + cross-fade refinement
+might not visually land in the first round. Each is independently
+revertable. The hero's worst-case after a failed Path A is "back
+to the D-0050 state with three small design additions" — still
+better than where we are today.
+
+### 7.2 Path B confidence: 0.80
+
+The composited approach (§3.3) removes two of the original three
+risks. The ranch-house-matching risk is gone (the background IS
+scene 2's existing painted asset, by definition). The D-0049
+rev 4 fidelity-mismatch risk is gone (the operator is painted
+VEO, not hand-authored SVG, so it matches the scene 2
+background). The hard-cut scene pattern is a known motion-design
+technique (used in longform journalism and editorial sites) but
+it's new to this codebase.
+
+The remaining risk is the new painted operator generation
+itself. A single-subject brief is the lowest-risk ComfyUI
+generation pattern in this codebase (no scene setting, no
+multi-element composition, no lighting-direction matching), but
+it is still a new asset that hasn't been seen in production.
+The 3-re-roll-and-escalate rule from
+`apps/comfyui/prompts/hero-v2.md` §8.3 is the safety net.
+
+Risk: Path B might ship with a slightly-wrong painted operator
+(mismatched brushwork, uncanny pose, palette drift). The
+acceptance criterion #1 in §3.4 (the 50% alpha blend must read as
+a single image) catches this before ship. The single-commit
+revert takes it back to Path A's 350svh hero with no operator
+arrival scene.
+
+### 7.3 What's NOT risky
+
+The page composition below the hero (D-0029, D-0033, D-0034, D-0055,
+D-0057, D-0058) is solid and unchanged. The conversion path
+(Coverage Check → Operator bio → Service grid → Pricing →
+Process → Schedule → FAQ → Final CTA) is the conversion path
+the charter was always supposed to ship, and the recent additions
+(FieldLog, SpecimenPlate, PocketMap) earned their sections.
+
+---
+
+## 8. Review checklist (for the steward, before signing off)
+
+### 8.1 Sign-off record (2026-07-21)
+
+Mavis (orchestrator) reviewed the staged D-0059 plan against the
+visible ghost-bleed evidence (`apps/web/audit/d-0050-final/
+scene-pct-{020,040,060}.png`), the actual `HeroFieldTelemetry.tsx`
+cross-fade code, the D-0049 / D-0050 / D-0052 ADRs, the
+OperatorStrip and ServiceAreaMap source, and the state ledger.
+The ghost-bleed is real — the 020 capture shows the cartoon sun,
+three cartoon palms, two cartoon houses, the cartoon operator +
+mower, and the cartoon grass scallop all sitting on top of the 4K
+photo simultaneously. The diagnosis is correct.
+
+Seven edits folded into the staged file based on the review:
+
+1. **§1** — added the emotional-vs-transactional distinction for
+   Q3 (the hero answers the emotional form, the page below
+   answers the transactional form, both are answering the same
+   question in different registers).
+2. **§2.3** — reframed as "What gets deleted (the data already
+   lives in the sections below)" not "What gets re-homed"; the
+   rightmost column became "Already in the page below" and the
+   text made explicit that no work in the sections below is
+   required.
+3. **§0** — added a "What D-0050 got right" note so the rollback
+   reads as "interaction-effect lesson learned" not "D-0050 was
+   wrong" (each phase was per-phase validated, coordinated with
+   existing motion values, and visually verified at 8 scroll
+   positions).
+4. **§3.3 + §3.4** — switched the Path B "operator on the lawn"
+   approach from "new full-scene ComfyUI generation" to
+   "composite: existing scene 2 frame as background + new painted
+   operator overlay." This removes the ranch-house-matching risk
+   and aligns with the D-0049 rev 4 lesson (painted + painted, no
+   fidelity mismatch).
+5. **§2.5 + §7.1** — bumped Path A confidence from 0.82 to 0.85
+   (matching the D-0049 ship-time confidence; Path A is
+   deletion-heavy so the regression risk is *lower* than D-0049's
+   architectural shift, not the same).
+6. **§3.5** — bumped Path B confidence from 0.75 to 0.80 (the
+   composited approach removes the ranch-house-matching risk; the
+   remaining 0.20 is the new painted operator generation itself).
+7. **§5** — aligned the transition rule numbers with §2.2.2's
+   implementation (dominant language at >60% for the first half
+   of each cross-fade window, not >70% — the implementation
+   numbers and the prose now match).
+
+Status: **RATIFIED**. Path A ready to execute. Path B is a
+separate engagement after Path A is in production and the
+steward has had ~1 week with the simplified hero.
+
+### 8.2 Original review checklist (for the audit trail)
+
+- [x] Read the visible ghost-bleed evidence:
+      `apps/web/audit/d-0050-final/scene-pct-{020,040,060}.png`
+- [ ] Read the proposed Path A capture set placeholder:
+      `apps/web/audit/d-0059-path-a/` (after Path A ships —
+      forward-looking)
+- [x] Confirm the "questions 1-3 only" design ground-truth in
+      §1 matches your intent for the hero
+- [x] Confirm the deletion in §2.3 (callout, operator, route
+      pin, per-ZIP strip) is what you want
+- [x] Confirm the 3 design additions in §2.2 (paper grain, ranch-
+      house gouache, two-phase cross-fade) match your taste
+- [x] Confirm the editorial chrome in §2.2.3 (clay square,
+      horizontal rules, opening-quote boost) matches the
+      magazine-spread convention you want
+- [ ] Decide on Path B: scene 1 only (operator arrival), or all 4
+      candidate scenes, or none (Path A is the destination) —
+      forward-looking, decided after Path A is in production
+- [x] Confirm the rollback strategy in §2.5 + §3.5 is acceptable
+      (each addition is independently revertable, single-commit
+      revert per phase)
+
+**Path A execution: ready to begin.** Mavis (orchestrator) starts
+the §9 work order when the steward gives the go-ahead. Path B is
+a separate engagement after Path A is in production and the
+steward has had ~1 week with the simplified hero.
+
+---
+
+## 9. Status
+
+**RATIFIED 2026-07-21** — steward sign-off complete. Path A is
+ready to execute. Path B is a separate engagement after Path A is
+in production and the steward has had ~1 week with the simplified
+hero.
+
+The work order, when execution begins:
+
+1. **Day 1 (Path A)**: revert D-0050 overlays + D-0052 sun
+   animation. Land the section-height unchanged. Run the 8-position
+   capture set, verify ghost-bleed is gone, commit.
+2. **Day 1-2 (Path A design pass)**: paper-grain overlay, ranch-
+   house gouache, two-phase cross-fade, editorial chrome. Run
+   capture set, verify visual lift, commit each independently.
+3. **Day 2-3 (Path A acceptance)**: refresh Playwright baselines,
+   run typecheck + charter + visual:test, write the audit memo,
+   commit the ledger entry.
+4. **Day 4+ (Path B, optional)**: composite the operator-arrival
+   scene (existing scene 2 frame + new painted operator overlay
+   per §3.3), build the OperatorArrival component, run the
+   hard-cut review, ship if it lands.
+
+End of ADR.
