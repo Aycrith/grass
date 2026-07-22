@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-21 (Day 28 — D-0059 hero simplification + re-extension ADR RATIFIED; Path A ready to execute)
+# Last updated: 2026-07-22 (Day 29 — D-0059 Path A rev3 ship: tighter cross-fade [0.10, 0.25], paper-grain dropped, dashboard fade-in delayed to [0.25, 0.40])
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-21 (Day 28 — D-0059 hero simplification + re-extension ADR RATIFIED; Path A ready to execute)
+# Last updated: 2026-07-22 (Day 29 — D-0059 Path A rev3 ship: tighter cross-fade [0.10, 0.25], paper-grain dropped, dashboard fade-in delayed to [0.25, 0.40])
 # ===================================================================
 
 schema_version: 0.1.0
@@ -3621,4 +3621,41 @@ changelog:
       - "apps/web/audit/d-0059-path-a/ (placeholder - populated after Path A ships)"
     commit: "pending-sha-this-commit (see git log for actual SHA; self-referential loops avoided)"
 
+  - date: "2026-07-22"
+    day: 29
+    decision: D-0059-rev3
+    title: "D-0059 Path A rev3 - tighter cross-fade + paper-grain dropped + dashboard delayed"
+    summary: >
+      D-0059 Path A rev2 (sun animation restored + two-phase cross-fade
+      + paper-grain + editorial chrome) shipped, but the y=0.20 capture
+      showed a clear double-exposure: the storybook was at 73% opacity
+      with only 2.67px blur on top of the photo, so the visitor saw
+      two houses, two suns, two sets of palms. The "LIVE Route has
+      room" dashboard callout was also visible at 67% opacity on top
+      of the dissolving storybook, making the mid-cross-fade frame
+      feel busy and the dashboard reveal unclear. Three corrections
+      applied: (1) cross-fade window tightened from 30% to 15% of
+      scroll (Phase 1 smear [0.10, 0.18] opacity 1->0.4 + blur
+      0->8px + saturate 100->70%; Phase 2 dissolve [0.18, 0.25]
+      opacity 0.4->0 + blur 8->14px + saturate 70->0%); (2) the
+      200x200 SVG feTurbulence paper-grain overlay removed (it
+      added visible noise to the ghost overlay during the
+      cross-fade - class kept as a commented stub for traceability);
+      (3) dashboard fade-in delayed from [0.10, 0.30] to [0.25, 0.40]
+      so the LiveStatus callout + TelemetryStats parent appear AFTER
+      the storybook is fully gone, as a clean reveal on the resting
+      photo. D-0052 sun animation preserved (the user explicitly
+      preferred the alive, breathing sun over the static sun in rev2;
+      the tighter cross-fade keeps the sun animation visible for
+      the full 100%->0% storybook phase before the smear takes over).
+    by: "Mavis (orchestrator, 2026-07-22)"
+    review_date: "2026-10-22"
+    twined_with: "D-0043 (cross-fade substrate - window changed from 30% to 15%); D-0052 (sun animation - preserved through rev3); D-0059 rev2 (this revision tightens the two-phase that rev2 implemented); SecondScene editorial chrome (also shipped in this commit - was in working tree from previous session)"
+    audit_artifacts:
+      - "apps/web/audit/d-0059-path-a/hero-y{000,005,010,020,030,040,060,080,100}.png (9-position capture set, all positions re-shot with the rev3 build)"
+      - "y=0.20 capture: storybook fully dissolved by 20% scroll, photo clean (no double-exposure)"
+      - "y=0.40 capture: LiveStatus callout appears on the resting photo (dashboard reveal at y=0.25-0.40)"
+      - "y=0.00 capture: clean cartoon storybook (no paper-grain texture)"
+    commit: "17afa16"
+    commit_message: "feat(hero): D-0059 Path A rev3 - tighter cross-fade, no paper-grain, dashboard after storybook"
 
