@@ -83,20 +83,43 @@
 .sunRays {
   transform-box: view-box;
   transform-origin: 352px 252px;
-  animation: sunRaysRotate 20s linear infinite;
+  /* D-0059 rev6 - rotation slowed 20s -> 30s. The 20s cycle was
+   * fast enough that the 8 triangular rays (was 12 line rays)
+   * read as "spinning wireframe" — the eye noticed the rotation
+   * more than the sun shape. 30s is below the threshold of
+   * conscious motion detection; the rays feel "intentionally
+   * present" rather than "actively spinning". */
+  animation: sunRaysRotate 30s linear infinite;
 }
 
 .sunCore {
   transform-box: view-box;
   transform-origin: 352px 252px;
-  animation: sunCoreBreathe 4.4s ease-in-out infinite;
+  /* D-0059 rev6 - breathing slowed 4.4s -> 6s, scale 1.0->1.02.
+   * 4.4s was on the edge of "the sun is winking at me" — the
+   * 3% scale change drew attention. 6s with 2% reads as "the
+   * sun is alive" without being a motion the user wants to
+   * follow. The keyframe opacity bump (0.9->1.0) is kept so
+   * the core still brightens at the peak of the breath. */
+  animation: sunCoreBreathe 6s ease-in-out infinite;
 }
 
 .sunHalo {
   transform-box: view-box;
   transform-origin: 352px 252px;
-  animation: sunHaloPulse 4.4s ease-in-out infinite;
-  animation-delay: -0.6s;
+  /* D-0059 rev6 - halo pulse retimed. The new .sunHalo is a
+   * radial gradient circle (sunGlow) with built-in opacity
+   * (0.42 at center fading to 0). The element-level opacity
+   * animation now goes 0.85 -> 1.0 (the OLD animation went
+   * 0.18 -> 0.30 on a flat-fill circle). Scale 1 -> 1.06 is
+   * kept so the glow swells outward at the peak. The 1.5s
+   * delay (was -0.6s, i.e. 0.6s ahead of the core) is now
+   * a +1.5s delay (behind the core) so the halo brightens
+   * AFTER the core breathes — reads as "the glow responds
+   * to the core" rather than "two things pulsing in
+   * parallel". */
+  animation: sunHaloPulse 6s ease-in-out infinite;
+  animation-delay: 1.5s;
 }
 
 @keyframes sunRaysRotate {
@@ -105,13 +128,13 @@
 }
 
 @keyframes sunCoreBreathe {
-  0%, 100% { transform: scale(1);    opacity: 0.9; }
-  50%      { transform: scale(1.03); opacity: 1;   }
+  0%, 100% { transform: scale(1);    opacity: 1; }
+  50%      { transform: scale(1.02); opacity: 1; }
 }
 
 @keyframes sunHaloPulse {
-  0%, 100% { transform: scale(1);    opacity: 0.18; }
-  50%      { transform: scale(1.06); opacity: 0.30; }
+  0%, 100% { transform: scale(1);    opacity: 0.85; }
+  50%      { transform: scale(1.06); opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -279,17 +302,14 @@
   transform-origin: bottom;
 }
 
-.wildflowers circle {
-  transform-origin: center;
-  animation: bloom 1.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+.wildflowers {
+  /* D-0059 rev6 — wildflowers REMOVED from JSX (see NearLayer
+   * comment in HeroStorybookLayer.tsx). The class is preserved
+   * here as a no-op so any future re-introduction doesn't need
+   * to recreate the CSS — just uncomment + add the bloom keyframes
+   * back. The .bloom keyframes + .wildflowers child rules are
+   * also kept for the same reason. */
 }
-
-.wildflowers g:nth-child(1) circle { animation-delay: 0.2s; }
-.wildflowers g:nth-child(2) circle { animation-delay: 0.4s; }
-.wildflowers g:nth-child(3) circle { animation-delay: 0.6s; }
-.wildflowers g:nth-child(4) circle { animation-delay: 0.8s; }
-.wildflowers g:nth-child(5) circle { animation-delay: 1.0s; }
-.wildflowers g:nth-child(6) circle { animation-delay: 1.2s; }
 
 @keyframes grow {
   from { transform: scaleY(0); opacity: 0; }
@@ -303,8 +323,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .blades,
-  .wildflowers circle {
+  .blades {
     animation: none;
   }
 }

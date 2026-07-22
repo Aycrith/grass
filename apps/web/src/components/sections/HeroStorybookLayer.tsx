@@ -273,90 +273,94 @@ function BackgroundSky(): ReactNode {
           <stop offset="80%" stopColor="var(--ll-cream)" />
           <stop offset="100%" stopColor="var(--ll-sand-bleached)" />
         </linearGradient>
-        <radialGradient id="hero-sun" cx="0.22" cy="0.28" r="0.28">
-          <stop offset="0%" stopColor="var(--ll-cream)" stopOpacity="0.95" />
-          <stop offset="35%" stopColor="var(--ll-sun-light)" stopOpacity="0.6" />
+        {/* D-0059 rev6 - sun warm glow + core gradient + ray gradient.
+         * The previous sun used a single radialGradient on a full
+         * background rect (hero-sun) for the halo effect, which was
+         * diffuse and barely visible. The new sun has:
+         *   1. A soft warm GLOW (sunGlow radial gradient on a circle
+         *      r=150) — sits behind the core, pulses subtly.
+         *   2. A warm CORE gradient (sunCore radial) — cream at the
+         *      upper-left highlight, fading to sun at the edge.
+         *      Reads as a warm glowing orb, not a flat white disc.
+         *   3. 8 triangular RAYS (sunRay linear gradient, lighter at
+         *      the tip, darker at the base) — substantially more
+         *      visual mass than the previous 12 thin line rays
+         *      (stroke 5px) which read as "wireframe spokes". */}
+        <radialGradient id="sunGlow" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0%" stopColor="var(--ll-sun)" stopOpacity="0.42" />
+          <stop offset="45%" stopColor="var(--ll-sun)" stopOpacity="0.18" />
           <stop offset="100%" stopColor="var(--ll-sun)" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="sunRay" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--ll-sun-light)" />
+          <stop offset="100%" stopColor="var(--ll-sun-deep)" />
+        </linearGradient>
+        <radialGradient id="sunCore" cx="0.38" cy="0.38" r="0.62">
+          <stop offset="0%" stopColor="var(--ll-cream)" />
+          <stop offset="55%" stopColor="var(--ll-sun-light)" />
+          <stop offset="100%" stopColor="var(--ll-sun)" />
         </radialGradient>
       </defs>
       <rect width="1600" height="900" fill="url(#hero-sky)" />
-      <rect width="1600" height="900" fill="url(#hero-sun)" />
-      {/* D-0052 - animated cartoon sun. The sun was previously two
-       * static circles (core + halo). Three coordinated CSS
-       * animations now give it life:
+
+      {/* D-0059 rev6 - sun artistic rework. The previous sun had 12
+       * thin line rays (stroke 5px) rotating at 20s/360deg, which read
+       * as a wireframe sketch rather than an intentional illustration.
+       * The new sun is composed of three concentric layers:
        *
-       *   - .sunRays   rotates the 12-ray group around (352, 252) at
-       *                20s/360deg linear. Slow enough to read as
-       *                ambient motion, not a windmill.
-       *   - .sunCore   breathes scale 1.0 -> 1.03 at 4.4s ease-in-out.
-       *                The 3% scale is just below the threshold of
-       *                "is the sun winking at me?" - registers as
-       *                warmth without being a button.
-       *   - .sunHalo   pulses opacity 0.18 -> 0.30 at 4.4s, slightly
-       *                out-of-phase from the core (delay 0.6s) so the
-       *                glow appears to swell from the edge inward.
+       *   1. .sunGlow  — a soft warm radial gradient circle (r=150)
+       *                  that pulses opacity 0.85->1.0 + scale 1->1.06
+       *                  at 6s ease-in-out, with a 1.5s delay so the
+       *                  glow appears to swell from the edge inward
+       *                  (out-of-phase with the core).
+       *   2. .sunRays  — 8 triangular rays at 45° intervals, each a
+       *                  filled path with a tip-to-base gradient
+       *                  (sun-light -> sun-deep). The group rotates
+       *                  30s/360deg linear (was 20s) — slower so the
+       *                  motion reads as ambient warmth, not spinning.
+       *   3. .sunCore  — a warm radial-gradient orb (cream highlight
+       *                  upper-left, sun-light mid, sun edge) that
+       *                  breathes scale 1.0->1.02 at 6s ease-in-out.
+       *                  The breathing is more subtle than the
+       *                  previous 1.0->1.03 — 2% is "the sun is alive"
+       *                  without being a button the user wants to
+       *                  press.
        *
-       * The rays are hand-authored flat-fill SVG to match the
-       * existing cartoon style (no gradients, no soft edges - same
-       * lesson as the D-0049 operator: painted VEO brushwork would
-       * clash with hand-authored SVG). Each ray is a 5px-wide
-       * tapered line from r=128 to r=170 around the sun center.
+       * The 8 rays are defined ONCE as a single triangle path
+       * (pointing up, at the top) and rotated to each of the 8
+       * positions via the SVG `transform="rotate(rot 352 252)"`
+       * attribute. This keeps the JSX minimal and the SVG small.
        *
-       * transform-box: view-box (the same SVG-coordinate trick the
-       * operatorSway class uses) lets the rotation pivot be
-       * expressed in SVG viewBox units (352px, 252px) without
-       * fighting the parent div's CSS layout.
-       *
-       * D-0059 rev2 - sun animation RESTORED. The original D-0059
-       * plan §2.1 called for dropping this animation ("static sun
-       * reads as more confident"). The first pass of d-0059
-       * captures (y000 + y020) proved that wrong: without the
-       * breathing, the storybook reads as a flat static
-       * illustration - the sun was the most prominent "alive"
-       * element and killing it killed the storybook's character.
-       * The ghost-bleed is solved by removing the D-0050
-       * additions (callout, operator, route pin, per-ZIP strip)
-       * + the two-phase cross-fade (Phase 2) - NOT by killing the
-       * sun animation. The 12-ray geometry was always meant to
-       * be alive. */}
-      <g
-        className={styles.sunRays}
-        stroke="var(--ll-sun)"
-        strokeWidth="5"
-        strokeLinecap="round"
-        opacity="0.85"
-      >
-        {Array.from({ length: 12 }).map((_, i) => {
-          const angle = (i * 30 * Math.PI) / 180;
-          const inner = 128;
-          const outer = 170;
-          return (
-            // biome-ignore lint/suspicious/noArrayIndexKey: static generated sun rays
-            <line
-              key={i}
-              x1={352 + inner * Math.cos(angle)}
-              y1={252 + inner * Math.sin(angle)}
-              x2={352 + outer * Math.cos(angle)}
-              y2={252 + outer * Math.cos(angle)}
-            />
-          );
-        })}
-      </g>
+       * The previous D-0052 reasoning (rotation gives the sun life
+       * vs static = dead illustration) still holds — the user
+       * confirmed in rev2 they prefer the alive sun. The rev6 fix
+       * is about HOW the animation is rendered, not WHETHER to
+       * animate: triangular rays + warm gradients + slower timing
+       * gives a "warm glowing sun" rather than a "spinning wireframe". */}
       <circle
         className={styles.sunHalo}
         cx="352"
         cy="252"
-        r="120"
-        fill="var(--ll-sun)"
-        opacity="0.18"
+        r="150"
+        fill="url(#sunGlow)"
       />
+      <g className={styles.sunRays}>
+        {[0, 45, 90, 135, 180, 225, 270, 315].map((rot) => (
+          <g key={rot} transform={`rotate(${rot} 352 252)`}>
+            <path
+              d="M 352 87 L 344 162 L 360 162 Z"
+              fill="url(#sunRay)"
+              opacity="0.78"
+            />
+          </g>
+        ))}
+      </g>
       <circle
         className={styles.sunCore}
         cx="352"
         cy="252"
-        r="72"
-        fill="var(--ll-cream)"
-        opacity="0.9"
+        r="80"
+        fill="url(#sunCore)"
       />
       {/* Birds (V-shapes) drift gently via CSS animation. */}
       <g
@@ -501,17 +505,17 @@ function MidLayer(): ReactNode {
          * read through it. */}
         <PalmTree
           x={950}
-          y={260}
-          h={220}
+          y={400}
+          h={130}
           trunkFill="url(#mid-trunk)"
           frondFill="url(#mid-frond)"
         />
       </g>
       <g className={styles.swaySlow} style={{ animationDelay: '-0.6s' }}>
         <PalmTree
-          x={1850}
-          y={290}
-          h={190}
+          x={1750}
+          y={360}
+          h={130}
           trunkFill="url(#mid-trunk)"
           frondFill="url(#mid-frond)"
         />
@@ -583,20 +587,29 @@ function NearLayer(): ReactNode {
             );
           })}
         </g>
-        <g className={styles.wildflowers}>
-          {[
-            { x: 240, y: 650, c: 'var(--ll-sun)' },
-            { x: 580, y: 660, c: 'var(--ll-clay)' },
-            { x: 1240, y: 656, c: 'var(--ll-sand)' },
-            { x: 1620, y: 652, c: 'var(--ll-sun)' },
-            { x: 1860, y: 662, c: 'var(--ll-clay)' },
-          ].map((f) => (
-            <g key={`flower-${f.x}-${f.y}-${f.c}`} transform={`translate(${f.x} ${f.y})`}>
-              <circle r={3} fill={f.c} />
-              <circle r={1.4} fill="var(--ll-palm-bark)" />
-            </g>
-          ))}
-        </g>
+        {/* D-0059 rev6 — wildflowers REMOVED.
+         *
+         * The 5 wildflower circles (2px inner + 3px outer, sun/clay/sand
+         * colors at viewBox y=650-662) rendered as 4 visible "erroneous
+         * dots" at the bottom of the storybook on most viewports — the
+         * 5th was off-screen on narrower viewports, and all 5 read as
+         * random stray pixels rather than intentional decoration. The
+         * .bloom animation (scale 0->1.4->1) ran once on first paint
+         * but at 2-3px display size the motion was imperceptible. They
+         * didn't serve a clear purpose and the user flagged them as
+         * "hallucinated and broken incoherent" on the 1920px-wide
+         * review screenshot.
+         *
+         * Removal rationale: the storybook's foreground is the
+         * NearLayer grass blades (60 of them, .grow animation), which
+         * carry the "alive lawn" weight on their own. The wildflowers
+         * added 5 small dots that competed for attention at the
+         * bottom-edge of the scene where the CTA is — the dots and
+         * the CTA button fought for the same visual real estate.
+         *
+         * The CSS .wildflowers class is removed too (no other usage).
+         * See governance/decisions/0059-hero-simplification-and-extension.md
+         * §12 (rev6) for the full rationale. */}
         {/* D-0059 Path A — cartoon operator + walk-behind mower REMOVED.
          *
          * The operator used to render in the empty middle area of
