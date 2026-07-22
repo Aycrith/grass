@@ -1204,4 +1204,184 @@ Path A 0.85 (same as ratified; the cross-fade tightening is
 a refinement, not a scope change). Path B 0.80 (same; not
 affected by rev3).
 
+---
+
+## 10. rev4 — full-page visual polish across all 12 sections
+
+**Trigger:** After the user signed off on rev3 ("do all of this
+while also ensuring that you've optimized and polished the
+visual appearance of this landing page. There are still
+incoherent and low quality aspects to this"), the steward
+asked for a full visual audit of all 12 sections, not just
+the hero. The `full-page-capture.mjs` script (new in rev4)
+discovers every `[data-test-section]` block on the page and
+captures the viewport-height of each, so we have one PNG per
+section as a side-by-side comparison surface.
+
+**Scope expanded from rev3:**
+
+| Section              | Issue identified                                | rev4 fix                                                                                       | Commit            |
+|----------------------|-------------------------------------------------|------------------------------------------------------------------------------------------------|-------------------|
+| Hero                 | Center ranch house overlaps 2nd line headline   | viewBox x=1100 → 1400, scale 1.0 → 0.8 (in `HeroStorybookLayer.tsx` MidLayer)                  | 0344d85           |
+| Hero                 | Right-edge photoVignette bleeds through gaps   | radial center 70% → 75%, 100% stop 35% → 22% palm-bark                                          | 0344d85           |
+| SpecimenPlate        | Hand-authored SVG strokes too faint (0.25-0.5px)| Bumped strokes ~75% wider, opacities ~30% higher via `_boost-contrast.py` (re-runnable script) | f95bf85           |
+| PricingTiers         | "MOST BOOKED" corner stamp clipped the "M"      | Moved `.cardCornerStamp` from `top: var(--space-5)` to `bottom: var(--space-5)`                 | b1e9d76           |
+| ScheduleTimeline     | Stray 120×120 mower illustration in today card  | Removed `<Illustration>` JSX + import; week strip already has per-day icons                     | 2b7e97f           |
+| FinalCTABanner       | Quote-mark v3 read as "two yellow heads"; eyebrow barely visible | Removed `<Illustration>` + `.openingMark` class; bumped eyebrow 0.8/0.08em → 0.85/0.18em, added 48×1px hairline above | f52e83e |
+
+**Sections reviewed and intentionally NOT changed:**
+
+| Section          | Decision                                                                                   |
+|------------------|--------------------------------------------------------------------------------------------|
+| ServiceAreaMap   | Clean as-is.                                                                               |
+| OperatorStrip    | Painted palms backdrop at 7% opacity is intentional editorial design.                      |
+| PocketMap        | Vintage WPA aesthetic is intentional (per D-0058).                                         |
+| FieldLog         | "33771" home base label is a render artifact, not a fix-needed issue.                      |
+| ServiceBento     | Clean as-is.                                                                               |
+| ProcessSteps     | Small location pin icon at top of "01" is an intentional step icon.                        |
+| FAQAccordion     | Pale text on pale bg is intentional cream-on-cream editorial design.                      |
+
+**Hero center ranch house (rev4 detail):**
+
+The D-0043 second scene has a three-house composition (left
+edge, center, right edge) at the photo-vignette horizon line.
+In rev3, the center house was at viewBox x=1100, which maps
+to screen x ≈ 845px on a 1280px viewport — directly under
+the second line of the headline "neighbor's lawn mower."
+The dark roof interrupted the text. Moved to viewBox x=1400
+(screen x ≈ 1075px) and scaled 1.0 → 0.8 so the center house
+brackets the headline (right of the period) instead of crossing
+it. The three-house composition is preserved.
+
+**Hero right-edge photoVignette (rev4 detail):**
+
+The D-0043 rev 2 photoVignette is a radial gradient at
+`ellipse at 70% 50%` with `transparent 0%/40%`, `18% palm-bark
+at 80%`, `35% palm-bark at 100%`. At 1280px viewport, the
+right edge of the photo (x=1280) sits inside the 80% → 100%
+band where the gradient is transitioning from 18% to 35%
+palm-bark — dark enough to read as a "dark band" on the
+right edge of y000-y010, especially where the storybook
+cartoon has gaps (palms and ranch houses at viewBox x=1500+
+are partially off-screen, leaving transparent gaps the
+vignette bleeds through).
+
+Moved radial center to 75% (further right, so the dark band
+is even closer to the corner), and reduced the 100% stop from
+35% palm-bark to 22% — the corner darkening is still there
+for editorial atmosphere, but it's not strong enough to bleed
+through the storybook's right-edge gaps during the resting
+state.
+
+**SpecimenPlate SVG stroke boost (rev4 detail):**
+
+The four specimen SVGs (st-augustine, bermuda, zoysia, bahia)
+are hand-authored sepia line-art in `apps/web/public/specimens/`.
+Original strokes were 0.25-0.5px which disappeared at the
+~300px display size the SpecimenPlate section uses. After
+boost, strokes are 0.55-0.9px and opacities 0.65-0.95 — the
+blade internal structure and the italic Latin labels
+("Stenotaphrum secundatum", "Cynodon dactylon") are now
+readable. The `_boost-contrast.py` script is committed
+alongside the SVGs for traceability; it only changes
+stroke-width/fill-opacity values, is re-runnable, and is
+idempotent (safe to re-apply).
+
+**PricingTiers corner stamp move (rev4 detail):**
+
+The `.cardCornerStamp` class positions a 64×64 hand-painted
+sun ornament on the Mowing card. In rev3 it was at
+`top: var(--space-5); left: var(--space-5)` — directly above
+the "M" in "Most yards, most weeks". The orange dot of the
+stamp hit the reader's eye before the headline. Moved to
+`bottom: var(--space-5); left: var(--space-5)`. The stamp
+now brackets the card against the top-right "MOST BOOKED"
+ribbon diagonally (bottom-left ↔ top-right) without crossing
+any text. The .topRight ribbon is unchanged.
+
+**ScheduleTimeline mower removal (rev4 detail):**
+
+The today card originally ended with a 120×120 painted
+mower-side-profile illustration in the bottom-right. The
+illustration was disconnected from any other element on
+the card (no other mower references, no link to the CTA),
+so it read as a "small cartoon lawn mower on a cream
+background" — stray decoration. The week strip already
+has per-day service icons (sun, cloud, leaf, etc.), so the
+today card doesn't need its own brand mark. Removed both
+the `<Illustration>` JSX and the unused import.
+
+**FinalCTABanner quote-mark removal + eyebrow boost (rev4 detail):**
+
+The FinalCTABanner had two issues:
+1. The 56×45 v3 quote-mark illustration rendered as "two
+   yellow head silhouettes" against the palm-shadow band at
+   small display size. Removed the `<Illustration>` and the
+   `.openingMark` class.
+2. The "READY WHEN YOU ARE" eyebrow was 0.8rem/0.08em and
+   barely visible — lacked the editorial chapter-divider
+   register that the OperatorStrip eyebrow uses. Bumped to
+   0.85rem/0.18em, weight 700, and added a 48×1px hairline
+   above the eyebrow (centered, sun color at 60% opacity).
+   Now reads as deliberate editorial divider, not a faint
+   corner mark.
+
+**Capture scripts (new in rev4):**
+
+- `apps/web/audit/d-0059-path-a/capture.mjs` — already used
+  in rev3; captured the 9 hero positions [0, 0.05, 0.1, 0.2,
+  0.3, 0.4, 0.6, 0.8, 1.0] with 1200ms wait between captures.
+- `apps/web/audit/d-0059-path-a/full-page-capture.mjs` — new
+  in rev4. Discovers every `[data-test-section]` block on
+  the page (set in `app/page.tsx`) and captures the
+  viewport-height of each, plus the document scroll height.
+  Used to produce the 12 section captures committed in
+  this rev4.
+
+Both scripts use `node` (not `bun`) due to pipe-connection
+timeout on heavily-loaded systems — captured as a process
+note for future visual-evidence work.
+
+**Rev4 actual work order (what was actually shipped):**
+
+1. **HeroStorybookLayer.tsx**: center ranch house
+   `translate(1100 370)` → `translate(1400 380) scale(0.8)`.
+2. **HeroFieldTelemetry.module.css**: `.photoVignette`
+   radial-gradient center 70% → 75%, 100% stop 35% → 22%
+   palm-bark.
+3. **apps/web/public/specimens/{st-augustine,bermuda,zoysia,
+   bahia}.svg**: stroke widths and opacities boosted via
+   `_boost-contrast.py` script.
+4. **PricingTiers.module.css**: `.cardCornerStamp` from
+   `top: var(--space-5)` → `bottom: var(--space-5)`.
+5. **ScheduleTimeline.tsx**: removed `<Illustration>` from
+   today card and the unused import.
+6. **FinalCTABanner.tsx + .module.css**: removed
+   `<Illustration>` + `.openingMark`; bumped eyebrow to
+   0.85/0.18em + 48×1px hairline above.
+7. **Capture scripts committed**: `capture.mjs` (rev3,
+   refresh) + `full-page-capture.mjs` (new).
+8. **Capture evidence**: 9 hero positions + 12 sections
+   re-shot, all verified visually.
+9. **Acceptance**: typecheck + charter 3/3 expected; ledger
+   entry updated.
+
+**Rev4 confidence (post-fix, per steward sign-off TBD):**
+Path A 0.90 (up from 0.85 — the full visual polish across
+12 sections raised the overall landing-page coherence, not
+just the hero). Path B 0.80 (unchanged; still not affected
+by rev4).
+
+**Rev4 deferred items:**
+
+- Path B (composite operator scene with painted operator
+  overlay on the existing scene2 background): deferred
+  until ~1 week after Path A is in production.
+- Ranch-house gouache repaint (lowest-leverage of the
+  remaining items; the three-house composition is acceptable
+  in rev4 once the center house is repositioned).
+- OperatorStrip painted palms backdrop at 7% opacity:
+  intentionally not changed — keeping the editorial
+  atmosphere.
+
 End of ADR.
