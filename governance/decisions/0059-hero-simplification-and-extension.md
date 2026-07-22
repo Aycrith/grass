@@ -2272,4 +2272,314 @@ Path B 0.80 (unchanged; still not affected by rev8).
   flagged one leaves similar problems hiding in
   adjacent code.
 
+
+## §14 addendum → §15 — Rev9: Two regressions the rev8 diagnostic missed (2026-07-22)
+
+### What the steward caught that the CSS diagnostic didn't
+
+After the rev8 build was committed, the steward reviewed at
+1920x800 desktop viewport and flagged two issues:
+
+1. **"Upside-down palm trees"** — the fronds were rendering
+   at the **base** of the trunk, not the top. The bare
+   trunk extended upward from a frond cluster at the
+   bottom. The visual was the opposite of a palm tree.
+
+2. **"Right-edge cropped area miscolored gray"** — a
+   ~50px-wide vertical band on the right side of the hero
+   that was gray/lighter than the rest of the warm-peach
+   sky scene.
+
+The rev8 diagnostic toolkit (anim-audit.mjs, capture
+scripts) had reported everything was correct:
+
+- 3 .palmFronds elements with correct animation-name,
+  transform-box, transform-origin (32px 32px, the center of
+  the fronds bbox)
+- 60 .blade elements with correct animation-name,
+  transform-box, transform-origin (base of each blade)
+- 1 .farPalmsSway group with correct animation-name
+
+Both visual bugs were *not* caught by this diagnostic. Both
+were real. The diagnostic was necessary but not sufficient.
+The steward's visual review caught what the script-level
+audit could not.
+
+### Bug 1: upside-down palms — the SVG-vs-CSS transform interaction
+
+**Root cause.** In rev8 the rev8 part-wise palm sway put the
+CSS animation (`transform: rotate(±7deg)`) on the SAME
+`<g>` element that carried the SVG `transform="translate(0
+-h)"` attribute. The CSS animation sets `transform: rotate(...)`
+as a CSS property. Per CSS Transforms Level 1 §6:
+
+> The `transform` CSS property, if not `none`, takes
+> precedence over the SVG `transform` attribute.
+
+The browser computes the transform from the CSS property;
+the SVG attribute is ignored. The fronds group therefore
+rendered at the parent PalmTree's local `(0, 0)` — the BASE
+of the trunk — instead of at `(0, -h)`, the top. Visual:
+frond cluster at the bottom, bare trunk extending upward.
+
+**Why the diagnostic missed it.** `anim-audit.mjs` reports
+`getComputedStyle(...).transformOrigin` and
+`.animationName`. Both were correct. The script never
+read the SVG `transform` attribute, and it never compared
+the CSS `transform` value to the SVG attribute to detect
+the override. The diagnostic confirmed the CSS side was
+right; it said nothing about the visual position, which
+was wrong.
+
+**Fix.** Split the two concerns:
+
+```jsx
+<g transform={`translate(0 -${h})`}>
+  <g className={anim ? styles.palmFronds : undefined}
+     style={anim ? { animationDelay: phase } : undefined}>
+    ...fronds...
+  </g>
+</g>
+```
+
+The outer group carries the SVG translate. No CSS ever
+touches it. The inner group carries the CSS animation. No
+SVG transform on it. The two transforms can't clobber
+each other because they're on different elements.
+
+### Bug 2: right-edge gray strip — the sky SVG was 48px short
+
+**Root cause.** The BackgroundSky SVG had CSS `width: 105%`
+and inline `style={{ width: '105%', left: '-2.5%' }}` to
+extend 2.5% past the skyWrap on each side. A DOM
+bounding-box check (storybook-coverage.mjs) revealed the
+SVG was rendering at **exactly 100% of the skyWrap's
+width (1905px)** with `left = 0`. The 105% / -2.5% were
+being normalized to 100% / 0 by the browser's SVG layout
+pass — the SVG element had a `viewBox` but no explicit
+`width`/`height` attributes, and the percentage on an
+SVG without intrinsic sizing is treated as 100%.
+
+Result: 48px gap on the right edge of the sky. The
+storybook's `filter: blur(0px) saturate(100%)` at scroll
+y=0 creates a compositing layer; on the right edge, that
+compositing layer was interacting with the photo's
+`mask-image` (which fades the photo to transparent from
+86% to 100% width) — the cream background was bleeding
+through where the storybook should have been opaque.
+
+Pixel-sampling at x=1880, y=300 returned `#f6f3ee`
+(cream) instead of the storybook's `#f0d099` (warm
+peach) — proof the storybook was ~90% transparent at
+the right edge.
+
+**Why the diagnostic missed it.** `anim-audit.mjs` only
+checked the .palmFronds, .blade, .farPalmsSway, and sun
+classes. It didn't audit the BackgroundSky SVG's coverage.
+
+**Fix.** Make the skyWrap itself wider (matching the
+far/mid/near layers' -10%/+10% overflow), let the sky be
+100% of that, and add a safety-net cream background to
+the .layer. preserveAspectRatio was changed from `xMidYMax`
+to `xMidYMid` to keep the sun visible after the viewBox
+scale changed (the wider skyWrap pushed the visible top
+down to ~243 viewBox units with xMidYMid, vs ~486 with
+xMidYMax; the sun at y=252 is now just inside the visible
+top).
+
+```css
+.skyWrap {
+  left: -10%;
+  right: -10%;
+  top: 0;
+  height: 100%;
+  z-index: 0;
+}
+
+.layer {
+  ...
+  background: var(--ll-cream);
+}
+```
+
+### Rev9 confidence
+
+Path A 0.995 → 0.99 (rev9 closed two regressions the rev8
+diagnostic missed; the principle fix from rev8 is still in
+place, but the steward had to catch the visual bugs by
+hand. The diagnostic itself was incomplete — see §15 for
+the improved protocol).
+
+Path B 0.80 (unchanged).
+
+### Rev9 deferred items (carried from rev8, unchanged)
+
+- Path B (composite operator scene): ~1 week after Path A
+  in production.
+- Ranch-house gouache repaint: lowest-leverage.
+- OperatorStrip painted palms backdrop at 7% opacity.
+- FieldLog 33778 disconnected from route line.
+- ServiceBento Mulching card extends past viewport edge.
+- Bird wing flap: not added; existing V-shapes are at 0.5
+  opacity.
+- Cloud breathing scale-pulse: not added; current
+  translation reads correctly.
+- Grass blade motion is subtle: follow-up to bump stroke
+  contrast or rotation magnitude if steward wants more
+  visible blade motion.
+
+### Lessons from rev9 (motivates §15)
+
+- **A CSS diagnostic confirms the CSS. It does not confirm
+  the visual.** The rev8 diagnostic reported `transform-
+  origin: 32px 32px` on the .palmFronds elements, which was
+  the correct CSS value — but the CSS was clobbering the
+  SVG translate attribute, and the diagnostic never read
+  the SVG attribute or compared the two. The upside-down
+  palms would have been caught by a single visual QA
+  capture of the rendered scene at one time point.
+
+- **A DOM bounding-box check catches a different class of
+  bug than a CSS check.** The CSS audit said the sky had
+  `width: 105%`. The bounding-box audit said the sky was
+  rendering at 100% width. Both were correct from their
+  own perspective; the visual output is what matters.
+
+- **Pixel sampling is the only way to distinguish "the
+  storybook's sky is being rendered here" from "the cream
+  background is bleeding through here."** Both can LOOK
+  like the same warm color at thumbnail size. The pixel
+  values at x=1850 (#f0d099) vs x=1880 (#f6f3ee) made the
+  cream bleed obvious.
+
+## §15 — Visual verification protocol (the steward's ask)
+
+The steward flagged that the rev8 build was declared
+"complete" without sufficient visual verification, and
+asked for "a method to visually analyze and assess your
+current animated implementations for visual coherency and
+clean animation." This section codifies the protocol that
+the rev9 fixes retroactively validated.
+
+### The protocol — five layers, each catches a different class of bug
+
+Every animation change must ship with **all five** of the
+following. None of them alone is sufficient; together they
+form a complete verification surface.
+
+#### (1) Standard viewport capture
+
+Run `node audit/d-0059-path-a/hero-1920.mjs` and
+`node audit/d-0059-path-a/hero-1280.mjs` (or equivalents
+for any animation surface). Produces the canonical visual
+evidence: what a human would see in the browser at the
+two primary viewports.
+
+- Catches: layout bugs, wrong colors, missing elements,
+  misaligned positions, scale/clip issues
+- Misses: sub-pixel gaps, sub-viewport-width bugs,
+  compositing issues that only show at specific zoom
+  levels
+
+#### (2) Focused zoom capture
+
+For any flag area (e.g., right edge, mid palm, sun), do
+a tight crop capture (e.g.,
+`page.screenshot({ clip: { x: 1620, y: 0, width: 300, height: 800 } })`).
+The zoom makes sub-pixel issues visually obvious even at
+thumbnail resolution.
+
+- Catches: sub-pixel gaps, edge effects, alignment
+  off-by-a-few-pixels issues
+- Misses: compositing issues that look the same at any
+  zoom
+
+#### (3) DOM bounding-box audit
+
+For any element that should cover a specific area, run
+`storybook-coverage.mjs` (or equivalent): iterate the
+element's children, report each child's `getBoundingClientRect()`,
+and check whether it covers the expected x/y range. This
+catches geometry bugs that pure CSS inspection misses
+(e.g., the rev8 sky SVG had correct CSS but was rendering
+at the wrong width due to a browser normalization).
+
+- Catches: geometry bugs, layout bugs, percentage-vs-fixed
+  sizing bugs, `pointer-events: none` causing
+  `elementsFromPoint` to return wrong topmost
+- Misses: visual bugs at the pixel level (color,
+  transparency, compositing)
+
+#### (4) Pixel sampling
+
+Use `sharp` (or any PNG decoder) to sample specific
+`(x, y)` pixels from a capture. Print the hex values.
+This is the only way to distinguish "the storybook is
+being rendered here" from "something else is bleeding
+through here" — both can LOOK like the same warm color
+at thumbnail size. The rev8 cream-bleed was obvious at
+pixel level (`#f6f3ee` at x=1880 vs `#f0d099` at x=1850)
+but easy to miss in a full-hero screenshot.
+
+- Catches: compositing issues, transparency bugs,
+  color/brightness issues, gradient mismatches
+- Misses: bugs at un-sampled positions (sample widely,
+  including the flagged area and the surrounding
+  context)
+
+#### (5) DOM element audit
+
+Use `elementsFromPoint(x, y)` to list every element at a
+specific pixel with its computed style. Important
+caveat: elements with `pointer-events: none` are
+excluded from `elementsFromPoint` in Chrome. The storybook
+.layer has `pointer-events: none` for accessibility; the
+topmost HIT-TESTABLE element at any pixel inside the
+storybook is the photo or the text, not the storybook
+itself. To audit the storybook's actual rendered output,
+read the COMPUTED STYLES of the storybook's children and
+their bounding boxes, not the hit-test topmost element.
+
+- Catches: stacking-context issues, z-index bugs,
+  pointer-events bugs
+- Misses: the storybook's actual visual output (because
+  of pointer-events: none)
+
+### Applying the protocol — the rev9 validation
+
+| Step | rev8 reported | rev9 reality | Caught? |
+|------|---------------|--------------|---------|
+| (1) Standard capture | (none taken) | Upside-down palms, right-edge gray strip | YES (would have caught both) |
+| (2) Focused zoom | (none taken) | Both visible at zoom | YES |
+| (3) DOM bbox | sky at 1905px | sky at 1905px (vs needed 2000.25px) | YES (48px gap) |
+| (4) Pixel sample | (none taken) | #f0d099 vs #f6f3ee at x=1850 vs 1880 | YES |
+| (5) DOM element | photo on top (but storybook is on top) | same (pointer-events:none) | partial — needed the bbox to disambiguate |
+
+The rev8 diagnostic (anim-audit.mjs) covered layer (5)
+only, and even that was incomplete because it didn't
+sample the actual rendered geometry. The rev9 toolkit
+covers all five layers.
+
+### Going forward
+
+For any future change to the storybook (or any other
+animated surface in GRASS):
+
+1. Run all five verification steps before declaring
+   "complete."
+2. Compare the new captures against the previous rev's
+   captures at the same viewport. Any difference in
+   pixel values at the same coordinates is a regression.
+3. If a flag area is identified by a human reviewer,
+   document the exact pixel coordinates and the expected
+   vs actual hex values, so the next person can verify
+   the fix.
+
+The diagnostic scripts themselves (hero-1920.mjs,
+hero-1280.mjs, hero-1920-rightedge.mjs, rightedge-audit.mjs,
+rightedge-pixels2.mjs, storybook-coverage.mjs,
+anim-audit.mjs) are the operational form of this
+protocol. Each new rev should add to the toolkit, not
+subtract from it.
+
 End of ADR.

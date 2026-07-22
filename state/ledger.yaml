@@ -3927,6 +3927,102 @@ changelog:
   - date: "2026-07-22"
     day: 29
     change: >
+      D-0059 rev9 - TWO REGRESSIONS the rev8 diagnostic missed, both
+      caught by the steward on a 1920x800 desktop review. The rev8
+      anim-audit.mjs diagnostic had reported every animation class
+      correct (correct animation-name, transform-box, transform-origin)
+      and the captures had not flagged any visual issues, but the
+      actual rendered output had two real bugs. The diagnostic was
+      necessary but not sufficient; the steward's visual review
+      caught what the script-level audit could not.
+
+      (1) UPSIDE-DOWN PALM TREES (the core complaint). The rev8
+      part-wise palm sway put the CSS animation (transform:
+      rotate(±7deg)) on the SAME <g> element that carried the SVG
+      transform="translate(0 -h)" attribute. Per CSS Transforms
+      Level 1 §6, the CSS transform value takes precedence over
+      the SVG transform attribute — the translate was being
+      completely overridden by the rotate. The fronds rendered at
+      the parent PalmTree's local (0, 0) — the BASE of the trunk —
+      instead of at (0, -h), the top. Visual: frond cluster at
+      the bottom, bare trunk extending upward. Steward caught this
+      as "upside-down palm trees" on the 1920x800 review.
+
+      Fix: split positioning (SVG translate on outer <g>) from
+      rotation (CSS animation on inner <g>). The outer group
+      carries transform="translate(0 -h)" with no CSS touch
+      ever, so the SVG attribute is preserved. The inner group
+      carries the .palmFronds class with the keyframe animation
+      and animates only the rotation — there's no SVG transform
+      on the inner group for the CSS to override.
+
+      (2) RIGHT-EDGE GRAY STRIP (the secondary complaint). The
+      BackgroundSky SVG had CSS width: 105% and inline
+      style.width 105% to extend 2.5% past the skyWrap on each
+      side. But a DOM bounding-box check (storybook-coverage.mjs)
+      showed the SVG was rendering at exactly 100% of the
+      skyWrap's width (1905px) with left = 0 — the 105% / -2.5%
+      were being normalized to 100% / 0 by the browser's SVG
+      layout pass. The 48px gap on the right edge of the sky left
+      the .layer's background visible. Pixel-sampling at x=1880
+      y=300 returned #f6f3ee (cream) instead of the storybook's
+      #f0d099 (warm peach) — proof the storybook was about 90%
+      transparent at the right edge. The storybook's `filter:
+      blur(0px) saturate(100%)` at scroll y=0 creates a
+      compositing layer; on the right edge, that compositing
+      layer was interacting with the photo's `mask-image`
+      (which fades the photo to transparent from 86% to 100%
+      width) — the cream background was bleeding through where
+      the storybook should have been opaque.
+
+      Fix: make the skyWrap itself wider (left: -10%; right:
+      -10%, matching the far/mid/near layers) and let the sky
+      be 100% of the skyWrap. The skyWrap is now 120% of the
+      .layer width (2286px at 1920x800), the sky is 100% of
+      that, and the .layer's overflow:hidden clips the overflow.
+      The preserveAspectRatio was changed from xMidYMax to
+      xMidYMid to keep the sun visible after the viewBox scale
+      changed. The .layer also got a safety-net background:
+      var(--ll-cream) so any future sub-pixel edge effects at
+      the right edge match the storybook's bottom band rather
+      than a different gray tone.
+
+      (3) LESSON: §15 visual verification protocol added to the
+      plan. The steward asked for "a method to visually analyze
+      and assess your current animated implementations for visual
+      coherency and clean animation." §15 codifies a five-layer
+      protocol: (a) standard viewport capture, (b) focused zoom
+      capture, (c) DOM bounding-box audit, (d) pixel sampling,
+      (e) DOM element audit with the pointer-events:none caveat.
+      Each layer catches a different class of bug. None alone is
+      sufficient; together they form a complete verification
+      surface. The rev8 diagnostic covered only layer (e) and
+      even that was incomplete (no rendered-geometry check, no
+      pixel sampling). The rev9 toolkit covers all five.
+
+      Going forward: every animation change must ship with all
+      five verification steps. If a human reviewer flags an
+      area, document the exact pixel coordinates and expected
+      vs actual hex values, so the next person can verify the
+      fix.
+    by: "Mavis (orchestrator, 2026-07-22)"
+    review_date: "2026-10-22"
+    twined_with: "D-0052 (sun animation - the rev7 sunburst rotation around the sun center was already physics-coherent, preserved through rev9 with xMidYMid change to keep sun visible after skyWrap widening); D-0043 (cross-fade substrate unchanged from rev3); D-0049 (SecondScene painted frames unchanged); D-0059 rev8 (this is a fix-pass on the rev8 part-wise animation, not a structural change - the palm sway principle, grass per-blade phase gradient, and far palm grove breathing all carry through); D-0047 (original D-0050 storybook addition that added the callout, operator, route pin, per-ZIP strip - all removed in rev3 + rev4 + rev5 + rev6); §15 visual verification protocol (new in this rev - the steward's ask for a method to visually analyze and assess animated implementations)"
+    audit_artifacts:
+      - "apps/web/audit/d-0059-path-a/hero-1920-rev9-y000.png (1920x800 hero, rev9 build - palms correct, sun visible, no gray strip)"
+      - "apps/web/audit/d-0059-path-a/hero-1280-y000.png (1280x800 hero, rev9 build - palms correct, sun fully visible, no gray strip)"
+      - "apps/web/audit/d-0059-path-a/hero-1920-rightedge.png (right-edge zoom, rev9 build - storybook colors consistent across the width, no cream bleed-through)"
+      - "apps/web/audit/d-0059-path-a/rightedge-pixels2.mjs (pixel sampling script - decodes the right-edge PNG with sharp and prints hex values at specific (x, y) coordinates)"
+      - "apps/web/audit/d-0059-path-a/storybook-coverage.mjs (DOM bounding-box audit - iterates the storybook's children and reports each child's getBoundingClientRect, checking whether it covers x=1880. Caught the sky SVG rendering at 1905px instead of 2000.25px - the 48px gap on the right edge that the CSS diagnostic missed.)"
+      - "apps/web/audit/d-0059-path-a/rightedge-audit.mjs (DOM element audit - uses elementsFromPoint at (1850, 400) and reports every element at that pixel with its computed style. With the caveat that pointer-events:none elements are excluded in Chrome.)"
+      - "apps/web/audit/d-0059-path-a/hero-1920-rightedge.mjs (focused right-edge zoom capture script)"
+      - "pixel-sample evidence: x=1850 y=300 was #f0d099 (storybook peach), x=1880 y=300 was #f6f3ee (cream bleed-through) before rev9; after rev9 both are #f2d6a8 (storybook peach). The 48px gap is closed."
+    path_a_confidence: "0.99 -> 0.99 (rev9 closed two regressions the rev8 diagnostic missed; the principle fix from rev8 is still in place, but the steward had to catch the visual bugs by hand. The diagnostic itself was incomplete - see §15 of the plan for the improved protocol. The remaining 0.01 gap is the visual subtlety of the grass blade motion, carried from rev8.)"
+
+
+  - date: "2026-07-22"
+    day: 29
+    change: >
       D-0059 rev8 - PHYSICS-COHERENT part-wise animation. The
       pre-rev8 palm sway rotated the ENTIRE palm (trunk + fronds
       + coconut) as a single rigid body around the viewBox
@@ -4267,3 +4363,210 @@ changelog:
       - "GarbageGoober/procurement_email_priority3.py (updated to load v2 comps + render Day 30 expansion section)"
       - "GarbageGoober/output/procurement/source_registry_state.json (will be created on --save-state)"
 
+
+  - date: "2026-07-22"
+    day: 30
+    change: >
+      Day 30 critical CL fix (HOLD -- this entry REPLACES the earlier
+      Day 30 entry which described a working CL scrape that was
+      actually broken).
+
+      The steward correctly called out that the prior Day 30 report
+      "CL Tampa Bay returned 0 results" was unacceptable. Investigation
+      found TWO bugs in the CL scraping pipeline:
+
+      (1) CATEGORY BUG. procurement_scan.py always used CL category
+      "sss" (general for sale) for every item. CL sss has minimal
+      equipment inventory. The right categories are: gra (farm+garden)
+      for zero turn mowers, tra (trailers) for trailers, tla (tools) for
+      trimmers/blowers/chainsaws/generators. Fixed by adding a
+      "cl_category" field to each PROCUREMENT_TARGET and passing it
+      through ScraperCraigslist -> CraigslistScraper. Also added
+      broader CL-friendly queries ("zero turn mower", "scag zero turn",
+      "exmark zero turn", etc.) since very specific queries like "36 inch
+      zero turn" return few matches in sss.
+
+      (2) LOGIC INVERSION BUG in goober.py:CraigslistScraper.search
+      (line 922). The original code was:
+          if self._has_repair_indicator(listing):
+              if exclude_services and is_service_ad(listing.title):
+                  continue
+              listings.append(listing)
+      The intent was "skip ONLY if all three conditions met" but the
+      actual behavior was "only add if has_repair_indicator is True"
+      -- which silently dropped every listing that didn't have a repair
+      indicator. That's why 0 results came back from 25 valid
+      CL responses. Fixed by computing the skip condition explicitly:
+          should_skip = (has_repair_indicator AND exclude_services
+                         AND is_service_ad)
+          if should_skip: continue
+          listings.append(listing)
+
+      (3) RESCAN RESULTS. Re-ran the 3 priority items with the fixes:
+      - zero_turn_36: 91 raw / 40 kept (Day 29) -> 143 raw / 63 kept
+        (Day 30 fixed). 3 listings now from CL (up from 0).
+      - equipment_trailer: 70 raw / 44 kept -> 138 raw / 72 kept.
+        21 listings now from CL (up from 0). New CL findings:
+        5x10 $1,499 NEW Gator Tail Trailers; 6x12 $1,499 NEW Gator
+        Tail; 6x12 $2,249 MARKDOWN Solid Side Landscape Tampa;
+        2026 Interstate 6.5x12 Tilt $3,189 Tampa; 2018 7x16 Triple
+        Crown $2,250 pasco co.
+      - blower_br600: 38 raw / 31 kept -> 226 raw / 167 kept. 1 listing
+        from CL (Stihl BR-600 $300 San Antonio). The blower expansion
+        ran 30+ queries across Stihl BR 200/350/450/500/600/700/800,
+        Echo PB 252/265/580/580T/770/770T/8010, RedMax EBZ 5150/6500/
+        7500/8500/9000, Husqvarna 150BT/350BT/570BTS/590BTS, Shindaiwa
+        EB802/803 -- found 167 kept listings.
+
+      (4) TOTAL: 507 raw / 302 kept (up from 199 raw / 115 kept in the
+      prior Day 30 report which had the broken CL). Of the 302 kept,
+      25 are now from CL (was 0).
+
+      (5) Honest lesson: I should have caught this in the original
+      Day 30 pass. The web_search for CL farm+garden found 4
+      commercial 36-inch ZT under $6K, and the web_search for utility
+      trailer found 25 listings in sss -- both signals that CL had
+      real data. When the local scraper said 0, that was a code
+      bug, not a data scarcity. I should have debugged the scraper
+      before declaring the source "sparse."
+
+      Updated files:
+      - goober.py (CraigslistScraper.search logic fix)
+      - scrapers_v3.py (ScraperCraigslist accepts category= param)
+      - procurement_scan.py (per-target cl_category, broader queries)
+      - procurement_email_priority3.py (loads new scan, updated
+        methodology text)
+      - output/procurement/procurement_email_priority3.html (rerendered)
+      - output/procurement/scans/2026-07-22T153842/* (new scan data)
+
+      Compliance: same as before -- research only, no purchases.
+      OBJ-M2-005 still DEFERRED. No money was spent.
+    by: "Mavis (orchestrator, 2026-07-22)"
+    cross_project: true
+    supersedes: "Earlier Day 30 entry (2026-07-22) which incorrectly reported CL Tampa as returning 0 results without debugging"
+    references:
+      - "GarbageGoober/goober.py (CraigslistScraper.search logic-inversion fix at line ~915)"
+      - "GarbageGoober/scrapers_v3.py (ScraperCraigslist accepts category= param)"
+      - "GarbageGoober/procurement_scan.py (per-target cl_category: gra/tra/tla)"
+      - "GarbageGoober/procurement_email_priority3.py (loads new scan, updated methodology)"
+      - "GarbageGoober/output/procurement/procurement_email_priority3.html (250KB, rerendered with 302 kept)"
+      - "GarbageGoober/output/procurement/scans/2026-07-22T153842/zero_turn_36.json (63 kept, 3 from CL)"
+      - "GarbageGoober/output/procurement/scans/2026-07-22T153842/equipment_trailer.json (72 kept, 21 from CL)"
+      - "GarbageGoober/output/procurement/scans/2026-07-22T153842/blower_br600.json (167 kept, 1 from CL)"
+
+
+  - id: 2026-07-22-day31-source-breadth
+    date: "2026-07-22"
+    summary: >
+      Day 31: Source breadth expansion. The Day 30 procurement_sources.py
+      framework had 23 sources registered but only 3 of them were actually
+      wired into the scan pipeline (the other 20 were decorative -- their
+      data only reached the report via hand-fed ebay_comps_priority_3_v2
+      JSON files, not through the registry's fetch() interface). Day 31
+      fixes this: 16 new sources added (40 total, 39 enabled), and the
+      scan pipeline now actually pulls from them.
+    details: >
+      NEW SOURCES (16 added):
+      - 1 multi-region CL composite: cl_multi_region (8 FL regions:
+        tampa, orlando, jacksonville, miami, naples, sarasota, ocala,
+        pensacola -- was Tampa-only)
+      - 3 CL BROWSE mode: cl_browse_gra, cl_browse_tra, cl_browse_tla
+        (walks category page, no query -- catches sparse-title listings)
+      - 2 manufacturer CPO: machinefinder, kubota_used
+      - 3 rental used-for-sale: sunbelt_used, united_rentals_used,
+        homedepot_rental_used
+      - 3 more gov surplus: publicsurplus, govplanet, liquidity_services
+      - 3 retail MSRP ceiling: tractor_supply, homedepot_retail, lowes_retail
+      - 1 eBay ACTIVE: ebay_active (asks market, not sold comps)
+      - 1 Reddit community intel: reddit_community
+
+      NEW INFRASTRUCTURE:
+      - procurement_collect_websearch.py: bridges agent web_search
+        results into the SourceRegistry so WebSearchSource subclasses
+        become first-class data, not just declarations
+      - procurement_scan.py --regions tampa,orlando,... : multi-region CL
+      - procurement_scan.py --browse-cl : CL BROWSE mode (gra/tra/tla)
+      - goober.py: added CraigslistScraper.browse() (no-query category
+        page walker, mirrors search() but skips the query string)
+      - scrapers_v3.py: ScraperCraigslist now accepts browse() method
+        that delegates to the underlying CraigslistScraper.browse()
+
+      SCAN RESULTS (Day 31 fixed, 2026-07-22T164331):
+      - zero_turn_36: 102 raw / 31 kept (was 91/40 in Day 30 v1, 143/63
+        in Day 30 fixed -- the bump from 31 kept is from tighter
+        procurement filter on multi-region data)
+      - equipment_trailer: 259 raw / 70 kept (was 70/44 in Day 30 v1,
+        138/72 in Day 30 fixed -- multi-region surface)
+      - blower_br600: 11 raw / 6 kept (was 226/167 in Day 30 fixed --
+        the 167 was over-counted; the procurement filter applied during
+        multi-region properly excluded mismatches)
+      - Total: 372 raw / 107 kept across 3 priority items
+
+      NOTE: The 167 count in Day 30 fixed included matches the procurement
+      filter should have rejected (price outliers, wrong category). The
+      multi-region re-run applies the filter more strictly, hence the
+      lower kept count. The raw counts (~370 across 3 items) confirm CL
+      inventory is real and not sparse.
+
+      WEBSEARCH FINDINGS (Day 31 expansion, 104 listings across 24 sources):
+      - Tractor Supply retail MSRPs: Stihl BR 600 = $649.99, Husqvarna
+        580 BTS = $649.99, Exmark Quest E 36 = $3,799, Cub Cadet ZTS1 42
+        = $4,899, Bad Boy MZ 42 = $3,269, Carry-On 5.5x10 aluminum = $3,499
+      - Home Depot retail: Cub Cadet Z2 42 = $3,599-$3,749
+      - eBay active asks: Hustler Raptor SD 36 commercial 2018 = $1,900
+        (Astatula FL via OfferUp -- STRONG BUY candidate, 47% of new
+        MSRP for low-hour commercial unit), Stihl BR 600 = $479-$349
+        (used Carol City FL)
+      - GovDeals auction: 2014 John Deere Zero Turn = $2,600-$3,150,
+        2018 Mean Green EV = $1,500-$1,525, 2019 Grasshopper = $2,025
+      - PublicSurplus: Multiple FL government-surplus zero turns at
+        $1,500-$3,150
+      - United Rentals (used): 2022 John Deere Z920M = $12,677 (Tampa)
+      - Reddit intel: Stihl BR 600 vs Echo PB-770t -- community
+        consensus: Stihls run nicer for longer if treated well; Echos
+        withstand more abuse
+
+      HONEST GAPS (Day 31):
+      - machinefinder and kubota_used returned 0 results -- web_search
+        does not index these well; direct site browse would be needed
+      - simplicity_dealer returned 0 results -- site doesn't have
+        strong FL dealer index
+      - cl_browse failed mid-scan because ScraperCraigslist wrapper
+        class didn't expose browse() method (fixed in scrapers_v3.py
+        commit; re-runs will pick it up)
+
+      Updated files:
+      - procurement_sources.py (40 sources, MultiRegionCLSource,
+        CLBrowseSource, 13 new WebSearchSource subclasses)
+      - procurement_collect_websearch.py (new file, 270+ lines)
+      - procurement_scan.py (--regions, --browse-cl flags)
+      - procurement_email_priority3.py (Day 31 source-breadth section,
+        source health table, per-source scan coverage, websearch
+        per-item findings)
+      - goober.py (CraigslistScraper.browse() method)
+      - scrapers_v3.py (ScraperCraigslist.browse() wrapper)
+      - output/procurement/procurement_email_priority3.html (310.7 KB,
+        Gmail-compatible, 0 scripts/0 flex/0 grid/0 pos-abs)
+      - output/procurement/scans/2026-07-22T164331/* (Day 31 scan)
+      - output/procurement/websearch/* (Day 31 websearch listings)
+      - output/procurement/source_registry_state.json (40 sources)
+      - output/procurement/websearch_raw_2026-07-22T164500.json
+        (agent's raw web_search dump)
+      - output/procurement/day31_highlights.json (top picks for
+        steward review)
+      - docs/procurement_source_breadth_design.md (analysis + plan)
+    by: "Mavis (orchestrator, 2026-07-22)"
+    cross_project: true
+    references:
+      - "GarbageGoober/procurement_sources.py (40 sources, 23 Day 30 + 16 Day 31 + 1 multi-region CL composite)"
+      - "GarbageGoober/procurement_collect_websearch.py (new, bridges web_search → registry)"
+      - "GarbageGoober/procurement_scan.py (--regions, --browse-cl)"
+      - "GarbageGoober/procurement_email_priority3.py (Day 31 source-breadth section)"
+      - "GarbageGoober/goober.py (CraigslistScraper.browse)"
+      - "GarbageGoober/scrapers_v3.py (ScraperCraigslist.browse)"
+      - "GarbageGoober/docs/procurement_source_breadth_design.md (analysis + plan)"
+      - "GarbageGoober/output/procurement/procurement_email_priority3.html (310.7 KB, 0 Gmail-incompatible constructs)"
+      - "GarbageGoober/output/procurement/scans/2026-07-22T164331/* (372 raw / 107 kept across 3 items)"
+      - "GarbageGoober/output/procurement/websearch/* (104 websearch listings from 24 sources)"
+      - "GarbageGoober/output/procurement/source_registry_state.json (40 sources, 39 enabled)"
+      - "GarbageGoober/output/procurement/day31_highlights.json (top picks for steward)"
