@@ -488,7 +488,24 @@ function MidLayer(): ReactNode {
         <PalmTree x={150} y={280} h={200} trunkFill="url(#mid-trunk)" frondFill="url(#mid-frond)" />
       </g>
       <g className={styles.swaySlow} style={{ animationDelay: '-1.2s' }}>
-        <PalmTree x={780} y={260} h={220} trunkFill="url(#mid-trunk)" frondFill="url(#mid-frond)" />
+        {/* D-0059 rev4 polish — middle palm MOVED from x=780 to x=950.
+         * At x=780 the trunk sat at screen x ≈ 444, which is inside
+         * the eyebrow pill's x range (349-532). The pill was 45%
+         * opaque so the dark trunk showed through behind the
+         * "LAWN CARE IN 33771" text, reading as a vertical thread
+         * hanging the pill. Moving to x=950 puts the trunk at
+         * screen x ≈ 596 (past the pill's right edge) and keeps
+         * the three-palm composition. The pill background is also
+         * bumped to 72% in HeroFieldTelemetry.module.css so even
+         * if a future change moves the pill back, the trunk won't
+         * read through it. */}
+        <PalmTree
+          x={950}
+          y={260}
+          h={220}
+          trunkFill="url(#mid-trunk)"
+          frondFill="url(#mid-frond)"
+        />
       </g>
       <g className={styles.swaySlow} style={{ animationDelay: '-0.6s' }}>
         <PalmTree

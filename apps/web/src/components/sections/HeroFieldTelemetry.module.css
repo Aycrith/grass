@@ -417,7 +417,16 @@
   padding: 0.5rem 0.875rem;
   border: 1px solid color-mix(in oklab, var(--ll-cream) 28%, transparent);
   border-radius: var(--radius-pill);
-  background: color-mix(in oklab, var(--ll-palm-bark) 45%, transparent);
+  /* D-0059 rev4 polish — background bumped 45% -> 72% palm-bark.
+   * At 45% the eyebrow pill was translucent enough that the
+   * MidLayer palm trunk (viewBox x=780, screen x ≈ 444) showed
+   * through behind the text, reading as a vertical "thread"
+   * hanging the pill from the sky. At 72% the pill is opaque
+   * enough to mask the trunk through it, while still letting
+   * the blurred sky/cloud behind show through as soft color.
+   * Combined with the rev4 mid-palm reposition (x=780 -> x=950)
+   * the "thread coming out of the pill" effect is gone. */
+  background: color-mix(in oklab, var(--ll-palm-bark) 72%, transparent);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   color: var(--ll-sand-bleached);
@@ -706,6 +715,24 @@
   padding: 0.875rem 1.25rem;
   border-top: 1px solid color-mix(in oklab, var(--ll-sand-bleached) 28%, transparent);
   pointer-events: none;
+  /* D-0059 rev4 polish — soft dark gradient under the metrics
+   * strip. The SecondScene painted frame has a parked mower
+   * silhouette in the lower-right area where the "6 yrs" and
+   * "6 PINELLAS ZIPS" labels sit. Without a backdrop, the
+   * white metric text competed with the mower's dark body,
+   * reading as "tractor silhouette overlapping the numbers".
+   * The gradient is concentrated at the bottom edge (where
+   * the tractor is) and fades to transparent at the top of
+   * the strip, so the rest of the painted scene stays
+   * unaffected. The border-top hairline now sits on top of
+   * the gradient's transparent end, preserving the editorial
+   * divider idiom. */
+  background: linear-gradient(
+    to top,
+    color-mix(in oklab, var(--ll-palm-bark) 38%, transparent) 0%,
+    color-mix(in oklab, var(--ll-palm-bark) 18%, transparent) 55%,
+    transparent 100%
+  );
 }
 
 .telemetryItem {
