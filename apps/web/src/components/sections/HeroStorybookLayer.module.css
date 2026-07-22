@@ -311,7 +311,7 @@
 }
 
 /* ============================================================
- * Near layer - grass with bloom + sway
+ * Near layer - grass with bloom + per-blade sway
  * ============================================================ */
 
 .nearInner {
@@ -320,8 +320,49 @@
 }
 
 .blades {
+  /* D-0059 rev8 — one-shot grow-in only. The pre-rev8 .blades
+   * block had `transform-origin: bottom` which was needed for
+   * the scaleY grow but the bottom-center pivot is now applied
+   * per-blade via .blade. The parent .blades group no longer
+   * has a transform-origin because the entrance grow is run
+   * on the GROUP (which still has a sensible default origin
+   * at center) and the per-blade continuous sway is run on
+   * each CHILD (with its own base-pivot). The grow animation
+   * runs once on mount and is `backwards` so children with
+   * animation-delay don't show before the grow starts. */
   animation: grow 1.2s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-  transform-origin: bottom;
+}
+
+/* D-0059 rev8 — per-blade continuous sway.
+ *
+ * Each of the 60 grass blade <g> elements gets this class plus
+ * an inline `--i` (0..59) custom property. The animation rotates
+ * the blade ±3.5° around its base (transform-box: fill-box
+ * resolves the bbox to the union of the two stroke paths,
+ * transform-origin: 50% 100% puts the pivot at the bottom of
+ * that bbox = the blade's base at y=680). The animation-delay
+ * is `calc(var(--i) * -0.11s)` so blade 0 is at phase 0, blade
+ * 1 is at phase 0.11s, etc. With a 2.6s period and a 0.11s
+ * per-blade delay step, 60 blades cover a 6.6s phase window —
+ * longer than the period itself, so at any moment every phase
+ * of the sway is represented somewhere in the lawn. The eye
+ * reads the spread as "wind moving across the lawn" rather
+ * than "60 blades bobbing in sync".
+ *
+ * Why 2.6s period? Shorter than the mid-palm fronds (7s) so
+ * the two wind responses don't visibly couple. The blade
+ * period is faster than the frond period, which matches real
+ * physics: small leaves flutter faster than large fronds.
+ *
+ * Why ±3.5°? Visible motion at the blade tip (h=24-42 viewBox
+ * units * sin(3.5°) ≈ 1.5-2.4 viewBox units of tip displacement)
+ * without looking like a storm. With 60 blades at all phases,
+ * the eye integrates the motion into a continuous shimmer. */
+.blade {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: bladeSway 2.6s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -0.11s);
 }
 
 .wildflowers {
@@ -344,28 +385,84 @@
   100% { transform: scale(1); }
 }
 
+@keyframes bladeSway {
+  0%, 100% { transform: rotate(-3.5deg); }
+  50%      { transform: rotate(3.5deg); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .blades {
+    animation: none;
+  }
+  .blade {
     animation: none;
   }
 }
 
 /* ============================================================
- * Sway - palm fronds wave gently
+ * D-0059 rev8 — physics-coherent palm sway.
+ *
+ * Pre-rev8 used a `.swaySlow` wrapper that rotated the WHOLE
+ * palm (trunk + fronds) as a rigid body around the viewBox
+ * bottom-center. The visual result: the trunk's base (where
+ * it meets the ground band) lifted off and slid as the tree
+ * swayed, which the steward flagged as "primitive whole-
+ * element transformation" — the palm was not anchored like
+ * a real tree should be.
+ *
+ * rev8 splits the animation between two parts of the palm:
+ *   - The TRUNK path stays static. The base is at the parent
+ *     group's local (0, 0) and the top is at (1, -h). No CSS
+ *     animation, so the trunk doesn't rotate.
+ *   - The FRONDS group (positioned at translate(0 -h) so its
+ *     local origin is the trunk-top attach point) rotates
+ *     around the center of its own bounding box. With
+ *     `transform-box: fill-box; transform-origin: 50% 50%`,
+ *     the pivot resolves to the center of the 8-frond
+ *     envelope — which is the trunk-top attach point, because
+ *     the fronds radiate symmetrically from local (0, 0).
+ *
+ * Result: the base of the trunk is permanently anchored in
+ * the ground band, the trunk itself doesn't move, and the
+ * canopy sweeps around the trunk-top like a real palm in
+ * wind. Per-palm `phase` (0s / -1.2s / -0.6s) keeps the
+ * three mid palms slightly out of sync.
  * ============================================================ */
 
-.swaySlow {
-  transform-origin: bottom center;
-  animation: sway 8s ease-in-out infinite;
+.palmFronds {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: palmFrondsSway 7s ease-in-out infinite;
 }
 
-@keyframes sway {
-  0%, 100% { transform: rotate(-1.5deg); }
-  50% { transform: rotate(1.5deg); }
+/* FarLayer palms get a separate, much subtler group-level
+ * sway (the "distant grove breathing" effect — see the
+ * FarLayer comment in HeroStorybookLayer.tsx). The pivot is
+ * the viewBox bottom-center, ~485 units below the palms,
+ * which translates ±0.35° to ~3 viewBox units of horizontal
+ * displacement at the palm-tops. 14s period is slower than
+ * the mid palms' 7s so the two layers don't visibly couple. */
+.farPalmsSway {
+  transform-box: view-box;
+  transform-origin: 50% 100%;
+  animation: farPalmsSway 14s ease-in-out infinite;
+}
+
+@keyframes palmFrondsSway {
+  0%, 100% { transform: rotate(-7deg); }
+  50%      { transform: rotate(7deg); }
+}
+
+@keyframes farPalmsSway {
+  0%, 100% { transform: rotate(-0.35deg); }
+  50%      { transform: rotate(0.35deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .swaySlow {
+  .palmFronds {
+    animation: none;
+  }
+  .farPalmsSway {
     animation: none;
   }
 }
@@ -586,8 +683,17 @@
  * ============================================================ */
 
 @media (max-width: 768px) {
-  .swaySlow {
-    animation-duration: 12s;
+  /* D-0059 rev8 — .swaySlow retired; the per-part .palmFronds
+   * is the new mobile-tuned knob (faster cadence so the sway
+   * reads on small screens). */
+  .palmFronds {
+    animation-duration: 9s;
+  }
+  .blade {
+    animation-duration: 2.2s;
+  }
+  .farPalmsSway {
+    animation-duration: 18s;
   }
   .cloud {
     animation-duration: 140s;

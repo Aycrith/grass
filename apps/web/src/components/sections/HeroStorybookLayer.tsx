@@ -42,7 +42,7 @@
 
 import type { MotionValue } from 'framer-motion';
 import { motion, useTransform } from 'framer-motion';
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 import type { ViewportMotionLayerId } from '@/components/motion';
 
@@ -442,7 +442,25 @@ function FarLayer(): ReactNode {
         fill="var(--ll-palm-light)"
         opacity="0.45"
       />
-      <g fill="url(#far-palm)" opacity="0.45">
+      {/* D-0059 rev8 — distant palm grove group sway.
+       *
+       * The pre-rev8 far palms were completely static. A static
+       * distant vista looks correct for a still photo, but the
+       * storybook is a living scene and the eye expects distant
+       * palms to "breathe" in the wind even if the motion is
+       * barely visible. Per-tree animation is overkill at this
+       * scale (7 palms, h=70-88 viewBox units, 0.45 opacity
+       * wash) — a single group-level rotation with a very small
+       * amplitude (±0.35°) gives the grove a subtle unified
+       * breath without per-tree CSS bloat. The pivot is the
+       * viewBox bottom-center (1000, 900) which sits well below
+       * the palms (~485 viewBox units away), so the angular
+       * motion translates to ~3 viewBox units of horizontal
+       * displacement at the palm-tops — a distant-treeline
+       * shimmer. The 14s period is much slower than the mid
+       * palms' 7s frond rotation so the two layers don't
+       * visibly sync. */}
+      <g className={styles.farPalmsSway} fill="url(#far-palm)" opacity="0.45">
         <PalmTree x={120} y={415} h={70} />
         <PalmTree x={340} y={405} h={80} />
         <PalmTree x={680} y={410} h={72} />
@@ -517,71 +535,97 @@ function MidLayer(): ReactNode {
         <House />
       </g>
 
-      <g className={styles.swaySlow}>
-        {/* D-0059 rev7 - left palm MOVED from y=280 to y=480, h 200 -> 170.
-         * The previous y=280 had the palm's fronds at viewBox y=80
-         * (since h=200, fronds sit at y-h). At a 1920x800 viewport
-         * the MidLayer SVG with preserveAspectRatio="xMidYMax slice"
-         * clips the top of the viewBox: with element 2304x800 and
-         * viewBox 2000x900, the slice scale is 1.152 and the yMax
-         * alignment means the visible viewBox y range is 205.7 to
-         * 900. Anything above y=205.7 is clipped above the viewport.
-         * The left palm's fronds at y=80 sat 125.7 units above the
-         * clip line — they were invisible, leaving only the bottom
-         * ~85px of trunk showing as a "hanging straight line" at
-         * the top of the screen. The user flagged this in the
-         * 1920x800 review as "palm tree's top is hanging and cut
-         * off from the top of the screen".
-         *
-         * Move to y=480, h=170: fronds at y=310 (104 units below
-         * the clip line, fully visible), base on the palm-light
-         * ground band at y=480. Trunk length 170 viewBox units =
-         * 196 screen pixels — the trunk is the visual "anchor" of
-         * the palm and now reads as a complete tree instead of a
-         * hanging line. h=170 (was 200) keeps the left palm
-         * noticeably taller than the middle/right palms (h=130) so
-         * the depth hierarchy still reads. */}
-        <PalmTree x={150} y={480} h={170} trunkFill="url(#mid-trunk)" frondFill="url(#mid-frond)" />
-      </g>
-      <g className={styles.swaySlow} style={{ animationDelay: '-1.2s' }}>
-        {/* D-0059 rev4 polish — middle palm MOVED from x=780 to x=950.
-         * At x=780 the trunk sat at screen x ≈ 444, which is inside
-         * the eyebrow pill's x range (349-532). The pill was 45%
-         * opaque so the dark trunk showed through behind the
-         * "LAWN CARE IN 33771" text, reading as a vertical thread
-         * hanging the pill. Moving to x=950 puts the trunk at
-         * screen x ≈ 596 (past the pill's right edge) and keeps
-         * the three-palm composition. The pill background is also
-         * bumped to 72% in HeroFieldTelemetry.module.css so even
-         * if a future change moves the pill back, the trunk won't
-         * read through it. */}
-        <PalmTree
-          x={950}
-          y={400}
-          h={130}
-          trunkFill="url(#mid-trunk)"
-          frondFill="url(#mid-frond)"
-        />
-      </g>
-      <g className={styles.swaySlow} style={{ animationDelay: '-0.6s' }}>
-        {/* D-0059 rev7 - right palm LOWERED from y=360 to y=400.
-         * At y=360 the fronds sat at viewBox y=230, which maps to
-         * screen y=27.9 — only 28 pixels below the top of the
-         * viewport. The fronds were technically visible but
-         * crowding the top edge, which read as "palm trees
-         * crammed at the top of the scene" on a 1920x800 review.
-         * Lowering to y=400 (h unchanged at 130) puts the fronds
-         * at viewBox y=270, screen y=74 — same y as the middle
-         * palm for a clean horizontal alignment, with comfortable
-         * breathing room from the top edge. */}
-        <PalmTree
-          x={1750}
-          y={400}
-          h={130}
-          trunkFill="url(#mid-trunk)"
-          frondFill="url(#mid-frond)"
-        />
-      </g>
+      {/* D-0059 rev8 — palm sway is now PART-WISE, not whole-tree.
+       * The pre-rev8 .swaySlow wrapper rotated the entire palm
+       * (trunk + fronds + coconut) as a single rigid body. With
+       * `transform-origin: bottom center` resolved to the viewBox
+       * bottom-center, the BASE of the trunk lifted off the ground
+       * as the tree swayed — the visitor saw the roots slide
+       * across the ground band, which is the "primitive whole-
+       * element transformation" the steward flagged.
+       *
+       * rev8 moves the animation INSIDE the PalmTree primitive: the
+       * trunk path (separate <g> in the new structure) stays
+       * static, and the fronds group (positioned at translate
+       * (0 -h), i.e. at the trunk-top attach point) is the only
+       * thing that rotates. CSS .palmFronds uses `transform-box:
+       * fill-box; transform-origin: 50% 50%` to resolve the pivot
+       * to the center of the fronds' bounding box — which is the
+       * attach point. Result: the trunk stays rooted, the canopy
+       * sweeps around the trunk-top, just like a real palm in
+       * wind. Per-palm `phase` keeps the three mid palms slightly
+       * out of sync so the grove doesn't sway in lockstep. */}
+      {/* D-0059 rev7 - left palm MOVED from y=280 to y=480, h 200 -> 170.
+       * The previous y=280 had the palm's fronds at viewBox y=80
+       * (since h=200, fronds sit at y-h). At a 1920x800 viewport
+       * the MidLayer SVG with preserveAspectRatio="xMidYMax slice"
+       * clips the top of the viewBox: with element 2304x800 and
+       * viewBox 2000x900, the slice scale is 1.152 and the yMax
+       * alignment means the visible viewBox y range is 205.7 to
+       * 900. Anything above y=205.7 is clipped above the viewport.
+       * The left palm's fronds at y=80 sat 125.7 units above the
+       * clip line — they were invisible, leaving only the bottom
+       * ~85px of trunk showing as a "hanging straight line" at
+       * the top of the screen. The user flagged this in the
+       * 1920x800 review as "palm tree's top is hanging and cut
+       * off from the top of the screen".
+       *
+       * Move to y=480, h=170: fronds at y=310 (104 units below
+       * the clip line, fully visible), base on the palm-light
+       * ground band at y=480. Trunk length 170 viewBox units =
+       * 196 screen pixels — the trunk is the visual "anchor" of
+       * the palm and now reads as a complete tree instead of a
+       * hanging line. h=170 (was 200) keeps the left palm
+       * noticeably taller than the middle/right palms (h=130) so
+       * the depth hierarchy still reads. */}
+      <PalmTree
+        x={150}
+        y={480}
+        h={170}
+        trunkFill="url(#mid-trunk)"
+        frondFill="url(#mid-frond)"
+        anim
+        phase="0s"
+      />
+      {/* D-0059 rev4 polish — middle palm MOVED from x=780 to x=950.
+       * At x=780 the trunk sat at screen x ≈ 444, which is inside
+       * the eyebrow pill's x range (349-532). The pill was 45%
+       * opaque so the dark trunk showed through behind the
+       * "LAWN CARE IN 33771" text, reading as a vertical thread
+       * hanging the pill. Moving to x=950 puts the trunk at
+       * screen x ≈ 596 (past the pill's right edge) and keeps
+       * the three-palm composition. The pill background is also
+       * bumped to 72% in HeroFieldTelemetry.module.css so even
+       * if a future change moves the pill back, the trunk won't
+       * read through it. */}
+      <PalmTree
+        x={950}
+        y={400}
+        h={130}
+        trunkFill="url(#mid-trunk)"
+        frondFill="url(#mid-frond)"
+        anim
+        phase="-1.2s"
+      />
+      {/* D-0059 rev7 - right palm LOWERED from y=360 to y=400.
+       * At y=360 the fronds sat at viewBox y=230, which maps to
+       * screen y=27.9 — only 28 pixels below the top of the
+       * viewport. The fronds were technically visible but
+       * crowding the top edge, which read as "palm trees
+       * crammed at the top of the scene" on a 1920x800 review.
+       * Lowering to y=400 (h unchanged at 130) puts the fronds
+       * at viewBox y=270, screen y=74 — same y as the middle
+       * palm for a clean horizontal alignment, with comfortable
+       * breathing room from the top edge. */}
+      <PalmTree
+        x={1750}
+        y={400}
+        h={130}
+        trunkFill="url(#mid-trunk)"
+        frondFill="url(#mid-frond)"
+        anim
+        phase="-0.6s"
+      />
     </svg>
   );
 }
@@ -623,13 +667,53 @@ function NearLayer(): ReactNode {
         </defs>
 
         <path d="M 0 600 Q 500 590 1000 600 T 2000 596 L 2000 900 L 0 900 Z" fill="url(#grass)" />
+        {/* D-0059 rev8 — per-blade grass sway.
+         *
+         * The pre-rev8 .blades group had a single one-shot `grow`
+         * animation (scaleY 0→1) and no continuous motion. After
+         * the grow-in finished the foreground was static — the
+         * lawn didn't respond to the same wind that sways the
+         * palms, which is a coherence gap: a real mowed lawn
+         * visibly breathes in even a gentle breeze.
+         *
+         * rev8 adds a continuous per-blade sway. Each of the 60
+         * blade groups gets .blade class + an inline `--i` CSS
+         * custom property. The CSS keyframe rotates the blade
+         * around its base (transform-box: fill-box; transform-origin:
+         * 50% 100% resolves to the bottom of the blade's bounding
+         * box, which is the base where the blade meets the ground
+         * at y=680). The animation-delay is `calc(var(--i) * -0.11s)`
+         * so each blade is 0.11s ahead of the previous one — with
+         * 60 blades the phase spread is 6.6s against a 2.6s period,
+         * meaning at any moment the lawn has blades at all phases
+         * of the sway, reading as a continuous shimmer rather
+         * than a synchronized back-and-forth. The "wind moving
+         * across the lawn" effect emerges from the phase gradient
+         * itself.
+         *
+         * Why ±3.5° and not more? Grass blades in a still photo
+         * look static; in real wind they bend a lot, but visually
+         * the visitor reads "alive lawn" at ±3-4° per blade with
+         * phase variation. Larger rotations make the blades look
+         * like they're being torn by a storm.
+         *
+         * The grow-in animation is preserved on the parent .blades
+         * group so the entrance still happens (now as a stagger
+         * of per-blade grow + continuous sway) — the children's
+         * CSS animations don't conflict with the parent's grow
+         * because grow runs once and is `backwards` on delay. */}
         <g className={styles.blades}>
           {Array.from({ length: 60 }).map((_, i) => {
             const x = i * 34 + (i % 3) * 8;
             const h = 24 + (i % 5) * 6;
             return (
               // biome-ignore lint/suspicious/noArrayIndexKey: static generated grass blades
-              <g key={`blade-${i}`} transform={`translate(${x} 680)`}>
+              <g
+                key={`blade-${i}`}
+                className={styles.blade}
+                style={{ '--i': i } as CSSProperties}
+                transform={`translate(${x} 680)`}
+              >
                 <path
                   d={`M 0 0 Q ${3 + (i % 3)} -${h} 6 -${h}`}
                   stroke="url(#grass-tip)"
@@ -741,15 +825,40 @@ function PalmTree({
   h,
   trunkFill = '#1f4e2c',
   frondFill = '#2d5a3d',
+  /* D-0059 rev8 — physics-coherent palm sway.
+   *
+   * `anim=true` opts this palm into the new per-part animation: the
+   * trunk stays rooted at its base (no rotation, the roots don't
+   * lift), and the fronds group rotates around the trunk-top attach
+   * point (where the canopy actually meets the trunk). The pre-rev8
+   * `.swaySlow` wrapper rotated the whole palm as a rigid body —
+   * visually the BASE lifted off the ground, which is the
+   * "primitive whole-element transformation" the steward flagged.
+   *
+   * `phase` lets MidLayer stagger the three mid palms' frond cycles
+   * (0s, -1.2s, -0.6s) so the grove doesn't sway in mechanical
+   * lockstep. Far-layer palms default anim=false because they're
+   * behind a 0.45 opacity wash and don't need per-part animation
+   * (they get a separate group-level "distant grove breathing" sway
+   * via .farPalmsSway).
+   */
+  anim = false,
+  phase = '0s',
 }: {
   x: number;
   y: number;
   h: number;
   trunkFill?: string;
   frondFill?: string;
+  anim?: boolean;
+  phase?: string;
 }): ReactNode {
   return (
     <g transform={`translate(${x} ${y})`}>
+      {/* Trunk — anchored at (0,0), the base. NO rotation: the
+       * root of the tree stays in the ground no matter how hard
+       * the canopy sways. The trunk shape itself goes from (0,0)
+       * at the base to (1, -h) at the top, with a slight curve. */}
       <path
         d={`M 0 0 Q ${-2} -${h * 0.5} 1 -${h}`}
         stroke={trunkFill}
@@ -757,7 +866,20 @@ function PalmTree({
         fill="none"
         strokeLinecap="round"
       />
-      <g transform={`translate(0 -${h})`}>
+      {/* Fronds — pivoted at the trunk-top attach point. The
+       * SVG `transform="translate(0 -h)"` puts the group's local
+       * origin at the top of the trunk. CSS `transform-box: fill-box;
+       * transform-origin: 50% 50%` then resolves the rotation pivot
+       * to the CENTER of the fronds' bounding box — which is the
+       * trunk-top attach point (the 8 fronds radiate from 0,0 in
+       * their local space, so their bbox is a square centered on
+       * the local origin). The fronds sweep around the fixed
+       * trunk-top, not around the viewBox bottom-center. */}
+      <g
+        className={anim ? styles.palmFronds : undefined}
+        transform={`translate(0 -${h})`}
+        style={anim ? { animationDelay: phase } : undefined}
+      >
         {[0, 45, 90, 135, 180, 225, 270, 315].map((rot) => (
           <g key={rot} transform={`rotate(${rot})`}>
             <path d="M 0 0 Q 12 -6 24 -2 Q 18 -10 8 -8 Z" fill={frondFill} />
