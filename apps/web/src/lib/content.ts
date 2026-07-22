@@ -69,52 +69,30 @@ export const hero = {
    * until the section ends. Stays out of the photo cross-fade
    * window so it doesn't compete with the route pin in scene 2.
    */
-  scene3: {
-    perZipStrip: {
-      eyebrow: 'Where this lives.',
-      cards: [
-        { zip: '33756', label: 'Belleair / Clearwater', href: '/areas/33756' },
-        { zip: '33770', label: 'Belleair Bluffs / Largo', href: '/areas/33770' },
-        { zip: '33771', label: 'Largo (central)', href: '/areas/33771' },
-        { zip: '33773', label: 'Largo (east)', href: '/areas/33773' },
-        { zip: '33774', label: 'Largo / Ridgecrest', href: '/areas/33774' },
-        { zip: '33778', label: 'Seminole / Largo West', href: '/areas/33778' },
-      ] as const,
-    },
-  },
   /**
-   * D-0050 Phase 1a — scene 1 service-area callout pill.
+   * D-0059 Path A — scene 3 used to render a per-ZIP card strip
+   * (D-0050 Phase 3). That strip duplicated data already carried
+   * by the ServiceAreaMap section below the hero (the ZIP form
+   * + 6 ZIP chips + neighborhood labels). The strip is deleted;
+   * the ServiceAreaMap section remains the single source of
+   * per-ZIP navigation.
    *
-   * Sits below the eyebrow in scene 1 (the cartoon storybook) as a
-   * small, clickable hint that anchors the visitor's mental map:
-   * "this is happening in 33771, central Largo." The pill is NOT
-   * meant to be the primary conversion path; it is an editorial
-   * breadcrumb for the homeowner who has been thinking about their
-   * address and wants to confirm "yes, this is my area" before
-   * scrolling further.
+   * D-0059 Path A — scene 1 used to render a service-area callout
+   * pill below the eyebrow (D-0050 Phase 1a). The pill duplicated
+   * the eyebrow "Lawn care in 33771" signal; the ServiceAreaMap
+   * form is the actual answer to "do you cover my address?". The
+   * pill is deleted.
    *
-   * Renders only in scene 1; fades out with the cartoon during
-   * scene 1 → photo cross-fade ([0.35, 0.55]). Reuses the same
-   * neighborhood label convention as `serviceAreaMap.pinLocations`
-   * ("Largo (central)") so the visual + copy language stays
-   * consistent across the site.
+   * D-0059 Path A — scene 1 used to render a cartoon operator +
+   * walk-behind mower (D-0050 Phase 1b). The OperatorStrip section
+   * below the hero carries the operator identity; the in-hero
+   * cartoon operator duplicated that identity. The cartoon operator
+   * SVG is deleted.
+   *
+   * See governance/decisions/0059-hero-simplification-and-extension.md
+   * §2.1 + §2.3 for the full rationale.
    */
-  callout: {
-    label: '33771 · Largo (central)',
-    href: '/areas/33771',
-  },
-  /**
-   * D-0050 Phase 1b — scene 1 cartoon operator aria-label.
-   *
-   * The operator is a decorative SVG element in the storybook
-   * near-layer (currently aria-hidden in the JSX because the
-   * storybook is purely decorative). This label is kept here as
-   * documentation + a future a11y upgrade path: if the operator
-   * is ever promoted to a navigable element (e.g. linking to
-   * /about), the aria-label is already authored.
-   */
-  operatorCartoonAriaLabel:
-    'A small cartoon operator pushing a walk-behind mower in the storybook scene.',
+  scene3: {},
 } as const;
 
 export const trustStrip = {

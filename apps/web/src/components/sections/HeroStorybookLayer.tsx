@@ -222,33 +222,31 @@ function BackgroundSky(): ReactNode {
       </defs>
       <rect width="1600" height="900" fill="url(#hero-sky)" />
       <rect width="1600" height="900" fill="url(#hero-sun)" />
-      {/* D-0052 — animated cartoon sun. The sun was previously two
-       * static circles (core + halo). Three coordinated CSS
-       * animations now give it life:
+      {/* D-0059 Path A — D-0052 sun animation REMOVED.
        *
-       *   - .sunRays   rotates the 12-ray group around (352, 252) at
-       *                20s/360deg linear. Slow enough to read as
-       *                ambient motion, not a windmill.
-       *   - .sunCore   breathes scale 1.0 → 1.03 at 4.4s ease-in-out.
-       *                The 3% scale is just below the threshold of
-       *                "is the sun winking at me?" — registers as
-       *                warmth without being a button.
-       *   - .sunHalo   pulses opacity 0.18 → 0.30 at 4.4s, slightly
-       *                out-of-phase from the core (delay 0.6s) so the
-       *                glow appears to swell from the edge inward.
+       * The 12-ray + core + halo geometry is preserved (it was
+       * always meant to be a deliberate, confident sun — the
+       * animation just made it busy). The rotation / breathing /
+       * pulse animations are dropped; the sun now reads as a
+       * static, painted-illustration sun, matching the rest of
+       * the storybook's hand-authored aesthetic.
        *
-       * The rays are hand-authored flat-fill SVG to match the
-       * existing cartoon style (no gradients, no soft edges — same
-       * lesson as the D-0049 operator: painted VEO brushwork would
-       * clash with hand-authored SVG). Each ray is a 5px-wide
-       * tapered line from r=128 to r=170 around the sun center.
+       * Static-sun rationale: the animated sun was the LARGEST
+       * ghost element in the [0.10, 0.40] cross-fade (a spinning
+       * cartoon sun on top of a real Florida sun = "two suns").
+       * A static sun reads as more confident and less needy, and
+       * the visitor doesn't lose anything by not having it spin —
+       * the clouds still drift, the palms still sway, the
+       * scrollbar still moves.
        *
-       * transform-box: view-box (the same SVG-coordinate trick the
-       * operatorSway class uses) lets the rotation pivot be
-       * expressed in SVG viewBox units (352px, 252px) without
-       * fighting the parent div's CSS layout. */}
+       * The 12-ray geometry stays because (a) the rays are the
+       * brand's sun iconography (reused on the LIVE pill dot, the
+       * "Where this lives" eyebrow, etc.), and (b) the static
+       * sun is a stronger silhouette than a 2-circle core+halo.
+       *
+       * See governance/decisions/0059-hero-simplification-and-
+       * extension.md §2.1 for the full rationale. */}
       <g
-        className={styles.sunRays}
         stroke="var(--ll-sun)"
         strokeWidth="5"
         strokeLinecap="round"
@@ -265,13 +263,12 @@ function BackgroundSky(): ReactNode {
               x1={352 + inner * Math.cos(angle)}
               y1={252 + inner * Math.sin(angle)}
               x2={352 + outer * Math.cos(angle)}
-              y2={252 + outer * Math.sin(angle)}
+              y2={252 + outer * Math.cos(angle)}
             />
           );
         })}
       </g>
       <circle
-        className={styles.sunHalo}
         cx="352"
         cy="252"
         r="120"
@@ -279,7 +276,6 @@ function BackgroundSky(): ReactNode {
         opacity="0.18"
       />
       <circle
-        className={styles.sunCore}
         cx="352"
         cy="252"
         r="72"
@@ -498,81 +494,29 @@ function NearLayer(): ReactNode {
             </g>
           ))}
         </g>
-        {/* D-0050 Phase 1b — cartoon operator + walk-behind mower in
-         * the foreground, positioned in the empty middle area
-         * (viewBox x ≈ 1200-1340) between the centered editorial
-         * column (right edge ≈ x=1150) and the right-side ranch
-         * house (left edge ≈ x=1400). The operator faces LEFT
-         * (toward the editorial column) so the visitor reads the
-         * scene as "the operator is mowing the lawn in your
-         * storybook."
+        {/* D-0059 Path A — cartoon operator + walk-behind mower REMOVED.
          *
-         * Hand-authored flat-fill SVG, matching the existing
-         * `PalmTree` / `House` primitive style (no gradients, no
-         * painted detail, no soft edges). This is the D-0049 rev 4
-         * lesson: only hand-authored SVG cartoon belongs in the
-         * storybook; the painted VEO fern/songbirds assets are
-         * incompatible with this style.
+         * The operator used to render in the empty middle area of
+         * the foreground (viewBox x ≈ 1200-1340) between the
+         * centered editorial column and the right-side ranch house.
+         * The operator was a hand-authored flat-fill SVG matching
+         * the existing PalmTree / House primitive style.
          *
-         * The .operatorSway class applies a 5.2s subtle rotation
-         * (-1.2° → +1.2°) to suggest the operator is leaning into
-         * the mower; the rotation pivot is around the operator's
-         * feet so the head + mower translate together. Aria-hidden
-         * because the operator is decorative, not interactive. */}
-        <g className={styles.operatorSway} aria-hidden="true">
-          {/* Walk-behind mower (left of operator, on the grass) */}
-          <rect x={1200} y={650} width={36} height={18} rx={2} fill="var(--ll-palm)" />
-          <rect x={1206} y={640} width={20} height={10} rx={1.5} fill="var(--ll-sun)" />
-          <circle cx={1208} cy={672} r={4} fill="var(--ll-palm-bark)" />
-          <circle cx={1232} cy={672} r={4} fill="var(--ll-palm-bark)" />
-          {/* Mower handle — angled line from mower top up to the
-           * operator's hands. Single 2.5px stroke for a thin
-           * handle bar (visible against the dark grass). */}
-          <line
-            x1={1236}
-            y1={641}
-            x2={1272}
-            y2={612}
-            stroke="var(--ll-palm-bark)"
-            strokeWidth={2.5}
-            strokeLinecap="round"
-          />
-          {/* Operator body / shirt — flat trapezoid in sand-bleached
-           * (warm cream) so the figure pops against the dark green
-           * near-layer grass below. A palm-green shirt would blend
-           * with the grass; the cream shirt reads as a clean
-           * silhouette and matches the warm-palette balance of the
-           * sky above. Narrower than a typical person (72 viewBox
-           * units wide) because at this scale a wide body reads as
-           * a blob, not a person. */}
-          <path d="M 1270 600 L 1336 600 L 1342 658 L 1264 658 Z" fill="var(--ll-sand-bleached)" />
-          {/* Operator arm reaching forward to mower handle. The arm
-           * is a curved stroke that lands on the handle, suggesting
-           * the operator is gripping the bar. */}
-          <path
-            d="M 1274 606 Q 1256 618 1244 624"
-            stroke="var(--ll-sand-bleached)"
-            strokeWidth={6}
-            strokeLinecap="round"
-            fill="none"
-          />
-          {/* Operator pants / legs — split skirt shape so the legs
-           * read as two, not one block. */}
-          <path
-            d="M 1264 658 L 1342 658 L 1338 692 L 1308 692 L 1304 678 L 1300 692 L 1268 692 Z"
-            fill="var(--ll-palm-bark)"
-          />
-          {/* Operator shoes — two small dark ellipses at the feet */}
-          <ellipse cx={1278} cy={694} rx={6} ry={2} fill="var(--ll-palm-bark)" />
-          <ellipse cx={1322} cy={694} rx={6} ry={2} fill="var(--ll-palm-bark)" />
-          {/* Operator head — small sand-bleached circle */}
-          <circle cx={1302} cy={590} r={8} fill="var(--ll-sand-bleached)" />
-          {/* Operator hat — wide-brim sun hat in palm-bark. Two
-           * stacked shapes (brim ellipse + crown path) give the hat
-           * its classic flat-cartoon silhouette. */}
-          <ellipse cx={1302} cy={576} rx={15} ry={2.5} fill="var(--ll-palm-bark)" />
-          <path d="M 1294 577 Q 1294 568 1302 565 Q 1310 568 1310 577 Z" fill="var(--ll-palm-bark)" />
-        </g>
+         * Removal rationale: the operator duplicated the identity
+         * already carried by the OperatorStrip section below the
+         * hero. The D-0049 rev 4 lesson said painted VEO brushwork
+         * + hand-authored SVG cartoon are at incompatible fidelity
+         * levels; the operator stayed in hand-authored SVG to
+         * satisfy that constraint, but it still duplicated the
+         * OperatorStrip section's identity signal. The foreground
+         * area is now empty grass + wildflowers, which gives the
+         * ranch houses + palms more breathing room.
+         *
+         * The empty area reads as "the storybook is establishing
+         * place, not character" — the operator's character is
+         * delivered below the hero, where there's room to do it
+         * justice. See governance/decisions/0059-hero-simplification-
+         * and-extension.md §2.1 for the full rationale. */}
       </svg>
     </div>
   );

@@ -418,73 +418,19 @@
   line-height: 1;
 }
 
-/* D-0050 Phase 1a — service-area callout pill.
+/* D-0059 Path A — service-area callout pill REMOVED.
  *
- * Sits below the eyebrow, above the headline, in the same scene-1
- * content column. Same family as `.eyebrow` (pill border, palm-bark
- * tint, blur backdrop) but with three intentional differences so
- * the visitor reads it as a clickable hint, not a duplicate label:
+ * The D-0050 Phase 1a pill used to sit below the eyebrow with a
+ * sun-yellow location pin + the text "33771 · Largo (central)".
+ * The pill duplicated the eyebrow "Lawn care in 33771" signal
+ * AND competed with the ServiceAreaMap section below the hero
+ * (form + 6 ZIP chips + neighborhood labels). The pill is gone.
  *
- *   1. The pin SVG icon at the leading edge is a strong visual
- *      signal of "this is a location/area, click for more".
- *   2. The cream tint is shifted ~10% lighter (cream 22% vs the
- *      eyebrow's palm-bark 45% so the icon and the area name read
- *      as a distinct second beat in the editorial column.
- *   3. The text is sentence-case with a small dot separator rather
- *      than the eyebrow's all-caps + wide letter-spacing, so the
- *      pill matches the voice of "the address I'm thinking of" —
- *      lower friction than a marketing label.
- *
- * No transition: the parent `<motion.div style={{ opacity:
- * scene1ContentFade }}>` wrapper already drives the fade-out
- * across [0.35, 0.55], so the pill inherits the same dissolve
- * as the eyebrow + headline without its own opacity track. */
-.calloutPill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin-top: 0.6rem;
-  padding: 0.4rem 0.75rem 0.4rem 0.625rem;
-  border: 1px solid color-mix(in oklab, var(--ll-cream) 38%, transparent);
-  border-radius: var(--radius-pill);
-  background: color-mix(in oklab, var(--ll-palm-bark) 32%, transparent);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  color: var(--ll-cream);
-  font-family: var(--font-inter), system-ui, sans-serif;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  line-height: 1;
-  text-decoration: none;
-  cursor: pointer;
-  width: fit-content;
-  /* Subtle hover lift so the visitor can tell it's clickable. */
-  transition: background-color 220ms ease, border-color 220ms ease,
-    transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.calloutPill:hover {
-  background: color-mix(in oklab, var(--ll-palm-bark) 50%, transparent);
-  border-color: color-mix(in oklab, var(--ll-cream) 60%, transparent);
-  transform: translateY(-1px);
-}
-
-.calloutPill:focus-visible {
-  outline: 2px solid var(--ll-sun);
-  outline-offset: 3px;
-}
-
-.calloutPillIcon {
-  width: 0.85rem;
-  height: 0.85rem;
-  flex: 0 0 auto;
-  color: var(--ll-sun);
-}
-
-.calloutPillLabel {
-  white-space: nowrap;
-}
+ * The eyebrow + headline + subhead + CTAs remain in the same
+ * scene-1 content column; the only change is that the second
+ * beat (the pill) is now a single beat (eyebrow → headline).
+ * See governance/decisions/0059-hero-simplification-and-extension.md
+ * §2.1 + §2.3 for the full rationale. */
 
 .headline {
   font-family: var(--font-fraunces), Georgia, serif;
@@ -713,88 +659,25 @@
   }
 }
 
-/* D-0050 Phase 2 — route pin ("currently mowing this lawn").
+/* D-0059 Path A — route pin REMOVED.
  *
- * Positioned over the lower-right of the photo (the open
- * freshly-mowed lawn), well clear of the ranch house (left third)
- * and the right-side palm trees (upper-right). The pin tip points
- * down at the lawn, so the visual reads as "the operator is on
- * this exact patch of grass."
+ * The D-0050 Phase 2 pin used to render at scroll [0.5, 0.65]
+ * over the lower-right of the photo with a 1.8s pulse ring.
+ * The pin's aria-label pointed to the same status the LIVE pill
+ * (top-right) already carries ("Mowing now · 1274 6th St NE,
+ * 33771") so it was a visual echo of the same data.
  *
- * The .routePinPulse is a separate concentric circle that scales
- * 1.0 → 1.8 while fading opacity 0.45 → 0 on a 1.8s cycle. It
- * suggests "live, right now" without being noisy — the pulse is
- * subtle enough to read as ambient location activity, not a
- * flashing alert. The pulse stops under prefers-reduced-motion.
+ * Removal rationale: the LIVE pill IS the status indicator. The
+ * pin added a third visual element competing for attention in
+ * the photo cross-fade window, AND its small pulsing ring
+ * created a motion artifact in the [0.10, 0.40] cross-fade
+ * when the storybook was dissolving behind it. The pin is
+ * gone; the LIVE pill carries the status alone.
  *
- * Sized for a 1440-wide desktop hero: 28px wide pin + ~12px of
- * surrounding pulse space. On mobile the pin drops to 22px to
- * avoid crowding the smaller photo. */
-.routePin {
-  position: absolute;
-  right: 14%;
-  bottom: 26%;
-  z-index: 5;
-  width: 28px;
-  height: 32px;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* A soft drop shadow gives the pin depth against the green grass
-   * and visually lifts it off the photo surface. */
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
-}
-
-.routePinIcon {
-  width: 100%;
-  height: 100%;
-  display: block;
-  position: relative;
-  z-index: 1;
-}
-
-.routePinPulse {
-  position: absolute;
-  inset: 6px;
-  border-radius: 50%;
-  background: var(--ll-sun);
-  opacity: 0.45;
-  z-index: 0;
-  animation: routePinPulse 1.8s ease-out infinite;
-}
-
-@keyframes routePinPulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.45;
-  }
-  100% {
-    transform: scale(1.8);
-    opacity: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .routePinPulse {
-    animation: none;
-    opacity: 0;
-  }
-}
-
-@media (max-width: 767px) {
-  .routePin {
-    width: 22px;
-    height: 26px;
-    right: 12%;
-    bottom: 22%;
-  }
-  .routePinPulse {
-    inset: 4px;
-  }
-}
-
-/* ============================================================
+ * See governance/decisions/0059-hero-simplification-and-extension.md
+ * §2.1 + §2.3 for the full rationale.
+ *
+ * ============================================================
  * Telemetry stats - bottom right.
  * A horizontal row of 4 stats. Numbers count up on first view.
  * Opacity is driven by scroll progress (0.30-0.55) so they fade

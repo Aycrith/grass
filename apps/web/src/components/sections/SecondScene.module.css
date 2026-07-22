@@ -196,172 +196,23 @@
   }
 }
 
-/* ============================================================
- * D-0050 Phase 3 — per-ZIP card strip
- * ============================================================
+/* D-0059 Path A — per-ZIP card strip REMOVED.
  *
- * 6 cards in a horizontal row at the bottom of scene 3 (the
- * painted ranch house), one per service area ZIP. Each card
- * shows the painted area image (top 60%) + ZIP + label and
- * links to /areas/[zip].
+ * The D-0050 Phase 3 strip rendered 6 ZIP cards at the bottom
+ * of scene 3 (the painted ranch house) with a coordinated
+ * handoff from the dashboard widgets. The strip duplicated
+ * the per-ZIP navigation already carried by the ServiceAreaMap
+ * section below the hero (form + 6 ZIP chips + neighborhood
+ * labels), AND it added a third visual element to a section
+ * that already had two (painted illustration + editorial
+ * pull-quote).
  *
- * Layout:
- *   - Strip is positioned absolute at the very bottom of the
- *     SecondScene root, below the editorial pull-quote content
- *     (which sits at bottom 12svh)
- *   - 6 cards on desktop, 3x2 grid on tablet, 2x3 grid on
- *     mobile (responsive via @media)
- *   - Card has cream-tinted bg with backdrop blur so the cards
- *     read as a distinct layer over the painted scene 2 grass
+ * Removal rationale: the ServiceAreaMap section IS the per-ZIP
+ * navigation. The strip was the 7th representation of the same
+ * 6-ZIP list on a page that already had 6 representations
+ * (1 form, 6 chips in the form's <datalist>, 6 pinLocations
+ * labels, the homepage footer, etc.). The strip's space is now
+ * empty — the painted scene 2 fills the panel edge-to-edge.
  *
- * Z-index: 1 inside SecondScene root (which is z 1 of the hero
- * stack), so the strip sits above the painted scene stage but
- * below the editorial pull-quote (z 2). The strip is decorative
- * (aria-labelledby points at the eyebrow span). */
-
-.perZipStrip {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-  padding: 0.875rem clamp(1rem, 3vw, 2.5rem) 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  pointer-events: none;
-}
-
-.perZipStrip > * {
-  pointer-events: auto;
-}
-
-.perZipStripEyebrow {
-  display: block;
-  font-family: var(--font-inter), system-ui, sans-serif;
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: var(--ll-cream);
-  /* Subtle dark scrim so the eyebrow reads on the painted
-   * grass background without competing with the editorial
-   * pull-quote's brown text. */
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
-}
-
-.perZipStripGrid {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 0.5rem;
-}
-
-.perZipCard {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
-  background: color-mix(in oklab, var(--ll-cream) 88%, transparent);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid color-mix(in oklab, var(--ll-palm-bark) 18%, transparent);
-  border-radius: 8px;
-  overflow: hidden;
-  text-decoration: none;
-  color: var(--ll-palm-bark);
-  cursor: pointer;
-  padding: 0.375rem;
-  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 240ms ease, border-color 240ms ease;
-}
-
-.perZipCard:hover {
-  transform: translateY(-3px);
-  border-color: color-mix(in oklab, var(--ll-palm-bark) 40%, transparent);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-}
-
-.perZipCard:focus-visible {
-  outline: 2px solid var(--ll-sun);
-  outline-offset: 3px;
-}
-
-.perZipCardImageWrap {
-  display: block;
-  width: 48px;
-  height: 48px;
-  flex: 0 0 48px;
-  overflow: hidden;
-  background: var(--ll-palm-light);
-  border-radius: 5px;
-}
-
-.perZipCardImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 480ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.perZipCard:hover .perZipCardImage {
-  transform: scale(1.06);
-}
-
-.perZipCardText {
-  display: flex;
-  flex-direction: column;
-  gap: 0.05rem;
-  min-width: 0;
-  flex: 1 1 auto;
-}
-
-.perZipCardZip {
-  font-family: var(--font-fraunces), Georgia, serif;
-  font-weight: 700;
-  font-size: 0.85rem;
-  line-height: 1.1;
-  color: var(--ll-palm-bark);
-}
-
-.perZipCardLabel {
-  font-family: var(--font-inter), system-ui, sans-serif;
-  font-size: 0.65rem;
-  font-weight: 500;
-  line-height: 1.2;
-  color: var(--ll-palm-bark);
-  opacity: 0.75;
-  /* Truncate with ellipsis if the label is too long for the card
-   * on narrow viewports (safety against "Seminole / Largo West"
-   * wrapping awkwardly at narrow card width). */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Tablet: 3x2 grid (one ZIP per row of 3). */
-@media (max-width: 1024px) {
-  .perZipStripGrid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-  .perZipCardLabel {
-    white-space: normal;
-  }
-}
-
-/* Mobile: 2x3 grid (more breathing room per card). */
-@media (max-width: 640px) {
-  .perZipStrip {
-    padding: 1rem 0.75rem 1.25rem;
-  }
-  .perZipStripGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.4rem;
-  }
-  .perZipCardZip {
-    font-size: 0.85rem;
-  }
-  .perZipCardLabel {
-    font-size: 0.65rem;
-  }
-}
+ * See governance/decisions/0059-hero-simplification-and-extension.md
+ * §2.1 + §2.3 for the full rationale. */

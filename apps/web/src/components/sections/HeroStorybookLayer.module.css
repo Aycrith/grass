@@ -52,51 +52,22 @@
  * Cadence: 20s ray rotation, 4.4s core/halo breath. Different
  * periods so the animations don't visibly loop in lockstep.
  *
- * Reduced-motion: all three animations collapse to identity
- * via the @media block at the bottom of the file.
+ * Reduced-motion: no animation to gate (the sun is static).
  * ============================================================ */
 
-.sunRays {
-  transform-box: view-box;
-  transform-origin: 352px 252px;
-  animation: sunRaysRotate 20s linear infinite;
-}
-
-.sunCore {
-  transform-box: view-box;
-  transform-origin: 352px 252px;
-  animation: sunCoreBreathe 4.4s ease-in-out infinite;
-}
-
-.sunHalo {
-  transform-box: view-box;
-  transform-origin: 352px 252px;
-  animation: sunHaloPulse 4.4s ease-in-out infinite;
-  animation-delay: -0.6s;
-}
-
-@keyframes sunRaysRotate {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
-@keyframes sunCoreBreathe {
-  0%, 100% { transform: scale(1);    opacity: 0.9; }
-  50%      { transform: scale(1.03); opacity: 1;   }
-}
-
-@keyframes sunHaloPulse {
-  0%, 100% { transform: scale(1);    opacity: 0.18; }
-  50%      { transform: scale(1.06); opacity: 0.30; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .sunRays,
-  .sunCore,
-  .sunHalo {
-    animation: none;
-  }
-}
+/* D-0059 Path A — D-0052 sun animations REMOVED.
+ *
+ * The .sunRays (20s linear rotation), .sunCore (4.4s scale 1→1.03),
+ * and .sunHalo (4.4s pulse opacity 0.18→0.30) keyframes and
+ * class applications are dropped. The 12-ray + core + halo
+ * geometry stays (the SVG group + 2 circles in HeroStorybookLayer.tsx
+ * are unchanged), but the elements render as static, painted-
+ * illustration sun. The sun now reads as a confident, deliberate
+ * shape rather than a busy animated element — and it no longer
+ * creates a "two suns" ghost in the [0.10, 0.40] cross-fade.
+ *
+ * See governance/decisions/0059-hero-simplification-and-extension.md
+ * §2.1 for the full rationale. */
 
 /* ============================================================
  * Drifting clouds - pure CSS, GPU-friendly. Positioned across
@@ -312,30 +283,13 @@
  *
  * Subtle ±1.2° rotation around the operator's feet (transform-
  * origin set to the feet in SVG viewBox coordinates so the head
- * + mower arc together) over 5.2s. Faster than the mid-layer
- * palm sway (8s) so the operator reads as an active worker, not
- * a passive prop.
- *
- * On prefers-reduced-motion the rotation stops entirely, matching
- * the .swaySlow behavior. SVG <g> elements default to
- * transform-box: view-box, so the transform-origin uses SVG
- * coordinates directly (no need for fill-box). */
-.operatorSway {
-  transform-origin: 1300px 692px;
-  transform-box: view-box;
-  animation: operatorSway 5.2s ease-in-out infinite;
-}
-
-@keyframes operatorSway {
-  0%, 100% { transform: rotate(-1.2deg); }
-  50% { transform: rotate(1.2deg); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .operatorSway {
-    animation: none;
-  }
-}
+ * D-0059 Path A — cartoon operator + walk-behind mower REMOVED.
+ * The .operatorSway keyframes and class application are dropped.
+ * The cartoon operator SVG group in HeroStorybookLayer.tsx is
+ * also dropped (see §2.1 in the ADR). The foreground area
+ * (x ≈ 1200-1340 in the storybook viewBox) is now empty grass
+ * + wildflowers, which gives the ranch houses + palms more
+ * breathing room. */
 
 /* ============================================================
  * Scroll hint

@@ -216,18 +216,6 @@ interface HeroFieldTelemetryProps {
     primaryCta: { label: string; href: string };
     secondaryCta: { label: string; href: string };
   };
-  /** D-0050 Phase 3 — per-ZIP card strip rendered at the bottom
-   * of scene 3 (the painted ranch house). 6 cards, one per
-   * service area ZIP, each with painted area image + ZIP + label. */
-  perZipStrip: {
-    eyebrow: string;
-    cards: ReadonlyArray<{ zip: string; label: string; href: string }>;
-  };
-  /** D-0050 Phase 1a — small service-area callout pill rendered in
-   * scene 1 (the cartoon storybook), below the eyebrow. Clickable
-   * hint that anchors the visitor's mental map to a specific ZIP
-   * + neighborhood label. Fades out with scene 1. */
-  callout: { label: string; href: string };
   /** ISO datetime to start the "now" anchor. Defaults to current time. */
   now?: string;
 }
@@ -247,8 +235,6 @@ export function HeroFieldTelemetry({
   primaryCta,
   secondaryCta,
   scene2,
-  perZipStrip,
-  callout,
   now,
 }: HeroFieldTelemetryProps): ReactNode {
   const sectionRef = useRef<HTMLElement>(null);
@@ -379,58 +365,6 @@ export function HeroFieldTelemetry({
   const secondSceneFade = useTransform(smoothProgress, [0.4, 0.7], [0, 1]);
   const scene1ContentFade = useTransform(smoothProgress, [0.35, 0.55], [1, 0]);
   const scene2ContentFade = useTransform(smoothProgress, [0.55, 0.75], [0, 1]);
-  // D-0050 Phase 2 — route pin fade. Pin sits on the photo and
-  // should appear AFTER the photo settles (scroll 0.5+), stay
-  // visible briefly while the photo is dominant, then fade out
-  // before the photo's tail at scroll 0.7. The 0.5-0.65 window
-  // (5%-fades-in, 5%-holds, 5%-fades-out) keeps the pin quiet and
-  // unassertive — it's a "by the way, I'm here right now" hint,
-  // not a focal point that competes with the editorial column.
-  const routePinFade = useTransform(
-    smoothProgress,
-    [0, 0.5, 0.55, 0.6, 0.65, 1],
-    [0, 0, 1, 1, 0, 0],
-  );
-
-  // D-0050 Phase 3 — per-ZIP card strip fade. Renders at the
-  // bottom of scene 3 (the painted ranch house), fading in
-  // across [0.70, 0.85] as the scene settles into its resting
-  // state. The 5%-fades-in / 15%-holds window keeps the strip
-  // visible long enough for the visitor to read the labels and
-  // make a click decision. The strip persists until the section
-  // ends (no fade-out — the section's natural end takes over).
-  const perZipStripFade = useTransform(
-    smoothProgress,
-    [0, 0.7, 0.85, 1],
-    [0, 0, 1, 1],
-  );
-
-  // D-0050 Phase 3 — dashboard fade-out as the per-ZIP strip
-  // fades in. The dashboard (LIVE pill + FieldStamp + telemetry
-  // strip) is the scene 1 / photo UI; in scene 3 the painted
-  // ranch house is the resting state and the per-ZIP strip
-  // becomes the new bottom-UI. Hiding the dashboard in scene 3
-  // prevents overlap with the strip and gives the strip the
-  // full bottom area. Fade-out is [0.70, 0.80] (slightly ahead
-  // of the strip's fade-in [0.70, 0.85]) so the handoff reads
-  // as a clean scene transition, not a cross-fade.
-  const dashboardFadeOut = useTransform(
-    smoothProgress,
-    [0, 0.7, 0.8, 1],
-    [1, 1, 0, 0],
-  );
-
-  // D-0050 Phase 3 — combined dashboard opacity (in-fade + out-fade).
-  // The dashboard widgets (LIVE pill + FieldStamp + telemetry) fade
-  // in at [0.1, 0.3] (D-0043) and fade out at [0.7, 0.8] (Phase 3,
-  // so the per-ZIP strip can take over the bottom area in scene 3).
-  // The combined value is the product of the two MotionValues so
-  // both transitions apply correctly (the widget is visible only
-  // when both are non-zero).
-  const dashboardCombined = useTransform(
-    [uiOpacity, dashboardFadeOut] as MotionValue<number>[],
-    ([inV, outV]: readonly number[]) => (inV ?? 0) * (outV ?? 0),
-  );
 
   return (
     <section
@@ -476,22 +410,24 @@ export function HeroFieldTelemetry({
         {/* Z 0: real 4K Florida lawn photograph. */}
         <BackgroundPhoto progress={smoothProgress} photoFade={photoFade} />
 
-        {/* D-0050 Phase 2 — "currently here" route pin.
+        {/* D-0059 Path A — route pin REMOVED.
          *
-         * Subtle, brand-tinted location pin rendered over the
-         * lower-right of the photo (the open freshly-mowed lawn).
-         * Matches the callout pill's pin icon so the visual
-         * language is consistent across scene 1 (callout pill) and
-         * scene 2 (this pin). Pulse ring is a separate concentric
-         * circle that scales + fades on a 1.8s cycle, suggesting
-         * "live, right now" without being noisy.
+         * The route pin used to render at scroll [0.5, 0.65] over
+         * the lower-right of the photo, with a 1.8s pulse ring
+         * suggesting "live, right now". The pin's aria-label
+         * ("Currently mowing this lawn") pointed to the same
+         * status the LIVE pill (top-right) already carries —
+         * "Mowing now · 1274 6th St NE, 33771" — so it was a
+         * visual echo of the same data, with a screen-reader
+         * label explicitly tied to the pill.
          *
-         * Fades in at scroll 0.5-0.55 (after the photo has settled
-         * into the rest of the cross-fade) and fades out at 0.6-0.65
-         * (before the photo's tail at 0.7). The 5%-in / 5%-hold /
-         * 5%-out window is intentionally brief — this is a
-         * supporting visual hint, not a primary CTA. */}
-        <RoutePin opacity={routePinFade} />
+         * Removal rationale: the LIVE pill IS the status
+         * indicator. The route pin was a third visual element
+         * competing for attention in the photo cross-fade
+         * window. The pin's small pulsing ring also created a
+         * motion artifact in the [0.10, 0.40] cross-fade when
+         * the storybook was dissolving behind it. The pin is
+         * gone; the LIVE pill carries the status alone. */}
 
         {/* Z 0.5: additive green palette correction.
          * Bottom-up green wash that tints the sandy foreground toward
@@ -582,7 +518,6 @@ export function HeroFieldTelemetry({
             subhead={subhead}
             primaryCta={primaryCta}
             secondaryCta={secondaryCta}
-            callout={callout}
           />
         </motion.div>
 
@@ -607,8 +542,6 @@ export function HeroFieldTelemetry({
           scene2={scene2}
           opacity={secondSceneFade}
           contentOpacity={scene2ContentFade}
-          perZipStrip={perZipStrip}
-          perZipStripOpacity={perZipStripFade}
         />
 
         {/* Z 4: live status (top right), field stamp (bottom left),
@@ -630,9 +563,9 @@ export function HeroFieldTelemetry({
          * Motion's style cache stays bound to the original MotionValue after
          * the prop transitions to a literal number — see comment block at top
          * of file for the full binding-subscriber rationale. */}
-        <LiveStatus now={now ?? undefined} uiOpacity={dashboardCombined} uiY={uiY} />
-        <FieldStamp dashboardCombined={dashboardCombined} />
-        <TelemetryStats uiOpacity={dashboardCombined} uiY={uiY} progress={smoothProgress} />
+        <LiveStatus now={now ?? undefined} uiOpacity={uiOpacity} uiY={uiY} />
+        <FieldStamp />
+        <TelemetryStats uiOpacity={uiOpacity} uiY={uiY} progress={smoothProgress} />
         {isDebugAdditive && (
           <div
             className={styles.debugBanner}
@@ -661,43 +594,32 @@ function Content({
   subhead,
   primaryCta,
   secondaryCta,
-  callout,
 }: {
   eyebrow: string;
   headline: string;
   subhead: string;
   primaryCta: { label: string; href: string };
   secondaryCta: { label: string; href: string };
-  callout: { label: string; href: string };
 }): ReactNode {
   const headlineLines = parseHeadline(headline);
   return (
     <>
       <span className={styles.eyebrow}>{eyebrow}</span>
 
-      {/* D-0050 Phase 1a — service-area callout pill. Below the
-       * eyebrow, above the headline. Sits in the same scene-1
-       * content column as the eyebrow so the editorial block reads
-       * top-down: section → service area → headline. */}
-      <a
-        href={callout.href}
-        className={styles.calloutPill}
-        aria-label={`Service area: ${callout.label} (opens area page)`}
-      >
-        <svg
-          className={styles.calloutPillIcon}
-          viewBox="0 0 16 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <path
-            d="M8 1.5c-2.485 0-4.5 2.015-4.5 4.5 0 3.375 4.5 8.5 4.5 8.5s4.5-5.125 4.5-8.5c0-2.485-2.015-4.5-4.5-4.5zm0 6.125a1.625 1.625 0 1 1 0-3.25 1.625 1.625 0 0 1 0 3.25z"
-            fill="currentColor"
-          />
-        </svg>
-        <span className={styles.calloutPillLabel}>{callout.label}</span>
-      </a>
+      {/* D-0059 Path A — service-area callout pill REMOVED.
+       *
+       * The pill used to sit below the eyebrow with a sun-yellow
+       * location pin + the text "33771 · Largo (central)",
+       * linking to /areas/33771. It was a clickable hint that
+       * duplicated the eyebrow "Lawn care in 33771" signal.
+       *
+       * Removal rationale: the ServiceAreaMap section below the
+       * hero IS the per-ZIP navigation (form + 6 ZIP chips +
+       * neighborhood labels). Adding a pill above the hero
+       * competed with the form and added a third visual
+       * element to the scene 1 content column. The eyebrow
+       * already says "Lawn care in 33771" — the pill was a
+       * second telling. */}
 
       <h1 className={styles.headline}>
         {headlineLines.map((line, li) => (
@@ -940,65 +862,6 @@ function LiveStatus({
 }
 
 /* ============================================================
- * RoutePin - "currently mowing this lawn" indicator.
- *
- * D-0050 Phase 2 — small, brand-tinted location pin rendered over
- * the lower-right of the photo (the open freshly-mowed lawn). The
- * pin's location-pulse ring (a separate concentric circle that
- * scales + fades on a 1.8s cycle) suggests "live, right now"
- * without being noisy.
- *
- * Position: `right: 14%; bottom: 26%` — the open grass area in the
- * lower-right of the photo, well clear of the ranch house (which
- * is in the left third) and the right-side palm trees (which are
- * in the upper-right). The pin tip points DOWN at the lawn, so
- * the visual reads as "the operator is on this exact patch of
- * grass."
- *
- * The 5%-in / 5%-hold / 5%-out fade window (scroll 0.5-0.65) is
- * intentionally brief — the pin is a supporting visual hint, not
- * a primary CTA. It coincides with the photo's dominant visibility
- * window (scroll 0.4-0.7) so the visitor sees the pin when the
- * photo is the resting state.
- *
- * Mobile + reduced-motion: the pin is a `motion.div` driven by
- * the same `routePinFade` MotionValue as desktop, so it fades
- * naturally. The pulse ring animation is CSS and is overridden
- * to `none` under prefers-reduced-motion.
- *
- * Aria-label points to the same status the LIVE pill carries
- * ("Mowing now") so screen readers report a single, consistent
- * status regardless of which visual element the user encounters.
- * ============================================================ */
-
-function RoutePin({ opacity }: { opacity: MotionValue<number> }): ReactNode {
-  return (
-    <motion.div
-      className={styles.routePin}
-      style={{ opacity }}
-      role="status"
-      aria-label="Currently mowing this lawn"
-    >
-      <span className={styles.routePinPulse} aria-hidden="true" />
-      <svg
-        className={styles.routePinIcon}
-        viewBox="0 0 24 32"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        <title>Operator location</title>
-        <path
-          d="M12 2c-4.97 0-9 4.03-9 9 0 6.75 9 19 9 19s9-12.25 9-19c0-4.97-4.03-9-9-9zm0 12.25a3.25 3.25 0 1 1 0-6.5 3.25 3.25 0 0 1 0 6.5z"
-          fill="var(--ll-sun)"
-          stroke="var(--ll-palm-bark)"
-          strokeWidth="1.25"
-        />
-      </svg>
-    </motion.div>
-  );
-}
-
-/* ============================================================
  * FieldStamp - "EST 2026 LARGO FL" passport stamp.
  * Tilted, like a hand-pressed stamp. Decoration on the photo,
  * NOT dashboard chrome - always visible on desktop, hidden on
@@ -1007,23 +870,19 @@ function RoutePin({ opacity }: { opacity: MotionValue<number> }): ReactNode {
  * visitors still see the stamp at scroll 0 - it was a
  * pre-existing element of the postcard, not an overlay that
  * comes in after the dissolve.
+ *
+ * D-0059 Path A — the D-0050 Phase 3 dashboard fade-out
+ * (combined in-fade + out-fade MotionValue, which was added
+ * so the stamp would fade out in scene 3 to make room for the
+ * per-ZIP strip) is removed. The per-ZIP strip is gone, so the
+ * stamp no longer needs to fade out — it persists as static
+ * postcard iconography through scene 3. The original plain-
+ * div binding is restored.
  * ============================================================ */
 
-function FieldStamp({
-  dashboardCombined,
-}: {
-  /** D-0050 Phase 3 — combined in-fade + out-fade MotionValue so
-   * the stamp fades out in scene 3 to make room for the per-ZIP
-   * strip. Previously a static <div>; promoted to motion.div
-   * with the scroll-driven opacity. */
-  dashboardCombined: MotionValue<number>;
-}): ReactNode {
+function FieldStamp(): ReactNode {
   return (
-    <motion.div
-      className={styles.stamp}
-      style={{ opacity: dashboardCombined }}
-      aria-hidden="true"
-    >
+    <div className={styles.stamp} aria-hidden="true">
       <span className={styles.stampInner}>
         <span>EST · 2026</span>
         <span className={styles.stampDot}>·</span>
@@ -1031,7 +890,7 @@ function FieldStamp({
         <span className={styles.stampDot}>·</span>
         <span>FL</span>
       </span>
-    </motion.div>
+    </div>
   );
 }
 

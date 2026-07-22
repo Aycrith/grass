@@ -59,18 +59,6 @@ export default function Hero3DTestPage(): ReactNode {
         <SecondScene
           opacity={opacityMV}
           contentOpacity={contentMV}
-          perZipStrip={{
-            eyebrow: 'Where this lives.',
-            cards: [
-              { zip: '33756', label: 'Belleair / Clearwater', href: '/areas/33756' },
-              { zip: '33770', label: 'Belleair Bluffs / Largo', href: '/areas/33770' },
-              { zip: '33771', label: 'Largo (central)', href: '/areas/33771' },
-              { zip: '33773', label: 'Largo (east)', href: '/areas/33773' },
-              { zip: '33774', label: 'Largo / Ridgecrest', href: '/areas/33774' },
-              { zip: '33778', label: 'Seminole / Largo West', href: '/areas/33778' },
-            ],
-          }}
-          perZipStripOpacity={opacityMV}
           scene2={{
             eyebrow: 'CHAPTER 2 — THE COMMITMENT',
             headline: 'Same yard, every week.',

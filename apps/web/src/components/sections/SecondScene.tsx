@@ -75,25 +75,12 @@ interface SecondSceneProps {
   /** Content overlay opacity. Lag scene fade slightly so the
    *  picture lands first, then the chapter copy. */
   contentOpacity: MotionValue<number>;
-  /** D-0050 Phase 3 — per-ZIP card strip rendered at the bottom
-   * of the scene. Each card links to /areas/[zip] and shows the
-   * painted area image + ZIP + label. */
-  perZipStrip: {
-    eyebrow: string;
-    cards: ReadonlyArray<{ zip: string; label: string; href: string }>;
-  };
-  /** D-0050 Phase 3 — strip fade opacity. Fades in across
-   * [0.70, 0.85] so the strip appears as scene 3 settles into
-   * its resting state, well after the photo has faded out. */
-  perZipStripOpacity: MotionValue<number>;
 }
 
 export function SecondScene({
   scene2,
   opacity,
   contentOpacity,
-  perZipStrip,
-  perZipStripOpacity,
 }: SecondSceneProps): ReactNode {
   return (
     <motion.div
@@ -171,34 +158,23 @@ export function SecondScene({
        * editorial pull-quote (z 2). On mobile the strip drops
        * to a 3x2 grid via the @media (max-width: 767px) rule
        * in the module CSS. */}
-      <motion.div
-        className={styles.perZipStrip}
-        style={{ opacity: perZipStripOpacity }}
-        aria-labelledby="per-zip-strip-eyebrow"
-      >
-        <span id="per-zip-strip-eyebrow" className={styles.perZipStripEyebrow}>
-          {perZipStrip.eyebrow}
-        </span>
-        <div className={styles.perZipStripGrid}>
-          {perZipStrip.cards.map((card) => (
-            <a key={card.zip} href={card.href} className={styles.perZipCard}>
-              <span className={styles.perZipCardImageWrap}>
-                <img
-                  src={`/areas/${card.zip}.webp`}
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                  className={styles.perZipCardImage}
-                />
-              </span>
-              <span className={styles.perZipCardText}>
-                <span className={styles.perZipCardZip}>{card.zip}</span>
-                <span className={styles.perZipCardLabel}>{card.label}</span>
-              </span>
-            </a>
-          ))}
-        </div>
-      </motion.div>
+      {/* D-0059 Path A — per-ZIP card strip REMOVED.
+       *
+       * The strip used to render 6 ZIP cards at the bottom of scene
+       * 3 (D-0050 Phase 3), with a coordinated handoff from the
+       * dashboard widgets. The strip duplicated the per-ZIP
+       * navigation already carried by the ServiceAreaMap section
+       * below the hero (form + 6 ZIP chips + neighborhood labels),
+       * AND it competed with the [0.40, 0.70] cross-fade window
+       * (the strip faded in across [0.70, 0.85] but its
+       * presence added a third visual language to a section that
+       * already has two — painted illustration + editorial
+       * pull-quote). The ServiceAreaMap section IS the per-ZIP
+       * navigation; the strip is gone.
+       *
+       * The 0.875rem bottom padding is preserved via the .content
+       * bottom: 22svh; rule so the editorial pull-quote has the same
+       * breathing room it had under the strip's roof. */}
     </motion.div>
   );
 }
