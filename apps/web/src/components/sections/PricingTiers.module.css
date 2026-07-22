@@ -205,14 +205,15 @@
 }
 
 /* D-0020 — hand-painted corner stamp on the anchor (Mowing) card.
- * Top-left of the card, opposite the ribbon, so the two marks
- * bracket the card. Sized larger than the OperatorStrip portrait
- * version (64px vs 48px) since the card is the page's primary
- * conversion touchpoint. No background panel — the deep-green
- * card surface carries the gold rays directly. */
+ * D-0059 rev4 — moved from top-left to bottom-left so the 64x64
+ * stamp no longer overlaps the "M" in "Most yards, most weeks".
+ * The stamp was previously clipping the start of the title — the
+ * reader's eye was hitting the orange dot before the headline.
+ * Bottom-left brackets the card against the ribbon (top-right)
+ * diagonally without crossing any text. */
 .cardCornerStamp {
   position: absolute;
-  top: var(--space-5);
+  bottom: var(--space-5);
   left: var(--space-5);
   z-index: 2;
   width: 64px;
