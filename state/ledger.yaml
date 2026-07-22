@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-22 (Day 29 — D-0059 Path A rev3 ship: tighter cross-fade [0.10, 0.25], paper-grain dropped, dashboard fade-in delayed to [0.25, 0.40])
+# Last updated: 2026-07-22 (Day 29 — D-0059 Path A rev4 ship: full visual polish across 12 sections — hero house repositioned, photoVignette softened, specimen SVGs boosted, pricingTiers stamp moved, scheduleTimeline mower removed, finalCTABanner quote-mark removed)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-22 (Day 29 — D-0059 Path A rev3 ship: tighter cross-fade [0.10, 0.25], paper-grain dropped, dashboard fade-in delayed to [0.25, 0.40])
+# Last updated: 2026-07-22 (Day 29 — D-0059 Path A rev4 ship: full visual polish across 12 sections — hero house repositioned, photoVignette softened, specimen SVGs boosted, pricingTiers stamp moved, scheduleTimeline mower removed, finalCTABanner quote-mark removed)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -3658,4 +3658,84 @@ changelog:
       - "y=0.00 capture: clean cartoon storybook (no paper-grain texture)"
     commit: "17afa16"
     commit_message: "feat(hero): D-0059 Path A rev3 - tighter cross-fade, no paper-grain, dashboard after storybook"
+
+  - date: "2026-07-22"
+    day: 29
+    decision: D-0059-rev4
+    title: "D-0059 Path A rev4 - full visual polish across all 12 sections"
+    summary: >
+      After rev3 cross-fade tightening, the user asked for a full
+      visual audit of all 12 landing-page sections, not just the
+      hero. Wrote full-page-capture.mjs that discovers every
+      [data-test-section] block and captures viewport-height of
+      each, then re-shot all 12 sections + 9 hero positions on
+      the rev4 build. Six visual issues identified and fixed
+      across 5 sections:
+
+      (1) HERO — center ranch house at viewBox x=1100 sat on
+      screen x=845px which is the middle of the headline
+      second line ('neighbor's lawn mower.'). Moved to
+      x=1400, scale 1.0->0.8 to bracket the headline instead
+      of crossing it. Three-house composition preserved.
+
+      (2) HERO — right-edge photoVignette (radial at 70% 50%,
+      35% palm-bark at 100%) was dark enough to bleed through
+      storybook cartoon's right-edge gaps where palms and
+      ranch houses at viewBox x=1500+ are partially off-screen.
+      Radial center moved to 75%, 100% stop reduced from 35%
+      palm-bark to 22%. Still creates subtle corner darkening
+      but no longer bleeds through.
+
+      (3) SPECIMEN PLATE — 4 hand-authored sepia line-art SVGs
+      (st-augustine, bermuda, zoysia, bahia) used 0.25-0.5px
+      strokes that disappeared at ~300px display size. Labels
+      ('Stenotaphrum secundatum', 'Cynodon dactylon') and
+      blade internal structure were invisible. Bumped strokes
+      ~75% wider (0.25->0.55, 0.4->0.7, 0.5->0.9) and opacities
+      ~30% higher (0.55->0.7, 0.85->0.95) via the re-runnable
+      _boost-contrast.py script committed alongside.
+
+      (4) PRICING TIERS — 64x64 hand-painted corner stamp
+      was clipping the 'M' in 'Most yards, most weeks'. Moved
+      .cardCornerStamp from top: var(--space-5) to bottom:
+      var(--space-5). Brackets the card diagonally against
+      the top-right MOST BOOKED ribbon without crossing text.
+
+      (5) SCHEDULE TIMELINE — 120x120 painted mower-side-
+      profile illustration in today card bottom-right was
+      stray decoration (disconnected from any other element,
+      week strip already has per-day service icons). Removed
+      <Illustration> JSX and unused import.
+
+      (6) FINAL CTA BANNER — v3 quote-mark 56x45 illustration
+      rendered as 'two yellow head silhouettes' against the
+      palm-shadow band; eyebrow 0.8rem/0.08em was barely
+      visible. Removed <Illustration> + .openingMark class;
+      bumped eyebrow 0.85rem/0.18em + added 48x1px hairline
+      above (centered, sun color 60% opacity) so it reads as
+      deliberate editorial chapter-divider idiom (matching
+      OperatorStrip eyebrow).
+
+      7 sections reviewed and intentionally NOT changed
+      (ServiceAreaMap, OperatorStrip, PocketMap, FieldLog,
+      ServiceBento, ProcessSteps, FAQAccordion) - either
+      already clean, intentional editorial design (cream-on-
+      cream, painted palms at 7% opacity, WPA vintage map
+      aesthetic), or render artifacts not fix-needed.
+
+      Path A confidence 0.85 -> 0.90 (full-page polish raised
+      overall landing-page coherence, not just the hero).
+    by: "Mavis (orchestrator, 2026-07-22)"
+    review_date: "2026-10-22"
+    twined_with: "D-0059 rev3 (this is a polish extension, not a cross-fade change); D-0020 (corner stamp on the Mowing card - now bottom-left per rev4); D-0058 (vintage map aesthetic intentionally preserved in PocketMap); D-0045 (ProcessSteps intentionally preserved with location pin); D-0052 (sun animation preserved through rev4); D-0043 (cross-fade substrate unchanged from rev3)"
+    audit_artifacts:
+      - "apps/web/audit/d-0059-path-a/hero-y{000,005,010,020,030,040,060,080,100}.png (9-position hero capture set, re-shot with rev4 build)"
+      - "apps/web/audit/d-0059-path-a/sections/{hero,service-area-map,operator-strip,pocket-map,field-log,service-bento,specimen-plate,pricing-tiers,process-steps,schedule-timeline,faq-accordion,final-cta-banner}.png (12 section captures, re-shot with rev4 build)"
+      - "hero y=0.00 capture: center ranch house now right of 'neighbor's' (no headline overlap); right-edge vignette no longer bleeds through"
+      - "specimen-plate capture: SVG strokes now readable, Latin labels visible"
+      - "pricing-tiers capture: MOST BOOKED stamp at top-right, 'M' no longer clipped by corner stamp at bottom-left"
+      - "schedule-timeline capture: today card no longer has stray mower illustration"
+      - "final-cta-banner capture: 'READY WHEN YOU ARE' eyebrow visible with hairline above; no more 'two yellow head silhouettes'"
+    commit: "b1e9d76,2b7e97f,f52e83e,f95bf85,0344d85,01773a4"
+    commit_message: "D-0059 Path A rev4 - full visual polish across 12 sections (5 code commits + 1 evidence commit + 1 plan commit)"
 
