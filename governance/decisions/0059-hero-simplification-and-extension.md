@@ -1557,4 +1557,175 @@ Path B 0.80 (unchanged; still not affected by rev5).
   "From $X/visit" being cut is bad and should be
   fixed but is below the visual-coherence bar).
 
+---
+
+## 12. rev6 — third-pass audit at 1920x800 (sun, wildflowers, palms)
+
+**Trigger:** After the steward signed off on rev5, they
+flagged 4 more "incoherent" items on a screenshot of the
+hero rendered at 1920x800 viewport (a wider viewport than
+the 1280x800 the rev3-5 captures used). The third-pass
+audit found items that were only visible at the wider
+viewport — the storybook SVG scales with the viewport and
+content gets clipped at the top, the FarLayer/MidLayer
+palm overlap is wider at 1920px, and the wildflower dots
+are at a different screen position at the wider viewport.
+
+**Issues identified and fixed in rev6:**
+
+| # | Issue | Where visible | Root cause | rev6 fix |
+|---|---|---|---|---|
+| 1 | Sun animation reads as "wireframe sketch" | y=0.00, all viewports | 12 thin line rays (stroke 5px) rotating at 20s/360deg — the line rays look like spokes on a wheel, not rays of sunlight | Replaced with 8 triangular filled rays (sun-light → sun-deep gradient), added a soft warm glow (sunGlow radial gradient on circle r=150), changed core to warm radial gradient (cream highlight → sun-light → sun edge). Rotation slowed 20s→30s, core breathing 4.4s→6s with tighter scale (1.0→1.02), halo delay rephased to 1.5s so the glow brightens AFTER the core breathes |
+| 2 | Middle palm fronds "hanging and cut off from the top of the screen" | y=0.00, 1920x800 only | MidLayer SVG uses `preserveAspectRatio="xMidYMax slice"` — at 1920x800 the SVG height scales to 864px (taller than the 800px viewport), the top 64px gets clipped, and the middle palm's fronds at viewBox y=40 land at screen y=-26 (off-screen) | Middle palm y=260→400, h=220→130. Fronds move from viewBox y=40 to y=270 (screen y=195 at 1920px, y=397 at 1280px — both visible with breathing room). Trunk bottom at y=400 is closer to the horizon (y=480) so the palm reads as grounded |
+| 3 | Right palm "miscolored area" | y=0.00, 1920x800 prominent (visible at 1280 too) | MidLayer right palm at x=1850 has fronds (x=1826-1874) that OVERLAP with FarLayer right palm's fronds (x=1856-1904) by 18px. The FarLayer palm uses lighter/more muted colors (palm-light → palm) than the MidLayer palm (clay/palm-bark + palm/green), so the visible strip of FarLayer palm at x=1874-1904 reads as a "miscolored area" inconsistent with the rest of the scene | MidLayer right palm x=1850→1750, y=290→360, h=190→130. Fronds at x=1726-1774, well clear of the FarLayer right palm (still at x=1880). The 76px gap reads as intentional depth (MidLayer in front, FarLayer in back) rather than miscoloration |
+| 4 | "Erroneous dots" at the bottom of the storybook | y=0.00, all viewports (different positions at different widths) | 5 wildflower circles (2px inner + 3px outer, sun/clay/sand colors at viewBox y=650-662). At 2-3px display size they're invisible-by-default and the .bloom animation (scale 0→1.4→1) was imperceptible. The user said they "look hallucinated and broken incoherent" | Removed the entire `<g className={styles.wildflowers}>` block from NearLayer. The .wildflowers CSS class is preserved as a no-op stub for any future re-introduction |
+
+**Why rev3-5 missed these:**
+
+1. **Sun wireframe** — the 12 line rays were always thin
+   and rotating, but at the smaller display sizes
+   (1280x800) the rays were less prominent and the
+   rotation was less noticeable. At 1920x800 the
+   storybook SVG scales up and the rays are more
+   visible — the wireframe quality becomes obvious.
+   The rev3-5 visual reviews were all at 1280x800
+   (the original capture viewport), so the issue
+   wasn't visible at the time.
+2. **Middle palm fronds cut off** — same issue.
+   At 1280x800 the SVG is shorter (576px) than the
+   viewport (800px), so the top of the SVG is well
+   within the viewport. At 1920x800 the SVG is
+   taller (864px) than the viewport, and the top
+   64px gets clipped. The middle palm's fronds at
+   viewBox y=40 land at screen y=-26 (off-screen) at
+   1920px but screen y=35 (visible) at 1280px.
+3. **Right palm miscoloration** — the FarLayer/MidLayer
+   palm overlap is 18px at the viewBox level. At 1280px
+   this is 11.5px on screen. At 1920px it's 17.3px.
+   The wider viewport makes the miscoloration more
+   visible because more of the FarLayer palm is
+   visible to the right of the MidLayer palm.
+4. **Wildflower dots** — visible at all viewports but
+   the user didn't flag them in rev3-5 reviews (they
+   were on the list as "intentional decoration" and
+   I didn't push back). The 1920 review brought them
+   back as "erroneous dots" — the user noticed that
+   at the wider viewport the dots are at different
+   screen positions, and the question "what are these
+   for?" became unavoidable.
+
+**Sun artistic rework (rev6 detail):**
+
+The old sun was:
+- 12 `<line>` rays, stroke 5px, rotating at 20s/360deg
+- Solid cream circle (r=72) with breathing scale 1.0→1.03 at 4.4s
+- Sun-color circle (r=120) with opacity pulse 0.18→0.30 at 4.4s
+
+The new sun is:
+- **8 `<path>` triangular rays** — each a filled triangle
+  with a tip-to-base gradient (sun-light → sun-deep),
+  rotating at 30s/360deg. The triangular shape has
+  substantially more visual mass than a thin line; the
+  rays read as "rays of sunlight" rather than "wireframe
+  spokes". 8 rays (was 12) because at 45° intervals 8
+  is enough for visual coverage; 12 was over-detailed.
+- **Soft warm glow** (sunGlow radial gradient on
+  circle r=150) — a soft warm halo around the sun
+  that pulses opacity 0.85→1.0 + scale 1.0→1.06 at 6s
+  with a 1.5s delay (out-of-phase with the core). The
+  glow is the most prominent "warmth" element in the
+  storybook.
+- **Warm core gradient** (sunCore radial) — cream at
+  the upper-left highlight, fading to sun-light mid
+  and sun at the edge. Reads as a warm glowing orb,
+  not a flat white disc. Breathing scale 1.0→1.02 at 6s
+  (was 1.0→1.03 at 4.4s — the smaller scale change is
+  "the sun is alive" without being a motion the user
+  wants to follow).
+
+The D-0052 reasoning ("rotation gives the sun life vs
+static = dead illustration") still holds — the user
+confirmed in rev2 they prefer the alive sun. The rev6
+fix is about HOW the animation is rendered, not
+WHETHER to animate.
+
+**Wildflowers removal rationale:**
+
+The 5 wildflower circles were intended as small
+"flower accents" in the foreground grass. The
+implementation:
+- 5 circles at viewBox y=650-662 (in the bottom
+  6% of the 900-tall viewBox)
+- 3px outer circle + 1.4px inner circle (total
+  visible size ~3px at 1280x800, ~4.3px at 1920x800)
+- 5 different colors (sun, clay, sand, sun, clay)
+- .bloom animation: scale 0→1.4→1 at 1.6s with
+  staggered delays (0.2s, 0.4s, 0.6s, 0.8s, 1.0s)
+
+The problems:
+- At 2-4px display size, the motion is imperceptible
+  (the eye can't track sub-5px motion at viewing distance)
+- The 5 circles read as random stray pixels, not
+  "flowers in a lawn" (no clear shape, no connection
+  to the grass blades around them)
+- The 5th circle (at x=1860) was off-screen at
+  1280px viewport, so the user saw 4 dots — the
+  inconsistency between "5 wildflowers" and "4 dots"
+  made the miscoloration worse (the user couldn't tell
+  if a dot was missing or just off-screen)
+
+The .blades (60 grass blades at y=680 with .grow
+animation) already carry the "alive lawn" weight.
+The wildflowers added 5 small dots that competed
+for attention at the bottom-edge of the scene where
+the CTA button sits — the dots and the CTA button
+fought for the same visual real estate.
+
+**Rev6 actual work order (what was actually shipped):**
+
+1. **HeroStorybookLayer.tsx**: BackgroundSky sun
+   restructured (new gradients, new ray paths, new
+   core/halo circles); NearLayer wildflowers block
+   removed; MidLayer middle palm y/h updated, right
+   palm x/y/h updated.
+2. **HeroStorybookLayer.module.css**: sunRays rotation
+   20s→30s, sunCore breathing 4.4s→6s with tighter
+   scale, sunHalo pulse retimed to 6s with 1.5s delay
+   (out-of-phase with core); .wildflowers CSS class
+   preserved as no-op stub.
+3. **Capture evidence**: 9 hero positions re-shot at
+   1280x800 (original viewport) + 1 hero position
+   at 1920x800 (the user's flagged viewport) + 1
+   at 1280x800 for comparison.
+4. **Acceptance**: typecheck + charter 3/3 expected;
+   ledger entry updated.
+
+**Rev6 confidence (post-fix, per steward sign-off TBD):**
+Path A 0.98 (up from 0.95 — rev6 closed the last
+viewport-dependent visual issues; the 1920px
+screenshot that triggered rev6 now shows a clean
+warm-glowing sun, grounded middle palm, well-
+separated right palms, and no bottom dots).
+Path B 0.80 (unchanged; still not affected by rev6).
+
+**Rev6 deferred items:**
+
+- Path B (composite operator scene with painted operator
+  overlay on the existing scene2 background): deferred
+  until ~1 week after Path A is in production.
+- Ranch-house gouache repaint (lowest-leverage of the
+  remaining items; the three-house composition is
+  acceptable in rev6 once the center house is
+  repositioned).
+- OperatorStrip painted palms backdrop at 7% opacity:
+  intentionally not changed — keeping the editorial
+  atmosphere.
+- FieldLog 33778 disconnected from route line (minor
+  visual issue, not incoherent — the 6th yard is in a
+  separate neighborhood).
+- ServiceBento Mulching card extends past viewport
+  edge on right (intentional asymmetric grid; the
+  "From $X/visit" being cut is bad and should be
+  fixed but is below the visual-coherence bar).
+
 End of ADR.
