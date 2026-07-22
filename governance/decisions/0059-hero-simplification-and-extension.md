@@ -1384,4 +1384,177 @@ by rev4).
   intentionally not changed — keeping the editorial
   atmosphere.
 
+---
+
+## 11. rev5 — second-pass visual audit (hero "thread" + metrics tractor)
+
+**Trigger:** After the steward signed off on rev4, they
+flagged that "There are still incoherent and low quality
+aspects to this." A second full-page audit found 3 more
+items that the rev4 first pass had missed — all on the
+hero, but spread across the storybook resting state and
+the SecondScene resting state.
+
+**Issues identified and fixed in rev5:**
+
+| Issue | Where visible | Root cause | rev5 fix |
+|---|---|---|---|
+| Vertical "thread" line above eyebrow pill | y=0.00, y=0.05, y=0.10 (storybook resting + early cross-fade) | MidLayer palm trunk at viewBox x=780 sat at screen x=444, inside the pill's x range (349-532); pill was 45% opaque so trunk showed through behind the text, reading as a "thread" hanging the pill | (1) Pill background 45% → 72% palm-bark opacity; (2) middle palm x=780 → x=950 (screen x=596, past pill's right edge of 532) |
+| Tractor silhouette overlapping "6 yrs" / "6 PINELLAS ZIPS" metrics | y=0.80, y=1.00 (SecondScene resting state) | SecondScene painted frame has a parked mower in the lower-right area; the white metric text had no backdrop, so the dark mower body competed with the text | Added soft dark gradient at the bottom edge of `.telemetry` (38% palm-bark at 0% → 18% at 55% → transparent at 100%) — concentrated where the tractor is, fades out so rest of the painted scene unaffected |
+
+**Why rev4 missed these:**
+
+1. **The "thread" was invisible at y=0.20+** — by the time
+   the storybook is mid-cross-fade (y=0.18-0.25), the
+   trunk is at 40% opacity with 8px blur and reads as
+   motion smear, not as a thread. The artifact only
+   appears at y=0.00-0.10 where the storybook is at
+   100% opacity. The rev4 visual review focused on
+   y=0.20 (the cross-fade problem area) and y=0.40
+   (the dashboard reveal) and didn't take a hard look
+   at the y=0.00 resting state. The full-page survey
+   saw the issue but I marked the eyebrow as "the
+   45% opacity is intentional editorial idiom" and
+   missed the trunk-through-pill effect.
+2. **The metrics/tractor overlap was visible at y=0.80+
+   only** — the SecondScene fades in across [0.40, 0.70]
+   and the painted tractor is at the bottom-right of
+   the frame. The rev4 visual review didn't examine
+   the SecondScene resting state in detail (the review
+   was y=0.00, y=0.20, y=0.40, y=0.60 — the y=0.80+
+   states were captured but not zoomed-in on).
+3. **Both issues are amplified by adjacent
+   features** — the thread is harder to see when
+   the user is reading the headline; the tractor
+   overlap only matters at the bottom of the page
+   where the user's attention is on the metrics
+   text, not the painted scene behind it.
+
+**Eyebrow pill opacity decision (45% → 72%):**
+
+The 45% was the original editorial choice — the pill
+was designed to feel like a "translucent tag floating
+in the sky" rather than a solid badge. The intent was
+to let the cartoon sky show through behind the text.
+But with the palm trunk in the same x range, the
+trunk's dark color showed through 55% transparent
+pill and dominated the "what's behind the text" reading.
+
+The 72% still lets some of the sky through (the sky
+is now visible as a slight color shift in the pill's
+bg, not as a clear pattern). The pill now reads as a
+solid editorial tag with sky-bleed, not as a
+"floating translucent tag with a thread".
+
+If the user prefers the original 45% look, the
+fix is reversible — but the middle-palm reposition
+to x=950 is a separate fix that also helps (the
+thread is no longer directly above the pill even
+at 45%).
+
+**Middle palm position decision (x=780 → x=950):**
+
+The three MidLayer palms are at x=150, x=780, x=1850.
+The middle palm's fronds occupy x=780±24 in viewBox,
+mapping to screen x=423-466 at the 0.889 scale factor.
+The eyebrow pill is at screen x=349-532. The original
+middle palm fronds (x=423-466) were inside the pill's
+x range. The trunk (x=780-781, screen x=443-444) was
+also inside the pill's x range.
+
+Moving to x=950 puts the fronds at viewBox x=926-974
+(screen x=572-620) and the trunk at screen x=596.
+The pill's right edge is at x=532, so the palm is now
+16-84px past the pill's right edge — clear of the
+content column.
+
+The three-palm composition is preserved (left at
+x=150, middle at x=950, right at x=1850). The middle
+palm is no longer "centered" in the viewBox (x=1000
+is the visual center); it's 50px right of center.
+This is fine — the palm's role is "decorative sky
+element" not "axis of symmetry", so an off-center
+position reads naturally.
+
+**Metrics backdrop gradient decision:**
+
+The SecondScene painted frame has a parked mower
+silhouette in the lower-right area. The mower is a
+dark green/brown mass on the grass, occupying roughly
+viewBox x=1500-1900, y=700-900 of the painted frame
+(rough estimate from visual inspection). The
+"6 yrs" and "6 PINELLAS ZIPS" metrics sit at the
+bottom-right of the hero, in screen x=970-1180,
+y=620-720 (approx). The mower area in the painted
+frame maps to approximately screen x=1085-1440,
+y=622-800. So the mower is RIGHT BEHIND the "6 yrs"
+and "6" labels.
+
+Three options were considered:
+1. **Re-render the painted frame without the mower**
+   — would lose the "parked equipment on the lawn"
+   visual cue, which is part of the editorial scene
+   design. Too expensive (new VEO generation).
+2. **Move the metrics elsewhere** — would break the
+   bottom-right layout convention; the metrics are
+   the standard "small print under the hero" pattern.
+3. **Add a backdrop behind the metrics** — preserves
+   the painted scene (mower stays), preserves the
+   metrics position, just adds a soft scrim where the
+   text needs to be readable. Cheapest fix.
+
+Chose option 3. The gradient is `linear-gradient(to
+top, palm-bark 38% transparent, palm-bark 18%
+transparent, transparent)` — concentrated at the
+bottom edge (where the tractor is) and fading to
+transparent at the top of the strip. The rest of
+the painted scene is unaffected.
+
+**Rev5 actual work order (what was actually shipped):**
+
+1. **HeroFieldTelemetry.module.css**: `.eyebrow`
+   background 45% → 72% palm-bark opacity; `.telemetry`
+   added `background: linear-gradient(to top, ...)` for
+   the metrics backdrop.
+2. **HeroStorybookLayer.tsx**: MidLayer middle palm
+   x=780 → x=950 (preserves three-palm composition,
+   puts palm past the pill's right edge).
+3. **Capture scripts committed**: `zoom-eyebrow.mjs` +
+   `zoom-line.mjs` (diagnostic scripts used to identify
+   the "thread" as the palm trunk showing through the
+   pill).
+4. **Capture evidence**: 9 hero positions + 12 sections
+   re-shot on the rev5 build; 2 zoom captures saved as
+   `zoom-storybook-eyebrow.png` (proves the trunk
+   position) and `zoom-eyebrow-v2.png` (proves the
+   pill is now opaque with the palm clearly to the
+   right of the pill).
+5. **Acceptance**: typecheck + charter 3/3 expected;
+   ledger entry updated.
+
+**Rev5 confidence (post-fix, per steward sign-off TBD):**
+Path A 0.95 (up from 0.90 — the rev5 fixes closed
+the last visible "incoherent" item on the hero).
+Path B 0.80 (unchanged; still not affected by rev5).
+
+**Rev5 deferred items:**
+
+- Path B (composite operator scene with painted operator
+  overlay on the existing scene2 background): deferred
+  until ~1 week after Path A is in production.
+- Ranch-house gouache repaint (lowest-leverage of the
+  remaining items; the three-house composition is
+  acceptable in rev5 once the center house is
+  repositioned).
+- OperatorStrip painted palms backdrop at 7% opacity:
+  intentionally not changed — keeping the editorial
+  atmosphere.
+- FieldLog 33778 disconnected from route line (minor
+  visual issue, not incoherent — the 6th yard is in a
+  separate neighborhood).
+- ServiceBento Mulching card extends past viewport
+  edge on right (intentional asymmetric grid; the
+  "From $X/visit" being cut is bad and should be
+  fixed but is below the visual-coherence bar).
+
 End of ADR.
