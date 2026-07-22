@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-22 (Day 29 — D-0059 Path A rev4 ship: full visual polish across 12 sections — hero house repositioned, photoVignette softened, specimen SVGs boosted, pricingTiers stamp moved, scheduleTimeline mower removed, finalCTABanner quote-mark removed)
+# Last updated: 2026-07-22 (Day 29 — D-0059 Path A rev5 ship: second-pass visual audit — eyebrow pill opacity 45%->72%, middle palm x=780->x=950, SecondScene metrics backdrop gradient added)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-22 (Day 29 — D-0059 Path A rev4 ship: full visual polish across 12 sections — hero house repositioned, photoVignette softened, specimen SVGs boosted, pricingTiers stamp moved, scheduleTimeline mower removed, finalCTABanner quote-mark removed)
+# Last updated: 2026-07-22 (Day 29 — D-0059 Path A rev5 ship: second-pass visual audit — eyebrow pill opacity 45%->72%, middle palm x=780->x=950, SecondScene metrics backdrop gradient added)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -3738,4 +3738,69 @@ changelog:
       - "final-cta-banner capture: 'READY WHEN YOU ARE' eyebrow visible with hairline above; no more 'two yellow head silhouettes'"
     commit: "b1e9d76,2b7e97f,f52e83e,f95bf85,0344d85,01773a4"
     commit_message: "D-0059 Path A rev4 - full visual polish across 12 sections (5 code commits + 1 evidence commit + 1 plan commit)"
+
+  - date: "2026-07-22"
+    day: 29
+    decision: D-0059-rev5
+    title: "D-0059 Path A rev5 - second-pass visual audit (eyebrow thread + metrics tractor)"
+    summary: >
+      After rev4 sign-off, the steward flagged that "There are
+      still incoherent and low quality aspects to this." A second
+      full-page audit found 3 more items, all on the hero but
+      spread across the storybook resting state and the
+      SecondScene resting state:
+
+      (1) HERO EYEBROW PILL — the 'LAWN CARE IN 33771' pill had
+      a vertical 'thread' line directly above it at y=0.00, 0.05,
+      0.10 (storybook at 100% opacity). The thread was the
+      MidLayer palm trunk at viewBox x=780 (screen x=444, inside
+      the pill's x range of 349-532) showing through the pill's
+      45%-opaque palm-bark background. Two coordinated fixes:
+      pill background bumped 45% -> 72% palm-bark (still lets
+      blurred sky show through as soft color, but masks the
+      trunk behind the text), AND middle palm moved from
+      viewBox x=780 to x=950 (screen x=596, past the pill's
+      right edge of 532). Preserves the three-palm composition.
+
+      (2) HERO METRICS — the '6 yrs CUTTING IN 33771' and '6
+      PINELLAS ZIPS' labels at the bottom-right of the hero sat
+      on top of the SecondScene painted frame's parked mower
+      silhouette. The white metric text competed with the dark
+      mower body, reading as 'tractor overlapping the numbers'.
+      Added a soft dark gradient backdrop to the .telemetry
+      strip: linear-gradient(to top, palm-bark 38% transparent
+      at 0% -> 18% at 55% -> transparent at 100%). The gradient
+      is concentrated at the bottom edge (where the mower is)
+      and fades to transparent at the top of the strip, so the
+      rest of the painted scene stays unaffected. The border-top
+      hairline now sits on top of the gradient's transparent end,
+      preserving the editorial divider idiom.
+
+      (3) Why rev4 missed these: the 'thread' artifact is only
+      visible at y=0.00-0.10 (storybook at 100% opacity); the
+      rev4 visual review focused on y=0.20 (the cross-fade
+      problem area) and missed the resting state. The
+      metrics/tractor overlap only matters at y=0.80+ in the
+      SecondScene; the rev4 review captured but didn't zoom on
+      these positions. Both issues are amplified by adjacent
+      features (the thread is hard to see when reading the
+      headline; the tractor overlap only matters at the bottom
+      where attention is on the metrics, not the painted scene).
+
+      Path A confidence 0.90 -> 0.95 (rev5 closed the last
+      visible 'incoherent' item on the hero).
+    by: "Mavis (orchestrator, 2026-07-22)"
+    review_date: "2026-10-22"
+    twined_with: "D-0059 rev4 (this is a second-pass polish, not a structural change); D-0043 (cross-fade substrate unchanged from rev3); D-0049 (SecondScene painted frames unchanged - the tractor is part of the editorial design, the metrics backdrop is the layer-level fix); D-0052 (sun animation preserved through rev5)"
+    audit_artifacts:
+      - "apps/web/audit/d-0059-path-a/hero-y{000,005,010,020,030,040,060,080,100}.png (9-position hero capture set, re-shot with rev5 build)"
+      - "apps/web/audit/d-0059-path-a/sections/{hero,service-area-map,operator-strip,pocket-map,field-log,service-bento,specimen-plate,pricing-tiers,process-steps,schedule-timeline,faq-accordion,final-cta-banner}.png (12 section captures, re-shot with rev5 build)"
+      - "apps/web/audit/d-0059-path-a/zoom-storybook-eyebrow.png (diagnostic: shows the trunk position before fix)"
+      - "apps/web/audit/d-0059-path-a/zoom-eyebrow-v2.png (diagnostic: shows the trunk now past the pill after fix)"
+      - "hero y=0.00 capture: pill is now opaque (no trunk behind text); middle palm fronds at screen x=572-620 (past pill's right edge of 532)"
+      - "hero y=1.00 capture: metrics now have subtle dark gradient backdrop; '6 yrs' text is readable over the painted scene's mower silhouette"
+      - "hero y=0.20 capture: cross-fade still clean (no double-exposure), rev3 cross-fade formula unchanged"
+    commit: "5383e5a"
+    commit_message: "feat(hero): D-0059 rev5 - eyebrow pill opaque, mid palm past pill, metrics backdrop"
+
 
