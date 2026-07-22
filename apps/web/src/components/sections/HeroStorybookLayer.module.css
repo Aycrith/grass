@@ -61,70 +61,91 @@
 }
 
 /* ============================================================
- * D-0052 — animated cartoon sun. Three coordinated CSS keyframe
- * animations make the static sun (previously two circles) feel
- * alive: 12 rays rotate around the sun, the core breathes
- * scale, the halo pulses opacity slightly out-of-phase.
+ * D-0052 — animated cartoon sun. Four coordinated CSS keyframe
+ * animations make the static sun feel alive: long rays rotate
+ * clockwise, short rays rotate counter-clockwise, the core
+ * breathes scale, the halo pulses opacity slightly out-of-phase.
  *
- * All three share `transform-box: view-box` so the rotation
+ * All four share `transform-box: view-box` so the rotation
  * pivot and scale center use SVG viewBox coordinates directly
  * (matches the operatorSway pattern). Without that, the
  * transform-origin would be measured in CSS pixels relative
  * to the parent <div>, which scales with the SVG and gives
  * the wrong pivot.
  *
- * Cadence: 20s ray rotation, 4.4s core/halo breath. Different
- * periods so the animations don't visibly loop in lockstep.
+ * Cadence: 50s long-ray rotation, 70s short-ray rotation
+ * (counter), 7s core/halo breath. Different periods so the
+ * animations don't visibly loop in lockstep. The two ray
+ * groups rotating at different speeds in opposite directions
+ * is the rev7 artistic choice — the relative motion between
+ * them never repeats exactly, so the sun reads as "alive"
+ * rather than "mechanical".
  *
- * Reduced-motion: all three animations collapse to identity
+ * Reduced-motion: all four animations collapse to identity
  * via the @media block at the bottom of the file.
  * ============================================================ */
 
-.sunRays {
+.sunRaysLong {
   transform-box: view-box;
   transform-origin: 352px 252px;
-  /* D-0059 rev6 - rotation slowed 20s -> 30s. The 20s cycle was
-   * fast enough that the 8 triangular rays (was 12 line rays)
-   * read as "spinning wireframe" — the eye noticed the rotation
-   * more than the sun shape. 30s is below the threshold of
-   * conscious motion detection; the rays feel "intentionally
-   * present" rather than "actively spinning". */
-  animation: sunRaysRotate 30s linear infinite;
+  /* D-0059 rev7 - long rays rotate clockwise at 50s/360deg.
+   * The 8 LONG rays are 78px tall, 24px wide at the base,
+   * filled with sun-light->sun-deep gradient. They carry
+   * the main visual mass of the sun. 50s is the period at
+   * which motion registers as "the sun is shimmering" rather
+   * than "the sun is rotating" — a slow ambient warmth. */
+  animation: sunRaysLongRotate 50s linear infinite;
+}
+
+.sunRaysShort {
+  transform-box: view-box;
+  transform-origin: 352px 252px;
+  /* D-0059 rev7 - short rays rotate COUNTER-CLOCKWISE at
+   * 70s/360deg (sunRaysShortRotateReverse keyframe). The 8
+   * SHORT rays are 40px tall, 10px wide, with lower opacity
+   * than the long rays. The counter-rotation creates a
+   * "shimmer" between the two layers — the relative position
+   * of long and short rays shifts continuously without ever
+   * landing on the same configuration twice within a single
+   * viewing. 70s (different from 50s) ensures the two periods
+   * never re-sync; the LCM is 350s, so the visual never
+   * exactly repeats. */
+  animation: sunRaysShortRotateReverse 70s linear infinite;
 }
 
 .sunCore {
   transform-box: view-box;
   transform-origin: 352px 252px;
-  /* D-0059 rev6 - breathing slowed 4.4s -> 6s, scale 1.0->1.02.
-   * 4.4s was on the edge of "the sun is winking at me" — the
-   * 3% scale change drew attention. 6s with 2% reads as "the
-   * sun is alive" without being a motion the user wants to
-   * follow. The keyframe opacity bump (0.9->1.0) is kept so
-   * the core still brightens at the peak of the breath. */
-  animation: sunCoreBreathe 6s ease-in-out infinite;
+  /* D-0059 rev7 - breathing slowed 6s -> 7s, scale unchanged
+   * at 1.0->1.02. 7s with 2% reads as "the sun is alive"
+   * without being a motion the user wants to follow. The 7s
+   * period is co-prime with the 50s and 70s ray periods
+   * (LCM = 350s) so the three motions never lockstep. */
+  animation: sunCoreBreathe 7s ease-in-out infinite;
 }
 
 .sunHalo {
   transform-box: view-box;
   transform-origin: 352px 252px;
-  /* D-0059 rev6 - halo pulse retimed. The new .sunHalo is a
-   * radial gradient circle (sunGlow) with built-in opacity
-   * (0.42 at center fading to 0). The element-level opacity
-   * animation now goes 0.85 -> 1.0 (the OLD animation went
-   * 0.18 -> 0.30 on a flat-fill circle). Scale 1 -> 1.06 is
-   * kept so the glow swells outward at the peak. The 1.5s
-   * delay (was -0.6s, i.e. 0.6s ahead of the core) is now
-   * a +1.5s delay (behind the core) so the halo brightens
-   * AFTER the core breathes — reads as "the glow responds
-   * to the core" rather than "two things pulsing in
-   * parallel". */
-  animation: sunHaloPulse 6s ease-in-out infinite;
-  animation-delay: 1.5s;
+  /* D-0059 rev7 - halo pulse retimed. The .sunHalo is a
+   * radial gradient circle r=180 (was 150 — bumped to spread
+   * the warm wash over the full ray envelope). The element-
+   * level opacity animation goes 0.85 -> 1.0, scale 1 -> 1.06.
+   * The +2s delay (was +1.5s) puts the halo brightening
+   * further behind the core breath — reads as "the warmth
+   * responds to the sun" rather than "two things pulsing". */
+  animation: sunHaloPulse 7s ease-in-out infinite;
+  animation-delay: 2s;
 }
 
-@keyframes sunRaysRotate {
+@keyframes sunRaysLongRotate {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
+}
+
+@keyframes sunRaysShortRotateReverse {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
 }
 
 @keyframes sunCoreBreathe {
@@ -138,7 +159,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sunRays,
+  .sunRaysLong,
+  .sunRaysShort,
   .sunCore,
   .sunHalo {
     animation: none;

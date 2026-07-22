@@ -273,85 +273,114 @@ function BackgroundSky(): ReactNode {
           <stop offset="80%" stopColor="var(--ll-cream)" />
           <stop offset="100%" stopColor="var(--ll-sand-bleached)" />
         </linearGradient>
-        {/* D-0059 rev6 - sun warm glow + core gradient + ray gradient.
-         * The previous sun used a single radialGradient on a full
-         * background rect (hero-sun) for the halo effect, which was
-         * diffuse and barely visible. The new sun has:
-         *   1. A soft warm GLOW (sunGlow radial gradient on a circle
-         *      r=150) — sits behind the core, pulses subtly.
-         *   2. A warm CORE gradient (sunCore radial) — cream at the
-         *      upper-left highlight, fading to sun at the edge.
-         *      Reads as a warm glowing orb, not a flat white disc.
-         *   3. 8 triangular RAYS (sunRay linear gradient, lighter at
-         *      the tip, darker at the base) — substantially more
-         *      visual mass than the previous 12 thin line rays
-         *      (stroke 5px) which read as "wireframe spokes". */}
+        {/* D-0059 rev7 - sun artistic rework (sunburst composition).
+         *
+         * The rev6 sun was a 3-layer composition (halo + 8 triangular
+         * rays + warm core). On a 1920x800 review the user flagged it
+         * as "not artistically good" / "wireframe" / "not triple A" —
+         * the triangular rays were too subtle to read as intentional
+         * illustration, and the gradient orb + soft halo read as a
+         * "blurry white circle" rather than a designed sun.
+         *
+         * rev7 is a 4-layer SUNBURST composition (the classic
+         * 16-ray "rising sun" pattern from WPA poster art, the
+         * North Dakota state seal, the Arizona flag, and the
+         * Argentine national flag):
+         *   1. .sunHalo  — soft warm radial gradient circle r=180.
+         *                  Pulses 0.85->1.0 + scale 1->1.06 at 7s.
+         *   2. .sunRaysLong  — 8 LONG triangular rays at 45° intervals
+         *                  (0, 45, 90, ... 315). Each ray is 78px
+         *                  tall (from y=110 to y=188) with a 24px
+         *                  base. Filled with the sunRayLong gradient
+         *                  (sun-light high-opacity at tip, sun-deep
+         *                  lower-opacity at base). Rotates clockwise
+         *                  at 50s/360deg linear — slow enough to read
+         *                  as ambient warmth, not spinning.
+         *   3. .sunRaysShort — 8 SHORT triangular rays at 22.5° offsets
+         *                  (22.5, 67.5, 112.5, ... 337.5) — fills the
+         *                  gaps between the long rays. Each ray is
+         *                  40px tall (y=130 to y=170) with a 10px base.
+         *                  Filled with the sunRayShort gradient
+         *                  (lower opacity than the long rays so the
+         *                  density hierarchy reads). Rotates
+         *                  COUNTER-CLOCKWISE at 70s/360deg linear —
+         *                  the counter-rotation creates a subtle
+         *                  "shimmer" between the two layers, like
+         *                  sun catching on water or heat-haze.
+         *   4. .sunCore  — warm radial gradient orb r=82 (cream
+         *                  highlight upper-left, sun-light mid,
+         *                  sun edge). Breathes 1.0->1.02 at 7s.
+         *
+         * Why 16 rays and not 8 or 12?
+         *   - 8: too sparse, reads as "+" cross with 4 corners.
+         *   - 12: classic sunburst density, but the rays all hit
+         *         at 30° intervals which is too geometric.
+         *   - 16 (alternating long-short at 22.5°): the asymmetric
+         *         ray length breaks the "all rays equal" pattern,
+         *         the visual mass shifts as the layers rotate at
+         *         different speeds, and the sun looks DESIGNED rather
+         *         than SYMMETRIC. This is the same composition logic
+         *         used in classic WPA posters and national flag sun
+         *         motifs.
+         *
+         * Why counter-rotation?
+         *   Single-rotation at any speed reads as "a pinwheel
+         *   turning". Counter-rotation between two layers (long
+         *   rays clockwise, short rays counter-clockwise, at
+         *   different periods 50s vs 70s) makes the sun feel ALIVE
+         *   without being a button. The relative motion between the
+         *   two layers never repeats exactly within a single
+         *   viewing — the visitor cannot lock onto a single cycle.
+         *
+         * The 8 long rays are defined ONCE as a single triangle path
+         * (pointing up, at the top, centered on 352, 252) and rotated
+         * to each of the 8 positions via the SVG `transform="rotate(rot
+         * 352 252)"` attribute. Same trick for the short rays. This
+         * keeps the JSX minimal and the SVG small. */}
         <radialGradient id="sunGlow" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0%" stopColor="var(--ll-sun)" stopOpacity="0.42" />
-          <stop offset="45%" stopColor="var(--ll-sun)" stopOpacity="0.18" />
+          <stop offset="0%" stopColor="var(--ll-sun)" stopOpacity="0.48" />
+          <stop offset="40%" stopColor="var(--ll-sun)" stopOpacity="0.22" />
           <stop offset="100%" stopColor="var(--ll-sun)" stopOpacity="0" />
         </radialGradient>
-        <linearGradient id="sunRay" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--ll-sun-light)" />
-          <stop offset="100%" stopColor="var(--ll-sun-deep)" />
+        <linearGradient id="sunRayLong" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--ll-sun-light)" stopOpacity="0.95" />
+          <stop offset="60%" stopColor="var(--ll-sun)" stopOpacity="0.88" />
+          <stop offset="100%" stopColor="var(--ll-sun-deep)" stopOpacity="0.78" />
         </linearGradient>
-        <radialGradient id="sunCore" cx="0.38" cy="0.38" r="0.62">
+        <linearGradient id="sunRayShort" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--ll-sun-light)" stopOpacity="0.78" />
+          <stop offset="100%" stopColor="var(--ll-sun-deep)" stopOpacity="0.55" />
+        </linearGradient>
+        <radialGradient id="sunCore" cx="0.36" cy="0.36" r="0.65">
           <stop offset="0%" stopColor="var(--ll-cream)" />
-          <stop offset="55%" stopColor="var(--ll-sun-light)" />
-          <stop offset="100%" stopColor="var(--ll-sun)" />
+          <stop offset="35%" stopColor="var(--ll-sun-light)" />
+          <stop offset="80%" stopColor="var(--ll-sun)" />
+          <stop offset="100%" stopColor="var(--ll-sun-deep)" />
         </radialGradient>
       </defs>
       <rect width="1600" height="900" fill="url(#hero-sky)" />
 
-      {/* D-0059 rev6 - sun artistic rework. The previous sun had 12
-       * thin line rays (stroke 5px) rotating at 20s/360deg, which read
-       * as a wireframe sketch rather than an intentional illustration.
-       * The new sun is composed of three concentric layers:
-       *
-       *   1. .sunGlow  — a soft warm radial gradient circle (r=150)
-       *                  that pulses opacity 0.85->1.0 + scale 1->1.06
-       *                  at 6s ease-in-out, with a 1.5s delay so the
-       *                  glow appears to swell from the edge inward
-       *                  (out-of-phase with the core).
-       *   2. .sunRays  — 8 triangular rays at 45° intervals, each a
-       *                  filled path with a tip-to-base gradient
-       *                  (sun-light -> sun-deep). The group rotates
-       *                  30s/360deg linear (was 20s) — slower so the
-       *                  motion reads as ambient warmth, not spinning.
-       *   3. .sunCore  — a warm radial-gradient orb (cream highlight
-       *                  upper-left, sun-light mid, sun edge) that
-       *                  breathes scale 1.0->1.02 at 6s ease-in-out.
-       *                  The breathing is more subtle than the
-       *                  previous 1.0->1.03 — 2% is "the sun is alive"
-       *                  without being a button the user wants to
-       *                  press.
-       *
-       * The 8 rays are defined ONCE as a single triangle path
-       * (pointing up, at the top) and rotated to each of the 8
-       * positions via the SVG `transform="rotate(rot 352 252)"`
-       * attribute. This keeps the JSX minimal and the SVG small.
-       *
-       * The previous D-0052 reasoning (rotation gives the sun life
-       * vs static = dead illustration) still holds — the user
-       * confirmed in rev2 they prefer the alive sun. The rev6 fix
-       * is about HOW the animation is rendered, not WHETHER to
-       * animate: triangular rays + warm gradients + slower timing
-       * gives a "warm glowing sun" rather than a "spinning wireframe". */}
+      {/* D-0059 rev7 sun composition — see comment in <defs> above. */}
       <circle
         className={styles.sunHalo}
         cx="352"
         cy="252"
-        r="150"
+        r="180"
         fill="url(#sunGlow)"
       />
-      <g className={styles.sunRays}>
+      {/* 8 LONG rays at 45° intervals (clockwise rotation 50s). */}
+      <g className={styles.sunRaysLong}>
         {[0, 45, 90, 135, 180, 225, 270, 315].map((rot) => (
-          <g key={rot} transform={`rotate(${rot} 352 252)`}>
-            <path
-              d="M 352 87 L 344 162 L 360 162 Z"
-              fill="url(#sunRay)"
-              opacity="0.78"
-            />
+          <g key={`long-${rot}`} transform={`rotate(${rot} 352 252)`}>
+            <path d="M 352 110 L 340 188 L 364 188 Z" fill="url(#sunRayLong)" />
+          </g>
+        ))}
+      </g>
+      {/* 8 SHORT rays at 22.5° offsets (counter-clockwise rotation 70s). */}
+      <g className={styles.sunRaysShort}>
+        {[22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5].map((rot) => (
+          <g key={`short-${rot}`} transform={`rotate(${rot} 352 252)`}>
+            <path d="M 352 130 L 347 170 L 357 170 Z" fill="url(#sunRayShort)" />
           </g>
         ))}
       </g>
@@ -359,7 +388,7 @@ function BackgroundSky(): ReactNode {
         className={styles.sunCore}
         cx="352"
         cy="252"
-        r="80"
+        r="82"
         fill="url(#sunCore)"
       />
       {/* Birds (V-shapes) drift gently via CSS animation. */}
@@ -489,7 +518,30 @@ function MidLayer(): ReactNode {
       </g>
 
       <g className={styles.swaySlow}>
-        <PalmTree x={150} y={280} h={200} trunkFill="url(#mid-trunk)" frondFill="url(#mid-frond)" />
+        {/* D-0059 rev7 - left palm MOVED from y=280 to y=480, h 200 -> 170.
+         * The previous y=280 had the palm's fronds at viewBox y=80
+         * (since h=200, fronds sit at y-h). At a 1920x800 viewport
+         * the MidLayer SVG with preserveAspectRatio="xMidYMax slice"
+         * clips the top of the viewBox: with element 2304x800 and
+         * viewBox 2000x900, the slice scale is 1.152 and the yMax
+         * alignment means the visible viewBox y range is 205.7 to
+         * 900. Anything above y=205.7 is clipped above the viewport.
+         * The left palm's fronds at y=80 sat 125.7 units above the
+         * clip line — they were invisible, leaving only the bottom
+         * ~85px of trunk showing as a "hanging straight line" at
+         * the top of the screen. The user flagged this in the
+         * 1920x800 review as "palm tree's top is hanging and cut
+         * off from the top of the screen".
+         *
+         * Move to y=480, h=170: fronds at y=310 (104 units below
+         * the clip line, fully visible), base on the palm-light
+         * ground band at y=480. Trunk length 170 viewBox units =
+         * 196 screen pixels — the trunk is the visual "anchor" of
+         * the palm and now reads as a complete tree instead of a
+         * hanging line. h=170 (was 200) keeps the left palm
+         * noticeably taller than the middle/right palms (h=130) so
+         * the depth hierarchy still reads. */}
+        <PalmTree x={150} y={480} h={170} trunkFill="url(#mid-trunk)" frondFill="url(#mid-frond)" />
       </g>
       <g className={styles.swaySlow} style={{ animationDelay: '-1.2s' }}>
         {/* D-0059 rev4 polish — middle palm MOVED from x=780 to x=950.
@@ -512,9 +564,19 @@ function MidLayer(): ReactNode {
         />
       </g>
       <g className={styles.swaySlow} style={{ animationDelay: '-0.6s' }}>
+        {/* D-0059 rev7 - right palm LOWERED from y=360 to y=400.
+         * At y=360 the fronds sat at viewBox y=230, which maps to
+         * screen y=27.9 — only 28 pixels below the top of the
+         * viewport. The fronds were technically visible but
+         * crowding the top edge, which read as "palm trees
+         * crammed at the top of the scene" on a 1920x800 review.
+         * Lowering to y=400 (h unchanged at 130) puts the fronds
+         * at viewBox y=270, screen y=74 — same y as the middle
+         * palm for a clean horizontal alignment, with comfortable
+         * breathing room from the top edge. */}
         <PalmTree
           x={1750}
-          y={360}
+          y={400}
           h={130}
           trunkFill="url(#mid-trunk)"
           frondFill="url(#mid-frond)"

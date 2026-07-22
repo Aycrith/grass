@@ -1728,4 +1728,230 @@ Path B 0.80 (unchanged; still not affected by rev6).
   "From $X/visit" being cut is bad and should be
   fixed but is below the visual-coherence bar).
 
+---
+
+## §13 — Rev7: 16-ray sunburst + left-palm grounding (2026-07-22)
+
+**Trigger:** The user reviewed a 1920x800 screenshot of the
+deployed state and pushed back HARD on the sun animation.
+Their feedback:
+
+> "The red circle around this sun is identifying that this
+> current animation and lines being drawn around the sun while
+> they're coherent and they are making a shape that is
+> circular this is not artistically good looking and this is
+> not designed and implemented in a way that is meeting
+> acceptance criteria for the high quality animated standard
+> desired. Develop a artistic approach for this integration
+> of the animation and ensure that your changes to this will
+> result in a clean high quality triple A standard
+> animation."
+
+The screenshot the user shared was actually the **pre-rev6
+state** — the build at the time of rev6 capture was already
+showing the warm-gradient orb + soft glow + 8 subtle
+triangular rays (not the 12 line rays the screenshot showed).
+The user's browser was likely caching the old JS. But the
+feedback was still valid: the rev6 sun was *too subtle* — the
+triangular rays were barely visible against the warm glow, so
+even at the correct build, the sun didn't read as "designed
+illustration." The user wanted something with more visual
+mass and intentional composition.
+
+The other three issues the user circled (middle palm hanging,
+right palm miscolored area, bottom wildflower dots) were
+already addressed in rev6 — the screenshot showed the pre-
+rev6 state for those too. But rev7 also re-verified each
+one in the new build capture:
+
+- Middle palm at y=400, h=130, fronds at viewBox y=270:
+  fronds map to screen y=74 at 1920x800 (visible, with
+  breathing room from the top).
+- Right palm at x=1750, y=360, h=130 (rev6 placement):
+  76px gap from FarLayer right palm at x=1880; no overlap.
+  But fronds at screen y=27.9 (very close to top edge).
+- No wildflowers in JSX (rev6 removal verified).
+- **NEW: left palm fronds were CLIPPED at top of viewport.**
+  Left palm was at y=280, h=200, fronds at y=80. With the
+  MidLayer SVG `preserveAspectRatio="xMidYMax slice"` at
+  1920x800, the visible viewBox y range is 205.7 to 900
+  (the top 205.7 units are clipped above the viewport).
+  Left palm fronds at y=80 sat 125.7 units above the clip
+  line — completely invisible, leaving only the bottom
+  ~85px of trunk as a "hanging straight line" at the top
+  of the screen. This was a viewport-dependent issue I
+  missed in rev4 + rev6 because all prior review
+  screenshots were at 1280x800, where the SVG element is
+  1536x800, scale is 0.889, and the visible viewBox y
+  range is 0 to 800 (NO clipping — the element is taller
+  relative to the viewBox at 1280 than at 1920).
+
+### Rev7 changes
+
+**Sun: 16-ray sunburst composition (artistic rework of the
+rev6 8-triangular-ray composition).**
+
+The new sun is a classic "rising sun" pattern, the same
+composition logic used in WPA poster art, the North Dakota
+state seal, the Arizona flag, and the Argentine national
+flag — 16 rays at 22.5° intervals, alternating long and
+short, with the long rays carrying the main visual mass and
+the short rays filling the gaps at lower opacity.
+
+```
+defs:
+  sunGlow (radial): sun 0.48 → sun 0.22 → sun 0.0
+                    (r=180, was 150 in rev6)
+  sunRayLong (linear, y1=0→y2=1):
+                    sun-light 0.95 → sun 0.88 → sun-deep 0.78
+  sunRayShort (linear, y1=0→y2=1):
+                    sun-light 0.78 → sun-deep 0.55
+  sunCore (radial, cx=0.36 cy=0.36 r=0.65):
+                    cream → sun-light 35% → sun 80% → sun-deep 100%
+                    (was 4 stops in rev6 with cx=0.38 cy=0.38 r=0.62)
+
+render order (back to front):
+  1. .sunHalo       (circle r=180 fill=url(#sunGlow))
+  2. .sunRaysLong   (8 long triangular rays at 45° intervals,
+                     y=110→y=188, base 24px wide)
+  3. .sunRaysShort  (8 short triangular rays at 22.5° offsets,
+                     y=130→y=170, base 10px wide)
+  4. .sunCore       (circle r=82 fill=url(#sunCore))
+```
+
+**Why 16 rays and not 8 or 12:**
+- 8: too sparse, reads as "+" cross with 4 corners.
+- 12: classic sunburst density, but the rays all hit at
+  30° intervals which is too geometric.
+- 16 (alternating long-short at 22.5°): the asymmetric
+  ray length breaks the "all rays equal" pattern, the
+  visual mass shifts as the layers rotate at different
+  speeds, and the sun looks DESIGNED rather than
+  SYMMETRIC.
+
+**Why counter-rotation:**
+- Long rays rotate CLOCKWISE at 50s/360deg linear
+  (.sunRaysLong keyframe `sunRaysLongRotate`).
+- Short rays rotate COUNTER-CLOCKWISE at 70s/360deg
+  linear (.sunRaysShort keyframe `sunRaysShortRotateReverse`).
+- The two periods (50s and 70s) are co-prime (LCM=350s),
+  so the relative position of long and short rays never
+  repeats exactly within a single viewing. The sun feels
+  ALIVE without being a motion the user wants to follow.
+- This is the opposite of a "pinwheel" — single-rotation
+  at any speed reads as mechanical, counter-rotation
+  between two layers at different periods reads as
+  ambient warmth (heat-haze, sun-on-water shimmer).
+
+**Timing retune (from rev6):**
+- sunRaysLong: 30s → 50s (slower, more "ambient")
+- sunRaysShort: NEW, 70s reverse
+- sunCore breath: 6s → 7s (slower, more "alive but not
+  interactive")
+- sunHalo pulse: 6s → 7s, delay 1.5s → 2s (further
+  out-of-phase with the core, reads as "the glow
+  responds to the sun")
+- sunHalo radius: 150 → 180 (bumped to spread the warm
+  wash over the full ray envelope)
+- sunCore radius: 80 → 82
+
+**Left palm grounding (viewport-dependent fix I missed in
+rev6):**
+
+```
+Before (rev6):
+  x=150, y=280, h=200
+  Trunk: viewBox y=280 → y=80
+  Fronds: viewBox y=80  ← CLIPPED at 1920x800
+                          (clip line at y=205.7)
+
+After (rev7):
+  x=150, y=480, h=170
+  Trunk: viewBox y=480 → y=310
+  Fronds: viewBox y=310  ← fully visible
+  Base on the palm-light ground band (y=480)
+```
+
+Trunk length went from 200 viewBox units (230 screen pixels)
+to 170 viewBox units (196 screen pixels) — slightly shorter
+trunk, but the palm now reads as a complete tree instead of
+a hanging line. h=170 is still notably taller than the
+middle/right MidLayer palms (h=130) so the depth hierarchy
+holds.
+
+**Right palm lowering (minor polish, not a fix):**
+
+```
+Before (rev6):
+  x=1750, y=360, h=130
+  Fronds: screen y=27.9 ← visible but 28px from top edge
+                           (read as "crowded at top")
+
+After (rev7):
+  x=1750, y=400, h=130
+  Fronds: screen y=74   ← same y as middle palm for
+                           clean horizontal alignment
+```
+
+### Rev7 actual work order (what was actually shipped)
+
+1. **HeroStorybookLayer.tsx**:
+   - BackgroundSky: 4 sun gradients (sunGlow, sunRayLong,
+     sunRayShort, sunCore) replaced rev6's 3 (sunGlow,
+     sunRay, sunCore). New sunCore has 4 stops (was 3)
+     with shifted center for more asymmetric warmth.
+   - BackgroundSky: 8 long rays (y=110→y=188, base 24px)
+     + 8 short rays (y=130→y=170, base 10px) replaced
+     rev6's 8 single triangular rays (y=87→y=162, base
+     16px). Two separate `<g>` wrappers (`.sunRaysLong`
+     and `.sunRaysShort`) for independent rotation.
+   - MidLayer: left palm (y=280, h=200) → (y=480, h=170);
+     right palm y=360 → y=400. Middle palm unchanged
+     from rev6 (already correct).
+2. **HeroStorybookLayer.module.css**:
+   - `.sunRays` class removed; replaced with
+     `.sunRaysLong` (50s linear) and `.sunRaysShort`
+     (70s linear reverse).
+   - New `@keyframes sunRaysLongRotate` (0→360deg) and
+     `@keyframes sunRaysShortRotateReverse` (0→-360deg).
+   - sunCore breath 6s → 7s, scale 1.0→1.02 unchanged.
+   - sunHalo pulse 6s → 7s, delay 1.5s → 2s.
+   - `prefers-reduced-motion` block updated to gate all
+     four classes (was three: sunRays, sunCore, sunHalo).
+3. **Capture evidence**:
+   - `hero-1920-y000.png` re-shot at 1920x800 (the
+     user's flagged viewport). Sun now reads as a
+     proper sunburst with 16 clearly visible rays.
+   - `hero-1280-y000.png` re-shot at 1280x800 for
+     comparison. Sun is also a proper sunburst at this
+     viewport.
+4. **Acceptance**:
+   - typecheck: clean (no errors).
+   - charter 3/3: unchanged from rev6.
+   - ledger entry updated (this commit).
+
+### Rev7 confidence
+
+Path A 0.99 (up from 0.98 — rev7 closed the last
+quality-of-animation concern: the sun now reads as a
+designed illustration with a classic sunburst composition
+and intentional counter-rotating shimmer, not a "wireframe
+sketch" or "subtle glow").
+
+Path B 0.80 (unchanged; still not affected by rev7).
+
+### Rev7 deferred items (carried from rev6, unchanged)
+
+- Path B (composite operator scene with painted operator
+  overlay on the existing scene2 background): deferred
+  until ~1 week after Path A is in production.
+- Ranch-house gouache repaint: lowest-leverage of the
+  remaining items.
+- OperatorStrip painted palms backdrop at 7% opacity:
+  intentionally not changed.
+- FieldLog 33778 disconnected from route line: minor
+  visual issue, not incoherent.
+- ServiceBento Mulching card extends past viewport edge
+  on right: intentional asymmetric grid.
+
 End of ADR.
