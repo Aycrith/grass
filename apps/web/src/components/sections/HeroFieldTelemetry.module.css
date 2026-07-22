@@ -246,16 +246,27 @@
   transform: none !important;
 }
 
+/* D-0059 rev4 — right-edge darkness reduced. The previous
+ * radial-gradient at 70% 50% with 35% palm-bark at 100% was
+ * dark enough to show through the storybook's right-edge gaps
+ * (between the cartoon palms and ranch houses at viewBox x=1500+,
+ * which are partially off-screen on a 1280px viewport). The
+ * visitor saw a dark band on the right edge of y000-y010 that
+ * competed with the cartoon sky. The radial center is moved
+ * further right (75%) and the 100% stop is reduced from 35%
+ * palm-bark to 22% — still creates a subtle corner darkening
+ * for the photo vignette but doesn't bleed through the storybook
+ * cartoon at the resting state. */
 .photoVignette {
   position: absolute;
   inset: 0;
   background:
     radial-gradient(
-      ellipse at 70% 50%,
+      ellipse at 75% 50%,
       transparent 0%,
-      transparent 40%,
-      color-mix(in oklab, var(--ll-palm-bark) 18%, transparent) 80%,
-      color-mix(in oklab, var(--ll-palm-bark) 35%, transparent) 100%
+      transparent 50%,
+      color-mix(in oklab, var(--ll-palm-bark) 12%, transparent) 80%,
+      color-mix(in oklab, var(--ll-palm-bark) 22%, transparent) 100%
     ),
     linear-gradient(
       90deg,

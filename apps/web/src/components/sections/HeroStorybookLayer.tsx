@@ -464,7 +464,17 @@ function MidLayer(): ReactNode {
         opacity="0.5"
       />
 
-      <g transform="translate(1100 370)">
+      {/* D-0059 rev4 — center ranch house MOVED from viewBox x=1100
+       * to x=1400 (and scaled 1.0 -> 0.8). At x=1100 the center
+       * house sat on screen x ≈ 845px which is in the middle of
+       * the second line of the headline ("neighbor's lawn mower.")
+       * — the visitor saw the house's dark roof interrupting the
+       * text. Moving it past the headline's right edge (~900px) and
+       * scaling it down to 0.8 keeps the three-house composition
+       * but puts the center house in the right free zone (1000-
+       * 1280px on a 1280px viewport) where it brackets the headline
+       * instead of crossing it. */}
+      <g transform="translate(1400 380) scale(0.8)">
         <House />
       </g>
       <g transform="translate(1500 400) scale(0.7)">
