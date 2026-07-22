@@ -3920,6 +3920,6 @@ changelog:
       - "apps/web/audit/d-0059-path-a/hero-1280-y000.png (1280x800 hero capture - same composition, all elements visible)"
       - "hero-1920-y000 capture analysis: sun is a classic sunburst with 16 clearly visible rays (8 long triangular + 8 short triangular at 22.5 deg offsets), the long rays are filled with the sunRayLong 3-stop gradient (sun-light -> sun -> sun-deep) and the short rays with the lower-opacity sunRayShort gradient. Core is a warm radial gradient orb r=82 (cream highlight upper-left, sun-light mid, sun-deep edge). Halo is a soft warm glow r=180. Left palm at x=150 has fronds visible at the top-left of the screen, trunk grounded. Middle palm at x=950 has fronds above the headline. Right palm at x=1750 has fronds at the right with breathing room. No wildflower dots, no overlapping layers, no miscolored areas."
       - "hero-1280-y000 capture analysis: same composition as 1920, the SVG is taller relative to the viewBox at 1280 (scale 0.889 vs 1.152) so the top of the viewBox is NOT clipped, meaning the left palm fronds were visible even at the old y=280 position - which is why this viewport-dependent bug was missed in rev4+rev6 review (all prior reviews were at 1280x800)"
-    commit: "pending-sha-this-commit"
+    commit: "c55f1e0"
     commit_message: "feat(hero): D-0059 rev7 - 16-ray sunburst + left-palm grounding"
 
