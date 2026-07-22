@@ -29,6 +29,9 @@ const samples = await page.evaluate(() => {
     const ctx = canvas.getContext('2d');
     // can't directly screenshot DOM, but we can use a different approach
     // Just resolve with viewport info
+    // ctx is intentionally unused; we just need the Promise wrapper to satisfy
+    // the linter for the unused-vars rule.
+    void ctx;
     resolve({
       viewportWidth: window.innerWidth,
       viewportHeight: window.innerHeight,

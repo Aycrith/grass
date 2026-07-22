@@ -1,7 +1,6 @@
 // Sample actual pixel colors at specific points along the right
 // edge of the hero to identify the gray strip source.
 import { chromium } from 'playwright';
-import fs from 'node:fs';
 
 const browser = await chromium.launch({
   headless: true,

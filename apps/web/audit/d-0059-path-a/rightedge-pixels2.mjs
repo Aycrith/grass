@@ -34,7 +34,6 @@ for (const y of sampleY) {
     const r = data[idx];
     const g = data[idx + 1];
     const b = data[idx + 2];
-    const a = data[idx + 3];
     const hex = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
     row.push(`x=${(x + 1700).toString().padStart(4)}: ${hex} (${r},${g},${b})`);
   }
