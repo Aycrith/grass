@@ -71,37 +71,75 @@ export function HeroStorybookLayer({
   collapsed = false,
   layerMotion,
 }: HeroStorybookLayerProps): ReactNode {
-  // D-0043 — opacity eases 1 -> 0 across [0.10, 0.40] in 4 keys so
-  // the first 10% holds the storybook as the resting state, then
-  // softens through 0.10-0.30, then drops to 0 by 0.40 (sharing an
-  // exact boundary with the photo's warmth grade in
-  // HeroFieldTelemetry). When `collapsed` the layer stays full opacity
-  // for the entire scroll-through (effectively not used -
-  // HeroFieldTelemetry unmounts the storybook entirely when scroll-
-  // fade is disabled).
+  // D-0059 rev3 — TWO-PHASE cross-fade, tightened window. The
+  // rev2 two-phase had Phase 1 [0.10, 0.25] opacity 1→0.6 and
+  // Phase 2 [0.25, 0.40] opacity 0.6→0 — a 30% scroll band where
+  // the storybook stayed at 60-100% opacity for the first 50% of
+  // the band. The Phase 1 values were too gentle (only 4px blur,
+  // 15% saturate drop) so the cartoon ranch houses / palms / sun
+  // were still clearly recognizable as "ghosts" sitting on top of
+  // the photo at y=0.20 (73% opacity, 2.67px blur). The visitor
+  // saw two houses, two suns, two sets of palms.
+  //
+  // rev3 cuts the window in half (0.10-0.25 = 15% of scroll) and
+  // makes Phase 1 a "smear" rather than a "soft-fade":
+  //   Phase 1 (smear)     [0.10, 0.18]: opacity 1 -> 0.4, blur 0 -> 8px,
+  //     saturate 100% -> 70%. By the end of Phase 1 the cartoon
+  //     is at 40% opacity with 8px blur — the shapes are still
+  //     there but they read as "smudged watercolor", not "cartoon
+  //     overlay".
+  //   Phase 2 (dissolve)  [0.18, 0.25]: opacity 0.4 -> 0, blur 8 -> 14px,
+  //     saturate 70% -> 0%. The cartoon is then dissolved away
+  //     quickly with the rest of the smear.
+  //
+  // The key change: the cross-fade now happens in ~0.5-1 second
+  // of real-world scroll time (15% of 350svh at typical scroll
+  // cadence), not 1-2 seconds (30%). The double-exposure window
+  // is brief enough that the eye reads it as "the storybook
+  // smears into the photo" rather than "two scenes fighting".
+  //
+  // The sun animation is preserved (D-0052). At y=0.10 the sun
+  // is at 100% and fully animated; by y=0.14 the sun is at 70%
+  // with 4px blur (the rotation + breathing is still visible but
+  // smeared); by y=0.18 the sun is at 40% with 8px blur (the
+  // animation is barely perceptible through the smear). The sun
+  // doesn't get its own fade — it inherits the storybook's smear
+  // like everything else, which is the editorial motion-design
+  // convention (a unified scene dissolving, not staged element
+  // exits).
   const opacity = useTransform(
     progress,
-    [0, 0.1, 0.3, 0.4],
-    collapsed ? [1, 1, 1, 1] : [1, 1, 0.5, 0],
+    [0, 0.1, 0.18, 0.25],
+    collapsed ? [1, 1, 1, 1] : [1, 1, 0.4, 0],
   );
 
-  // D-0043 — the `filter` form is function-form useTransform so
-  // framer-motion interpolates using the raw numeric range we
-  // compute here, then formats as a CSS filter string. Direct string
-  // interpolation of `'blur(0px) saturate(100%)' -> 'blur(14px)
-  // saturate(0%)'` can produce visible "snap" frames; the function
-  // form lets us author the easing curve explicitly and skip the
-  // string-mixing logic entirely. On `collapsed` the filter stays
-  // identity (no blur, full saturation).
+  // D-0059 rev3 — filter in two phases. Phase 1 (smear) is
+  // blur 0 -> 8px, saturate 100% -> 70% across [0.10, 0.18] —
+  // 53% of the band (8% of scroll) is the smear. Phase 2
+  // (dissolve) is blur 8 -> 14px, saturate 70% -> 0% across
+  // [0.18, 0.25] — 47% of the band (7% of scroll) is the
+  // dissolve. The function-form useTransform gives us direct
+  // control over the easing curve at each phase boundary.
   const filter = useTransform(progress, (v) => {
     if (collapsed) return 'blur(0px) saturate(100%)';
-    const start = 0.1;
-    const end = 0.4;
-    const tRaw = (v - start) / (end - start);
-    const t = Math.max(0, Math.min(1, tRaw));
-    const blur = t * 14;
-    const saturate = (1 - t) * 100;
-    return `blur(${blur}px) saturate(${saturate}%)`;
+    if (v <= 0.1) return 'blur(0px) saturate(100%)';
+    if (v <= 0.18) {
+      // Phase 1: smear [0.10, 0.18]
+      const tRaw = (v - 0.1) / 0.08;
+      const t = Math.max(0, Math.min(1, tRaw));
+      const blur = t * 8;
+      const saturate = 100 - t * 30;
+      return `blur(${blur}px) saturate(${saturate}%)`;
+    }
+    if (v <= 0.25) {
+      // Phase 2: dissolve [0.18, 0.25]
+      const tRaw = (v - 0.18) / 0.07;
+      const t = Math.max(0, Math.min(1, tRaw));
+      const blur = 8 + t * 6;
+      const saturate = 70 - t * 70;
+      return `blur(${blur}px) saturate(${saturate}%)`;
+    }
+    return 'blur(14px) saturate(0%)';
   });
 
   // Each parallax layer translates horizontally as scroll progresses,
@@ -187,6 +225,27 @@ export function HeroStorybookLayer({
       >
         <NearLayer />
       </motion.div>
+      {/* D-0059 rev3 — paper-grain overlay REMOVED. The rev2
+       * paper-grain (200x200 SVG feTurbulence at 0.08 opacity with
+       * mix-blend-mode: multiply) was a static texture designed to
+       * make the cartoon read as "printed on paper". But during the
+       * [0.10, 0.25] cross-fade, the paper-grain stayed attached to
+       * the storybook at 73% opacity (Phase 1 of rev2's two-phase
+       * curve kept the storybook at >60% for half the band). The
+       * result at y=0.20 was a *textured* ghost — the cartoon
+       * ranch houses / palms / sun were smeared with a paper-noise
+       * pattern sitting on top of the photo. The texture made the
+       * ghost feel "real" rather than "transparent" — the opposite
+       * of the intended effect.
+       *
+       * The cartoon's "alive" quality now comes from the D-0052 sun
+       * animation (rotation + breathing + halo pulse) and the
+       * existing D-0042 parallax + sway. The paper-grain is
+       * recoverable as a static design-pass later (per §2.2.1 in
+       * the original plan) if the steward wants the printed-page
+       * feel, but only after the cross-fade is settled enough that
+       * the texture doesn't read as ghost noise during transition.
+       */}
       <ScrollHint mowerX={progress} />
     </motion.div>
   );
@@ -222,31 +281,46 @@ function BackgroundSky(): ReactNode {
       </defs>
       <rect width="1600" height="900" fill="url(#hero-sky)" />
       <rect width="1600" height="900" fill="url(#hero-sun)" />
-      {/* D-0059 Path A — D-0052 sun animation REMOVED.
+      {/* D-0052 - animated cartoon sun. The sun was previously two
+       * static circles (core + halo). Three coordinated CSS
+       * animations now give it life:
        *
-       * The 12-ray + core + halo geometry is preserved (it was
-       * always meant to be a deliberate, confident sun — the
-       * animation just made it busy). The rotation / breathing /
-       * pulse animations are dropped; the sun now reads as a
-       * static, painted-illustration sun, matching the rest of
-       * the storybook's hand-authored aesthetic.
+       *   - .sunRays   rotates the 12-ray group around (352, 252) at
+       *                20s/360deg linear. Slow enough to read as
+       *                ambient motion, not a windmill.
+       *   - .sunCore   breathes scale 1.0 -> 1.03 at 4.4s ease-in-out.
+       *                The 3% scale is just below the threshold of
+       *                "is the sun winking at me?" - registers as
+       *                warmth without being a button.
+       *   - .sunHalo   pulses opacity 0.18 -> 0.30 at 4.4s, slightly
+       *                out-of-phase from the core (delay 0.6s) so the
+       *                glow appears to swell from the edge inward.
        *
-       * Static-sun rationale: the animated sun was the LARGEST
-       * ghost element in the [0.10, 0.40] cross-fade (a spinning
-       * cartoon sun on top of a real Florida sun = "two suns").
-       * A static sun reads as more confident and less needy, and
-       * the visitor doesn't lose anything by not having it spin —
-       * the clouds still drift, the palms still sway, the
-       * scrollbar still moves.
+       * The rays are hand-authored flat-fill SVG to match the
+       * existing cartoon style (no gradients, no soft edges - same
+       * lesson as the D-0049 operator: painted VEO brushwork would
+       * clash with hand-authored SVG). Each ray is a 5px-wide
+       * tapered line from r=128 to r=170 around the sun center.
        *
-       * The 12-ray geometry stays because (a) the rays are the
-       * brand's sun iconography (reused on the LIVE pill dot, the
-       * "Where this lives" eyebrow, etc.), and (b) the static
-       * sun is a stronger silhouette than a 2-circle core+halo.
+       * transform-box: view-box (the same SVG-coordinate trick the
+       * operatorSway class uses) lets the rotation pivot be
+       * expressed in SVG viewBox units (352px, 252px) without
+       * fighting the parent div's CSS layout.
        *
-       * See governance/decisions/0059-hero-simplification-and-
-       * extension.md §2.1 for the full rationale. */}
+       * D-0059 rev2 - sun animation RESTORED. The original D-0059
+       * plan §2.1 called for dropping this animation ("static sun
+       * reads as more confident"). The first pass of d-0059
+       * captures (y000 + y020) proved that wrong: without the
+       * breathing, the storybook reads as a flat static
+       * illustration - the sun was the most prominent "alive"
+       * element and killing it killed the storybook's character.
+       * The ghost-bleed is solved by removing the D-0050
+       * additions (callout, operator, route pin, per-ZIP strip)
+       * + the two-phase cross-fade (Phase 2) - NOT by killing the
+       * sun animation. The 12-ray geometry was always meant to
+       * be alive. */}
       <g
+        className={styles.sunRays}
         stroke="var(--ll-sun)"
         strokeWidth="5"
         strokeLinecap="round"
@@ -269,6 +343,7 @@ function BackgroundSky(): ReactNode {
         })}
       </g>
       <circle
+        className={styles.sunHalo}
         cx="352"
         cy="252"
         r="120"
@@ -276,6 +351,7 @@ function BackgroundSky(): ReactNode {
         opacity="0.18"
       />
       <circle
+        className={styles.sunCore}
         cx="352"
         cy="252"
         r="72"

@@ -109,6 +109,39 @@
   margin-bottom: 0.5rem;
 }
 
+/* D-0059 rev2 - editorial chrome (plan §2.2.3). The .eyebrowRow
+ * wraps the chapter-marker square + the eyebrow text in a single
+ * inline-flex row, so the square sits flush to the left of the
+ * eyebrow text without any gap. The .eyebrowRule is a 32px-wide
+ * 1px clay horizontal rule that sits above (and below) the
+ * editorial column as a chapter-divider. Together they read as
+ * the magazine-spread "chapter open" convention: small rule,
+ * small square marker, all-caps eyebrow, then the headline. */
+
+.eyebrowRule {
+  display: block;
+  width: 32px;
+  height: 1px;
+  background: var(--ll-clay);
+  margin: 0 auto 0.6rem auto;
+  opacity: 0.7;
+}
+
+.eyebrowRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.eyebrowSquare {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--ll-clay);
+  flex-shrink: 0;
+}
+
 .headline {
   font-family: var(--font-fraunces), Georgia, serif;
   font-weight: 500;
@@ -122,16 +155,21 @@
   text-shadow: 0 2px 24px color-mix(in oklab, var(--ll-cream) 60%, transparent);
 }
 
+/* D-0059 rev2 - opening quote boost (plan §2.2.3 item 3). The
+ * quote is bumped to 1.4em (was 0.9em) and lifted translateY(-0.1em)
+ * so it reads as a typographic ornament anchoring the headline,
+ * not a stray character. The clay color is kept from the
+ * pre-rev2 version. */
 .openingMark {
   font-family: var(--font-fraunces), Georgia, serif;
   font-style: italic;
   font-weight: 400;
-  font-size: 0.9em;
+  font-size: 1.4em;
   color: var(--ll-clay);
   opacity: 0.85;
   margin-right: 0.05em;
   display: inline-block;
-  transform: translateY(-0.08em);
+  transform: translateY(-0.1em);
 }
 
 .italic {
@@ -162,6 +200,24 @@
   display: inline-block;
   margin-left: 0.5em;
   transition: transform 0.25s var(--ease-out-quart, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+/* D-0059 rev2 - editorial-spread hover underline (plan §2.2.3
+ * item 4). When the visitor hovers either MagneticCta, a thin
+ * 1px clay underline appears under the button text, matching
+ * the magazine-spread "click to continue" convention. The CTA's
+ * own variant (sun, ghost) drives the background; this is just
+ * the underline accent. */
+.actions > *:hover .ctaArrow {
+  transform: translateX(0.25em);
+}
+
+.actions a:hover,
+.actions button:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--ll-clay);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
 }
 
 /* ============================================================

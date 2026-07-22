@@ -102,12 +102,39 @@ export function SecondScene({
       </div>
 
       {/* Editorial pull-quote content overlay.
-       * Bottom 12svh of the viewport, centered, warm-brown text. */}
+       * Bottom 12svh of the viewport, centered, warm-brown text.
+       *
+       * D-0059 rev2 - editorial chrome (plan §2.2.3) makes the
+       * pull-quote read as a CAPTION on a painted illustration,
+       * not a third hero headline. Four coordinated elements:
+       *
+       *   1. .eyebrowRule — 32px-wide 1px clay horizontal rule
+       *      above the eyebrow (the chapter-divider convention).
+       *   2. .eyebrowSquare — 8x8px clay square to the left of
+       *      the eyebrow (the chapter-marker convention).
+       *   3. .openingMark — opening curly quote bumped to 1.4em
+       *      with translateY(-0.1em) (typographic ornament, not
+       *      a stray character).
+       *   4. .ctaUnderline — 1px clay underline on MagneticCta
+       *      hover (the editorial-spread "click to continue"
+       *      convention).
+       *
+       * The chrome lives in SecondScene.module.css. It's NOT a
+       * shared component (yet) — the only "editorial" section
+       * in the site is scene 2, so a reusable EditorialChrome
+       * component would be premature abstraction. If the
+       * SpecimenPlate or PocketMap sections ever need chrome,
+       * extract this layout to apps/web/src/components/ui/
+       * EditorialChrome.tsx at that point. */}
       <motion.div
         className={styles.content}
         style={{ opacity: contentOpacity }}
       >
-        <span className={styles.eyebrow}>{scene2.eyebrow}</span>
+        <span className={styles.eyebrowRule} aria-hidden="true" />
+        <span className={styles.eyebrowRow}>
+          <span className={styles.eyebrowSquare} aria-hidden="true" />
+          <span className={styles.eyebrow}>{scene2.eyebrow}</span>
+        </span>
         <h2 className={styles.headline}>
           <span className={styles.openingMark} aria-hidden="true">
             &ldquo;
@@ -123,6 +150,7 @@ export function SecondScene({
           )}
         </h2>
         <p className={styles.subhead}>{scene2.subhead}</p>
+        <span className={styles.eyebrowRule} aria-hidden="true" />
         <div className={styles.actions}>
           <MagneticCta href={scene2.primaryCta.href} variant="sun" size="lg">
             {scene2.primaryCta.label}

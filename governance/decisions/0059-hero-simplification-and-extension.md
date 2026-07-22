@@ -64,6 +64,36 @@ This ADR therefore:
    dissolving into the next). Net: more content, *and* the existing
    coherence is preserved.
 
+3. **D-0059 rev2 corrections** (the steward flagged visual
+   coherence issues after Phase 1 ship; this is the actual
+   `This ADR therefore` sub-list as committed in rev2):
+   - **D-0052 sun animation RESTORED** (the original plan §2.1
+     called for dropping it as a ghost-bleed fix; the steward
+     saw the static sun as lifeless and asked for it back). The
+     ghost-bleed fix is the D-0050 deletions + the two-phase
+     cross-fade (next bullet), NOT the sun animation.
+   - **Two-phase cross-fade IMPLEMENTED** (plan §2.2.2 had this
+     in the design pass; rev2 promotes it to Phase 1 because the
+     single-phase D-0043 cross-fade was leaving the storybook at
+     75% opacity on top of the photo at y=0.20 — clearly
+     visible "ghost-bleed"). Soft-fade [0.10, 0.25] opacity
+     1→0.6 + blur 0→4px + saturate 100→85%; then dissolve
+     [0.25, 0.40] opacity 0.6→0 + blur 4→14px + saturate
+     85→0%. The visitor reads it as "the storybook is becoming
+     the photo" rather than "the storybook is fading away."
+   - **Paper-grain overlay IMPLEMENTED** (plan §2.2.1 was a
+     design-pass item; rev2 ships it now because the static
+     sun made the storybook read as "flat vector" and the
+     paper-grain restores the "printed storybook page"
+     texture). 200x200 SVG feTurbulence at baseFrequency 0.65,
+     mix-blend-mode: multiply at 0.08 opacity.
+   - **Editorial chrome IMPLEMENTED** (plan §2.2.3 — clay
+     square to the left of the eyebrow, 32px horizontal
+     rules above + below, 1.4em opening curly quote with
+     translateY(-0.1em), CTA hover underline 1px clay). The
+     scene 2 pull-quote now reads as a CAPTION on the
+     painted illustration, not a third hero headline.
+
 3. **Design & art direction** (woven through both paths) — both
    paths get the full design pass, not a quick fix. The storybook
    cartoon gets a proper painterly refinish (the cartoon currently
@@ -995,6 +1025,31 @@ ready to execute. Path B is a separate engagement after Path A is
 in production and the steward has had ~1 week with the simplified
 hero.
 
+**D-0059 rev2 (2026-07-21) — correction applied.** After Phase 1
+ship + the first capture set, the steward flagged that the
+static sun + the single-phase cross-fade made the hero read as
+a flat static illustration with cartoon ghosts bleeding
+through to the photo. Four corrections:
+1. D-0052 sun animation RESTORED (was supposed to be dropped
+   per §2.1; the static sun was lifeless)
+2. Two-phase cross-fade IMPLEMENTED (promoted from §2.2.2
+   design-pass item to Phase 1 — the single-phase D-0043
+   cross-fade was leaving the storybook at 75% opacity on the
+   photo at y=0.20)
+3. Paper-grain overlay IMPLEMENTED (promoted from §2.2.1
+   design-pass item to Phase 1 — the static sun made the
+   storybook read as "flat vector")
+4. Editorial chrome IMPLEMENTED (the §2.2.3 clay square,
+   32px rules, 1.4em opening quote, CTA hover underline)
+
+The corrected capture set is at `apps/web/audit/d-0059-path-a/`
+(9 positions: 0%, 5%, 10%, 20%, 30%, 40%, 60%, 80%, 100%). The
+y=0.00 capture shows the storybook at full opacity with the
+breathing sun + palms + ranch houses + paper-grain texture
+(alive, not flat). The y=0.20 capture shows the soft-fade in
+action (storybook at ~80% with blur+saturate). The y=0.30
+capture shows the storybook mostly dissolved into the photo.
+
 The work order, when execution begins:
 
 1. **Day 1 (Path A)**: revert D-0050 overlays + D-0052 sun
@@ -1010,5 +1065,143 @@ The work order, when execution begins:
    scene (existing scene 2 frame + new painted operator overlay
    per §3.3), build the OperatorArrival component, run the
    hard-cut review, ship if it lands.
+
+**rev2 actual work order (what was actually shipped):**
+
+1. **Phase 1 deletions (commits b0a1ac5 + 09d73bd)**: D-0050
+   callout, D-0050 cartoon operator, D-0050 route pin, D-0050
+   per-ZIP strip, D-0052 sun animation.
+2. **Phase 1 capture (commit 09d73bd)**: 4 of 9 positions
+   captured (y000, y005, y010, y020). Steward flagged the
+   static sun + ghost-bleed at y020.
+3. **Phase 1 corrections (rev2)**: D-0052 sun animation
+   restored, two-phase cross-fade implemented, paper-grain
+   overlay added, editorial chrome added (clay square, rules,
+   opening-quote boost, CTA hover underline). Re-captured all
+   9 positions.
+4. **Phase 2 (deferred)**: ranch-house gouache (subtle 1px
+   palm-bark linework on the houses — the existing gradient
+   already carries most of the painterly weight, so this is
+   the lowest-leverage of the 4 design additions; ship if the
+   steward requests).
+5. **Acceptance**: refresh Playwright baselines, typecheck +
+   charter + visual:test, write audit memo, commit ledger
+   entry.
+
+**D-0059 rev3 (2026-07-22) — second correction applied.** After
+the rev2 capture set, the steward flagged that the cross-fade
++ paper-grain + dashboard timing had "negatively impacted
+aspects of the animation" — specifically, the y=0.20 capture
+(y020) showed a clear double-exposure: cartoon ranch houses,
+palms, and sun sitting at 73% opacity with only 2.67px blur on
+top of the photo's ranch houses, palms, and atmospheric sun.
+The "LIVE Route has room" dashboard callout was also visible
+at 67% opacity on top of the dissolving storybook, making the
+mid-cross-fade frame feel busy and the dashboard reveal
+unclear. Three corrections:
+
+1. **Cross-fade window TIGHTENED from 30% to 15%** of scroll.
+   The rev2 window was [0.10, 0.40] with Phase 1 [0.10, 0.25]
+   opacity 1→0.6 + blur 0→4px + saturate 100→85%, and Phase 2
+   [0.25, 0.40] opacity 0.6→0 + blur 4→14px + saturate 85→0%.
+   The rev3 window is [0.10, 0.25] with Phase 1 (smear)
+   [0.10, 0.18] opacity 1→0.4 + blur 0→8px + saturate 100→70%,
+   and Phase 2 (dissolve) [0.18, 0.25] opacity 0.4→0 +
+   blur 8→14px + saturate 70→0%. The 15% window is fast enough
+   (≈0.5-1 second of real-world scroll time at typical cadence)
+   that the eye reads the transition as "the storybook smears
+   into the photo" rather than "two scenes fighting". By the
+   end of Phase 1 the cartoon is at 40% opacity with 8px blur —
+   the shapes are still there but they read as "smudged
+   watercolor", not "cartoon overlay". Phase 2 dissolves that
+   smear away in the remaining 7% of scroll.
+
+2. **Paper-grain overlay REMOVED.** The rev2 200x200 SVG
+   feTurbulence at 0.08 opacity with mix-blend-mode: multiply
+   was meant to give the cartoon a "printed storybook page"
+   feel at rest. But during the cross-fade, the paper-grain
+   stayed attached to the storybook and added visible noise to
+   the ghost overlay — at y=0.20 the cartoon ranch houses were
+   smeared with a paper-noise pattern sitting on top of the
+   photo, which made the ghost feel "real" rather than
+   "transparent". The grain is recoverable as a static
+   design-pass later (per §2.2.1 in the original plan) if the
+   steward wants the printed-page feel, but only after the
+   cross-fade is settled enough that the texture doesn't read
+   as ghost noise during transition. The class is preserved as
+   a commented stub in `HeroStorybookLayer.module.css` for
+   traceability.
+
+3. **Dashboard fade-in DELAYED from [0.10, 0.30] to
+   [0.25, 0.40].** The LiveStatus callout (top-right "LIVE
+   Route has room" pill) and the TelemetryStats parent both
+   read `uiOpacity` which was previously on the D-0043 rev 2
+   "rise during cross-fade" timing. With the cross-fade now
+   ending at y=0.25, the dashboard fade-in is pushed to start
+   at y=0.25 and finish at y=0.40 — so the dashboard widgets
+   appear as a clean reveal on the resting photo, not as a
+   mid-cross-fade overlay on the dissolving storybook. The
+   FieldStamp (passport stamp, always-on) is unchanged because
+   it is postcard iconography, not dashboard chrome. The
+   photoGrade overlay (sunset warmth on the photo) also
+   reaches 0 opacity at y=0.40 in lockstep with the
+   dashboard's full reveal.
+
+The D-0052 sun animation is **preserved** through rev3 — the
+user explicitly preferred the alive, breathing sun over the
+static sun, and the tighter cross-fade keeps the sun animation
+visible for the full 100% → 0% storybook phase before the
+smear takes over. At y=0.10 the sun is at 100% and fully
+animated; by y=0.14 (mid Phase 1) the sun is at 70% with 4px
+blur and the rotation + breathing is still visible but
+smeared; by y=0.18 (end Phase 1) the sun is at 40% with 8px
+blur and the animation is barely perceptible through the
+smear. The sun doesn't get its own fade — it inherits the
+storybook's smear like everything else, which is the
+editorial motion-design convention (a unified scene
+dissolving, not staged element exits).
+
+**What did NOT change in rev3:**
+- D-0052 sun animation CSS (the .sunRays / .sunCore / .sunHalo
+  keyframes and classes are still in
+  HeroStorybookLayer.module.css and still applied to the SVG).
+- Editorial chrome on SecondScene (clay square, 32px rules,
+  1.4em opening quote, CTA hover underline) — the scene 2
+  y=0.80 capture was already coherent in rev2 and the
+  steward did not flag it.
+- The D-0049 SecondScene painted-illustration cross-fade
+  [0.40, 0.70] — the steward only flagged the storybook →
+  photo transition, not the photo → scene 2 transition. If
+  the scene 2 cross-fade also needs the same tightening, it
+  is a follow-on ticket (not in this rev3).
+- The D-0043 additive layers (greenVignette, grassSilhouette,
+  photoGrade, photoVignette) — these are the "front-of-house"
+  overlays that tint the photo as it settles. They are
+  unchanged in rev3 because they were not the source of the
+  rev2 visual problem.
+
+**rev3 actual work order (what was actually shipped):**
+
+1. **HeroStorybookLayer.tsx**: cross-fade window [0.10, 0.40]
+   → [0.10, 0.25]; Phase 1 [0.10, 0.25] → [0.10, 0.18] with
+   heavier blur 0→8px (was 0→4px) and saturate 100→70% (was
+   100→85%); Phase 2 [0.25, 0.40] → [0.18, 0.25] with
+   blur 8→14px (was 4→14px) and saturate 70→0% (was 85→0%);
+   paper-grain JSX removed.
+2. **HeroStorybookLayer.module.css**: .paperGrain class
+   commented out (preserved as stub for traceability).
+3. **HeroFieldTelemetry.tsx**: uiOpacity / uiY from
+   [0.1, 0.3] → [0.25, 0.40] so the dashboard reveals
+   AFTER the storybook is gone.
+4. **Capture set refreshed**: all 9 positions in
+   `apps/web/audit/d-0059-path-a/hero-y{000,005,010,020,030,
+   040,060,080,100}.png` re-shot with the rev3 build.
+5. **Acceptance**: typecheck + charter 3/3 expected; ledger
+   entry updated.
+
+**rev3 confidence (post-fix, per steward sign-off TBD):**
+Path A 0.85 (same as ratified; the cross-fade tightening is
+a refinement, not a scope change). Path B 0.80 (same; not
+affected by rev3).
 
 End of ADR.

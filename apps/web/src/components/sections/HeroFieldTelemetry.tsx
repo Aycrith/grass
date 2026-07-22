@@ -309,14 +309,26 @@ export function HeroFieldTelemetry({
 
   // D-0043 (Wave 2) — shared layer-4 timing. LiveStatus + FieldStamp +
   // TelemetryStats all read `uiOpacity` / `uiY` so they rise together.
-  // Threshold lowered from [0.4, 0.6] to [0.1, 0.3] so the dashboard
-  // settles into place while the storybook is still dissolving — the
-  // visitor sees the LIVE pill + telemetry strip + EST stamp arrive
-  // together with the green wash and grass silhouette as one
-  // "front-of-house" reveal, not a separate late event after the photo
-  // has fully settled.
-  const uiOpacity = useTransform(smoothProgress, [0.1, 0.3], [0, 1]);
-  const uiY = useTransform(smoothProgress, [0.1, 0.3], [12, 0]);
+  // D-0059 rev3 — the dashboard fade-in window was [0.1, 0.3] in
+  // D-0043 rev 2 / D-0059 rev2, which positioned the LIVE pill
+  // and telemetry strip so they rose DURING the storybook
+  // dissolve. With the storybook cross-fade now tightened to
+  // [0.10, 0.25] (rev3) the dashboard widgets are pushed to
+  // [0.25, 0.40] so they appear AFTER the storybook is fully
+  // gone. This kills the rev2 visual where "LIVE Route has room"
+  // was sitting on top of the dissolving storybook ghosts at
+  // y=0.20 — the dashboard is now a clear, clean reveal on the
+  // resting photo, not a mid-cross-fade overlay.
+  //
+  // The "front-of-house" reveal still happens as one beat — the
+  // LIVE pill, EST stamp, and telemetry strip all share
+  // `uiOpacity` / `uiY` so they rise together at y=0.25 → y=0.40.
+  // The beat is just later now: it lines up with the photo
+  // reaching its resting state, not with the storybook's
+  // mid-dissolve. The photo grade (warmth overlay) also settles
+  // to 0 at y=0.40 in lockstep.
+  const uiOpacity = useTransform(smoothProgress, [0.25, 0.40], [0, 1]);
+  const uiY = useTransform(smoothProgress, [0.25, 0.40], [12, 0]);
 
   // D-0043 (Wave 2) — additive green palette correction. The
   // production photo has ~14,200 sand-colored foreground pixels
