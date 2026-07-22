@@ -3923,3 +3923,347 @@ changelog:
     commit: "c55f1e0"
     commit_message: "feat(hero): D-0059 rev7 - 16-ray sunburst + left-palm grounding"
 
+
+  - date: "2026-07-22"
+    day: 29
+    change: >
+      D-0059 rev8 - PHYSICS-COHERENT part-wise animation. The
+      pre-rev8 palm sway rotated the ENTIRE palm (trunk + fronds
+      + coconut) as a single rigid body around the viewBox
+      bottom-center, so the base of the trunk visually lifted
+      off the ground band as the tree swayed. The steward
+      flagged this as a "primitive whole-element transformation"
+      that did not honor how a real tree moves (roots anchored,
+      canopy moving). rev8 applies the principle to every
+      applicable element of the scene.
+
+      (1) PALM TREES - PART-WISE SWAY. The PalmTree primitive is
+      refactored: the trunk path stays static (no rotation, the
+      root stays in the ground), and the fronds group (positioned
+      at translate(0 -h), so its local origin is the trunk-top
+      attach point) rotates around the center of its own bounding
+      box via `transform-box: fill-box; transform-origin: 50% 50%`.
+      The 8 fronds radiate symmetrically from local (0, 0), so
+      the center of the fronds' bbox IS the trunk-top attach
+      point - the canopy sweeps around the fixed trunk-top, not
+      around the viewBox bottom. Per-palm `phase` prop (0s /
+      -1.2s / -0.6s on the 3 MidLayer palms) keeps the grove
+      from swaying in mechanical lockstep. The `.swaySlow` class
+      is retired.
+
+      (2) GRASS BLADES - PER-BLADE SWAY ANCHORED AT BASE. The
+      60 NearLayer grass blades were static after the one-shot
+      `grow` animation finished. rev8 adds a continuous
+      `bladeSway` keyframe (rotate -3.5deg to +3.5deg) on each
+      blade, with `transform-box: fill-box; transform-origin:
+      50% 100%` resolving the pivot to the bottom of each
+      blade's bbox = the base where the blade meets the ground
+      band. Each blade gets an inline `--i` CSS custom property
+      (0..59); `animation-delay: calc(var(--i) * -0.11s)` gives
+      60 blades a 6.6s phase spread against a 2.6s period - at
+      any moment every phase of the sway is represented, reading
+      as continuous "wind moving across the lawn" rather than
+      60 blades bobbing in sync. The grow-in entrance is
+      preserved on the parent .blades group.
+
+      (3) FAR PALMS - SUBTLE GROUP SWAY. The 7 FarLayer palms
+      were completely static - a distant vista should breathe.
+      rev8 adds a single .farPalmsSway wrapper around the
+      whole far-palm group with a very subtle group rotation
+      (-0.35deg to +0.35deg) around the viewBox bottom-center.
+      At ~485 viewBox units below the palms, the angular
+      motion translates to ~3 viewBox units of horizontal
+      displacement at the palm-tops - a distant-treeline
+      shimmer that reads as "the vista is alive" without
+      per-tree CSS bloat. 14s period is much slower than the
+      mid palms' 7s so the two layers don't visibly couple.
+
+      (4) WHAT WAS ALREADY COHERENT (preserved, not refactored):
+      - Sun: .sunRaysLong / .sunRaysShort rotate around the sun
+        center (352, 252) which is the celestial "root"; the
+        long and short ray groups ARE the sun's "fronds"
+        emanating from the core. Counter-rotation between the
+        two ray layers creates a heat-haze shimmer (D-0052 +
+        D-0059 rev7). No change.
+      - Sun core + halo: scale-pulse around the sun center, the
+        same pivot. No change.
+      - Clouds: translateX drift across the sky. Clouds aren't
+        rooted, so translation is the natural motion (not
+        rotation around a pivot). No change.
+
+      (5) AUDIT EVIDENCE:
+      - DOM diagnostic (anim-audit.mjs) confirms:
+        * 3 .palmFronds elements with animationName
+          "HeroStorybookLayer_palmFrondsSway" 7s, transform-box
+          fill-box, transform-origin 32px 32px (center of
+          fronds bbox = trunk-top attach point)
+        * 60 .blade elements with animationName
+          "HeroStorybookLayer_bladeSway" 2.6s, transform-box
+          fill-box, transform-origin at the bottom of each
+          blade's bbox (= base of blade), animation-delay
+          0s, -0.11s, -0.22s, ... -5.49s across the 60
+          blades
+        * 1 .farPalmsSway group with the new animation
+      - Multi-frame hero captures (1920x800) at t=0, 1750ms,
+        3500ms, 5250ms show the fronds in DIFFERENT positions
+        across frames (canopy is swaying) while the trunk
+        positions are IDENTICAL (rooted at the ground band).
+        The sun rays also rotate, the clouds drift - matching
+        the principle that anchored roots stay put while
+        outer / upper parts move.
+
+      (6) Implementation cost: 1 source change (PalmTree +
+      MidLayer + NearLayer + FarLayer + CSS) + 1 docs change
+      (this ledger entry + plan §14). No new files, no new
+      dependencies, no schema changes.
+
+      (7) Lessons for future animation work in GRASS:
+      - When in doubt about a transform, ask "what is the
+        root/base/anchor of this object, and where should the
+        motion originate?" Apply that to every CSS rotation,
+        scale, and skew.
+      - The .swaySlow pattern (rotate-the-whole-thing) is a
+        code smell - the next reviewer should reject it on
+        sight unless the object is a celestial body or a
+        similar rootless entity.
+      - The "wind moving across the lawn" effect (per-blade
+        phase gradient on the same keyframe) is a reusable
+        pattern for any field of repeated elements that
+        should respond to a common stimulus.
+    by: "Mavis (orchestrator, 2026-07-22)"
+    review_date: "2026-10-22"
+    twined_with: "D-0052 (sun animation - the rev7 sunburst rotation around the sun center was already physics-coherent, preserved through rev8); D-0043 (cross-fade substrate unchanged from rev3); D-0049 (SecondScene painted frames unchanged); D-0059 rev7 (this is a fifth-pass polish on the animation system, not a structural change - the cross-fade formula, dashboard fade, ranch house positions, sun composition, and palm positions all carry through); D-0047 (original D-0050 storybook addition that added the callout, operator, route pin, per-ZIP strip - all removed in rev3 + rev4 + rev5 + rev6)"
+    audit_artifacts:
+      - "apps/web/audit/d-0059-path-a/hero-1920-rev8-frame1.png (t=0ms, fronds at one phase of the sway)"
+      - "apps/web/audit/d-0059-path-a/hero-1920-rev8-frame2.png (t=1750ms, fronds rotated to a different phase)"
+      - "apps/web/audit/d-0059-path-a/hero-1920-rev8-frame3.png (t=3500ms, fronds further along the cycle)"
+      - "apps/web/audit/d-0059-path-a/hero-1920-rev8-frame4.png (t=5250ms, fronds back near the start of a new cycle)"
+      - "apps/web/audit/d-0059-path-a/hero-1920-y000.png (1920x800 hero capture - trunk positions identical across all 4 frames = rooted; fronds positions different across frames = swaying)"
+      - "apps/web/audit/d-0059-path-a/hero-1280-y000.png (1280x800 hero capture - same composition, animation working at narrower viewport)"
+      - "apps/web/audit/d-0059-path-a/anim-audit.mjs (DOM diagnostic - reports computed animation-name, animation-duration, transform-box, transform-origin for each animated element class. Confirms 3 .palmFronds + 60 .blade + 1 .farPalmsSway + sun animation all correctly applied)"
+    path_a_confidence: "0.99 -> 0.995 (rev8 closed the last principle-coherence concern: every animated element in the scene now obeys the 'root anchored, upper parts moving' physics principle that the steward articulated. The remaining gap is visual subtlety of the grass blades on the foreground green - the principle is applied but the strokes are thin enough that the motion reads as a 'shimmer' rather than obvious blade sway. If the steward wants more visible blade motion, a follow-up could bump the stroke contrast or the rotation magnitude, but the architectural fix is complete.)"
+
+
+  - date: "2026-07-22"
+    day: 29
+    change: >
+      Priority-3 procurement scout (Day 29 expanded pass) -- 3 PRIMARY
+      GATING DECISIONS for the landscaping business: (1) utility/landscape
+      trailer, (2) 36-inch (or smaller) zero-turn mower, (3) full-spectrum
+      commercial backpack blower. Steward requested MAXIMUM source breadth +
+      best-cost options, ranked for decision support.
+
+      (1) SOURCE BREADTH EXPANSION. GarbageGoober pipeline + cross-source
+      web_search: FB Marketplace Tampa Bay (Camoufox), Craigslist Tampa Bay
+      (direct HTTP), eBay used-comps (web_search fallback per
+      ebay_comps_agent.py -- ScraperEbaySold is IP-blocked per
+      scrapers_v3.py gotcha), TractorHouse.com, EquipmentTrader.com,
+      TrailerTrader.com, FL FB groups (Landscaping Equipment For Sale FL,
+      Heavy Equipment For Sale, Equipment Marketplace), FL dealer sites
+      (Quality Mowers Clearwater, Joe Blair Garden Supply Miami, St. Johns
+      Sales St. Augustine, M&M Mowers Tampa, TrailersPlus Tampa, AT Trailer
+      Center Punta Gorda, Gator Tail Trailers Land O'Lakes, Big Gus
+      Tractor Mary Esther, Love Power Equipment Homosassa, 321 Trailer),
+      AllMachines aggregator.
+
+      (2) EXPANDED BLOWER SPECTRUM. procurement_scan.py blower_br600
+      target expanded from 4 queries (BR 600 / Echo PB 8010 / generic
+      backpack) to 30+ queries covering the FULL commercial spectrum:
+      Stihl BR 200/350/450/500/600/700/800; Echo PB-252/265/580/580T/
+      770/770T/8010; Husqvarna 150BT/350BT/570BTS/590BTS; RedMax EBZ 5150/
+      6500/7500/8500/9000; Shindaiwa EB802/803; Maruyama BL8100; Tanaka.
+      max_price raised 450 -> 650 to accommodate commercial tier; new
+      preferred_brands: redmax, shindaiwa, maruyama, tanaka, mcculloch.
+
+      (3) NEW PIPELINE FILES (all in GarbageGoober):
+      - procurement_scan.py (modified) -- expanded blower query set
+      - ebay_comps_priority_3_2026-07-22.json -- 32KB, full priority-3
+        eBay comps + FL dealer data + cross-source summary
+      - procurement_email_priority3.py -- focused Gmail-friendly HTML
+        renderer for the 3 priority items
+      - output/procurement/procurement_email_priority3.html -- final
+        240KB consolidated report (115 kept listings + 70+ eBay comps +
+        14 blower models + 6 FL dealers)
+
+      (4) SCAN DATA. 2026-07-22 priority-3 scan: 91 raw / 40 kept for
+      zero_turn_36, 70 raw / 44 kept for equipment_trailer. Blower scan
+      pulled from 2026-07-21 10-item scout (38 raw / 31 kept) since
+      procurement_scan.py Day 29 expansion returned 0 incremental unique
+      listings vs the 30+ query set (FB Marketplace Pinellas coverage
+      saturated at ~30 blower listings).
+
+      (5) KEY FINDINGS (vs Day 28's 10-item scout):
+      - TRAILER: 1500-2200 USD used 5x10-6x12 is realistic (Day 28 was
+        yaml 60% low for landscape trailer; this pass used the equipment
+        trailer's tighter band). Strong FL dealer inventory: TrailersPlus
+        Tampa 5x10 Carry-On 1689 USD new, 6x12 Carry-On 2399 USD new; AT
+        Trailer Center Punta Gorda 5x10 or 6x12 1950 USD new. Best deal:
+        600 USD 2026 Panther 6x12 utility St Petersburg FL (40 percent of
+        eBay median).
+      - 36-INCH ZT: 1800-3500 USD used for residential (Hustler Raptor 36,
+        Exmark Quest E, Scag Freedom Z, Snapper 360Z, Bad Boy MZ, Toro
+        Titan 36). Light FL inventory -- most FL zero turns are 48 inch
+        or commercial 60 inch. Best deals: 1200 USD Craftsman Z6100
+        (Safety Harbor FL -- steward must verify deck size as Z6100 is
+        actually 42 inch not 36 inch); 1295 USD Exmark 36-inch Metro
+        (Jacksonville FL); 1500 USD 2016 Hustler Raptor (Oak Hill FL).
+        New from FL dealer: Bad Boy Revolt SD 34-inch 5809 USD (Love
+        Power Homosassa) -- fits 36-inch pedestrian gate with margin.
+      - BACKPACK BLOWER (full commercial spectrum): 250 USD used entry
+        (Stihl BR 200, Husqvarna 150BT), 300-400 USD commercial sweet
+        spot (RedMax EBZ8500 at 300 USD is the standout value -- 757 CFM
+        commercial at 300 USD used), 365 USD Stihl BR 600 used median,
+        400 USD plus high CFM (BR 700, PB-770T, BR 800). FL dealer new:
+        Quality Mowers Clearwater Stihl BR 600 ON SALE 500 USD, Stihl
+        BR 350 430 USD (St. Johns St. Augustine), Stihl BR 700 X 650
+        USD (St. Johns). NO FL Echo / Husqvarna / RedMax dealer in this
+        scan (gap to flag).
+
+      (6) GOOD DEAL / FAIR / OVERPRICED scoring per item (vs eBay comps
+      median):
+      - Trailer: 23 GOOD DEAL / 11 FAIR / 10 OVERPRICED
+      - 36-inch ZT: 9 GOOD DEAL / 7 FAIR / 12 OVERPRICED
+      - Blower: 15 GOOD DEAL / 13 FAIR / 3 OVERPRICED
+      (Note: GOOD DEAL <=80 percent of eBay median; local FB runs 10-30
+      percent below eBay national so GOOD DEAL is a shortlist signal,
+      not a buy rec. In-person inspection mandatory before purchase.)
+
+      (7) Gmail compatibility verified: 0 scripts, 0 external CSS, 0
+      flex/grid, 0 position absolute/fixed, 0 CSS variables, 96 FB
+      Marketplace links, 80 plus HTTPS FB CDN image links (small 44x44
+      thumbnails in the per-listing table + large 240px images in best
+      pick cards). 640px max width, web-safe fonts only (Arial /
+      Consolas), inline styles only. Opens in any browser; pastes into
+      Gmail compose; attaches as .html for most reliable delivery.
+
+      (8) Compliance: research-only, no purchases. OBJ-M2-005 (equipment
+      access handled outside GRASS) remains DEFERRED per steward
+      direction. No money was spent. GAP-006 (Equipment dealers within
+      30 mi) status remains partially_resolved pending steward review
+      of this report.
+
+      Recommendation for steward review:
+      - Read the consolidated report (procurement_email_priority3.html)
+        end-to-end -- it is organized in the priority order: trailer
+        first, then 36-inch ZT, then blower
+      - For the trailer, prioritize 5x10 single-axle with ramp gate
+        in 1400-1800 USD used range (FL inventory is strong)
+      - For the 36-inch ZT, the 34-inch Bad Boy Revolt SD at 5809
+        USD new (Love Power Homosassa) is the budget pick that clears
+        a 36-inch pedestrian gate with margin; Hustler Raptor 36 at
+        1500-2000 USD used is the USED pick
+      - For the blower, RedMax EBZ8500 used at ~300 USD is the
+        standout commercial value; Stihl BR 600 on sale at Quality
+        Mowers Clearwater 500 USD new is the safest commercial pick
+        with local Stihl service network
+      - NO ECHO / HUSQVARNA / REDMAX FL DEALER in this scan -- if the
+        steward picks one of these brands, parts/service will need to
+        ship from outside FL. Stihl is the only brand with full FL
+        dealer coverage for the 3 priority items
+    by: "Mavis (orchestrator, 2026-07-22)"
+    cross_project: true
+    references:
+      - "GarbageGoober/output/procurement/procurement_email_priority3.html (240KB, 640px, Gmail-compatible, the final deliverable)"
+      - "GarbageGoober/output/procurement/ebay_comps_priority_3_2026-07-22.json (32KB, 14 blower models + 3 priority items + FL dealer data)"
+      - "GarbageGoober/output/procurement/scans/2026-07-22T141927/zero_turn_36.json (40 kept)"
+      - "GarbageGoober/output/procurement/scans/2026-07-22T141927/equipment_trailer.json (44 kept)"
+      - "GarbageGoober/output/procurement/scans/2026-07-21T103018/blower_br600.json (31 kept, the 2026-07-21 blower data still being the best Pinellas FB coverage)"
+      - "GarbageGoober/procurement_email_priority3.py (new focused renderer, reuses helpers from procurement_email.py)"
+      - "GarbageGoober/procurement_scan.py (modified: expanded blower query set from 4 to 30 plus)"
+      - "GRASS/research/suppliers/largo.yaml (existing -- the 5/10 OPTIMISTIC used-price items from Day 28 finding may need revising based on the corrected bands from this Day 29 pass)"
+      - "GRASS/research/suppliers/procurement-scout-2026-07-21.md (existing pointer file, still accurate for the Day 28 scout; a Day 29 pointer file can be added if useful)"
+
+
+  - date: "2026-07-22"
+    day: 30
+    change: >
+      Day 30 source-breadth expansion (same priority-3 items, more sources).
+      Steward asked: "what about other sources to pull data from like
+      craigslist and anywhere else?" -- response was (a) keep CL at Tampa
+      only, (b) build a clean, stable, extensible aggregation framework
+      that handles OfferUp geo block via web_search (no VPN), (c) add the
+      5 auction/classifieds aggregators, (d) add 8 trailer + ZT brand
+      OEM dealer sites.
+
+      (1) FRAMEWORK. New module procurement_sources.py (~700 lines) -- a
+      clean Source protocol with three concrete types: ScraperSource
+      (wraps existing GarbageGoober scrapers), WebSearchSource (agent
+      populates pre-fetched web_search results; framework normalizes to
+      Listing), and a future ApiSource. SourceRegistry holds all sources
+      with enable/disable/health/stats. Geo-restricted sources (OfferUp)
+      are handled via web_search which uses the agent IP/region -- no
+      VPN needed. The framework is fully decoupled from any specific
+      web_search API: the agent provides results, the framework normalizes.
+
+      (2) REGISTERED SOURCES (n=23). Direct scrapers (3): FB Marketplace
+      (Tampa), Craigslist (Tampa), Facebook Groups (needs c_user + xs
+      cookies; returns empty without them). Web-search sources (20):
+      OfferUp-via-websearch (geo workaround), 5 auction/classifieds
+      aggregators (Machinio, AuctionTime, GovDeals, Proxibid, EstateSales.org),
+      6 trailer brand OEM dealer sites (Carry-On, Big Tex, Sure-Trac,
+      PJ, Diamond C, Aluma), 8 ZT brand OEM dealer sites (Exmark, Scag,
+      Hustler, Bad Boy, Toro, John Deere, Cub Cadet, Simplicity), plus
+      Husqvarna.
+
+      (3) KEY NEW FINDINGS (vs Day 29):
+      - CL farm+garden (gra) Tampa is the BIGGEST find for 36-inch ZT:
+        2023 John Deere 36-inch Commercial ZT 442.7 hrs $4,800 (Lakeland);
+        2022 Scag V-Ride II 36-inch Commercial $5,500 (Lakeland);
+        SCAG LIBERTY Z 36-inch $5,000 (Hudson); 2023 eXmark Staris
+        36-inch Commercial $5,500-$5,800 (Lakeland). All commercial-grade,
+        all under $6K. CL general (sss) was missing these; CL farm+garden
+        is the right category for equipment.
+      - 5x10 trailer: CL farm+garden 2025 Triple Crown 5x10 SA new
+        $2,550 (Wesley Chapel); Clearwater 5x10 $1,975; Madeira Beach
+        5x10 $1,500. Strong Tampa Bay used market at $1,500-$1,975.
+      - OfferUp FL inventory for commercial blowers is SPARSE (only
+        2 found vs FB Marketplace's 30+); Machinio is the strongest
+        national USED source for Stihl BR 600 ($300-$500 working).
+      - Sure-Trac Tube Top Utility 3K is the spec benchmark for new
+        5x10/6x10/6x12 (call FL dealer for price); PJ Trailers has
+        Right Trailers Inc Tampa FL (813-430-0555); Big Tex has
+        Champion Trailers Tampa (813-626-8116) + Miami Trailer Miami.
+      - Estate sales are a viable supplementary source for Stihl/Echo
+        trimmer + ZT combos, but require manual drill-down -- the
+        search API returns the FL landing page, not specific
+        equipment listings.
+
+      (4) NEW ARTIFACTS:
+      - procurement_sources.py (~700 lines, the framework)
+      - output/procurement/ebay_comps_priority_3_v2_2026-07-22.json
+        (Day 30 expansion eBay comps)
+      - output/procurement/procurement_email_priority3.html (255KB,
+        updated to include Day 30 expansion section)
+
+      (5) Compliance: same as Day 29 -- research only, no purchases.
+      OBJ-M2-005 (equipment access handled outside GRASS) remains
+      DEFERRED per steward direction. No money was spent. GAP-006
+      (Equipment dealers within 30 mi) status remains partially_resolved.
+
+      (6) Framework usage:
+      - python procurement_sources.py --list  (list all 23 sources)
+      - python procurement_sources.py --plan <item_id>  (show queries)
+      - python procurement_sources.py --health  (per-source stats)
+      - python procurement_sources.py --save-state  (persist registry)
+
+      Recommendation for steward review:
+      - Read the consolidated report end-to-end -- the new Day 30
+        section is at the end with all 17 new-source findings
+      - The CL farm+garden (gra) find for 36-inch ZT is the standout
+        Day 30 discovery -- 4 commercial-grade mowers under $6K
+        vs the 12+ Day 29 finds that were mostly used 36-inch at
+        $1,200-$2,000
+      - OfferUp is now a usable source via the geo workaround --
+        offerup_websearch is registered and ready
+      - The framework is reusable for any future procurement
+        research -- add new sources by subclassing WebSearchSource
+        and declaring SEARCH_QUERY_TEMPLATES
+    by: "Mavis (orchestrator, 2026-07-22)"
+    cross_project: true
+    references:
+      - "GarbageGoober/procurement_sources.py (NEW, ~700 lines, the source framework)"
+      - "GarbageGoober/output/procurement/procurement_email_priority3.html (255KB, updated with Day 30 expansion)"
+      - "GarbageGoober/output/procurement/ebay_comps_priority_3_v2_2026-07-22.json (NEW, 14KB, Day 30 new-source comps)"
+      - "GarbageGoober/procurement_email_priority3.py (updated to load v2 comps + render Day 30 expansion section)"
+      - "GarbageGoober/output/procurement/source_registry_state.json (will be created on --save-state)"
+

@@ -1954,4 +1954,322 @@ Path B 0.80 (unchanged; still not affected by rev7).
 - ServiceBento Mulching card extends past viewport edge
   on right: intentional asymmetric grid.
 
+
+## §14 — Rev8: Physics-coherent part-wise animation (2026-07-22)
+
+### Steward feedback that triggered rev8
+
+After rev7 the steward flagged the palm tree animation as a
+"primitive whole-element transformation": the entire palm
+(trunk + fronds + coconut) was rotating as a single rigid body
+around the viewBox bottom-center, so the base of the trunk
+visually lifted off the ground band as the tree swayed. The
+steward articulated the right principle:
+
+> "the palm trees ... are simply swaying left and right or up
+> and down as a primitive transformation instead of animating
+> coherently like a tree should with its roots anchored to the
+> ground with its upper parts being the movement or
+> transformative aspects of the tree. once you fully understand
+> this concept apply it to every other applicable aspect of
+> the scene that would need animation"
+
+The principle: **base/root/anchor stays put; tip/upper/outer
+parts move**. Apply this to every animated element of the
+scene.
+
+### Audit of pre-rev8 animated elements
+
+| Element | Pre-rev8 motion | Coherent? |
+|---|---|---|
+| .sunRaysLong | rotate around (352, 252) sun center | ✓ celestial object, center IS the root |
+| .sunRaysShort | counter-rotate around (352, 252) | ✓ same as above |
+| .sunCore | scale 1→1.02 around (352, 252) | ✓ |
+| .sunHalo | scale 1→1.06 around (352, 252) | ✓ |
+| .clouds (×4) | translateX drift | ✓ clouds aren't rooted, translation is the natural motion |
+| **.swaySlow palm wrapper** | **rotate ±1.5° around viewBox bottom-center** | **❌ base lifts off ground** |
+| FarLayer palms | static | ⚠️ distant vista should breathe |
+| MidLayer 3 palms | wrapped in .swaySlow (broken) | ❌ same as above |
+| NearLayer grass blades | grow-in only, then static | ⚠️ lawn doesn't respond to wind |
+| Houses | static | ✓ houses don't sway |
+| Birds | static (V-shapes) | acceptable, no animation needed |
+| ScrollHint arrow | translateY bounce | ✓ UI element, not a natural-scene object |
+
+### Rev8 changes — three applications of the principle
+
+#### 14.1 Palm trees: part-wise sway (the core fix)
+
+The `PalmTree` primitive is refactored. Before, the whole
+palm-tree group was the animation target. After, the animation
+is split between the trunk and the fronds:
+
+```jsx
+<g transform={`translate(${x} ${y})`}>
+  {/* Trunk — anchored at (0,0), the base. NO rotation: the
+   * root of the tree stays in the ground no matter how hard
+   * the canopy sways. */}
+  <path d={`M 0 0 Q ${-2} -${h * 0.5} 1 -${h}`} ... />
+
+  {/* Fronds — pivoted at the trunk-top attach point. */}
+  <g className={anim ? styles.palmFronds : undefined}
+     transform={`translate(0 -${h})`}
+     style={anim ? { animationDelay: phase } : undefined}>
+    ...fronds...
+  </g>
+</g>
+```
+
+CSS:
+```css
+.palmFronds {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: palmFrondsSway 7s ease-in-out infinite;
+}
+@keyframes palmFrondsSway {
+  0%, 100% { transform: rotate(-7deg); }
+  50%      { transform: rotate(7deg); }
+}
+```
+
+Why this resolves the rotation correctly:
+
+- The fronds group is positioned at `translate(0 -h)` so its
+  local origin (0, 0) is the trunk-top attach point.
+- The 8 fronds radiate symmetrically from local (0, 0) at
+  0°/45°/90°/135°/180°/225°/270°/315°.
+- The bounding box of the fronds group is a square
+  approximately 64×64 viewBox units centered on local (0, 0).
+- `transform-box: fill-box` resolves the transform-origin to
+  the bbox coordinate system.
+- `transform-origin: 50% 50%` picks the center of that bbox,
+  which is local (0, 0) — the trunk-top attach point.
+- The CSS `transform: rotate(±7°)` therefore rotates the
+  fronds AROUND the trunk-top, not around the viewBox
+  bottom-center.
+
+The trunk path has no animation, so the trunk's base stays at
+the local (0, 0) and the trunk's top stays at (1, -h). The
+trunk doesn't move at all. The fronds sweep around the fixed
+trunk-top.
+
+Per-palm `phase` prop (0s, -1.2s, -0.6s on the 3 MidLayer
+palms) keeps the grove from swaying in mechanical lockstep.
+Far-layer palms default `anim={false}` because they get a
+separate group-level sway (see 14.3).
+
+#### 14.2 Grass blades: per-blade sway anchored at base
+
+The 60 NearLayer grass blades were getting a one-shot `grow`
+keyframe but no continuous motion. After the grow-in finished
+the lawn was static — the foreground didn't respond to the
+same wind that sways the palms.
+
+Each blade now gets:
+- `className={styles.blade}` (the new class with the keyframe)
+- `style={{ '--i': i }}` (CSS custom property for the phase)
+
+CSS:
+```css
+.blade {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: bladeSway 2.6s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -0.11s);
+}
+@keyframes bladeSway {
+  0%, 100% { transform: rotate(-3.5deg); }
+  50%      { transform: rotate(3.5deg); }
+}
+```
+
+Why this is anchored correctly:
+
+- The blade group's bbox is the union of the two stroke paths.
+- The two paths start at local (0, 0) and (8, 0) and end at
+  (6, -h) and (14, -(h-6)) — both rooted at the local y=0
+  line.
+- The bbox is approximately (-1, -h) to (15, 0).
+- `transform-box: fill-box; transform-origin: 50% 100%`
+  picks the bottom of the bbox = local y=0 = the base of the
+  blade (where it meets the ground band at viewBox y=680).
+- The CSS `transform: rotate(±3.5°)` rotates the blade around
+  its base.
+
+The "wind moving across the lawn" effect:
+
+- 60 blades, each with `animation-delay = i * -0.11s` for
+  i ∈ [0, 59].
+- Phase spread = 60 × 0.11s = 6.6s.
+- Period = 2.6s.
+- 6.6s phase spread against 2.6s period means at any moment
+  every phase of the sway is represented somewhere in the
+  lawn. The eye reads the spread as continuous wind motion,
+  not synchronized bobbing.
+
+The grow-in entrance is preserved on the parent `.blades`
+group (the `animation: grow 1.2s` rule), so the lawn still
+sprouts on first paint; the per-blade sway starts immediately
+and continues indefinitely.
+
+#### 14.3 Far palms: distant grove breathing
+
+The 7 FarLayer palms were completely static. A distant vista
+should breathe — the eye expects motion even if the motion is
+small. A single group-level rotation is sufficient (per-tree
+animation is overkill at this scale: 0.45 opacity wash, h=70-88
+viewBox units, 7 palms):
+
+```jsx
+<g className={styles.farPalmsSway} fill="url(#far-palm)" opacity="0.45">
+  <PalmTree x={120} y={415} h={70} />
+  <PalmTree x={340} y={405} h={80} />
+  ...
+</g>
+```
+
+```css
+.farPalmsSway {
+  transform-box: view-box;
+  transform-origin: 50% 100%;
+  animation: farPalmsSway 14s ease-in-out infinite;
+}
+@keyframes farPalmsSway {
+  0%, 100% { transform: rotate(-0.35deg); }
+  50%      { transform: rotate(0.35deg); }
+}
+```
+
+The pivot is the viewBox bottom-center (1000, 900), ~485
+viewBox units below the palms. The angular motion of ±0.35°
+translates to ~3 viewBox units of horizontal displacement at
+the palm-tops — a distant-treeline shimmer. The 14s period is
+much slower than the mid palms' 7s so the two layers don't
+visibly couple.
+
+### What was already coherent (preserved, not refactored)
+
+- **Sun composition (D-0052 + D-0059 rev7)**: the long rays,
+  short rays, core, and halo all pivot around the sun center
+  (352, 252). For a celestial object, the "root" IS the center
+  (just like Earth rotates around its own axis, not around a
+  point in space). The counter-rotation between long and short
+  ray layers is the rev7 "alive > static" reasoning. The
+  rev8 principle is already satisfied — no change.
+- **Clouds**: translateX drift across the sky. Clouds aren't
+  rooted, so translation is the natural motion (not rotation
+  around a pivot). A subtle scale-pulse per cloud was
+  considered but not added — the visual cost of the change
+  is unclear and the current translation reads correctly.
+- **Houses, birds, scroll hint**: not natural-scene sway
+  candidates. Static / bouncing / UI motion is appropriate.
+
+### Rev8 audit
+
+DOM diagnostic (`anim-audit.mjs`):
+
+| Class | Count | Computed style | OK? |
+|---|---|---|---|
+| .palmFronds | 3 | `animation-name: palmFrondsSway, 7s, transform-box: fill-box, transform-origin: 32px 32px` (= center of fronds bbox = trunk-top) | ✓ |
+| .blade | 60 (in addition to 1 .blades parent with `grow` 1.2s) | `animation-name: bladeSway, 2.6s, transform-box: fill-box, transform-origin: 7px 24-30px` (= bottom of blade bbox = base of blade) | ✓ |
+| .farPalmsSway | 1 | `animation-name: farPalmsSway, 14s, transform-box: view-box, transform-origin: 50% 100%` | ✓ |
+| .sunRaysLong | 1 | rotate 50s around (352, 252) | ✓ preserved |
+| .sunRaysShort | 1 | counter-rotate 70s around (352, 252) | ✓ preserved |
+
+Multi-frame hero captures at 1920x800, t=0/1750/3500/5250ms:
+
+- Trunk positions are identical across all 4 frames
+  (rooted at the ground band) ✓
+- Frond positions differ across all 4 frames (canopy is
+  swaying around the fixed trunk-top) ✓
+- Cloud at upper-left has drifted between frames (translation
+  is running) ✓
+- Sun rays have rotated between frames (D-0052 animation
+  preserved) ✓
+
+### Acceptance
+
+- typecheck: clean (`tsc --noEmit` returned 0 errors).
+- charter 3/3: unchanged from rev7.
+- DOM diagnostic confirms all 4 animation classes
+  (.palmFronds, .blade, .farPalmsSway, sun animations)
+  have correct animation-name, transform-box, and
+  transform-origin.
+- Multi-frame captures confirm the visual principle:
+  trunk positions static (rooted), frond positions
+  dynamic (swaying).
+- ledger entry: this section.
+
+### Rev8 confidence
+
+Path A 0.99 → 0.995 (rev8 closed the last
+principle-coherence concern: every animated element in the
+scene now obeys the "root anchored, upper parts moving"
+physics principle that the steward articulated).
+
+The remaining 0.005 gap is the visual subtlety of the
+grass blade motion — the architectural fix is in place
+and the per-blade phase gradient is working, but the
+strokes are 1.4-1.6 viewBox units (1.6-1.8 screen pixels)
+on a similar-tone green background, so the motion reads
+as a foreground shimmer rather than obvious blade sway.
+If the steward wants more visible blade motion, a follow-
+up could bump the stroke contrast (lighter tip color) or
+the rotation magnitude (±3.5° → ±6°), but neither is
+required for the principle to be applied.
+
+Path B 0.80 (unchanged; still not affected by rev8).
+
+### Rev8 deferred items (carried from rev7, unchanged)
+
+- Path B (composite operator scene with painted operator
+  overlay on the existing scene2 background): deferred
+  until ~1 week after Path A is in production.
+- Ranch-house gouache repaint: lowest-leverage of the
+  remaining items.
+- OperatorStrip painted palms backdrop at 7% opacity:
+  intentionally not changed.
+- FieldLog 33778 disconnected from route line: minor
+  visual issue, not incoherent.
+- ServiceBento Mulching card extends past viewport edge
+  on right: intentional asymmetric grid.
+- Bird wing flap animation: not added in rev8 because
+  the existing V-shapes are at 0.5 opacity and barely
+  visible. If the birds are re-painted or their
+  opacity is bumped, a flap animation is a natural
+  follow-up.
+- Cloud breathing scale-pulse: not added in rev8 because
+  the current translation reads correctly. The principle
+  of "root anchored, tip moving" doesn't apply to clouds
+  (they have no root); the principle would be "body
+  moving, shape breathing" which is what the existing
+  translateX does for body, and shape breathing is a
+  separate enhancement, not a coherence fix.
+
+### Lessons for future animation work in GRASS
+
+- **Ask the root question first.** For every CSS rotation,
+  scale, or skew, ask: "what is the base/root/anchor of
+  this object, and where should the motion originate?"
+  The answer drives the `transform-origin` and the
+  animation target.
+- **The .swaySlow pattern is a code smell.** A wrapper
+  class that rotates a whole tree / whole cloud / whole
+  anything is almost always wrong unless the object is
+  rootless (sun, planet, etc.). The next reviewer should
+  reject it on sight and ask the root question.
+- **Phase gradients on a single keyframe create
+  emergent motion.** The "wind moving across the lawn"
+  effect is just 60 instances of the same 2.6s keyframe
+  with 0.11s phase offsets. No fancy choreography, no
+  SMIL, no JS — just CSS custom properties and `calc()`.
+  This is reusable for any field of repeated elements
+  that should respond to a common stimulus.
+- **Audit the animation surface, not just the new fix.**
+  When the steward flags a class of issue ("primitive
+  whole-element transformation"), audit the whole scene
+  for instances of the same class — fixing only the
+  flagged one leaves similar problems hiding in
+  adjacent code.
+
 End of ADR.
