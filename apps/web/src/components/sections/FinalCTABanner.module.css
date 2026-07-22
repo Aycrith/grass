@@ -80,27 +80,32 @@
 }
 
 .eyebrow {
+  /* D-0059 rev4 — bumped from 0.8rem / 0.08em to 0.85rem / 0.18em
+   * and added a 1px hairline above. The previous size was barely
+   * readable against the palm-shadow band; the wider letter-spacing
+   * + bolder weight + hairline above register as deliberate
+   * editorial chapter-divider idiom (same pattern the OperatorStrip
+   * eyebrow uses), not a faint corner mark. */
   font-family: var(--font-inter);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--ll-sun);
+  display: inline-block;
+  padding-top: var(--space-3);
+  position: relative;
 }
 
-/* WP35 — opening quote-mark ornament between eyebrow and
- * headline. Two paired sun-color glyphs lifted from the quote-mark
- * illustration, scaled larger than WP15 (was clamp(36px,5vw,56px))
- * so the pair reads as a deliberate ornament instead of artifacts.
- * Bumped opacity from 0.72 → 0.85 — sun-color glyphs against
- * palm-shadow need higher presence to register as design intent
- * rather than faint marks. */
-.openingMark {
-  display: block;
-  width: clamp(56px, 8vw, 96px);
-  height: auto;
-  margin: var(--space-3) auto 0;
-  opacity: 0.85;
+.eyebrow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 1px;
+  background: color-mix(in oklab, var(--ll-sun) 60%, transparent);
 }
 
 @media (prefers-reduced-motion: no-preference) {
