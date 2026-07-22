@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-22 (Day 29 — D-0059 Path A rev5 ship: second-pass visual audit — eyebrow pill opacity 45%->72%, middle palm x=780->x=950, SecondScene metrics backdrop gradient added)
+# Last updated: 2026-07-22 (Day 29 — D-0059 Path A rev6 ship: third-pass audit at 1920x800 — sun artistic rework (8 triangular rays + warm glow gradient), wildflowers removed, middle palm y=260->400 h=220->130, right palm x=1850->1750)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-22 (Day 29 — D-0059 Path A rev5 ship: second-pass visual audit — eyebrow pill opacity 45%->72%, middle palm x=780->x=950, SecondScene metrics backdrop gradient added)
+# Last updated: 2026-07-22 (Day 29 — D-0059 Path A rev6 ship: third-pass audit at 1920x800 — sun artistic rework (8 triangular rays + warm glow gradient), wildflowers removed, middle palm y=260->400 h=220->130, right palm x=1850->1750)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -3802,5 +3802,94 @@ changelog:
       - "hero y=0.20 capture: cross-fade still clean (no double-exposure), rev3 cross-fade formula unchanged"
     commit: "5383e5a"
     commit_message: "feat(hero): D-0059 rev5 - eyebrow pill opaque, mid palm past pill, metrics backdrop"
+
+  - date: "2026-07-22"
+    day: 29
+    decision: D-0059-rev6
+    title: "D-0059 Path A rev6 - third-pass audit at 1920x800 (sun, wildflowers, palms)"
+    summary: >
+      After rev5 sign-off, the steward flagged 4 more
+      "incoherent" items on a 1920x800 screenshot of the hero.
+      The third-pass audit found items that were only visible
+      at the wider viewport — the storybook SVG scales with
+      the viewport and content gets clipped at the top, the
+      FarLayer/MidLayer palm overlap is wider at 1920px, and
+      the wildflower dots are at a different screen position
+      at the wider viewport. All 4 fixes:
+
+      (1) HERO SUN — replaced 12 thin line rays (stroke 5px,
+      20s rotation) with 8 triangular filled rays (sun-light
+      -> sun-deep gradient, 30s rotation). The line rays
+      read as 'wireframe spokes' — a sketch, not an
+      illustration. The triangular rays have substantially
+      more visual mass and read as 'rays of sunlight'. Also
+      added: a soft warm glow (sunGlow radial gradient on
+      circle r=150) that pulses opacity 0.85->1.0 + scale
+      1->1.06 at 6s with a 1.5s delay (out-of-phase with the
+      core, so the glow brightens AFTER the core breathes);
+      a warm core gradient (sunCore radial: cream highlight
+      upper-left, sun-light mid, sun edge) replacing the
+      flat cream fill. The core breathing was slowed 4.4s->6s
+      and the scale change tightened 1.0->1.03 to 1.0->1.02
+      (2% is 'the sun is alive' without being a motion the
+      user wants to follow). The user said the sun was
+      'coherent but not artistically good looking' — the
+      new sun is a warm glowing orb with a soft halo and
+      substantial triangular rays.
+
+      (2) HERO MIDDLE PALM — y=260->400, h=220->130. At
+      1920x800, the MidLayer SVG height scales to 864px
+      (taller than the 800px viewport), the top 64px gets
+      clipped, and the middle palm's fronds at viewBox y=40
+      land at screen y=-26 (off-screen). The user flagged
+      this as 'this palm tree's top is hanging and cut off
+      from the top of the screen and is incoherently placed
+      and really not accomplishing any purpose as it's most
+      of the time not seen except for its bottom half which
+      was just a straight line'. y=400, h=130 puts the
+      fronds at viewBox y=270, screen y=195 at 1920px and
+      screen y=397 at 1280px — both visible with breathing
+      room. Trunk bottom at y=400 is closer to the horizon
+      (y=480) so the palm reads as grounded.
+
+      (3) HERO RIGHT PALM — MidLayer right palm x=1850->1750,
+      y=290->360, h=190->130. At x=1850 the palm's fronds
+      (x=1826-1874) OVERLAPPED with the FarLayer right palm's
+      fronds (x=1856-1904) by 18px. The FarLayer palm uses
+      lighter / more muted colors (palm-light -> palm
+      gradient) than the MidLayer palm (clay/palm-bark trunk
+      + palm/green fronds), so the visible strip of FarLayer
+      palm at x=1874-1904 read as a 'miscolored area'. Moving
+      the MidLayer right palm to x=1750 puts its fronds at
+      x=1726-1774, well clear of the FarLayer right palm
+      (still at x=1880). The 76px gap reads as intentional
+      depth rather than miscoloration.
+
+      (4) HERO WILDFLOWERS — removed the 5 wildflower circles
+      (2px inner + 3px outer at viewBox y=650-662). They
+      rendered as 4 visible 'erroneous dots' at the bottom
+      of the storybook (the 5th was off-screen at 1280px
+      viewport). The .bloom animation was imperceptible at
+      2-3px display size. The user flagged them as
+      'hallucinated and broken incoherent'. The .wildflowers
+      CSS class is preserved as a no-op stub for any future
+      re-introduction.
+
+      Path A confidence 0.95 -> 0.98 (rev6 closed the last
+      viewport-dependent visual issues; the 1920px screenshot
+      that triggered rev6 now shows a clean warm-glowing sun,
+      grounded middle palm, well-separated right palms, and
+      no bottom dots).
+    by: "Mavis (orchestrator, 2026-07-22)"
+    review_date: "2026-10-22"
+    twined_with: "D-0052 (sun animation - kept but rendered with triangular rays + warm gradients); D-0043 (cross-fade substrate unchanged from rev3); D-0049 (SecondScene painted frames unchanged); D-0059 rev5 (this is a third-pass polish, not a structural change); D-0047 (original D-0050 storybook addition that added the callout, operator, route pin, per-ZIP strip - all removed in rev3 + rev4 + rev5 + rev6)"
+    audit_artifacts:
+      - "apps/web/audit/d-0059-path-a/hero-1920-y000.png (1920x800 hero capture - the user's flagged viewport, all 4 fixes verified)"
+      - "apps/web/audit/d-0059-path-a/hero-1280-y000.png (1280x800 hero capture - original viewport, all 4 fixes verified)"
+      - "apps/web/audit/d-0059-path-a/hero-y{000,005,010,020,030,040,060,080,100}.png (9-position capture set at 1280x800, rev3 cross-fade formula unchanged - y=0.20 still clean)"
+      - "hero-1920-y000 capture: sun is warm glowing orb with soft halo and 8 triangular rays (no more wireframe); middle palm fronds visible at screen y~195 with breathing room; right side has two well-separated palms (MidLayer + FarLayer) with no miscoloration; no dots at the bottom"
+      - "hero-y020 capture: cross-fade is clean, no double-exposure, middle palm visible as a subtle ghost behind the headline (rev3 formula unchanged)"
+    commit: "afec0df"
+    commit_message: "feat(hero): D-0059 rev6 - sun artistic rework, wildflowers removal, palm repositioning"
 
 
