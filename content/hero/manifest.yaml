@@ -1,0 +1,471 @@
+# Hero asset manifest — every visual + audio asset the landing-page
+# hero uses, where it came from, what license it carries, and what
+# component consumes it. Update this file when you add, remove, or
+# repurpose an asset. CI lint will eventually enforce schema validity
+# (https://github.com/...; tracked in the steward backlog).
+#
+# Schema (per entry):
+#   id:          short slug, kebab-case
+#   filename:    path under apps/web/public/, relative
+#   tier:        one of A | B | C | D | E | F (see INTENT.md §2)
+#   kind:        image | video | audio | svg
+#   format:      webp | avif | jpg | png | svg | mp4 | mp3
+#   size_bytes:  integer (informational, not enforced)
+#   dimensions:  WIDTHxHEIGHT (omit for audio)
+#   duration_s:  integer (videos and audio only)
+#   source:      provenance — original file path + how it was produced
+#   license:     one of internal | veo-v3 | cc0 | public-domain
+#   status:      active | reserved | orphan | removed
+#   used_by:     component(s) that import or reference the asset
+#   notes:       free-form (crop values, color palette, decisions, etc.)
+
+# ============================================================
+# Tier A — Hand-authored SVG cartoon (Scene 1)
+# ============================================================
+# These are inlined SVG components in apps/web/src/components/sections/
+# HeroStorybookLayer.tsx — they don't have a "file" in /public/ because
+# they're React primitives. Documented here for completeness.
+- id: hero-sky
+  tier: A
+  kind: svg
+  format: svg
+  source: hand-authored in HeroStorybookLayer.tsx → BackgroundSky()
+  license: internal
+  status: active
+  used_by:
+    - apps/web/src/components/sections/HeroStorybookLayer.tsx
+  notes: |
+    The animated sunset sky. 4-layer sunburst (halo + 8 long rays +
+    8 short rays + warm core), drifting clouds (4 cloud sprites with
+    different drift cadences). All hand-authored flat-fill SVG.
+    Reduced-motion: all animations collapse to identity.
+
+- id: hero-far-palms
+  tier: A
+  kind: svg
+  format: svg
+  source: hand-authored in HeroStorybookLayer.tsx → FarLayer()
+  license: internal
+  status: active
+  used_by:
+    - apps/web/src/components/sections/HeroStorybookLayer.tsx
+  notes: |
+    7 distant palm trees + 3 faint ranch houses. Translates 3%
+    per 0.10 scroll unit. 14s group-level "distant grove
+    breathing" sway via .farPalmsSway.
+
+- id: hero-mid-palms
+  tier: A
+  kind: svg
+  format: svg
+  source: hand-authored in HeroStorybookLayer.tsx → MidLayer()
+  license: internal
+  status: active
+  used_by:
+    - apps/web/src/components/sections/HeroStorybookLayer.tsx
+  notes: |
+    3 closer palms (swaying, per-part physics-coherent rotation
+    around the trunk-top attach point) + 3 ranch houses. The
+    left palm is taller (h=170) than middle/right (h=130) to
+    establish the depth hierarchy. Per-palm `phase` keeps the
+    three palms out of lockstep.
+
+- id: hero-near-grass
+  tier: A
+  kind: svg
+  format: svg
+  source: hand-authored in HeroStorybookLayer.tsx → NearLayer()
+  license: internal
+  status: active
+  used_by:
+    - apps/web/src/components/sections/HeroStorybookLayer.tsx
+  notes: |
+    60 grass blade <g> elements with .blade class + per-blade
+    --i custom property for staggered phase. 2.6s period,
+    ±3.5° rotation around the base. The 0.11s phase spread
+    across 60 blades gives a 6.6s phase window — wind moving
+    across the lawn, not 60 blades in lockstep.
+
+- id: hero-grass-silhouette
+  tier: A
+  kind: svg
+  format: svg
+  source: hand-authored in HeroFieldTelemetry.tsx → grassSilhouette
+  license: internal
+  status: active
+  used_by:
+    - apps/web/src/components/sections/HeroFieldTelemetry.tsx
+  notes: |
+    Static foreground grass blade SVG (1200x120 viewBox) along
+    the bottom edge of the photo layer. Rises in across
+    [0.10, 0.30] and fades out across [0.40, 0.70] to make
+    room for scene 2.
+
+# ============================================================
+# Tier B — Painted gouache (Scene 2 BG)
+# ============================================================
+- id: scene2-frames
+  tier: B
+  kind: image
+  format: webp
+  size_bytes: ~32400
+  dimensions: 1240x680
+  source: |
+    Hand-painted gouache VEO render — a Florida ranch house with
+    palms, sun, mowed lawn, birdbath. Originally extracted via
+    scripts/prep-scene2-frames.py at crop=1240:680:20:20 from
+    Hand-painted_gouache_illustratio._202607171636.mp4.
+    See research/grasscontent/REPORT-source-comparison.md
+    (D-0048) for the variant-selection rationale.
+  license: veo-v3
+  status: active
+  used_by:
+    - apps/web/src/components/sections/SecondScene.tsx
+  files:
+    - apps/web/public/hero/layers/v2/scene2-01.webp
+    - apps/web/public/hero/layers/v2/scene2-02.webp
+    - apps/web/public/hero/layers/v2/scene2-03.webp
+    - apps/web/public/hero/layers/v2/scene2-04.webp
+    - apps/web/public/hero/layers/v2/scene2-05.webp
+    - apps/web/public/hero/layers/v2/scene2-06.webp
+  notes: |
+    6 frames, 10s CSS-step cycle. The painted frames are NEAR-
+    IDENTICAL — only the sun + cloud positions shift subtly.
+    Cycle reads as meditative hand-painted stillness, not a
+    flipbook. Cadence: 4.0s per frame (slower than the
+    micro-loops because scene 2 is the resting state, not
+    the activity).
+
+# ============================================================
+# Tier C — Painted gouache micro-loops (on disk, not currently mounted)
+# ============================================================
+- id: fern-frames
+  tier: C
+  kind: image
+  format: webp
+  size_bytes: ~295700
+  dimensions: 1240x680
+  source: |
+    Painted VEO render of a single fern frond on cream
+    background. Extracted via scripts/prep-palms-fern-frames.py
+    at crop=1240:680:20:20 from Fern_swaying_in_painting_
+    202607171905.mp4.
+  license: veo-v3
+  status: reserved
+  used_by: []
+  files:
+    - apps/web/public/hero/layers/v2/fern-01.webp
+    - apps/web/public/hero/layers/v2/fern-02.webp
+    - apps/web/public/hero/layers/v2/fern-03.webp
+    - apps/web/public/hero/layers/v2/fern-04.webp
+    - apps/web/public/hero/layers/v2/fern-05.webp
+    - apps/web/public/hero/layers/v2/fern-06.webp
+  notes: |
+    REMOVED from the storybook JSX in D-0049 rev 4 because the
+    painted brushwork clashed with the hand-authored SVG
+    cartoon. CSS classes (.fernWrap, .fernFrame1..6) and
+    on-disk assets are kept so a future 4-plane rebuild
+    (using re-painted-cartoon-style assets) can slot back in
+    without re-running the prep pipeline. See INTENT.md §3.
+
+- id: palms-frames
+  tier: C
+  kind: image
+  format: webp
+  size_bytes: ~37300
+  dimensions: 1280x720
+  source: |
+    Painted VEO render of palm trees on cream background.
+    Extracted via scripts/prep-palms-fern-frames.py at
+    crop=1280:720:0:0 from Palm_trees_sway_in_painting_
+    202607171659.mp4.
+  license: veo-v3
+  status: reserved
+  used_by: []
+  files:
+    - apps/web/public/hero/layers/v2/palms-01.webp
+    - apps/web/public/hero/layers/v2/palms-02.webp
+    - apps/web/public/hero/layers/v2/palms-03.webp
+    - apps/web/public/hero/layers/v2/palms-04.webp
+    - apps/web/public/hero/layers/v2/palms-05.webp
+    - apps/web/public/hero/layers/v2/palms-06.webp
+  notes: |
+    Same status as fern-frames. The D-0048 re-extracted
+    palms at higher quality (full Florida scene, not slim
+    frond), which made them unsuitable for use as a
+    foreground overlay on the storybook cartoon (D-0049
+    rev 2). The slimmer v1 palms would be the right asset
+    for a future 4-plane rebuild, but the v1 prep script
+    was not preserved.
+
+- id: songbirds-frames
+  tier: C
+  kind: image
+  format: webp
+  size_bytes: ~205800
+  dimensions: 870x720
+  source: |
+    Painted VEO render of a single palm tree on a hilltop
+    with two small songbirds on the hedge. Extracted via
+    scripts/prep-loop-frames.py at crop=870:720:205:0 from
+    Songbirds_flying_on_hedge_202607171735.mp4.
+  license: veo-v3
+  status: reserved
+  used_by: []
+  files:
+    - apps/web/public/hero/layers/v2/songbirds-01.webp
+    - apps/web/public/hero/layers/v2/songbirds-02.webp
+    - apps/web/public/hero/layers/v2/songbirds-03.webp
+    - apps/web/public/hero/layers/v2/songbirds-04.webp
+    - apps/web/public/hero/layers/v2/songbirds-05.webp
+    - apps/web/public/hero/layers/v2/songbirds-06.webp
+  notes: |
+    Same status as fern/palms frames. Originally used as
+    Wave 3 mid-distance parallax layer (D-0044), removed
+    in D-0049 rev 4.
+
+# ============================================================
+# Tier D — Painted gouache secondary (NOT in the page yet)
+# ============================================================
+- id: painting-still-source
+  tier: D
+  kind: video
+  format: mp4
+  size_bytes: 2475219
+  duration_s: 10
+  source: |
+    Painted VEO render of a top-down checkerboard-mown lawn
+    with grass tufts + clovers. Source file in
+    C:/Users/camer/Downloads/grasscontent/Hand-painted_gouache_
+    painting_still_202607171732.mp4.
+  license: veo-v3
+  status: reserved
+  used_by: []
+  files: []
+  notes: |
+    NOT extracted to /public/hero/layers/v2/ yet. The variant
+    was rejected for scene 2 use in D-0048 (it's an abstract
+    "just-mowed" detail, not a "place"). Reserved for a future
+    "Before/After" service section.
+
+- id: egret-source
+  tier: D
+  kind: video
+  format: mp4
+  size_bytes: 2169107
+  duration_s: 10
+  source: |
+    Painted VEO render of a great egret standing in shallow
+    water at sunset with a Pinellas palm-grove silhouette on
+    the horizon. Source file in
+    C:/Users/camer/Downloads/grasscontent/Egret_standing_in_
+    shallow_water_202607172016.mp4.
+  license: veo-v3
+  status: reserved
+  used_by: []
+  files: []
+  notes: |
+    Reserved for a future "Ecosystem" secondary section.
+    The egret is a native Pinellas species — appropriate
+    for the "we maintain the yard that the local wildlife
+    uses" narrative. A second variant at
+    Egret_standing_in_shallow_water_202607172016_202607172038.mp4
+    (2,159,605 bytes) exists in the source library.
+
+- id: seagull-source
+  tier: D
+  kind: video
+  format: mp4
+  size_bytes: 961125
+  duration_s: 10
+  source: |
+    Painted VEO render of a single seagull flying across a
+    panoramic Pinellas sunset with a palm-grove silhouette.
+    Source file in
+    C:/Users/camer/Downloads/grasscontent/Seagull_gliding_
+    across_sky_202607171810.mp4.
+  license: veo-v3
+  status: reserved
+  used_by: []
+  files: []
+  notes: |
+    Reserved for a future "Our service area" or
+    "Tampa Bay" secondary section. The seagull reads as
+    coastal Florida, matching the 33771 ZIP geography.
+
+# ============================================================
+# Tier E — Real photographic footage (quarantined)
+# ============================================================
+- id: real-mower-01
+  tier: E
+  kind: video
+  format: mp4
+  size_bytes: 2533822
+  duration_s: 10
+  dimensions: 1280x720
+  source: |
+    4K cell-phone footage of the operator's red riding
+    mower cutting a real Pinellas lawn in front of a beige
+    ranch house with palm trees. Filename sanitized from
+    Riding_mower_cutting_lawn_202607171601.mp4 in
+    C:/Users/camer/Downloads/grasscontent/.
+  license: internal
+  status: active
+  used_by:
+    - apps/web/src/components/sections/BehindTheScenes.tsx
+  files:
+    - apps/web/public/hero/bts/real-mower-01.mp4
+  notes: |
+    Quarantined to the BehindTheScenes section. NOT used
+    in the hero (the painted gouache and the real
+    photographic are at incompatible fidelity levels).
+    Autoplay + muted + loop + playsinline in the section.
+    preload="none" so the browser doesn't fetch until
+    the section is in view.
+
+- id: real-mower-02
+  tier: E
+  kind: video
+  format: mp4
+  size_bytes: 2492306
+  duration_s: 10
+  dimensions: 1280x720
+  source: |
+    Second angle of the same yard, 2 minutes later, showing
+    the freshly-cut stripes. Filename sanitized from
+    Riding_mower_cutting_lawn_202607171603.mp4 in
+    C:/Users/camer/Downloads/grasscontent/.
+  license: internal
+  status: active
+  used_by:
+    - apps/web/src/components/sections/BehindTheScenes.tsx
+  files:
+    - apps/web/public/hero/bts/real-mower-02.mp4
+  notes: |
+    Paired with real-mower-01 in the BehindTheScenes
+    section's two-column video grid.
+
+# ============================================================
+# Tier F — Audio (hero ambient loop)
+# ============================================================
+- id: ambient-loop
+  tier: F
+  kind: audio
+  format: mp3
+  size_bytes: 80182
+  duration_s: 2.74
+  source: |
+    Renamed from brielle_ref.mp3 in
+    C:/Users/camer/Downloads/grasscontent/. The "brielle"
+    part of the original name looked like a personal
+    reference; the shipped name is descriptive.
+  license: internal
+  status: active
+  used_by:
+    - apps/web/src/components/hero/MuteToggle.tsx
+  files:
+    - apps/web/public/hero/audio/ambient-loop.mp3
+  notes: |
+    Native <audio loop preload="none">. Muted by default
+    (autoplay policy). Click toggle sets volume to 30%.
+    localStorage persistence under
+    'largo.hero.audio.muted'. prefers-reduced-data: reduce
+    omits the element entirely. Loop seam is UNVERIFIED —
+    should be spectrogrammed in a future QA pass.
+
+# ============================================================
+# Photo layer (the [0.10, 0.70] real photograph band)
+# ============================================================
+# This is technically not a "hero" asset in the painted-gouache
+# sense — it's the real 4K photograph that the storybook
+# dissolves into. Documented here for completeness.
+
+- id: hero-photo-jpg
+  tier: photo-layer
+  kind: image
+  format: jpg
+  size_bytes: 4059828
+  dimensions: ~4032x3024
+  source: |
+    Real 4K photograph of a freshly-mowed Florida lawn.
+    The fallback <img> in the <picture> element for
+    browsers that don't support AVIF or WebP.
+  license: internal
+  status: active
+  used_by:
+    - apps/web/src/components/sections/HeroFieldTelemetry.tsx
+      → BackgroundPhoto()
+  files:
+    - apps/web/public/hero/v2/hero-green-grass.jpg
+  notes: |
+    ~4 MB. Largest asset in the hero tree. The AVIF +
+    WebP fallbacks below ship at <250 KB combined and
+    are what most browsers actually download.
+
+- id: hero-photo-desktop-avif
+  tier: photo-layer
+  kind: image
+  format: avif
+  size_bytes: 162376
+  dimensions: 1920x?
+  source: |
+    AVIF variant of hero-photo-jpg for desktop browsers
+    (min-width: 768px).
+  license: internal
+  status: active
+  used_by:
+    - apps/web/src/components/sections/HeroFieldTelemetry.tsx
+      → BackgroundPhoto()
+  files:
+    - apps/web/public/hero/v2/desktop.avif
+
+- id: hero-photo-desktop-webp
+  tier: photo-layer
+  kind: image
+  format: webp
+  size_bytes: 227040
+  dimensions: 1920x?
+  source: |
+    WebP variant of hero-photo-jpg for desktop browsers
+    that don't support AVIF.
+  license: internal
+  status: active
+  used_by:
+    - apps/web/src/components/sections/HeroFieldTelemetry.tsx
+      → BackgroundPhoto()
+  files:
+    - apps/web/public/hero/v2/desktop.webp
+
+- id: hero-photo-mobile-avif
+  tier: photo-layer
+  kind: image
+  format: avif
+  size_bytes: 99926
+  dimensions: 768x?
+  source: |
+    AVIF variant of hero-photo-jpg for mobile browsers
+    (max-width: 767px).
+  license: internal
+  status: active
+  used_by:
+    - apps/web/src/components/sections/HeroFieldTelemetry.tsx
+      → BackgroundPhoto()
+  files:
+    - apps/web/public/hero/v2/mobile.avif
+
+- id: hero-photo-mobile-webp
+  tier: photo-layer
+  kind: image
+  format: webp
+  size_bytes: 137708
+  dimensions: 768x?
+  source: |
+    WebP variant of hero-photo-jpg for mobile browsers
+    that don't support AVIF.
+  license: internal
+  status: active
+  used_by:
+    - apps/web/src/components/sections/HeroFieldTelemetry.tsx
+      → BackgroundPhoto()
+  files:
+    - apps/web/public/hero/v2/mobile.webp
