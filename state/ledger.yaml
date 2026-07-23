@@ -5380,3 +5380,90 @@ changelog:
       - "GarbageGoober/output/procurement/procurement_email_priority3.html (3.5 MB, 24 trailer rows, 0 dealer brands, $1,500-$4,500, 3 LOCAL Pinellas deals visible)"
 
 
+
+  - id: 2026-07-22-hero-audio-bts-prep
+    date: "2026-07-22"
+    title: "Landing-page hero: ambient audio + BehindTheScenes + prep tooling + design handoff"
+    summary: |
+      Three additions to the production hero, plus the tooling and
+      documentation to make the next iteration faster and safer.
+
+      1. AMBIENT AUDIO + MUTE TOGGLE
+         - apps/web/src/components/hero/MuteToggle.tsx (NEW, 8 KB) +
+           .module.css (NEW, 2 KB)
+         - apps/web/public/hero/audio/ambient-loop.mp3 (NEW, 80 KB,
+           2.74s, 234 kbps MP3, copied + renamed from
+           C:/Users/camer/Downloads/grasscontent/brielle_ref.mp3
+           per hero plan decision #1)
+         - Mounted in HeroFieldTelemetry.tsx as the last child of
+           .viewport, z-index 12, bottom-right of the hero
+         - Native <audio loop preload="none" muted>; click toggle
+           sets volume to 30%, persists in localStorage under
+           'largo.hero.audio.muted'; reduced-data: reduce omits
+           the element entirely
+         - 28px circle desktop, 32px mobile; aria-label flips
+           'Play ambient audio' / 'Mute ambient audio'
+
+      2. BEHIND THE SCENES SECTION (the 'real footage, not stock'
+         trust section)
+         - apps/web/src/components/sections/BehindTheScenes.tsx
+           (NEW, 8 KB) + .module.css (NEW, 5 KB)
+         - apps/web/public/hero/bts/real-mower-01.mp4 +
+           real-mower-02.mp4 (NEW, 2.4 MB each, 10s, copied from
+           the two Riding_mower_cutting_lawn_* source clips)
+         - Mounted in page.tsx between FieldLog and ServiceBento
+         - Section tone: 'soft' (cream), white card with 2px
+           dashed ink-deep border, paper-tape label 'Real footage,
+           not stock' rotated -1.5 deg across the top edge
+         - Two <video autoplay muted loop playsinline preload='none'>
+           side-by-side on desktop, stacked on mobile
+         - Title 'Same truck, every Tuesday.' (italic Fraunces),
+           caption 'That's the actual mower, the actual truck,
+           and the actual Tuesday. No franchise, no subcontractor.'
+
+      3. V1 ORPHAN CLEANUP
+         - apps/web/public/hero/layers/palm.webp (DELETED, 241 KB)
+         - Zero source references confirmed via Select-String
+         - The v2/ subdirectory with 24 webp frames is intact
+         - NOTE: the four files at apps/web/public/hero/v2/
+           (hero-green-grass.jpg, desktop.avif, desktop.webp,
+           mobile.avif, mobile.webp) are NOT orphans - they are
+           the active production photo layer loaded by the
+           <picture> element in BackgroundPhoto
+
+      4. PREP TOOLING (4 new Python scripts under scripts/)
+         - prep-fern-bottom-anchored.py: bottom-anchored fern
+           strip (for a future 4-plane rebuild)
+         - prep-grass-tuff-strip.py: grass-tuft foreground strip
+           from the illustratio source (replaces the SVG NearLayer)
+         - palette-validate.py: brand-token compliance check for
+           any new image asset; exit 0 if within --threshold
+           (default 50), exit 1 if outliers found
+         - hero-capture.py: Playwright-based visual capture at 3
+           viewports x 3 scroll positions = 9 PNGs; --dry-run mode
+
+      5. DESIGN HANDOFF DOCS (2 new files under content/hero/)
+         - INTENT.md (NEW, 13 KB): the single best entry point
+           for a future agent starting work on the hero
+         - manifest.yaml (NEW, 16 KB): every hero asset with
+           tier, kind, format, size, dimensions, source, license,
+           status, used_by, notes
+    by: "Mavis (orchestrator, 2026-07-22 23:18 EDT)"
+    cross_project: false
+    branch: "feat/hero-audio-bts-2026-07-22"
+    commits:
+      - "17d8491 feat(hero): ambient audio + BehindTheScenes section + v1 orphan cleanup"
+      - "6cf4b4a chore(scripts,docs): hero prep tooling + design intent"
+    verified:
+      - "bun run typecheck: EXIT 0"
+      - "bun run lint:      EXIT 0"
+      - "ffprobe ambient-loop.mp3: 2.74s, 80KB, 234kbps, MP3"
+      - "ffprobe real-mower-01 + real-mower-02: 10.0s each, MP4"
+    references:
+      - "research/hero-integration-plan-2026-07-22.md"
+      - "content/hero/INTENT.md"
+      - "content/hero/manifest.yaml"
+      - "apps/web/src/components/hero/MuteToggle.tsx"
+      - "apps/web/src/components/sections/BehindTheScenes.tsx"
+      - "scripts/palette-validate.py"
+      - "scripts/hero-capture.py"
