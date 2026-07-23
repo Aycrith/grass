@@ -73,6 +73,9 @@ import {
   ServiceBento,
   SpecimenPlate,
 } from '@/components/sections';
+// 2026-07-22 — BehindTheScenes section imported separately to
+// keep the destructure list scannable. Same module, same re-export.
+import { BehindTheScenes } from '@/components/sections/BehindTheScenes';
 import { ConversionRail } from '@/components/site';
 import { SectionDivider } from '@/components/ui';
 import { hero as heroContent } from '@/lib/content';
@@ -125,6 +128,17 @@ export default function HomePage() {
        * passport stamp. No CTA — pure breathing room + voice anchor.
        * See governance/decisions/0055-field-log-section.md. */}
       <FieldLog />
+
+      {/* 04.05 — 2026-07-22 "behind the scenes" trust section.
+       * Quarantines the real-footage riding-mower clips that
+       * don't match the painted hero world. White card on cream,
+       * paper-tape "Real footage, not stock" label, two side-by-side
+       * 10s videos, caption "Same truck, every Tuesday. No franchise,
+       * no subcontractor." Bridges FieldLog (the route) and
+       * ServiceBento (the work) — gives the visitor proof that the
+       * painted brand illustration IS the working operation, not
+       * a stock gallery. */}
+      <BehindTheScenes />
 
       {/* 04 — Service grid (6 cards, no dividers between light
        * editorial sections) */}

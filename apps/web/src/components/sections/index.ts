@@ -6,6 +6,11 @@ export { HeroFieldTelemetry } from './HeroFieldTelemetry';
 export { HeroStorybookLayer } from './HeroStorybookLayer';
 export { TrustStrip } from './TrustStrip';
 export { FieldLog } from './FieldLog';
+// 2026-07-22 — BehindTheScenes section. Trust-building "real footage,
+// not stock" block. Placed between FieldLog (the route) and
+// ServiceBento (the work) so it bridges "this is where we go" with
+// "this is what we do". See BehindTheScenes.tsx for the full rationale.
+export { BehindTheScenes } from './BehindTheScenes';
 export { PocketMap } from './PocketMap';
 export { SpecimenPlate } from './SpecimenPlate';
 export { OperatorStrip } from './OperatorStrip';
