@@ -1,0 +1,209 @@
+/* ============================================================
+ * BehindTheScenes - the "real footage, not stock" trust section.
+ *
+ * Visual identity (different from the painted hero world):
+ *   - Soft cream section background (--ll-cream, set via Section tone="soft")
+ *   - White card with 2px dashed ink-deep border (the "photo on the
+ *     fridge" convention)
+ *   - Paper-tape label across the top edge of the card, slightly
+ *     rotated, with the text "Real footage, not stock" in a
+ *     hand-printed style
+ *   - Two videos side-by-side on desktop, stacked on mobile
+ *   - Caption below the videos in a parallel construction with
+ *     FieldLog's editorial pull-quote
+ * ============================================================ */
+
+.root {
+  /* Inherits the cream background from Section tone="soft" */
+}
+
+.inner {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* ---------- Eyebrow ---------- */
+
+.eyebrowBlock {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: var(--type-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ll-clay);
+  font-weight: 700;
+}
+
+.eyebrowRule {
+  display: block;
+  width: 48px;
+  height: 2px;
+  background: var(--ll-clay);
+  flex-shrink: 0;
+}
+
+.eyebrowNumber {
+  font-variant-numeric: tabular-nums;
+}
+
+.eyebrowDot {
+  opacity: 0.5;
+}
+
+.eyebrowLabel {
+  color: var(--ll-palm-bark);
+  font-weight: 700;
+}
+
+/* ---------- Title ---------- */
+
+.title {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: var(--type-display-sm);
+  line-height: 1.1;
+  color: var(--ll-palm-shadow);
+  margin: 0 0 var(--space-6) 0;
+  font-weight: 500;
+  font-style: italic;
+  max-width: 22ch;
+}
+
+/* ---------- Card ---------- */
+
+.card {
+  position: relative;
+  background: var(--ll-shell);
+  border: 2px dashed var(--ll-palm-bark);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8) var(--space-7) var(--space-7) var(--space-7);
+  margin-top: var(--space-4);
+}
+
+/* Paper-tape label: sits across the top edge of the card, slightly
+ * rotated, with a sand-cream background and a thin clay border.
+ * The 4px negative top + centered position is what makes it read
+ * as "tape stuck on" rather than "label inside". */
+.tape {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1.5deg);
+  background: var(--ll-sand-bleached);
+  border: 1px solid color-mix(in oklab, var(--ll-clay) 40%, transparent);
+  border-radius: var(--radius-sm);
+  padding: 6px 16px;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--ll-clay);
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(26, 31, 27, 0.06);
+}
+
+/* ---------- Video grid ---------- */
+
+.videoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+
+.figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.video {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-md);
+  background: var(--ll-palm-shadow);
+  /* Letterbox / crop the videos to a consistent 16:9 aspect so the
+   * two cards in the grid have identical heights. */
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.figcaption {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: var(--type-caption);
+  line-height: var(--type-caption-line);
+  color: var(--ll-charcoal);
+  opacity: 0.7;
+  font-style: italic;
+  margin: 0;
+}
+
+/* ---------- Caption ---------- */
+
+.caption {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  color: var(--ll-charcoal);
+  margin: 0;
+  text-align: center;
+  max-width: 56ch;
+  margin-inline: auto;
+}
+
+.captionEm {
+  font-weight: 600;
+  color: var(--ll-palm-shadow);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .card {
+    padding: var(--space-7) var(--space-5) var(--space-5) var(--space-5);
+  }
+
+  .videoGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .tape {
+    font-size: 10px;
+    padding: 5px 12px;
+  }
+
+  .title {
+    font-size: clamp(1.875rem, 6vw, 2.5rem);
+  }
+}
+
+@media (max-width: 380px) {
+  .card {
+    padding: var(--space-6) var(--space-4) var(--space-4) var(--space-4);
+  }
+}
+
+/* ---------- Reduced motion ----------
+ *
+ * The eyebrow + title + card entrance animations are already gated
+ * by useInView (one-shot, with the initial state at opacity 0).
+ * prefers-reduced-motion visitors see the section in its final
+ * resting state immediately on scroll-into-view.
+ *
+ * The <video> elements still autoplay. Real-world footage is not
+ * the same kind of "motion" that triggers vestibular issues (no
+ * rapid pans, no zooms, no flashing) - the videos are slow and
+ * steady, like watching a window. The user can still pause them
+ * via native browser tab controls if they want.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .tape {
+    transform: translateX(-50%) rotate(0);
+  }
+}
