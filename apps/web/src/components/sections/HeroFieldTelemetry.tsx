@@ -99,14 +99,6 @@ import { HeroStorybookLayer } from './HeroStorybookLayer';
 // background-image with a CSS-step cycle. Replaces the D-0048 HeroScene3D
 // (which produced a black-column rendering bug in production).
 import { SecondScene } from './SecondScene';
-// 2026-07-22 — ambient audio mute/unmute toggle. Mounted as the last
-// child of the hero's `.viewport` so its z-index 12 sits above every
-// other layer (LiveStatus + TelemetryStats at z 11). The button stays
-// alive even when the user scrolls past the hero - the audio element
-// is a DOM node and keeps playing independent of its parent's
-// visibility. See MuteToggle.tsx for the full rationale + the
-// reduced-data opt-out.
-import { MuteToggle } from '@/components/hero/MuteToggle';
 
 import styles from './HeroFieldTelemetry.module.css';
 
@@ -586,12 +578,6 @@ export function HeroFieldTelemetry({
         <LiveStatus now={now ?? undefined} uiOpacity={uiOpacity} uiY={uiY} />
         <FieldStamp />
         <TelemetryStats uiOpacity={uiOpacity} uiY={uiY} progress={smoothProgress} />
-        {/* 2026-07-22 — ambient audio toggle. Sits at z-index 12
-         * (above all other hero layers), bottom-right of the
-         * viewport, persists across the storybook → photo → scene 2
-         * cross-fade. The audio element lives inside the button and
-         * keeps playing even after the hero scrolls offscreen. */}
-        <MuteToggle />
         {isDebugAdditive && (
           <div
             className={styles.debugBanner}
