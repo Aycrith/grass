@@ -61,68 +61,56 @@ const SCENE2_FRAMES = [
   '/hero/layers/v2/scene2-06.webp',
 ] as const;
 
-// 2026-07-23 — 5th painted plane: a fern micro-loop overlay
-// above the painted scene 2 background. Per the D-0049 rev 4
-// painted/cartoon lesson, painted VEO brushwork stacks with
-// painted VEO brushwork (and only with itself) — so mounting
-// fern-*.webp ABOVE scene2-*.webp is safe (both are painted),
-// while the same fern ABOVE the cartoon storybook would have
-// been the rejected rev-4 mashup.
+// 2026-07-23 — 5th painted plane (fern overlay) REVERTED.
 //
-// Top-anchored, mix-blend-mode: multiply, low opacity so the
-// fern reads as a subtle foreground detail (not a layer that
-// covers the ranch house). The fern is in the upper-LEFT of
-// the source frame; we anchor the .fernLayer container at the
-// upper-RIGHT of the painted scene 2 with `background-position:
-// right top` so the source's left-aligned fern is naturally
-// visible at the right edge. No horizontal mirror (removed
-// 2026-07-23 per the 5-plane review — the mirror was over-
-// engineering; right-anchored positioning + contain sizing
-// already puts the fern at the upper-right in its natural
-// source orientation).
-const FERN_FRAMES = [
-  '/hero/layers/v2/fern-01.webp',
-  '/hero/layers/v2/fern-02.webp',
-  '/hero/layers/v2/fern-03.webp',
-  '/hero/layers/v2/fern-04.webp',
-  '/hero/layers/v2/fern-05.webp',
-  '/hero/layers/v2/fern-06.webp',
-] as const;
+// The fern-*.webp overlay was added as the "5th painted plane"
+// in the 5-plane hero architecture (D-0060), with a strong
+// design rationale: painted VEO brushwork stacks with painted
+// VEO brushwork (D-0049 rev 4), so mounting fern ABOVE scene 2
+// should be safe. The mount was technically clean (typecheck
+// pass, lint pass, 85 routes build, scene 2 painted background
+// + fern multiply-blend overlay). It was also visually
+// incoherent: the fern reads as "an image dropped in the
+// top-right corner" — a clearly distinct object with hard
+// alpha edges that doesn't connect to any element in scene 2.
+//
+// Why the asset doesn't work as a multiply-blend overlay:
+//   1. fern-01.webp is 1240x680 RGBA, but the alpha channel
+//      has the cream BACKGROUND opaque (most of the image) and
+//      only the fronds transparent. mix-blend-mode: multiply
+//      operates on the visible (opaque) pixels, so the cream
+//      background of the source blends INTO scene 2 as a cream
+//      wash, and the fronds themselves are barely visible.
+//   2. The visible result is "cream wash + a partial frond
+//      outline" at the upper-right, which reads as a pasted
+//      image, not as a "deep foreground detail" of the scene.
+//   3. The fern has no connection to any element in scene 2
+//      (it doesn't sit behind/in front of the palms, the ranch
+//      house, the lawn, etc.) — it's a free-floating object.
+//
+// The fern-*.webp files stay on disk for potential future use
+// (e.g., if a different scene context wants a fern element),
+// but the .fernLayer is REMOVED from this component.
+//
+// 5-plane architecture downgraded to 4 planes:
+//   plane 0: scene 2 painted background (scene2-01..06.webp)
+//   plane 1: editorial pull-quote content (z-index 2)
+//
+// The cartoon birdbath (added as the 4th cartoon plane in
+// the 5-plane architecture) is the only "additional" depth
+// element. The 5-plane architecture as originally conceived
+// (4 cartoon + 2 painted) is DOWNGRADED to (4 cartoon + 1
+// painted background) — same depth as the pre-5-plane
+// architecture, but with the cartoon birdbath added.
+//
+// See governance/decisions/0060-five-plane-hero-architecture.md
+// for the D-0060 ADR supersession note.
 
-// 2026-07-23 — palms overlay experiment REVERTED.
-//
-// The 6th painted plane experiment (palms-*.webp at bottom-LEFT
-// as a 2nd multiply-blend overlay above scene 2) was mounted
-// briefly and then reverted the same session. Visual review
-// (see tmp/hero-captures/2026-07-23-palms-overlay/desktop-pos0.70.png)
-// confirmed the D-0049 rev 2 prediction: palms-*.webp is a FULL
-// painted Florida scene (palms + sun + ranch house + birdbath +
-// lawn) at 1240x680 RGB, NOT a single foreground detail like
-// fern-*.webp (1240x680 RGBA, single frond with alpha). The
-// multiply blend at 0.45 opacity did NOT make the second ranch
-// house + sun + birdbath acceptable — they were clearly visible
-// in the bottom-left of scene 2, reading as a "double scene"
-// artifact instead of a foreground detail.
-//
-// Per the user's pre-agreed fallback ("revert if visual review
-// shows the clash"), the palms overlay was removed. The fern
-// remains the sole painted-plane overlay above scene 2.
-//
-// 5-plane architecture stays at 5 planes:
-//   plane 0: scene 2 background (scene2-01..06.webp)
-//   plane 1: 5th painted plane — fern overlay (fern-01..06.webp)
-//
-// Alternatives to revisit if a 3rd painted plane is wanted:
-//   1. Generate a NEW single-palm-frond asset (similar to
-//      fern-*.webp, but for a palm) via a new VEO call
-//   2. Use a hand-authored SVG cartoon palm frond in a context
-//      where painted/cartoon stack rule (D-0049 rev 4) allows
-//      it (e.g., the storybook cartoon, NOT scene 2)
-//   3. Skip the 3rd painted plane — the fern overlay + the
-//      cartoon birdbath are enough depth for the current
-//      5-plane architecture
-//
-// The palms-*.webp files stay on disk for future use.
+// 2026-07-23 — palms overlay experiment REVERTED. (See FERN_FRAMES
+// comment block above for the fern overlay revert + asset
+// analysis. Both painted-plane overlay experiments have now been
+// reverted; scene 2 returns to its pre-5-plane painted
+// background + editorial content structure.)
 
 interface SecondSceneProps {
   scene2: {
@@ -164,40 +152,15 @@ export function SecondScene({
         ))}
       </div>
 
-      {/* 2026-07-23 — 5th painted plane: fern micro-loop overlay.
-       * Sits ABOVE the painted scene 2 background (z-order within
-       * this component's stack), BELOW the editorial pull-quote
-       * chrome (so the chrome stays readable). The fern is a
-       * top-anchored PAIRED-painted overlay — both this and
-       * scene 2 are VEO brushwork, so the painted-stacks-with-
-       * painted lesson from D-0049 rev 4 is satisfied. mix-blend-
-       * mode: multiply at 0.65 opacity so the fern reads as a
-       * "deep" foreground detail (the fronds are in the same
-       * sun-warm palette as the ranch house, so multiply blends
-       * them into the illustration rather than overlaying them
-       * on top). 8s CSS-step cycle matches the original fern
-       * frame prep cadence (Frame N visible for ~1.33s before
-       * stepping to Frame N+1).
-       *
-       * NOT mounted on mobile + reduced-motion (the .fernLayer
-       * CSS class is hidden by the @media block at the bottom
-       * of SecondScene.module.css). The fern is too small a
-       * detail to read on phones and the cycle animation is
-       * not reduced-motion friendly. */}
-      <div className={styles.fernLayer} aria-hidden="true">
-        {FERN_FRAMES.map((src, i) => (
-          <div
-            key={src}
-            className={`${styles.fernFrame} ${styles[`fernFrame${i + 1}`]}`}
-            style={{ backgroundImage: `url(${src})` }}
-          />
-        ))}
-      </div>
-
-      {/* 2026-07-23 — palms overlay REMOVED (see FERN_FRAMES comment
-       * block above for the experiment log + revert rationale).
-       * 5-plane architecture stays at 5 planes; the fern overlay
-       * remains the sole painted-plane overlay above scene 2. */}
+      {/* 2026-07-23 — fern overlay REMOVED. See the FERN_FRAMES
+       * comment block at the top of this file for the full revert
+       * rationale. The fern-*.webp asset did not work as a
+       * multiply-blend overlay above scene 2 — it read as "an
+       * image dropped in the top-right corner" rather than a
+       * "deep foreground detail" (cream background of the source
+       * blended into scene 2 as a cream wash, fronds themselves
+       * barely visible). The asset stays on disk for potential
+       * future use in a different scene context. */}
 
       {/* Editorial pull-quote content overlay.
        * Bottom 12svh of the viewport, centered, warm-brown text.

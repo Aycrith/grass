@@ -287,126 +287,27 @@
  * §2.1 + §2.3 for the full rationale. */
 
 /* ============================================================
- * 2026-07-23 — 5th painted plane: fern micro-loop overlay
+ * 2026-07-23 — fern overlay CSS REMOVED.
  *
- * Sits ABOVE the .sceneStage (z 0), BELOW the .content (z 2)
- * editorial pull-quote chrome. Painted-stacks-with-painted
- * (per D-0049 rev 4) — the fern overlay is VEO brushwork and
- * the sceneStage is VEO brushwork, so the multiply blend
- * mode + low opacity reads as a natural "deep foreground
- * detail" instead of a competing full scene.
- *
- * Position: top-right of the painted scene 2, anchored to
- * the right edge. The fern frond enters from the top and
- * drapes down toward the painted birdbath in the bottom-
- * center of the source illustration. Mix-blend-mode: multiply
- * at 0.65 opacity — the fern is in the same sun-warm palette
- * as the ranch house, so multiply blends them rather than
- * overlaying them.
- *
- * Frame cycle: 8s with 6 frames = ~1.33s per frame (steps(1, end)).
- * Slightly faster than the scene 2 background's 10s cycle so
- * the two layers never visibly lock — the fern "lives" while
- * the scene "is".
- *
- * NOT mounted on mobile (<768px) — the fern is too small a
- * detail to read on phones. Hidden on reduced-motion (locks
- * to frame 01). Both are handled by the @media blocks below.
- * ============================================================ */
-
-.fernLayer {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 38%;
-  height: 65%;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.fernFrame {
-  position: absolute;
-  inset: 0;
-  background-repeat: no-repeat;
-  background-position: right top;
-  background-size: contain;
-  opacity: 0;
-  mix-blend-mode: multiply;
-  filter: brightness(1.05) saturate(0.95);
-  /* 2026-07-23 — mirror REMOVED. The original mirror (scaleX(-1))
-   * was applied to "make the fern appear at the upper-RIGHT of
-   * the painted scene 2" because the source fern occupies the
-   * upper-LEFT of its source frame. With the mirror + right
-   * background-position, the source's upper-LEFT flips to the
-   * upper-RIGHT, putting the fronds at the right edge.
-   *
-   * The review of the desktop-pos0.70 capture (tmp/hero-
-   * captures/2026-07-23-pre-qresolutions/desktop-pos0.70.png)
-   * shows the mirror is unnecessary: with right-anchored
-   * background-position + contain sizing, the source image
-   * naturally shows its left-aligned fern at the RIGHT edge
-   * of the .fernLayer box (because the right edge of the
-   * image aligns with the right edge of the box, and the
-   * left side of the image — which has the fern — extends
-   * leftward into visible area). The mirror was over-
-   * engineering.
-   *
-   * Removing the mirror keeps the fern in its NATURAL
-   * orientation (fronds draping from upper-left downward
-   * and rightward, the way the artist painted it). The
-   * visual asymmetry this introduces (the fern sits at
-   * the right edge with the fronds going rightward and
-   * downward) is the same as the source — the source
-   * frame was painted with the fern as a foreground
-   * "drape" entering from the upper-LEFT corner, and
-   * right-anchoring it at the upper-RIGHT of the scene
-   * 2 destination puts the fern where the artist
-   * originally intended, just on the other side. */
-}
-
-/* 6-frame CSS-step keyframe animation. Cycle 8s.
- * Frame N visible for 1.33s, then steps to Frame N+1. */
-@keyframes fernCycle {
-  0%, 16.666%   { opacity: 0.65; }
-  16.667%, 100% { opacity: 0; }
-}
-.fernFrame1 { animation: fernCycle 8s steps(1, end) infinite; animation-delay: 0s; }
-.fernFrame2 { animation: fernCycle 8s steps(1, end) infinite; animation-delay: 1.333s; }
-.fernFrame3 { animation: fernCycle 8s steps(1, end) infinite; animation-delay: 2.666s; }
-.fernFrame4 { animation: fernCycle 8s steps(1, end) infinite; animation-delay: 4s; }
-.fernFrame5 { animation: fernCycle 8s steps(1, end) infinite; animation-delay: 5.333s; }
-.fernFrame6 { animation: fernCycle 8s steps(1, end) infinite; animation-delay: 6.666s; }
-
-@media (prefers-reduced-motion: reduce) {
-  .fernFrame2,
-  .fernFrame3,
-  .fernFrame4,
-  .fernFrame5,
-  .fernFrame6 {
-    display: none;
-  }
-  .fernFrame1 {
-    animation: none;
-    opacity: 0.65;
-  }
-}
-
-@media (max-width: 768px) {
-  .fernLayer {
-    display: none;
-  }
-}
-
-/* 2026-07-23 — palms overlay CSS REMOVED.
- *
- * The .palmsLayer / .palmsFrame* / @keyframes palmsCycle rules
+ * The .fernLayer / .fernFrame* / @keyframes fernCycle rules
  * (along with their @media blocks) were added as part of the
- * 6th painted plane experiment, mounted briefly, and reverted
- * the same session after the visual review confirmed the
- * D-0049 rev 2 "two scenes fighting" prediction. See the
- * FERN_FRAMES comment block in SecondScene.tsx for the full
- * experiment log + revert rationale.
+ * 5th painted plane experiment in D-0060, mounted briefly, and
+ * reverted after the user identified the visual outcome as
+ * "completely incoherent... like an image dropped in the top
+ * right hand corner... stupid looking." See the FERN_FRAMES
+ * comment block in SecondScene.tsx for the full revert
+ * rationale + asset analysis.
  *
- * 5-plane architecture stays at 5 planes. The fern overlay
- * (above) remains the sole painted-plane overlay above scene 2.
- */
+ * 5-plane architecture is DOWNGRADED to 4 planes:
+ *   plane 0: scene 2 painted background (scene2-01..06.webp)
+ *   plane 1: editorial pull-quote content (z-index 2)
+ * Plus the 4 cartoon planes in the HeroStorybookLayer (sky /
+ * far / mid / near + the cartoon birdbath as the 4th cartoon
+ * plane). The cartoon birdbath is the only "additional" depth
+ * element introduced by the 5-plane iteration.
+ *
+ * The fern-*.webp files stay on disk for potential future use
+ * in a different scene context (where the asset can be properly
+ * integrated with the destination scene, e.g., a scene that
+ * already has a fern element in the source painting).
+ * ============================================================ */

@@ -1,8 +1,10 @@
 # D-0060 — Five-plane hero architecture (4th cartoon + 5th painted)
 
 **Date:** 2026-07-23
-**Status:** SHIPPED 2026-07-23 — feature branch `feat/hero-5plane-bts-split-2026-07-23`
-merged to main as `d2dd344`. Steward sign-off pending.
+**Status:** SHIPPED 2026-07-23 → **PARTIALLY SUPERSEDED 2026-07-24**
+(see §13 below). The 4th cartoon plane (birdbath) is RETAINED. The
+5th painted plane (fern overlay) is REVERTED. The BTS split is
+RETAINED. The audio drop is RETAINED.
 **Author:** Mavis (orchestrator)
 **Scope:** the unified hero on `/` (the most-SEO-critical page on the site),
 specifically `apps/web/src/components/sections/HeroFieldTelemetry.tsx` +
@@ -11,6 +13,10 @@ specifically `apps/web/src/components/sections/HeroFieldTelemetry.tsx` +
 `content/hero/manifest.yaml`.
 **Review date:** 2026-10-23 (90 days post-ship)
 **Confidence (shipped):** 0.78
+**Confidence (post-revert):** 0.65 — the 5-plane label is no longer
+accurate; see §13 for the actual state (4 cartoon planes + 1 painted
+background + 1 content overlay = 4 layers in scene 2, 4 cartoon
+layers + 1 photo in scene 1).
 
 ---
 
@@ -260,3 +266,125 @@ git revert --no-commit 00ca598 790f00b   # revert the new planes
   - `00ca598 feat+docs(hero): 5th painted plane (fern overlay) + architecture docs`
   - `a726a4d docs(ledger): hero-5plane-bts-split entry`
 - **Merge commit:** `d2dd344 merge: feat/hero-5plane-bts-split-2026-07-23`
+
+---
+
+## 13. Supersession — 5th painted plane REVERTED (2026-07-24)
+
+**This section supersedes §3 and §4 of this ADR.** The 5th painted
+plane (fern overlay above scene 2) was reverted on 2026-07-24 after
+the steward reviewed the post-resolution captures in
+`tmp/hero-captures/2026-07-23-post-qresolutions/desktop-pos0.70.png`
+and identified the fern as "completely incoherent... like an image
+dropped in the top right hand corner... completely out of place...
+stupid looking."
+
+### 13.1 What got reverted
+
+- `apps/web/src/components/sections/SecondScene.tsx` — the
+  `FERN_FRAMES` constant, the `<div className={styles.fernLayer}>`
+  JSX block, and the explanatory comment block were all removed.
+  The FERN_FRAMES block was replaced with a "REVERTED" comment
+  documenting the asset analysis.
+- `apps/web/src/components/sections/SecondScene.module.css` — the
+  `.fernLayer` / `.fernFrame*` / `@keyframes fernCycle` rules
+  (plus the @media blocks) were removed. The fern section was
+  replaced with a "REMOVED" comment.
+- `tmp/hero-captures/2026-07-23-fern-experiment/` (visual review
+  captures) — kept for the audit trail.
+
+The fern-*.webp files stay on disk in
+`apps/web/public/hero/layers/v2/fern-*.webp` for potential future
+use in a different scene context.
+
+### 13.2 Why the fern didn't work (asset analysis)
+
+The original design rationale ("painted VEO stacks with painted VEO"
+per D-0049 rev 4) was correct in principle, but the fern-01.webp
+asset has a structural issue that makes multiply-blend fail:
+
+1. fern-01.webp is 1240x680 RGBA, but the alpha channel has the
+   cream BACKGROUND opaque (most of the image, ~656k pixels) and
+   only the fronds transparent. mix-blend-mode: multiply operates
+   on the visible (opaque) pixels, so the cream background of the
+   source blends INTO scene 2 as a cream wash, and the fronds
+   themselves are barely visible (transparent pixels are skipped
+   entirely in multiply).
+2. The visible result is "cream wash + a partial frond outline" at
+   the upper-right, which reads as a pasted image, not as a "deep
+   foreground detail" of the scene.
+3. The fern has no connection to any element in scene 2 (it
+   doesn't sit behind/in front of the palms, the ranch house, the
+   lawn, etc.) — it's a free-floating object in the top-right
+   corner.
+
+In short: the multiply blend was applied to the wrong pixels
+(the cream background instead of the fronds), and even if the
+asset were correctly keyed, the fern still has no natural anchor
+in the scene 2 painting.
+
+### 13.3 What was kept
+
+The rest of the 5-plane architecture is RETAINED:
+
+- **4th cartoon plane (hand-drawn birdbath):** kept. The
+  birdbath is hand-authored SVG in the same cartoon style as
+  the existing PalmTree / House primitives, drawn fresh in
+  the storybook foreground dead space. Works as designed
+  (cartoon stacks with cartoon, satisfies D-0049 rev 4).
+- **BTS split ("The truck" + "The yard"):** kept.
+- **Audio drop (MuteToggle removed):** kept.
+- **Scene 1 storybook cartoon:** unchanged from pre-D-0060.
+- **Scene 2 painted background:** unchanged from pre-D-0060.
+
+### 13.4 What the architecture is now (post-revert)
+
+The 5-plane label is no longer accurate. The actual state:
+
+- **Scene 1 (storybook cartoon, [0.00, 0.25] of hero):**
+  4 cartoon planes (sky / far / mid / near) + 1 photo layer
+  (the 4K photo) + 1 content overlay (headline + CTAs).
+  The cartoon birdbath is the 4th cartoon plane, added in
+  the storybook foreground dead space.
+- **Scene 2 (painted ranch house, [0.40, 1.00] of hero):**
+  1 painted background (scene2-01..06.webp) + 1 content
+  overlay (editorial pull-quote + CTAs). The fern overlay
+  (5th painted plane) is REMOVED.
+- **Scene 3 (BehindTheScenes split):**
+  "The truck" (07.1) + "The yard" (07.2), each a 1-video
+  pull-quote section.
+
+### 13.5 Lessons learned
+
+1. **Visual review BEFORE labeling a plane as "shipped" is
+   critical.** The fern overlay passed typecheck / lint /
+   charter / build / 85 routes, but it was visually incoherent.
+   A static-quality-gate passing does not mean a visual asset
+   is correct. Future plane additions should include a
+   `tmp/hero-captures/<date>-<plane-name>/` capture set +
+   steward sign-off BEFORE the change is labeled "shipped".
+
+2. **Multiply-blend with an RGBA asset requires the asset's
+   alpha channel to be correct.** If the source has the
+   background opaque (and only the foreground transparent),
+   multiply blends the wrong pixels. The fern-*.webp files
+   need to be re-keyed (background transparent, fronds
+   opaque) for any future use as an overlay. Without that
+   re-key, no blend mode will work.
+
+3. **Painted VEO brushwork can stack with painted VEO
+   brushwork in principle (D-0049 rev 4), but a multiply
+   overlay on a free-floating object without an anchor in
+   the destination scene will read as a pasted image.** The
+   fern needed to be anchored to something in scene 2
+   (e.g., behind the painted palms, in front of the painted
+   birdbath) to read as part of the scene, not as a foreign
+   object.
+
+### 13.6 Revert commit
+
+- `f45117c feat(hero): 6th painted plane experiment (palms overlay) — REVERTED`
+  (palms overlay experiment; kept fern at the time, then reverted in
+  the next commit)
+- The fern revert is in the same commit that supersedes this ADR
+  (commit not yet authored at the time of this writing).
