@@ -228,3 +228,4 @@ bun run audit:phase-0
 | Date | Change | Author |
 |---|---|---|
 | 2026-07-10 | Initial creation. Day-3 of Phase 0. | Steward (with Claude Code) |
+| 2026-07-23 | D-0060 five-plane hero architecture (5 commits, +866/-558 lines). Audio dropped, BTS split, 4th cartoon plane (birdbath) + 5th painted plane (fern) added. See governance/decisions/0060-five-plane-hero-architecture.md and content/hero/INTENT.md §2. | Mavis (orchestrator) |
