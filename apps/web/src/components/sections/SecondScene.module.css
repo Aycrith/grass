@@ -333,12 +333,35 @@
   opacity: 0;
   mix-blend-mode: multiply;
   filter: brightness(1.05) saturate(0.95);
-  /* The fern is in the upper-LEFT of the source frame. We want
-   * it to anchor to the upper-RIGHT of the painted scene 2.
-   * 	ransform: scaleX(-1) mirrors the fern horizontally so
-   * the fronds enter from the right edge instead of the left. */
-  transform: scaleX(-1);
-  transform-origin: center;
+  /* 2026-07-23 — mirror REMOVED. The original mirror (scaleX(-1))
+   * was applied to "make the fern appear at the upper-RIGHT of
+   * the painted scene 2" because the source fern occupies the
+   * upper-LEFT of its source frame. With the mirror + right
+   * background-position, the source's upper-LEFT flips to the
+   * upper-RIGHT, putting the fronds at the right edge.
+   *
+   * The review of the desktop-pos0.70 capture (tmp/hero-
+   * captures/2026-07-23-pre-qresolutions/desktop-pos0.70.png)
+   * shows the mirror is unnecessary: with right-anchored
+   * background-position + contain sizing, the source image
+   * naturally shows its left-aligned fern at the RIGHT edge
+   * of the .fernLayer box (because the right edge of the
+   * image aligns with the right edge of the box, and the
+   * left side of the image — which has the fern — extends
+   * leftward into visible area). The mirror was over-
+   * engineering.
+   *
+   * Removing the mirror keeps the fern in its NATURAL
+   * orientation (fronds draping from upper-left downward
+   * and rightward, the way the artist painted it). The
+   * visual asymmetry this introduces (the fern sits at
+   * the right edge with the fronds going rightward and
+   * downward) is the same as the source — the source
+   * frame was painted with the fern as a foreground
+   * "drape" entering from the upper-LEFT corner, and
+   * right-anchoring it at the upper-RIGHT of the scene
+   * 2 destination puts the fern where the artist
+   * originally intended, just on the other side. */
 }
 
 /* 6-frame CSS-step keyframe animation. Cycle 8s.

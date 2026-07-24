@@ -72,9 +72,14 @@ const SCENE2_FRAMES = [
 // Top-anchored, mix-blend-mode: multiply, low opacity so the
 // fern reads as a subtle foreground detail (not a layer that
 // covers the ranch house). The fern is in the upper-LEFT of
-// the source frame; we mirror it to the upper-RIGHT here so
-// it balances the painted scene's natural left-right asymmetry
-// (sun on the right, palms on the left).
+// the source frame; we anchor the .fernLayer container at the
+// upper-RIGHT of the painted scene 2 with `background-position:
+// right top` so the source's left-aligned fern is naturally
+// visible at the right edge. No horizontal mirror (removed
+// 2026-07-23 per the 5-plane review — the mirror was over-
+// engineering; right-anchored positioning + contain sizing
+// already puts the fern at the upper-right in its natural
+// source orientation).
 const FERN_FRAMES = [
   '/hero/layers/v2/fern-01.webp',
   '/hero/layers/v2/fern-02.webp',

@@ -938,8 +938,29 @@ function BirdbathLayer(): ReactNode {
       {/* Birdbath group, positioned in the lower-center dead space.
        * Coordinates are in the 2000x900 viewBox. The birdbath
        * itself is 80 viewBox units wide x 90 tall, centered on
-       * (1240, 645). */}
-      <g transform="translate(1240 645)">
+       * (1000, 645).
+       *
+       * 2026-07-23 — moved from (1240, 645) to (1000, 645) per
+       * the 5-plane architecture review (see ledger entry
+       * 2026-07-23-hero-5plane-bts-split §open questions + the
+       * desktop-pos0.00 capture in tmp/hero-captures/2026-07-23-
+       * pre-qresolutions/). At x=1240 the birdbath sat RIGHT
+       * of the right-side ranch house (which is at viewBox
+       * x=1400, scale 0.8, ~112 viewBox units wide centered on
+       * 1400 → spans roughly 1344-1456). The birdbath at x=1240
+       * was in the same vertical band as the right ranch house
+       * but ~100 viewBox units to its LEFT, reading as a
+       * "satellite sprite" rather than a focal point. At x=1000
+       * the birdbath moves INTO the dead space between the
+       * left-anchored mid palm (x=150, h=170) and the right
+       * ranch houses (x=1400, x=1500), occupying the lower-
+       * center of the scene where the visitor's eye is drawn
+       * by the centered editorial column. The 240-unit move
+       * left keeps the birdbath on the painted grass band
+       * (the birdbath base sits at y=645+80=725, the grass
+       * band is at y=600-900) and well clear of the grass
+       * blade band (y=680-704). */}
+      <g transform="translate(1000 645)">
         {/* Stone base: trapezoid wider at the bottom */}
         <path
           d="M -32 0 L -28 80 L 28 80 L 32 0 Z"
