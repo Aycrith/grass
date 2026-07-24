@@ -61,6 +61,29 @@ const SCENE2_FRAMES = [
   '/hero/layers/v2/scene2-06.webp',
 ] as const;
 
+// 2026-07-23 — 5th painted plane: a fern micro-loop overlay
+// above the painted scene 2 background. Per the D-0049 rev 4
+// painted/cartoon lesson, painted VEO brushwork stacks with
+// painted VEO brushwork (and only with itself) — so mounting
+// fern-*.webp ABOVE scene2-*.webp is safe (both are painted),
+// while the same fern ABOVE the cartoon storybook would have
+// been the rejected rev-4 mashup.
+//
+// Top-anchored, mix-blend-mode: multiply, low opacity so the
+// fern reads as a subtle foreground detail (not a layer that
+// covers the ranch house). The fern is in the upper-LEFT of
+// the source frame; we mirror it to the upper-RIGHT here so
+// it balances the painted scene's natural left-right asymmetry
+// (sun on the right, palms on the left).
+const FERN_FRAMES = [
+  '/hero/layers/v2/fern-01.webp',
+  '/hero/layers/v2/fern-02.webp',
+  '/hero/layers/v2/fern-03.webp',
+  '/hero/layers/v2/fern-04.webp',
+  '/hero/layers/v2/fern-05.webp',
+  '/hero/layers/v2/fern-06.webp',
+] as const;
+
 interface SecondSceneProps {
   scene2: {
     eyebrow: string;
@@ -96,6 +119,36 @@ export function SecondScene({
           <div
             key={src}
             className={`${styles.sceneFrame} ${styles[`sceneFrame${i + 1}`]}`}
+            style={{ backgroundImage: `url(${src})` }}
+          />
+        ))}
+      </div>
+
+      {/* 2026-07-23 — 5th painted plane: fern micro-loop overlay.
+       * Sits ABOVE the painted scene 2 background (z-order within
+       * this component's stack), BELOW the editorial pull-quote
+       * chrome (so the chrome stays readable). The fern is a
+       * top-anchored PAIRED-painted overlay — both this and
+       * scene 2 are VEO brushwork, so the painted-stacks-with-
+       * painted lesson from D-0049 rev 4 is satisfied. mix-blend-
+       * mode: multiply at 0.65 opacity so the fern reads as a
+       * "deep" foreground detail (the fronds are in the same
+       * sun-warm palette as the ranch house, so multiply blends
+       * them into the illustration rather than overlaying them
+       * on top). 8s CSS-step cycle matches the original fern
+       * frame prep cadence (Frame N visible for ~1.33s before
+       * stepping to Frame N+1).
+       *
+       * NOT mounted on mobile + reduced-motion (the .fernLayer
+       * CSS class is hidden by the @media block at the bottom
+       * of SecondScene.module.css). The fern is too small a
+       * detail to read on phones and the cycle animation is
+       * not reduced-motion friendly. */}
+      <div className={styles.fernLayer} aria-hidden="true">
+        {FERN_FRAMES.map((src, i) => (
+          <div
+            key={src}
+            className={`${styles.fernFrame} ${styles[`fernFrame${i + 1}`]}`}
             style={{ backgroundImage: `url(${src})` }}
           />
         ))}

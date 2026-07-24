@@ -27,7 +27,7 @@ import {
 } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 
-export type ViewportMotionLayerId = 'sky' | 'egret' | 'fern' | 'mower' | 'songbirds' | 'gouache';
+export type ViewportMotionLayerId = 'sky' | 'egret' | 'fern' | 'mower' | 'songbirds' | 'gouache' | 'birdbath';
 
 export interface ViewportMotionPreset {
   /** Scroll progress multiplier (0..1). */
@@ -45,6 +45,12 @@ export const VIEWPORT_MOTION_VARIANTS: Record<ViewportMotionLayerId, ViewportMot
   mower: { cadence: 0.18, translateY: 22 },
   songbirds: { cadence: 0.28, translateY: 36 },
   gouache: { cadence: 0.32, translateY: 44 },
+  // 2026-07-23 — 4th cartoon plane. The birdbath sits in the
+  // foreground dead space (slightly above the grass tufts, below
+  // the houses). It is the most reactive element in the dead space
+  // (1.20x layer parallax + 0.36 cadence = the birdbath feels
+  // "closest" to the visitor).
+  birdbath: { cadence: 0.36, translateY: 48 },
 };
 
 export interface ViewportMotionResult {
@@ -172,6 +178,21 @@ export function useViewportMotion(
     [0, 1],
     disabled ? [0, 0] : [0, -(VIEWPORT_MOTION_VARIANTS.gouache.translateX ?? 0)],
   );
+  // 2026-07-23 — 4th cartoon plane. The birdbath is the most
+  // reactive element in the foreground dead space (0.36 cadence,
+  // 48px translateY) — slightly more than the gouache (scene 2)
+  // so the visitor reads the birdbath as the closest foreground
+  // element during the [0.00, 0.10] storybook resting state.
+  const birdbathY = useTransform(
+    progress,
+    [0, 1],
+    disabled ? [0, 0] : [0, -VIEWPORT_MOTION_VARIANTS.birdbath.translateY],
+  );
+  const birdbathX = useTransform(
+    progress,
+    [0, 1],
+    disabled ? [0, 0] : [0, -(VIEWPORT_MOTION_VARIANTS.birdbath.translateX ?? 0)],
+  );
 
   const layers: ViewportMotionResult['layers'] = useMemo(
     () => ({
@@ -181,6 +202,7 @@ export function useViewportMotion(
       mower: { y: mowerY, x: mowerX },
       songbirds: { y: songbirdsY, x: songbirdsX },
       gouache: { y: gouacheY, x: gouacheX },
+      birdbath: { y: birdbathY, x: birdbathX },
     }),
     [
       skyY,
@@ -195,6 +217,8 @@ export function useViewportMotion(
       songbirdsX,
       gouacheY,
       gouacheX,
+      birdbathY,
+      birdbathX,
     ],
   );
 

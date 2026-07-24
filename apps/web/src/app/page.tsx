@@ -73,8 +73,9 @@ import {
   ServiceBento,
   SpecimenPlate,
 } from '@/components/sections';
-// 2026-07-22 — BehindTheScenes section imported separately to
-// keep the destructure list scannable. Same module, same re-export.
+// 2026-07-23 — BehindTheScenes now rendered as TWO instances
+// ("The truck" + "The yard"). Same component, different content
+// props. See BehindTheScenes.tsx for the rationale.
 import { BehindTheScenes } from '@/components/sections/BehindTheScenes';
 import { ConversionRail } from '@/components/site';
 import { SectionDivider } from '@/components/ui';
@@ -129,16 +130,35 @@ export default function HomePage() {
        * See governance/decisions/0055-field-log-section.md. */}
       <FieldLog />
 
-      {/* 04.05 — 2026-07-22 "behind the scenes" trust section.
-       * Quarantines the real-footage riding-mower clips that
-       * don't match the painted hero world. White card on cream,
-       * paper-tape "Real footage, not stock" label, two side-by-side
-       * 10s videos, caption "Same truck, every Tuesday. No franchise,
-       * no subcontractor." Bridges FieldLog (the route) and
-       * ServiceBento (the work) — gives the visitor proof that the
-       * painted brand illustration IS the working operation, not
-       * a stock gallery. */}
-      <BehindTheScenes />
+      {/* 04.05 — 2026-07-23 "behind the scenes" — TWO instances.
+       * Split into "The truck" (operator + equipment angle) and
+       * "The yard" (the mowed result angle). Same component, two
+       * different content props. Bridges FieldLog (the route) and
+       * ServiceBento (the work). Each gets its own pull-quote in
+       * the operator voice. */}
+      <BehindTheScenes
+        eyebrow="07.1"
+        title="The truck."
+        tapeLabel="Real footage, not stock"
+        videoSrc="/hero/bts/real-mower-01.mp4"
+        figcaption="Mid-yard, 9:14am. Same operator, same truck, same route."
+        pullQuote="Same guy, same day, every week."
+        pullQuoteEm="That's the entire crew."
+        dataTestSectionSuffix="truck"
+        videoTestId="bts-video-truck"
+      />
+
+      <BehindTheScenes
+        eyebrow="07.2"
+        title="The yard."
+        tapeLabel="Real footage, not stock"
+        videoSrc="/hero/bts/real-mower-02.mp4"
+        figcaption="Same yard, two minutes later. Stripes from a fresh pass."
+        pullQuote="The yard never knows the difference."
+        pullQuoteEm="The operator does."
+        dataTestSectionSuffix="yard"
+        videoTestId="bts-video-yard"
+      />
 
       {/* 04 — Service grid (6 cards, no dividers between light
        * editorial sections) */}

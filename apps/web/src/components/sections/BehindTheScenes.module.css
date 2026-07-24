@@ -1,6 +1,10 @@
 /* ============================================================
  * BehindTheScenes - the "real footage, not stock" trust section.
  *
+ * v2 (2026-07-23) — split into TWO instances ("The truck" + "The
+ * yard"). Each instance renders a single video + pull-quote. The
+ * old v1 layout (2-column video grid in a single card) is gone.
+ *
  * Visual identity (different from the painted hero world):
  *   - Soft cream section background (--ll-cream, set via Section tone="soft")
  *   - White card with 2px dashed ink-deep border (the "photo on the
@@ -8,9 +12,10 @@
  *   - Paper-tape label across the top edge of the card, slightly
  *     rotated, with the text "Real footage, not stock" in a
  *     hand-printed style
- *   - Two videos side-by-side on desktop, stacked on mobile
- *   - Caption below the videos in a parallel construction with
- *     FieldLog's editorial pull-quote
+ *   - Single full-width video (autoplay muted loop playsinline)
+ *   - Figcaption below the video
+ *   - Pull-quote caption in the operator voice (italic Fraunces),
+ *     with a bold-emphasis "conversion point" at the end
  * ============================================================ */
 
 .root {
@@ -105,14 +110,7 @@
   box-shadow: 0 2px 4px rgba(26, 31, 27, 0.06);
 }
 
-/* ---------- Video grid ---------- */
-
-.videoGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-5);
-  margin-bottom: var(--space-6);
-}
+/* ---------- Video (single, full-width) ---------- */
 
 .figure {
   margin: 0;
@@ -127,8 +125,9 @@
   display: block;
   border-radius: var(--radius-md);
   background: var(--ll-palm-shadow);
-  /* Letterbox / crop the videos to a consistent 16:9 aspect so the
-   * two cards in the grid have identical heights. */
+  /* Letterbox / crop the video to a consistent 16:9 aspect. The
+   * two BTS videos are 1280x720 (16:9 native) so the aspect
+   * preserves the original framing. */
   aspect-ratio: 16 / 9;
   object-fit: cover;
 }
@@ -166,11 +165,6 @@
 @media (max-width: 768px) {
   .card {
     padding: var(--space-7) var(--space-5) var(--space-5) var(--space-5);
-  }
-
-  .videoGrid {
-    grid-template-columns: 1fr;
-    gap: var(--space-4);
   }
 
   .tape {

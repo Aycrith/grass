@@ -2,9 +2,10 @@
 
 > **The hero is the page's hardest-working 100svh.** It carries the
 > brand, the conversion CTA, the service-area signal, and (via scroll)
-> a 3-scene narrative that turns a static storybook into a working
-> operation. Every visual element on the page is downstream of what
-> this section does — read this first before touching any hero asset.
+> a 5-plane scroll-pinned composition that turns a static storybook
+> into a working operation. Every visual element on the page is
+> downstream of what this section does — read this first before
+> touching any hero asset.
 
 > **See also:**
 > - `research/hero-integration-plan-2026-07-22.md` — the 16-section
@@ -20,33 +21,37 @@
 
 ## 1. The hero in one paragraph
 
-The hero is a **3-scene scroll-pinned composition** (350svh tall):
+The hero is a **5-plane scroll-pinned composition** (350svh tall):
 
 ```
-[0.00, 0.10]  Scene 1 resting
-              Hand-authored SVG storybook: sun + clouds + far palms
-              + mid palms + 3 ranch houses + 60 grass blades.
-              Editorial copy: "Your neighbor's lawn mower."
+Plane 0: vignette
+Plane 1: BackgroundPhoto       — real 4K photo of a Pinellas lawn
+Plane 2: HeroStorybookLayer    — hand-authored SVG: sky + sun +
+                                  clouds + far palms + mid palms +
+                                  3 ranch houses + 60 grass blades
+                                  + 4th cartoon plane (birdbath)
+Plane 3: grassSilhouette       — SVG sawtooth grass on the photo
+Plane 4: SecondScene           — painted VEO scene 2 (ranch house)
+                                  + 5th painted plane (fern micro-
+                                  loop overlay, top-right)
+```
 
-[0.10, 0.25]  Scene 1 dissolves
-              Storybook blurs (0 → 14px) + desaturates (100% → 0%)
-              + fades opacity 1 → 0. Real 4K photo of a Pinellas
-              lawn cross-fades in below.
+Scroll choreography (time windows in 0..1 of the hero's 350svh):
 
-[0.25, 0.40]  Dashboard widgets rise
-              LIVE pill (top-right), EST stamp (bottom-left),
-              4-stat telemetry strip (bottom-right). Single shared
-              fade-in, no staged element exits.
-
-[0.40, 0.70]  Photo dissolves to Scene 2
-              The photo cross-fades out as the painted gouache
-              scene 2 (a Florida ranch house with palms, sun, mowed
-              lawn) cross-fades in. Painted editorial pull-quote:
-              "Same yard, every week."
-
-[0.70, 1.00]  Scene 2 resting
-              Painted scene 2 + editorial pull-quote + a small
-              palms micro-loop in the lower-right corner.
+```
+[0.00, 0.10]  Storybook resting (planes 2 + 4h cartoon visible)
+[0.10, 0.25]  Storybook dissolves (blur 0→14px, saturate 100%→0%,
+              opacity 1→0) as the real 4K photo (plane 1) cross-
+              fades in
+[0.25, 0.40]  Dashboard widgets (LIVE pill, EST stamp, telemetry
+              strip) rise in as a single shared fade
+[0.40, 0.70]  Photo (plane 1) cross-fades out as painted scene 2
+              (plane 4) cross-fades in. The 5th painted plane
+              (fern micro-loop) becomes visible during this window
+              and stays visible through the resting state
+[0.70, 1.00]  Scene 2 resting (planes 4 + 5p painted visible).
+              The fern is the most reactive element — the painted
+              scene "is" while the fern "lives"
 ```
 
 The hero is **NOT** a static image. It is a choreographed sequence
@@ -55,35 +60,66 @@ brand illustration IS the working operation.
 
 ---
 
+## 2. The 5-plane architecture (the 2026-07-23 expansion)
+
+The hero is structured as 5 visual planes, each with its own
+parallax cadence, animation, and visual role:
+
+| # | Plane | Style | Source | Parallax | Role |
+|---|---|---|---|---|---|
+| 0 | Vignette | CSS | n/a | 0.0× fixed | Edge darkening for text legibility |
+| 1 | Real photograph | Photo | `hero-green-grass.jpg` + AVIF/WebP | scroll-driven scale + cross-fade | The "working operation" anchor |
+| 2 | Hand-authored SVG storybook | Cartoon | `HeroStorybookLayer.tsx` (BackgroundSky, Clouds, FarLayer, MidLayer, NearLayer, BirdbathLayer) | 0.15–1.20× | The brand illustration |
+| 3 | Grass silhouette | SVG | `grassSilhouette` motion.div in `HeroFieldTelemetry.tsx` | scroll-driven opacity | Foreground mask on the photo |
+| 4 | Painted VEO scene 2 | Painted | `scene2-01..06.webp` (6-frame CSS-step cycle) | 0.32× (gouache layer) | The editorial "Same yard, every week" moment |
+| 5 | Painted VEO fern overlay | Painted | `fern-01..06.webp` (6-frame CSS-step cycle, multiply blend at 0.65 opacity) | n/a (sits in scene 2's local z-stack) | The "alive detail" in scene 2 |
+
+The "4th cartoon plane" (plane 2's BirdbathLayer sub-component) and
+the "5th painted plane" (plane 4's `.fernLayer` sub-component) are
+the 2026-07-23 additions that filled the previous gaps:
+- The 4th cartoon plane (hand-drawn birdbath with a small bird) sits
+  in the foreground dead space — the lower-center area between the
+  houses and the grass band. It is the focal point of the dead space.
+- The 5th painted plane (fern micro-loop, mirrored via scaleX(-1) to
+  anchor at the top-right) overlays the painted scene 2 with a
+  subtle 8s cycle. It is the "alive detail" in the scene 2 resting
+  state.
+
+---
+
 ## 2. Asset classification (the painted-vs-real rule)
 
 The hero's source library (`C:/Users/camer/Downloads/grasscontent/`
-+ `apps/web/public/hero/`) contains 14 mp4 clips + 1 audio. They
-fall into 5 tiers, and **the tiers do not mix**.
++ `apps/web/public/hero/`) contains 14 mp4 clips. They fall into
+5 tiers, and **the tiers do not mix**.
 
 | Tier | Aesthetic | Use on the page | Files |
 |---|---|---|---|
-| **A. Painted hero** | Hand-authored SVG cartoon | Scene 1 background | `BackgroundSky`, `Clouds`, `FarLayer`, `MidLayer`, `NearLayer` (all in `HeroStorybookLayer.tsx`) |
+| **A. Painted hero** | Hand-authored SVG cartoon | Scene 1 background + 4th cartoon plane | `BackgroundSky`, `Clouds`, `FarLayer`, `MidLayer`, `NearLayer`, `BirdbathLayer` (all in `HeroStorybookLayer.tsx`) |
 | **B. Painted hero BG/MID** | VEO-painted gouache | Scene 2 background | `Hand-painted_gouache_illustratio_*` → `apps/web/public/hero/layers/v2/scene2-01..06.webp` |
-| **C. Painted micro-loops** | VEO-painted gouache | On-disk, not currently mounted (rejected for cartoon scene per D-0049 rev 4; available for future 4-plane rebuild) | `Fern_swaying_in_painting`, `Palm_trees_sway_in_painting`, `Songbirds_flying_on_hedge` → `fern-*.webp`, `palms-*.webp`, `songbirds-*.webp` |
+| **C. Painted micro-loops** | VEO-painted gouache | **Fern is now MOUNTED** as the 5th painted plane (above scene 2). Palms + songbirds remain on disk for future secondary use. | `Fern_swaying_in_painting` → `fern-01..06.webp` (mounted); `Palm_trees_sway_in_painting`, `Songbirds_flying_on_hedge` → `palms-*.webp`, `songbirds-*.webp` (reserved) |
 | **D. Painted secondary** | VEO-painted gouache | Reserved for future secondary sections | `painting_still` (top-down lawn), `Egret_standing_in_shallow_water`, `Seagull_gliding_across_sky` |
-| **E. Real photographic** | 4K cell-phone footage | Quarantined — `BehindTheScenes` section only, NOT in hero | `Riding_mower_cutting_lawn_*` → `apps/web/public/hero/bts/real-mower-NN.mp4` |
-| **F. Audio** | MP3 ambient loop | Hero-only, user toggle, muted by default | `brielle_ref.mp3` (renamed) → `apps/web/public/hero/audio/ambient-loop.mp3` |
+| **E. Real photographic** | 4K cell-phone footage | Quarantined — `BehindTheScenes` section (split into 2 instances: "The truck" + "The yard"), NOT in hero | `Riding_mower_cutting_lawn_*` → `apps/web/public/hero/bts/real-mower-{01,02}.mp4` |
+| **F. Audio** | — | **REMOVED 2026-07-23 per steward decision** ("audio isn't necessary"). The hero is 100% visual. | n/a (was `brielle_ref.mp3` → `apps/web/public/hero/audio/ambient-loop.mp3`; deleted) |
 
 **Why E does not enter the hero:** the painted gouache world and the
 real photographic world are at incompatible fidelity levels. Mixing
 them reads as "stock gallery with one photo thrown in" — the v1
 bleed failure mode. The hero is 100% painted; real footage lives
 in its own section with its own visual identity (white card on
-cream, dashed border, paper-tape label).
+cream, dashed border, paper-tape label), split into 2 instances
+since 2026-07-23 ("The truck" + "The yard") so the operator identity
+and the craft signal each get their own editorial moment.
 
-**Why C is on disk but not mounted:** the painted micro-loops
-(ferns, palms, songbirds) were originally added to the storybook
-in D-0044 and removed in D-0049 rev 4 because the painted
-brushwork clashed with the hand-authored SVG cartoon. The webp
-strips stay on disk so a future 4-plane rebuild (using re-painted
-cartoon-style assets, not the existing VEO brushwork) can slot
-back in without re-running the prep pipeline.
+**Why C fern is mounted but palms/songbirds are not:** per the
+D-0049 rev 4 painted/cartoon lesson, painted VEO brushwork
+stacks with painted VEO brushwork (and only with itself). The
+fern is mounted as a multiply-blend overlay ABOVE the painted
+scene 2 (Tier B), which satisfies the rule. The palms and
+songbirds are larger painted scenes (full-bleed frame strips, not
+foreground details) — they would compete with scene 2 if overlaid,
+which is the D-0049 rev 2 reason palms was dropped. They stay on
+disk for future secondary use.
 
 ---
 
@@ -154,28 +190,22 @@ time, not pre-mixed — so changing `--ll-sun` propagates to
 
 ---
 
-## 5. The audio: muted by default, opt-in, opt-out for data savings
+## 5. Audio: removed 2026-07-23 per steward decision ("audio isn't necessary")
 
-The hero's ambient audio is `brielle_ref.mp3` (renamed to
-`ambient-loop.mp3` in `apps/web/public/hero/audio/`). Behavior:
+The hero previously carried an ambient audio loop
+(`brielle_ref.mp3` renamed to `ambient-loop.mp3` in
+`apps/web/public/hero/audio/`) with a `MuteToggle` component
+for opt-in playback. This shipped in commit `17d8491` on
+`feat/hero-audio-bts-2026-07-22` but was removed on 2026-07-23
+per the steward's direct decision that audio isn't necessary
+for the landing page. The hero is now 100% visual.
 
-- **Muted by default.** Autoplay policies on mobile + desktop
-  browsers require a user gesture before any audio plays, so
-  muted-by-default is the only defensible default.
-- **Click the toggle** to start. Sets volume to 30%, persists
-  the choice in `localStorage` under `largo.hero.audio.muted`.
-- **`prefers-reduced-data: reduce`** omits the audio element
-  entirely. The user does not pay the data cost.
-- **Native `<audio loop preload="none">`** — no Web Audio API
-  bundle cost, no autoplay-policy gymnastics. The element is
-  a DOM node; it keeps playing after the hero scrolls off.
-- **Toggle position:** bottom-right of the hero, 28px desktop /
-  32px mobile. Z-index 12 (above LiveStatus + TelemetryStats at
-  z 11). 60% opacity until hover.
-
-The audio's loop seam should be verified by spectrogram in a
-future QA pass — the file is 2.74s and the assumption is that
-the loop is seamless, but this has not been verified.
+If a future iteration wants ambient audio back, the prior
+implementation pattern is documented in git history (commits
+`17d8491` and `6cf4b4a`). The tradeoffs (autoplay policy,
+localStorage persistence, `prefers-reduced-data: reduce`
+opt-out, loop seam verification) are all addressed in
+`research/hero-integration-plan-2026-07-22.md` §9.
 
 ---
 
