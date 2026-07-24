@@ -151,8 +151,10 @@
     at crop=1240:680:20:20 from Fern_swaying_in_painting_
     202607171905.mp4.
   license: veo-v3
-  status: reserved
-  used_by: []
+  status: active
+  used_by:
+    - apps/web/src/components/sections/SecondScene.tsx
+      → .fernLayer (5th painted plane overlay)
   files:
     - apps/web/public/hero/layers/v2/fern-01.webp
     - apps/web/public/hero/layers/v2/fern-02.webp
@@ -161,12 +163,18 @@
     - apps/web/public/hero/layers/v2/fern-05.webp
     - apps/web/public/hero/layers/v2/fern-06.webp
   notes: |
-    REMOVED from the storybook JSX in D-0049 rev 4 because the
-    painted brushwork clashed with the hand-authored SVG
-    cartoon. CSS classes (.fernWrap, .fernFrame1..6) and
-    on-disk assets are kept so a future 4-plane rebuild
-    (using re-painted-cartoon-style assets) can slot back in
-    without re-running the prep pipeline. See INTENT.md §3.
+    2026-07-23 — status changed from `reserved` to `active`.
+    The fern is now mounted as the 5th painted plane
+    (multiply-blend overlay above scene 2). Per the
+    D-0049 rev 4 painted/cartoon lesson, painted VEO
+    brushwork stacks with painted VEO brushwork (and only
+    with itself), so the fern can sit ABOVE scene 2 (Tier B)
+    but NOT above the cartoon storybook (Tier A). The
+    original storybook mount was removed in D-0049 rev 4
+    for the painted/cartoon clash. The fern's new mount is
+    in the scene 2 time window, not the storybook window.
+    See INTENT.md §2 and the `fern-frames-overlay` entry
+    above for the mount details.
 
 - id: palms-frames
   tier: C
@@ -346,32 +354,115 @@
     section's two-column video grid.
 
 # ============================================================
-# Tier F — Audio (hero ambient loop)
+# Tier F — Audio (REMOVED 2026-07-23)
 # ============================================================
-- id: ambient-loop
-  tier: F
-  kind: audio
-  format: mp3
-  size_bytes: 80182
-  duration_s: 2.74
+# The ambient-loop.mp3 + MuteToggle component shipped in
+# feat/hero-audio-bts-2026-07-22 (commit 17d8491) but were
+# removed on 2026-07-23 per the steward's direct decision
+# ("audio isn't necessary"). The hero is now 100% visual.
+# If a future iteration wants ambient audio back, the prep
+# pipeline + decision history are documented in
+# apps/web/public/hero/audio/REMOVED.md (no such file
+# currently; the git history of 17d8491 + 6cf4b4a has the
+# full context).
+#
+# No entries below this section.
+
+# ============================================================
+# 2026-07-23 — 4th cartoon plane: hand-drawn birdbath
+# ============================================================
+# This is a NEW asset tier (the birdbath is a hand-authored SVG
+# primitive, not a VEO render) but it sits inside Tier A's
+# HeroStorybookLayer.tsx file so we don't bump the tier letter.
+# Documented separately for clarity.
+- id: hero-birdbath
+  tier: A
+  kind: svg
+  format: svg
   source: |
-    Renamed from brielle_ref.mp3 in
-    C:/Users/camer/Downloads/grasscontent/. The "brielle"
-    part of the original name looked like a personal
-    reference; the shipped name is descriptive.
+    Hand-authored in HeroStorybookLayer.tsx → BirdbathLayer()
+    (added 2026-07-23 as the 4th cartoon plane per steward
+    decision Q1). The birdbath fills the foreground dead
+    space — the lower-center area between the houses and
+    the grass band — that was previously empty decorative
+    grass tufts. Folds Q2 (birdbath sprite) into Q1.
   license: internal
   status: active
   used_by:
-    - apps/web/src/components/hero/MuteToggle.tsx
-  files:
-    - apps/web/public/hero/audio/ambient-loop.mp3
+    - apps/web/src/components/sections/HeroStorybookLayer.tsx
+      → BirdbathLayer()
   notes: |
-    Native <audio loop preload="none">. Muted by default
-    (autoplay policy). Click toggle sets volume to 30%.
-    localStorage persistence under
-    'largo.hero.audio.muted'. prefers-reduced-data: reduce
-    omits the element entirely. Loop seam is UNVERIFIED —
-    should be spectrogrammed in a future QA pass.
+    Hand-drawn in the SAME cartoon style as the existing
+    PalmTree / House primitives — flat fill, ink-bark
+    outlines, no painted-VEO brushwork. The birdbath is a
+    NEW hand-authored SVG (NOT a re-use of the painted
+    birdbath from scene 2) per the D-0049 rev 4
+    painted/cartoon lesson.
+
+    Composition: stone base (trapezoid wider at the
+    bottom) + bowl (ellipse with a clay rim) + water
+    (sky-tinted radial gradient) + small bird perched on
+    the right edge (sun-yellow beak, cream eye, palm-bark
+    body).
+
+    Position: viewBox (1240, 645) — the lower-center dead
+    space, between the right-side ranch house and the
+    grass band.
+
+    Animations: 4s .birdHead head-tilt (±15° around the
+    head pivot), 6s .waterShimmer opacity 0.6 → 0.9 → 0.6.
+    Both reduced-motion-safe (the @media block at the
+    bottom of HeroStorybookLayer.module.css disables them).
+
+    Parallax: 0.36 cadence, 48px translateY (the highest
+    cadence in the storybook — the birdbath is the most
+    reactive element in the dead space).
+
+# ============================================================
+# 2026-07-23 — 5th painted plane: fern micro-loop overlay
+# ============================================================
+- id: fern-frames-overlay
+  tier: C
+  kind: image
+  format: webp
+  size_bytes: ~295700
+  dimensions: 1240x680
+  source: |
+    Same on-disk assets as the original Tier C fern-*.webp
+    (extracted via scripts/prep-palms-fern-frames.py at
+    crop=1240:680:20:20 from
+    Fern_swaying_in_painting_202607171905.mp4). Now mounted
+    as a multiply-blend overlay ABOVE the painted scene 2
+    background (Tier B). Status changed from `reserved` to
+    `active` on 2026-07-23 per steward decision Q1
+    ("add a 4th cartoon plane and 5th painted plane").
+  license: veo-v3
+  status: active
+  used_by:
+    - apps/web/src/components/sections/SecondScene.tsx
+      → .fernLayer
+  files:
+    - apps/web/public/hero/layers/v2/fern-01.webp
+    - apps/web/public/hero/layers/v2/fern-02.webp
+    - apps/web/public/hero/layers/v2/fern-03.webp
+    - apps/web/public/hero/layers/v2/fern-04.webp
+    - apps/web/public/hero/layers/v2/fern-05.webp
+    - apps/web/public/hero/layers/v2/fern-06.webp
+  notes: |
+    Painted-stacks-with-painted (per D-0049 rev 4): the
+    fern is VEO brushwork, the sceneStage is VEO brushwork,
+    so the multiply blend reads as a "deep foreground
+    detail" rather than a competing full scene. The fern
+    is in the upper-LEFT of the source frame; we mirror it
+    to the upper-RIGHT of scene 2 via transform: scaleX(-1)
+    so it balances the painted scene's natural left-right
+    asymmetry (sun on the right, palms on the left).
+
+    8s CSS-step cycle, mix-blend-mode: multiply at 0.65
+    opacity, top-anchored, right-side, 38% wide x 65% tall.
+    Mobile (<768px) hidden — the fern is too small a
+    detail to read on phones. Reduced-motion locks to
+    frame 01.
 
 # ============================================================
 # Photo layer (the [0.10, 0.70] real photograph band)

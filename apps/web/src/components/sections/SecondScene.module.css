@@ -9,11 +9,13 @@
  *
  * Z-stack (bottom to top):
  *   0  .sceneStage     - 6 painted frames as background-image, CSS-step cycle
- *   1  .content        - editorial pull-quote
+ *   1  .fernLayer      - fern micro-loop overlay (2026-07-23, 5th painted plane)
+ *   2  .content        - editorial pull-quote
  *
  * Animation:
  *   - scene2 cycling 10s/frame (steps(1, end) - no smooth interpolation)
- *   - Locks to frame 01 under prefers-reduced-motion
+ *   - fern micro-loop cycling 8s/frame (steps(1, end) - same pattern)
+ *   - Both lock to frame 01 under prefers-reduced-motion
  *
  * D-0049 (rev 2) — dropped the palms foreground parallax layer. The
  * D-0048 re-extracted palms-01..06.webp as full painted scenes
@@ -21,7 +23,18 @@
  * strips, so the Wave 4 "background-size: 38%, right bottom"
  * pattern put a giant palm tree + sun on top of the scene 2
  * illustration. The painted scene 2 IS already complete with its
- * own palms, sun, and house — no foreground overlay needed.
+ * own palms, sun, and house.
+ *
+ * 2026-07-23 — added the 5th painted plane (.fernLayer). The fern
+ * is a different asset from the scene 2 background (it's a single
+ * painted frond, not a full scene) so the "complete scene" rule
+ * from D-0049 rev 2 does NOT apply — the fern is a foreground
+ * DETAIL, not a competing full scene. It uses the same multiply
+ * blend mode + low-opacity pattern that the D-0044 fern layer
+ * originally used in the storybook (before D-0049 rev 4 removed
+ * it for the painted/cartoon clash). The clash does not apply
+ * here because both this fern AND the scene 2 background are
+ * painted VEO brushwork (painted stacks with painted).
  * ============================================================ */
 
 .root {
@@ -272,3 +285,91 @@
  *
  * See governance/decisions/0059-hero-simplification-and-extension.md
  * §2.1 + §2.3 for the full rationale. */
+
+/* ============================================================
+ * 2026-07-23 — 5th painted plane: fern micro-loop overlay
+ *
+ * Sits ABOVE the .sceneStage (z 0), BELOW the .content (z 2)
+ * editorial pull-quote chrome. Painted-stacks-with-painted
+ * (per D-0049 rev 4) — the fern overlay is VEO brushwork and
+ * the sceneStage is VEO brushwork, so the multiply blend
+ * mode + low opacity reads as a natural "deep foreground
+ * detail" instead of a competing full scene.
+ *
+ * Position: top-right of the painted scene 2, anchored to
+ * the right edge. The fern frond enters from the top and
+ * drapes down toward the painted birdbath in the bottom-
+ * center of the source illustration. Mix-blend-mode: multiply
+ * at 0.65 opacity — the fern is in the same sun-warm palette
+ * as the ranch house, so multiply blends them rather than
+ * overlaying them.
+ *
+ * Frame cycle: 8s with 6 frames = ~1.33s per frame (steps(1, end)).
+ * Slightly faster than the scene 2 background's 10s cycle so
+ * the two layers never visibly lock — the fern "lives" while
+ * the scene "is".
+ *
+ * NOT mounted on mobile (<768px) — the fern is too small a
+ * detail to read on phones. Hidden on reduced-motion (locks
+ * to frame 01). Both are handled by the @media blocks below.
+ * ============================================================ */
+
+.fernLayer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 38%;
+  height: 65%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.fernFrame {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: contain;
+  opacity: 0;
+  mix-blend-mode: multiply;
+  filter: brightness(1.05) saturate(0.95);
+  /* The fern is in the upper-LEFT of the source frame. We want
+   * it to anchor to the upper-RIGHT of the painted scene 2.
+   * 	ransform: scaleX(-1) mirrors the fern horizontally so
+   * the fronds enter from the right edge instead of the left. */
+  transform: scaleX(-1);
+  transform-origin: center;
+}
+
+/* 6-frame CSS-step keyframe animation. Cycle 8s.
+ * Frame N visible for 1.33s, then steps to Frame N+1. */
+@keyframes fernCycle {
+  0%, 16.666%   { opacity: 0.65; }
+  16.667%, 100% { opacity: 0; }
+}
+.fernFrame1 { animation: fernCycle 8s steps(1, end) infinite; animation-delay: 0s; }
+.fernFrame2 { animation: fernCycle 8s steps(1, end) infinite; animation-delay: 1.333s; }
+.fernFrame3 { animation: fernCycle 8s steps(1, end) infinite; animation-delay: 2.666s; }
+.fernFrame4 { animation: fernCycle 8s steps(1, end) infinite; animation-delay: 4s; }
+.fernFrame5 { animation: fernCycle 8s steps(1, end) infinite; animation-delay: 5.333s; }
+.fernFrame6 { animation: fernCycle 8s steps(1, end) infinite; animation-delay: 6.666s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fernFrame2,
+  .fernFrame3,
+  .fernFrame4,
+  .fernFrame5,
+  .fernFrame6 {
+    display: none;
+  }
+  .fernFrame1 {
+    animation: none;
+    opacity: 0.65;
+  }
+}
+
+@media (max-width: 768px) {
+  .fernLayer {
+    display: none;
+  }
+}
