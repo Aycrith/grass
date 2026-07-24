@@ -3,6 +3,7 @@
 > **Why photos matter:** GBP listings WITH photos get 35% more clicks and 42% more direction requests than listings without.
 > **Format:** JPG, 720px × 720px minimum (square crops better in GBP).
 > **Free tool:** Phone camera + Canva free for text overlays.
+> **Automated pipeline:** `scripts/gbp-photo-process.py` (added 2026-07-24) generates the avatar and processes phone photos into GBP-ready JPGs in one command. See `content/assets/gbp-shooting-day-workflow.md` for the operational workflow. **The spec below is the design contract; the script is the implementation.**
 
 ---
 
