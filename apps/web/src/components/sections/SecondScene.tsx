@@ -89,6 +89,41 @@ const FERN_FRAMES = [
   '/hero/layers/v2/fern-06.webp',
 ] as const;
 
+// 2026-07-23 — palms overlay experiment REVERTED.
+//
+// The 6th painted plane experiment (palms-*.webp at bottom-LEFT
+// as a 2nd multiply-blend overlay above scene 2) was mounted
+// briefly and then reverted the same session. Visual review
+// (see tmp/hero-captures/2026-07-23-palms-overlay/desktop-pos0.70.png)
+// confirmed the D-0049 rev 2 prediction: palms-*.webp is a FULL
+// painted Florida scene (palms + sun + ranch house + birdbath +
+// lawn) at 1240x680 RGB, NOT a single foreground detail like
+// fern-*.webp (1240x680 RGBA, single frond with alpha). The
+// multiply blend at 0.45 opacity did NOT make the second ranch
+// house + sun + birdbath acceptable — they were clearly visible
+// in the bottom-left of scene 2, reading as a "double scene"
+// artifact instead of a foreground detail.
+//
+// Per the user's pre-agreed fallback ("revert if visual review
+// shows the clash"), the palms overlay was removed. The fern
+// remains the sole painted-plane overlay above scene 2.
+//
+// 5-plane architecture stays at 5 planes:
+//   plane 0: scene 2 background (scene2-01..06.webp)
+//   plane 1: 5th painted plane — fern overlay (fern-01..06.webp)
+//
+// Alternatives to revisit if a 3rd painted plane is wanted:
+//   1. Generate a NEW single-palm-frond asset (similar to
+//      fern-*.webp, but for a palm) via a new VEO call
+//   2. Use a hand-authored SVG cartoon palm frond in a context
+//      where painted/cartoon stack rule (D-0049 rev 4) allows
+//      it (e.g., the storybook cartoon, NOT scene 2)
+//   3. Skip the 3rd painted plane — the fern overlay + the
+//      cartoon birdbath are enough depth for the current
+//      5-plane architecture
+//
+// The palms-*.webp files stay on disk for future use.
+
 interface SecondSceneProps {
   scene2: {
     eyebrow: string;
@@ -158,6 +193,11 @@ export function SecondScene({
           />
         ))}
       </div>
+
+      {/* 2026-07-23 — palms overlay REMOVED (see FERN_FRAMES comment
+       * block above for the experiment log + revert rationale).
+       * 5-plane architecture stays at 5 planes; the fern overlay
+       * remains the sole painted-plane overlay above scene 2. */}
 
       {/* Editorial pull-quote content overlay.
        * Bottom 12svh of the viewport, centered, warm-brown text.
