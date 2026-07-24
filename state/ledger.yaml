@@ -5467,3 +5467,71 @@ changelog:
       - "apps/web/src/components/sections/BehindTheScenes.tsx"
       - "scripts/palette-validate.py"
       - "scripts/hero-capture.py"
+
+
+  - id: 2026-07-23-hero-5plane-bts-split
+    date: "2026-07-23"
+    title: "Hero: drop audio, split BTS, add 4th cartoon plane + 5th painted plane (5-plane architecture)"
+    summary: |
+      Per the steward's direct decisions on 4 open questions
+      from content/hero/INTENT.md §8 (answered in this session):
+
+      Q3 (audio): DROP. The hero is now 100% visual. The
+      ambient-loop.mp3 + MuteToggle component shipped in
+      commit 17d8491 on 2026-07-22 are removed.
+
+      Q4 (BTS): SPLIT. The single BehindTheScenes section
+      becomes 2 instances of the same component:
+        1. 'The truck' (07.1) - identity signal, real-mower-01.mp4
+        2. 'The yard'  (07.2) - craft signal, real-mower-02.mp4
+      Each gets its own pull-quote in the operator voice.
+
+      Q1 (4-plane): EXPAND to 5-plane. The user asked for
+      BOTH a 4th cartoon plane AND a 5th painted plane:
+        - 4th cartoon plane: hand-drawn birdbath in the
+          foreground dead space (the lower-center area
+          between the houses and the grass band). Hand-
+          authored SVG in the same cartoon style as the
+          existing PalmTree / House primitives. Folds in
+          Q2 (birdbath sprite) by drawing the birdbath
+          fresh in the cartoon style, NOT by re-using the
+          painted birdbath from scene 2 (D-0049 rev 4
+          painted/cartoon lesson).
+        - 5th painted plane: the on-disk fern-*.webp
+          strip is now mounted as a multiply-blend overlay
+          ABOVE the painted scene 2 (Tier B). This is the
+          FIRST TIME the fern asset has been mounted since
+          D-0049 rev 4 removed it from the storybook.
+          The mount is safe because both fern and scene 2
+          are VEO brushwork (painted stacks with painted).
+          The fern is mirrored via transform: scaleX(-1)
+          to anchor at the top-RIGHT instead of the top-
+          LEFT of the source frame.
+
+      Q2 (birdbath): folded into Q1's 4th cartoon plane.
+
+      New architecture: 5-plane composition (planes 0-4,
+      see content/hero/INTENT.md §2 for the per-plane table).
+    by: "Mavis (orchestrator, 2026-07-23 20:36 EDT)"
+    cross_project: false
+    branch: "feat/hero-5plane-bts-split-2026-07-23"
+    commits:
+      - "c8d015f chore+feat(hero): drop audio + split BehindTheScenes"
+      - "790f00b feat(hero): add 4th cartoon plane (hand-drawn birdbath)"
+      - "00ca598 feat+docs(hero): 5th painted plane (fern overlay) + architecture docs"
+    verified:
+      - "bun run typecheck: EXIT 0"
+      - "bun run lint:      EXIT 0"
+      - "git ls-files | grep hero | head -20: all hero assets in place"
+    decisions_resolved:
+      - "Q1 (4-plane): expanded to 5-plane (4th cartoon + 5th painted)"
+      - "Q2 (birdbath sprite): folded into Q1's 4th cartoon plane"
+      - "Q3 (audio seam): N/A - audio dropped entirely"
+      - "Q4 (BTS promote): BTS split into 2 sections"
+    references:
+      - "content/hero/INTENT.md (updated to 5-plane architecture)"
+      - "content/hero/manifest.yaml (updated with new entries)"
+      - "apps/web/src/components/sections/HeroStorybookLayer.tsx (BirdbathLayer)"
+      - "apps/web/src/components/sections/SecondScene.tsx (fern overlay)"
+      - "apps/web/src/components/sections/BehindTheScenes.tsx (split into 2 instances)"
+      - "scripts/prep-fern-bottom-anchored.py (the new prep script authored in the prior session is NOT used by the 5th plane — the existing top-anchored fern-*.webp was sufficient)"
