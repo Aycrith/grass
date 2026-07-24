@@ -158,11 +158,13 @@ export function HeroStorybookLayer({
   // D-0042 motion; the vertical parallax is the new cascade layer.
   // Wave 3 — fern + songbirds MotionValues are now consumed by the
   // dedicated parallax layer components below.
+  // 2026-07-23 — added birdbathY for the new 4th cartoon plane
+  // (hand-drawn birdbath in the foreground dead space).
   const skyY = layerMotion?.sky?.y;
   const farY = layerMotion?.egret?.y;
   const midY = layerMotion?.mower?.y;
   const nearY = layerMotion?.gouache?.y;
-  // D-0049 rev 4 — fernY + songbirdsY intentionally unused
+  const birdbathY = layerMotion?.birdbath?.y;
   // (FernLayer / SongbirdsLayer were removed from the storybook
   // JSX because the painted VEO assets clashed with the hand-
   // authored SVG cartoon). The MotionValues are still computed
@@ -224,6 +226,25 @@ export function HeroStorybookLayer({
         style={{ x: nearPanX, ...(nearY !== undefined && { y: nearY }) }}
       >
         <NearLayer />
+      </motion.div>
+      {/* 2026-07-23 — 4th cartoon plane: hand-drawn birdbath with a
+       * small bird, anchored in the foreground dead space (the
+       * lower-center area between the houses and the grass band).
+       * Folds Q2 (birdbath sprite) into the answer to Q1 (4th
+       * cartoon plane + 5th painted plane). Sits ABOVE the
+       * nearLayer in z-order (the birdbath is the focal point of
+       * the dead space; it should be on top of the grass tufts
+       * below it). Parallax 1.20x — slightly more than the grass
+       * band (1.10x) so the birdbath is the most reactive element
+       * in the dead space. The birdbath is hand-drawn in the same
+       * cartoon style as the existing PalmTree / House primitives
+       * (flat fill, ink-bark outlines, no painted-VEO brushwork)
+       * per the D-0049 rev 4 painted/cartoon rule. */}
+      <motion.div
+        className={styles.birdbathLayer}
+        style={{ x: nearPanX, ...(birdbathY !== undefined && { y: birdbathY }) }}
+      >
+        <BirdbathLayer />
       </motion.div>
       {/* D-0059 rev3 — paper-grain overlay REMOVED. The rev2
        * paper-grain (200x200 SVG feTurbulence at 0.08 opacity with
@@ -845,6 +866,187 @@ function NearLayer(): ReactNode {
     </div>
   );
 }
+/* 2026-07-23 — 4th cartoon plane: hand-drawn birdbath in the
+ * foreground dead space.
+ *
+ * Why a birdbath, not a mower or operator? The D-0059 Path A
+ * removal of the cartoon operator reasoned that "the operator
+ * duplicated the OperatorStrip section's identity signal below
+ * the hero." A birdbath is NOT a character — it is a static
+ * garden element that adds a focal point to the dead space
+ * without duplicating any other section's identity. It also
+ * answers Q2 from the design intent's open questions (whether
+ * to lift the birdbath from the painted scene 2 as a foreground
+ * sprite) by drawing a NEW birdbath in the same hand-authored
+ * cartoon style as the existing PalmTree / House primitives —
+ * NOT by re-using the painted birdbath from scene 2 (which would
+ * violate the D-0049 rev 4 painted/cartoon lesson).
+ *
+ * Composition:
+ *   - Stone base: trapezoid (wider at the bottom), filled with
+ *     --ll-sand (the secondary brand accent, Florida earth),
+ *     stroked with --ll-palm-bark (the ink-bark outline color).
+ *   - Bowl: ellipse at the top of the base, filled with
+ *     --ll-sand-bleached (warm bone), stroked with --ll-palm-bark.
+ *   - Water: smaller ellipse inside the bowl, filled with
+ *     --ll-sky at 0.6 opacity (the trust-blue, but quiet).
+ *   - Bird: small silhouette perched on the right edge of the
+ *     bowl, with a tiny sun-yellow beak. Two-state CSS animation
+ *     (head-tilt left ↔ right at 4s period) — the bird "looks
+ *     around" without leaving the perch.
+ *
+ * Position: viewBox x=1240, y=600 (the lower-center dead space,
+ * between the right-side ranch house and the grass band). This
+ * is the same area the operator used to occupy (D-0059 Path A
+ * said the operator was at x ≈ 1200-1340) — the birdbath is the
+ * static-sprite equivalent that doesn't duplicate the
+ * OperatorStrip section.
+ *
+ * Animations:
+ *   - .birdHead: 4s ease-in-out, ±15° rotation around the
+ *     bird's body center. The CSS uses transform-box: fill-box
+ *     so the pivot is the head group, not the SVG origin.
+ *   - .waterShimmer: 6s ease-in-out infinite, opacity 0.6 → 0.9
+ *     → 0.6. Subtle water-light play.
+ *
+ * Both animations are reduced-motion-safe: the @media block at
+ * the bottom of the .module.css disables them. The birdbath
+ * itself stays visible (it's a static element of the dead
+ * space) — only the head-tilt and water-shimmer animations
+ * collapse. */
+
+function BirdbathLayer(): ReactNode {
+  return (
+    <svg
+      className={styles.layerSvg}
+      viewBox="0 0 2000 900"
+      preserveAspectRatio="xMidYMax slice"
+      aria-hidden="true"
+    >
+      <title>Flowerbed birdbath</title>
+      <defs>
+        <linearGradient id="birdbath-stone" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--ll-sand)" />
+          <stop offset="100%" stopColor="var(--ll-sand-bleached)" />
+        </linearGradient>
+        <radialGradient id="birdbath-water" cx="0.5" cy="0.5" r="0.6">
+          <stop offset="0%" stopColor="var(--ll-sky)" stopOpacity="0.7" />
+          <stop offset="100%" stopColor="var(--ll-sky)" stopOpacity="0.4" />
+        </radialGradient>
+      </defs>
+
+      {/* Birdbath group, positioned in the lower-center dead space.
+       * Coordinates are in the 2000x900 viewBox. The birdbath
+       * itself is 80 viewBox units wide x 90 tall, centered on
+       * (1240, 645). */}
+      <g transform="translate(1240 645)">
+        {/* Stone base: trapezoid wider at the bottom */}
+        <path
+          d="M -32 0 L -28 80 L 28 80 L 32 0 Z"
+          fill="url(#birdbath-stone)"
+          stroke="var(--ll-palm-bark)"
+          strokeWidth="2.5"
+          strokeLinejoin="round"
+        />
+        {/* Base decoration: a single horizontal groove (the
+         * "stone seam" between the lower and upper base blocks) */}
+        <line
+          x1="-26"
+          y1="40"
+          x2="26"
+          y2="40"
+          stroke="var(--ll-palm-bark)"
+          strokeWidth="1.2"
+          opacity="0.45"
+        />
+        {/* Base shadow on the ground (sits on the grass band) */}
+        <ellipse
+          cx="0"
+          cy="80"
+          rx="34"
+          ry="3"
+          fill="var(--ll-palm-bark)"
+          opacity="0.18"
+        />
+        {/* Bowl: ellipse at the top of the base */}
+        <ellipse
+          cx="0"
+          cy="0"
+          rx="44"
+          ry="11"
+          fill="var(--ll-sand-bleached)"
+          stroke="var(--ll-palm-bark)"
+          strokeWidth="2.5"
+        />
+        {/* Bowl rim: a thinner ellipse just below the waterline,
+         * gives the bowl a visible "rim" depth */}
+        <ellipse
+          cx="0"
+          cy="-1"
+          rx="44"
+          ry="6"
+          fill="var(--ll-clay)"
+          opacity="0.35"
+        />
+        {/* Water: a smaller ellipse inside the bowl, with a
+         * radial gradient (lighter in the center) and a CSS
+         * opacity shimmer */}
+        <ellipse
+          className={styles.waterShimmer}
+          cx="0"
+          cy="-2"
+          rx="40"
+          ry="5"
+          fill="url(#birdbath-water)"
+        />
+        {/* Bird perched on the right edge of the bowl.
+         * Coordinates: head at (24, -10), body at (20, -4).
+         * The head group is what animates (4s head-tilt). */}
+        <g transform="translate(20 -4)">
+          {/* Body */}
+          <ellipse
+            cx="0"
+            cy="0"
+            rx="7"
+            ry="5"
+            fill="var(--ll-palm-bark)"
+          />
+          {/* Head group (animates ±15° head-tilt) */}
+          <g
+            className={styles.birdHead}
+            style={{ transformOrigin: '-5px -3px' }}
+          >
+            <circle
+              cx="-5"
+              cy="-3"
+              r="3.5"
+              fill="var(--ll-palm-bark)"
+            />
+            {/* Beak: a small triangle in the sun-yellow */}
+            <path
+              d="M -8 -4 L -12 -3 L -8 -2 Z"
+              fill="var(--ll-sun)"
+            />
+            {/* Eye: a tiny dot in the cream color */}
+            <circle
+              cx="-6"
+              cy="-3.5"
+              r="0.8"
+              fill="var(--ll-cream)"
+            />
+          </g>
+          {/* Tail: a small triangle behind the body */}
+          <path
+            d="M 5 -2 L 11 -4 L 9 2 Z"
+            fill="var(--ll-palm-bark)"
+            opacity="0.9"
+          />
+        </g>
+      </g>
+    </svg>
+  );
+}
+
 /* ------------------------------------------------------------------
  * Scroll hint - prompts the visitor to scroll and reveals the photo.
  * Hidden once the storybook has fully dissolved (scroll > 0.95).

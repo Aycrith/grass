@@ -342,6 +342,23 @@
 .farLayer { z-index: 3; }
 .midLayer { z-index: 4; }
 .nearLayer { z-index: 7; }
+/* 2026-07-23 — 4th cartoon plane (hand-drawn birdbath).
+ * Sits ABOVE the nearLayer (z 7) in z-order — the birdbath is
+ * the focal point of the dead space, so it must render on top
+ * of the grass tufts behind it. Same layer-container sizing as
+ * the other planes (-10% / +10% horizontal overflow + 100%
+ * height) so the birdbath participates in the parent layer's
+ * parallax + cross-fade uniformly. */
+.birdbathLayer {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: 0;
+  height: 100%;
+  pointer-events: none;
+  will-change: transform;
+  z-index: 8;
+}
 
 .layerSvg {
   width: 100%;
@@ -517,6 +534,52 @@
  * (x ≈ 1200-1340 in the storybook viewBox) is now empty grass
  * + wildflowers, which gives the ranch houses + palms more
  * breathing room. */
+
+/* ============================================================
+ * 2026-07-23 — 4th cartoon plane (hand-drawn birdbath) animations
+ *
+ * .birdHead: 4s ease-in-out, ±15° rotation around the bird's
+ * head pivot (transformOrigin: -5px -3px set inline in the JSX).
+ * The bird "looks around" — left at t=0, right at t=2s, left
+ * again at t=4s. The pivot is the head's local origin (set on
+ * the inline style), so the head rotates around the neck, not
+ * around the SVG origin.
+ *
+ * .waterShimmer: 6s ease-in-out infinite, opacity 0.6 → 0.9 →
+ * 0.6. Subtle water-light play — the visitor reads it as
+ * "the water catches the sun" without consciously noticing the
+ * animation.
+ *
+ * Both animations are reduced-motion-safe: the @media block
+ * below disables them. The birdbath itself stays visible (it's
+ * a static element of the dead space) — only the head-tilt and
+ * water-shimmer animations collapse.
+ * ============================================================ */
+
+.birdHead {
+  animation: birdHeadTilt 4s ease-in-out infinite;
+}
+
+.waterShimmer {
+  animation: waterShimmer 6s ease-in-out infinite;
+}
+
+@keyframes birdHeadTilt {
+  0%, 100% { transform: rotate(-15deg); }
+  50%      { transform: rotate(15deg); }
+}
+
+@keyframes waterShimmer {
+  0%, 100% { opacity: 0.6; }
+  50%      { opacity: 0.9; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .birdHead,
+  .waterShimmer {
+    animation: none;
+  }
+}
 
 /* ============================================================
  * Scroll hint
