@@ -1,11 +1,34 @@
-/* eslint-disable react/no-unescaped-entities */
+/**
+ * /qr — print-ready QR codes for Largo Lawn collateral.
+ *
+ * Generates static QR SVGs at build time so the steward can
+ * copy-paste them into print materials (yard signs, door hangers,
+ * business cards, review-magnet cards).
+ *
+ * Refactored 2026-07-25 to use the shared <Section> + <Eyebrow>
+ * + <Card> + <Button> primitives. Before this refactor the page
+ * was a hand-rolled scaffold with inline `style={{...}}` blocks
+ * and hardcoded hex values (#2f6b3d, #f7f1e3, #4a4a4a) that
+ * didn't match the rest of the design system. The QR data
+ * generation, the four target URLs, the file naming, and the
+ * downstream print guidance are byte-for-byte unchanged.
+ */
+
 import type { Metadata } from 'next';
 import QRCode from 'qrcode';
+import { Download } from 'lucide-react';
+
+import { Eyebrow, Section } from '@/components/site';
+import { Button, Card } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
+import { cn } from '@/lib/cn';
+
+import styles from './page.module.css';
 
 export const metadata: Metadata = {
   title: 'QR Codes · Largo Lawn',
-  description: 'Print-ready QR codes for Largo Lawn yard signs, door hangers, business cards, and review-magnet cards.',
+  description:
+    'Print-ready QR codes for Largo Lawn yard signs, door hangers, business cards, and review-magnet cards.',
 };
 
 // Generate static QR SVGs at build time so the steward can copy-paste them
@@ -18,13 +41,15 @@ const DOMAIN = 'https://largolawn.pro';
 const CODES = [
   {
     name: 'Free Quote (door hanger, yard sign)',
-    description: 'Customer scans → lands on /quote → sees live price estimate → submits lead.',
+    description:
+      'Customer scans → lands on /quote → sees live price estimate → submits lead.',
     target: `${DOMAIN}/quote`,
     filename: 'largolawn-quote-qr.svg',
   },
   {
     name: 'Quick Contact (business card back)',
-    description: 'Customer scans → lands on /contact → short form, autofills name + email.',
+    description:
+      'Customer scans → lands on /contact → short form, autofills name + email.',
     target: `${DOMAIN}/contact`,
     filename: 'largolawn-contact-qr.svg',
   },
@@ -37,7 +62,8 @@ const CODES = [
   },
   {
     name: 'Service Areas hub (yard sign)',
-    description: 'Customer scans → lands on /areas (six ZIPs + locally-tuned copy).',
+    description:
+      'Customer scans → lands on /areas (six ZIPs + locally-tuned copy).',
     target: `${DOMAIN}/areas`,
     filename: 'largolawn-areas-qr.svg',
   },
@@ -55,98 +81,114 @@ async function makeSvg(url: string): Promise<string> {
 
 export default async function QRPage() {
   const svgs = await Promise.all(
-    CODES.map(async c => ({ ...c, svg: await makeSvg(c.target) })),
+    CODES.map(async (c) => ({ ...c, svg: await makeSvg(c.target) })),
   );
 
   return (
-    <main className="container">
-      <section className="hero">
-        <h1>QR Codes</h1>
-        <p className="lead">
-          Print-ready QR codes for every Largo Lawn collateral piece. Each SVG is generated at build
-          time — open the file in a browser, save as SVG, and embed in Vistaprint / Canva / your printer.
-        </p>
-        <p style={{ fontSize: '0.9rem', color: '#4a4a4a' }}>
-          All QRs currently point to <code>{DOMAIN}</code>. After domain purchase and DNS cutover
-          (Phase 0 / OBJ-M2-004), re-run <code>bun run build</code> and the URLs update automatically.
-          For the <strong>Google Review QR</strong>, replace the target with the live GBP write-review
-          URL once GBP is verified (OBJ-M2-006).
-        </p>
-      </section>
+    <>
+      <Section rhythm="loose" tone="default" className={cn(styles.hero)}>
+        <div className="container">
+          <Eyebrow tone="default">Steward tools · Print assets</Eyebrow>
+          <h1 className={cn(styles.h1)}>QR Codes</h1>
+          <p className={cn(styles.lede)}>
+            Print-ready QR codes for every Largo Lawn collateral piece. Each SVG
+            is generated at build time — open the file in a browser, save as
+            SVG, and embed in Vistaprint / Canva / your printer.
+          </p>
+          <p className={cn(styles.note)}>
+            All QRs currently point to <code>{DOMAIN}</code>. After domain
+            purchase and DNS cutover (Phase 0 / OBJ-M2-004), re-run{' '}
+            <code>bun run build</code> and the URLs update automatically. For
+            the <strong>Google Review QR</strong>, replace the target with the
+            live GBP write-review URL once GBP is verified (OBJ-M2-006).
+          </p>
+        </div>
+      </Section>
 
-      <section style={{ display: 'grid', gap: '1.5rem', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
-        {svgs.map(c => (
-          <article key={c.target} className="card" style={{ textAlign: 'center' }}>
-            <h3 style={{ marginTop: 0 }}>{c.name}</h3>
-            <div
-              style={{ width: 220, height: 220, margin: '0 auto 1rem', border: '2px solid #2f6b3d', borderRadius: 8, padding: 8, background: 'white' }}
-              // biome-ignore lint/security/noDangerouslySetInnerHtml: SVG-injected QR
-              dangerouslySetInnerHTML={{ __html: c.svg }}
-            />
-            <p style={{ fontSize: '0.9rem', color: '#4a4a4a', minHeight: '3.6em' }}>{c.description}</p>
-            <code style={{ fontSize: '0.8rem', wordBreak: 'break-all' }}>{c.target}</code>
-            <p style={{ marginTop: '0.5rem', fontSize: '0.85rem' }}>
-              Filename suggestion: <strong>{c.filename}</strong>
+      <Section rhythm="default" tone="soft" className={cn(styles.gridSection)}>
+        <div className="container">
+          <div className={cn(styles.grid)}>
+            {svgs.map((c) => (
+              <Card key={c.target} variant="insight" className={cn(styles.qrCard)}>
+                <h3 className={cn(styles.qrTitle)}>{c.name}</h3>
+                <div
+                  className={cn(styles.qrBox)}
+                  // biome-ignore lint/security/noDangerouslySetInnerHtml: SVG-injected QR
+                  dangerouslySetInnerHTML={{ __html: c.svg }}
+                />
+                <p className={cn(styles.qrDescription)}>{c.description}</p>
+                <code className={cn(styles.qrTarget)}>{c.target}</code>
+                <p className={cn(styles.qrFilename)}>
+                  Filename suggestion: <strong>{c.filename}</strong>
+                </p>
+                <Button
+                  as="a"
+                  href={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(c.svg)}`}
+                  download={c.filename}
+                  variant="primary"
+                  size="md"
+                  iconLeft={<Download size={16} aria-hidden="true" />}
+                >
+                  Download SVG
+                </Button>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </Section>
+
+      <Section rhythm="default" tone="default" className={cn(styles.guideSection)}>
+        <div className="container container--prose">
+          <div className="prose">
+            <h2>Where each QR goes</h2>
+            <ul>
+              <li>
+                <strong>Yard sign (18×24 coroplast):</strong> bottom-right
+                corner, 2&quot; square, alongside the phone number. Customer
+                walking by can save the link.
+              </li>
+              <li>
+                <strong>Door hanger (4.25×11):</strong> front-side center,
+                1.5&quot; square. Drives the conversion.
+              </li>
+              <li>
+                <strong>Business card (3.5×2):</strong> back side, lower-right,
+                0.75&quot; square. Small but works for tech-savvy customers.
+              </li>
+              <li>
+                <strong>Review-magnet card (5×7 Avery 5371):</strong> front,
+                large 1.6&quot; square, dominant visual. Customers physically
+                take this with them.
+              </li>
+              <li>
+                <strong>Service Areas hub:</strong> use this in any longer-form
+                collateral (posters, newsletter, NextDoor footer) where
+                customers want the full coverage map.
+              </li>
+            </ul>
+
+            <h2>After domain + GBP go live</h2>
+            <ol>
+              <li>
+                Edit <code>apps/web/src/app/qr/page.tsx</code> and update the
+                review QR target to the live GBP write-review URL.
+              </li>
+              <li>
+                Re-run <code>bun run build</code> in <code>apps/web</code>.
+              </li>
+              <li>Re-download the review-magnet QR SVG.</li>
+              <li>
+                Re-print only the affected collateral (review-magnet card lot,
+                business cards if the contact QR was for the personal site).
+              </li>
+            </ol>
+
+            <p>
+              Phone: {BUSINESS.phone} · Hours: {BUSINESS.hours.weekdays}
             </p>
-            <a
-              href={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(c.svg)}`}
-              download={c.filename}
-              style={{
-                display: 'inline-block',
-                marginTop: '0.5rem',
-                padding: '0.5rem 1rem',
-                background: '#2f6b3d',
-                color: '#f7f1e3',
-                borderRadius: 6,
-                textDecoration: 'none',
-                fontWeight: 600,
-                fontSize: '0.9rem',
-              }}
-            >
-              Download SVG
-            </a>
-          </article>
-        ))}
-      </section>
-
-      <section className="card" style={{ marginTop: '2rem' }}>
-        <h2 style={{ marginTop: 0 }}>Where each QR goes</h2>
-        <ul>
-          <li>
-            <strong>Yard sign (18×24 coroplast):</strong> bottom-right corner, 2" square, alongside the
-            phone number. Customer walking by can save the link.
-          </li>
-          <li>
-            <strong>Door hanger (4.25×11):</strong> front-side center, 1.5" square. Drives the
-            conversion.
-          </li>
-          <li>
-            <strong>Business card (3.5×2):</strong> back side, lower-right, 0.75" square. Small but
-            works for tech-savvy customers.
-          </li>
-          <li>
-            <strong>Review-magnet card (5×7 Avery 5371):</strong> front, large 1.6" square, dominant
-            visual. Customers physically take this with them.
-          </li>
-          <li>
-            <strong>Service Areas hub:</strong> use this in any longer-form collateral (posters,
-            newsletter, NextDoor footer) where customers want the full coverage map.
-          </li>
-        </ul>
-      </section>
-
-      <section className="card" style={{ marginTop: '2rem' }}>
-        <h2 style={{ marginTop: 0 }}>After domain + GBP go live</h2>
-        <ol>
-          <li>Edit <code>apps/web/src/app/qr/page.tsx</code> and update the review QR target to the live GBP write-review URL.</li>
-          <li>Re-run <code>bun run build</code> in <code>apps/web</code>.</li>
-          <li>Re-download the review-magnet QR SVG.</li>
-          <li>Re-print only the affected collateral (review-magnet card lot, business cards if the contact QR was for the personal site).</li>
-        </ol>
-        <p style={{ marginTop: '1rem', fontSize: '0.95rem', color: '#4a4a4a' }}>
-          Phone: {BUSINESS.phone} · Hours: {BUSINESS.hours.weekdays}
-        </p>
-      </section>
-    </main>
+          </div>
+        </div>
+      </Section>
+    </>
   );
 }
