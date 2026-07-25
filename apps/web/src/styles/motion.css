@@ -65,3 +65,20 @@
     var(--motion-duration-fast) var(--motion-easing-default), border-color
     var(--motion-duration-fast) var(--motion-easing-default);
 }
+
+/* Continuous spin — used on the Loader2 icon in form submit buttons
+ * and any other indeterminate-progress affordance. We gate on
+ * prefers-reduced-motion so the icon freezes if the user has the OS
+ * setting on (the submit still completes; the icon just stops spinning). */
+@media (prefers-reduced-motion: no-preference) {
+  .ll-spin,
+  [style*="ll-spin"] {
+    animation: ll-spin 0.9s linear infinite;
+  }
+}
+
+@keyframes ll-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
