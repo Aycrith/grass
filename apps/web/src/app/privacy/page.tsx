@@ -12,9 +12,10 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <section className="container">
-      <h1>Privacy Policy</h1>
-      <p>Last updated: {new Date().toISOString().split('T')[0] ?? ''}.</p>
+    <section className="container container--prose section">
+      <div className="prose">
+        <h1>Privacy Policy</h1>
+        <p>Last updated: {new Date().toISOString().split('T')[0] ?? ''}.</p>
 
       <h2>What we collect</h2>
       <ul>
@@ -53,6 +54,7 @@ export default function PrivacyPage() {
         Customer data is stored in Supabase (Postgres) in the US. SMS/email is sent via Twilio and
         Resend respectively. Payments are processed by Stripe — we do not store credit card numbers.
       </p>
+      </div>
     </section>
   );
 }

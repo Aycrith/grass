@@ -12,9 +12,10 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <section className="container">
-      <h1>Terms of Service</h1>
-      <p>Last updated: {new Date().toISOString().split('T')[0] ?? ''}.</p>
+    <section className="container container--prose section">
+      <div className="prose">
+        <h1>Terms of Service</h1>
+        <p>Last updated: {new Date().toISOString().split('T')[0] ?? ''}.</p>
 
       <h2>Quotes</h2>
       <p>
@@ -69,6 +70,7 @@ export default function TermsPage() {
         <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a> ·{' '}
         <a href={`tel:${BUSINESS.phone}`}>{BUSINESS.phone}</a>
       </p>
+      </div>
     </section>
   );
 }
