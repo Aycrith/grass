@@ -6,6 +6,12 @@
  * is set by passing `error` prop.
  *
  * Used by ContactForm + QuoteCalculator (refactored in Phase F).
+ *
+ * 2026-07-25: trimmed the FieldType union. The legacy 'url' and
+ * 'number' variants had no live callers (verified with rg); the
+ * current form surface only needs text, email, tel, textarea,
+ * and select. If a future form needs URL or number input, add
+ * the variant back — the field is well-factored to slot it in.
  */
 
 import { type ComponentPropsWithoutRef, type ReactNode, forwardRef, useId } from 'react';
@@ -14,7 +20,7 @@ import { cn } from '@/lib/cn';
 
 import styles from './Input.module.css';
 
-type FieldType = 'text' | 'email' | 'tel' | 'url' | 'number' | 'textarea' | 'select';
+type FieldType = 'text' | 'email' | 'tel' | 'textarea' | 'select';
 
 interface BaseFieldProps {
   label: string;
