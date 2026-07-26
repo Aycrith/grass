@@ -25,7 +25,7 @@ import { cn } from '@/lib/cn';
 import { AccordionSun } from './AccordionSun';
 import styles from './Accordion.module.css';
 
-export interface AccordionItem {
+interface AccordionItem {
   q: string;
   a: ReactNode;
 }
