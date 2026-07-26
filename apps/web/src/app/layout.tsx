@@ -22,7 +22,7 @@
  * while leaving <head> entirely to the metadata API.
  */
 
-import { SiteFooter, SiteHeader } from '@/components/site';
+import { HurricaneBanner, SiteFooter, SiteHeader } from '@/components/site';
 import { LenisProvider, MotionConfig } from '@/components/motion';
 import { BUSINESS } from '@/lib/business';
 import type { Metadata } from 'next';
@@ -138,6 +138,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a className="skip-link" href="#main">
           Skip to main content
         </a>
+        {/* HurricaneBanner — capability-bound site-wide banner.
+         *
+         * Gated on BUSINESS.hurricaneModeActive (the steward flips
+         * this when the `cap_hurricane_mode` capability is triggered).
+         * The banner is a 'use client' component but it's safe to
+         * mount from this Server Component layout — the parent
+         * <body> never re-renders, so the banner's Framer Motion
+         * mount animation only fires when the flag actually changes
+         * via a redeploy. The header below is `position: sticky;
+         * top: 0`, so the banner pushes the header down naturally
+         * and the header takes over the viewport top as the visitor
+         * scrolls past it. */}
+        {BUSINESS.hurricaneModeActive ? <HurricaneBanner /> : null}
         {/* WP19 - LenisProvider mounts smooth-scroll so the ParallaxImage
          * site-wide) actually sees a non-zero `scrollYProgress`. The
          * provider is gated for prefers-reduced-motion + coarse-pointer +
