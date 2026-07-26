@@ -4,6 +4,7 @@
 
 import { Container, Section } from '@/components/site';
 import { BUSINESS } from '@/lib/business';
+import { LEGAL_LAST_UPDATED } from '@/lib/content';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -18,7 +19,7 @@ export default function PrivacyPage() {
       <Container size="prose">
         <div className="prose">
           <h1>Privacy Policy</h1>
-          <p>Last updated: {new Date().toISOString().split('T')[0] ?? ''}.</p>
+          <p>Last updated: {LEGAL_LAST_UPDATED}.</p>
 
         <h2>What we collect</h2>
         <ul>

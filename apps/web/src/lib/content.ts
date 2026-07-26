@@ -969,6 +969,32 @@ export const contactPage = {
 } as const;
 
 /**
+ * Legal-page "last updated" date.
+ *
+ * Before this commit, /privacy and /terms used
+ * `new Date().toISOString().split('T')[0]` at render
+ * time, which meant every deploy stamped a fresh date
+ * even if the policy text hadn't changed. A "Last
+ * updated: 2026-08-15" date that is actually just the
+ * build timestamp is misleading to a customer who
+ * reads the page and trusts the date as a recency
+ * signal.
+ *
+ * Now: the date is a single-source-of-truth const
+ * that the steward updates only when the policy
+ * actually changes. Both /privacy and /terms read
+ * from the same const so they stay in lockstep
+ * (a real-world legal review would update both at
+ * the same time, and accidentally updating only one
+ * is a footgun).
+ *
+ * Initial value: 2026-07-25 (the date of the polish
+ * pass that migrated the legal pages to the design
+ * system primitives).
+ */
+export const LEGAL_LAST_UPDATED = '2026-07-25';
+
+/**
  * Quote: `/quote` page content.
  *
  * Drives QuoteHero (eyebrow + h1 + tagline) above the existing
