@@ -78,7 +78,7 @@ h4 {
 
 p {
   margin-block: 0 var(--space-4);
-  line-height: 1.6;
+  /* line-height inherited from html/body (1.6) */
 }
 
 small {
