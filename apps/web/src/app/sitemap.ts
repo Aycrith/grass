@@ -19,6 +19,8 @@
 
 import type { MetadataRoute } from 'next';
 
+import { BUSINESS } from '@/lib/business';
+
 const SERVICE_SLUGS = [
   'mowing',
   'edging',
@@ -33,7 +35,7 @@ const SERVICE_SLUGS = [
 const AREA_ZIPS = ['33756', '33770', '33771', '33773', '33774', '33778'] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = 'https://largolawn.pro';
+  const base = BUSINESS.url;
   const lastmod = new Date();
   return [
     // --- Top-level pages ---

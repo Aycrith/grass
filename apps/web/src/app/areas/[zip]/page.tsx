@@ -84,7 +84,7 @@ export default async function AreaDetailPage({ params }: AreaParams) {
       addressCountry: 'US',
       addressLocality: detail.name,
     },
-    url: `https://largolawn.pro/areas/${zip}`,
+    url: `${BUSINESS.url}/areas/${zip}`,
   };
 
   const breadcrumbSchema = detailBreadcrumb({

@@ -44,7 +44,7 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://largolawn.pro'),
+  metadataBase: new URL(BUSINESS.url),
   title: {
     default: `${BUSINESS.name}: Lawn Care & Landscaping in ${BUSINESS.address.city}, FL`,
     template: `%s - ${BUSINESS.name}`,
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://largolawn.pro',
+    url: BUSINESS.url,
     siteName: BUSINESS.name,
     title: `${BUSINESS.name}: Lawn Care in ${BUSINESS.address.city}, FL`,
     description:
@@ -95,7 +95,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     name: BUSINESS.name,
     telephone: BUSINESS.phone,
     email: BUSINESS.email,
-    url: 'https://largolawn.pro',
+    url: BUSINESS.url,
     address: {
       '@type': 'PostalAddress',
       streetAddress: BUSINESS.address.line1,
@@ -124,7 +124,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       },
     ],
     priceRange: '$$',
-    image: 'https://largolawn.pro/og.png',
+    image: `${BUSINESS.url}/og.png`,
   };
 
   return (

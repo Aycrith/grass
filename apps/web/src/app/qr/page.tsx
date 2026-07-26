@@ -39,10 +39,10 @@ export const metadata: Metadata = {
 
 // Generate static QR SVGs at build time so the steward can copy-paste them
 // into print materials. Each QR points to a public landing page or
-// action URL — the steward replaces the placeholder domain with the real
-// `largolawn.pro` once it is purchased.
+// action URL. The DOMAIN constant is the BUSINESS.url so the steward
+// only edits one place when the canonical domain changes (OBJ-M2-004).
 
-const DOMAIN = 'https://largolawn.pro';
+const DOMAIN = BUSINESS.url;
 
 const CODES = [
   {

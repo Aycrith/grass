@@ -19,7 +19,9 @@
 
 import type { ReactElement } from 'react';
 
-const SITE_URL = 'https://largolawn.pro';
+import { BUSINESS } from '@/lib/business';
+
+const SITE_URL = BUSINESS.url;
 
 /**
  * Build a `BreadcrumbList` JSON-LD object for a detail page.

@@ -154,8 +154,8 @@ export function SiteFooter({ className }: SiteFooterProps): ReactNode {
           </ul>
           <span>
             Built in Largo ·{' '}
-            <a href="https://largolawn.pro" target="_blank" rel="noopener noreferrer">
-              largolawn.pro
+            <a href={BUSINESS.url} target="_blank" rel="noopener noreferrer">
+              {new URL(BUSINESS.url).hostname}
             </a>
           </span>
         </FadeUp>

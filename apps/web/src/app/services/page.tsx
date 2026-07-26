@@ -34,7 +34,7 @@ export default function ServicesIndexPage() {
       '@type': 'ListItem',
       position: i + 1,
       name: svc.title,
-      url: `https://largolawn.pro/services/${svc.slug}`,
+      url: `${BUSINESS.url}/services/${svc.slug}`,
     })),
   };
 

@@ -67,7 +67,7 @@ export default async function ServiceDetailPage({ params }: ServiceParams) {
       name: 'Largo',
       containedInPlace: { '@type': 'State', name: 'FL' },
     },
-    url: `https://largolawn.pro/services/${slug}`,
+    url: `${BUSINESS.url}/services/${slug}`,
   };
 
   const beforeAfterCopy = services[slug as ServiceKey]?.beforeAfter;

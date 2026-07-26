@@ -10,6 +10,20 @@
 export const BUSINESS = {
   name: 'Largo Lawn',
   legal_entity: 'Largo Lawn',
+  /**
+   * Production domain. Use anywhere the canonical site URL is
+   * needed (JSON-LD url field, metadataBase, sitemap base URL,
+   * QR-code target domain, robots.txt sitemap directive, etc).
+   *
+   * The 'https://largolawn.pro' literal was previously
+   * hard-coded in 13+ files (metadataBase, every JSON-LD
+   * `url:` field, the opengraph-image.tsx fallback comment,
+   * the services / areas / qr detail pages, the sitemap,
+   * the robots.ts, the /qr page DOMAIN constant, the
+   * SiteFooter "built in Largo" link, etc). Now the literal
+   * lives in exactly one place. When the domain changes
+   * (OBJ-M2-004), only this constant edits.
+   */
   url: 'https://largolawn.pro',
   /**
    * Display phone (formatted for humans). Use for any visible

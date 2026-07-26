@@ -7,6 +7,8 @@
 
 import type { MetadataRoute } from 'next';
 
+import { BUSINESS } from '@/lib/business';
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
@@ -16,6 +18,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/', '/gbp'],
       },
     ],
-    sitemap: 'https://largolawn.pro/sitemap.xml',
+    sitemap: `${BUSINESS.url}/sitemap.xml`,
   };
 }
