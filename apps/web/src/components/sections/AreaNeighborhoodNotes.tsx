@@ -48,8 +48,8 @@ export function AreaNeighborhoodNotes({
             <h2 className={styles.aboutHeading}>{detail.name}, on the ground.</h2>
           </div>
           <div className={styles.aboutBody}>
-            {detail.about.map((para, i) => (
-              <div key={`about-${i}`} className={styles.aboutParagraph}>
+            {detail.about.map((para) => (
+              <div key={para} className={styles.aboutParagraph}>
                 <p>{para}</p>
               </div>
             ))}

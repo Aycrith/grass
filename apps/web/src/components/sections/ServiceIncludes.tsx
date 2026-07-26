@@ -41,8 +41,8 @@ export function ServiceIncludes({ slug, className }: ServiceIncludesProps): Reac
             <span className={styles.eyebrow}>What&apos;s included</span>
             <h2 className={styles.heading}>Every visit, every time.</h2>
             <ul className={styles.bullets}>
-              {detail.bullets.map((b, i) => (
-                <li key={`${detail.slug}-bullet-${i}`} className={styles.bullet}>
+              {detail.bullets.map((b) => (
+                <li key={b} className={styles.bullet}>
                   <span className={styles.bulletDot} aria-hidden="true">
                     ·
                   </span>
