@@ -1,15 +1,18 @@
 /* ============================================================
  * gbp-stub — /gbp landing page (Google Business Profile redirect).
  *
- * Two role-scoped tweaks on top of the .prose typography:
- *  - .gbp-stub sets the cream background + vertical rhythm
- *  - .gbp-cta-row lines up the two primary CTAs side-by-side
+ * Layout-only tweaks on top of the .prose typography:
+ *  - .ctaRow lines up the two primary CTAs side-by-side
  *    on desktop, stacked on mobile.
+ *  - .backLinkRow adds a top margin so the "back to main
+ *    site" Button has breathing room from the HIGHLIGHTS <ul>
+ *    above.
+ *
+ * The cream surface is now driven by the parent
+ * <Section tone="soft" rhythm="loose"> via the design
+ * system primitive (was previously set by a local
+ * .gbpStub class with a hard-coded `background: var(--ll-cream)`).
  * ============================================================ */
-
-.gbpStub {
-  background: var(--ll-cream);
-}
 
 .ctaRow {
   display: flex;

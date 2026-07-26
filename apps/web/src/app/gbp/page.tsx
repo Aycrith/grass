@@ -13,6 +13,12 @@
  * <h1>/<h2>/<ul>/<p> and a hand-rolled anchor with `className="btn"`
  * (the .btn class was never actually defined in the global CSS — the
  * anchors were just rendering as default blue underlines).
+ *
+ * 2026-07-25 follow-up: the inner <div className="container
+ * container--prose"> wrapper migrated to the <Container size="prose">
+ * React primitive. The legacy global classes are still defined in
+ * styles/layout.css for /qr's print-asset prose guide, but every
+ * customer-facing page now uses the React primitive.
  */
 
 import { BUSINESS } from '@/lib/business';
@@ -20,7 +26,7 @@ import type { Metadata } from 'next';
 import { Phone } from 'lucide-react';
 
 import { FadeUp } from '@/components/motion';
-import { Section } from '@/components/site';
+import { Container, Section } from '@/components/site';
 import { Button } from '@/components/ui';
 
 import styles from './page.module.css';
@@ -42,8 +48,8 @@ const HIGHLIGHTS: ReadonlyArray<string> = [
 
 export default function GbpLandingPage() {
   return (
-    <Section rhythm="loose" className={styles.gbpStub}>
-      <div className="container container--prose">
+    <Section rhythm="loose" tone="soft">
+      <Container size="prose">
         <FadeUp>
           <div className="prose">
             <h1>Welcome from Google</h1>
@@ -82,7 +88,7 @@ export default function GbpLandingPage() {
             </div>
           </div>
         </FadeUp>
-      </div>
+      </Container>
     </Section>
   );
 }
