@@ -1004,7 +1004,7 @@ export const contactPage = {
  * pass that migrated the legal pages to the design
  * system primitives).
  */
-export const LEGAL_LAST_UPDATED = '2026-07-25';
+export const LEGAL_LAST_UPDATED = '2026-07-26';
 
 /**
  * Quote: `/quote` page content.

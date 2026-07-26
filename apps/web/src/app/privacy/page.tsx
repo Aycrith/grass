@@ -1,5 +1,23 @@
 /**
  * Privacy page — minimal but compliant.
+ *
+ * NOTE on third-party processors: this page originally listed
+ * Supabase, Twilio, Resend, and Stripe as the data sub-processors.
+ * As of 2026-07-26 the business is in cash-min mode and these
+ * integrations are not yet active:
+ *   - Supabase (D-0002 phase B): planned once revenue justifies
+ *     the monthly cost; until then, customer data is stored
+ *     locally (a single steward-maintained spreadsheet + the
+ *     email/SMS inboxes).
+ *   - Twilio (SMS): planned for the customer-text pipeline; until
+ *     then SMS uses the steward&apos;s personal number.
+ *   - Resend (email): planned; until then email uses Gmail.
+ *   - Stripe (payments): planned; until then payments are
+ *     Cash / Venmo / Zelle / card-on-phone (no card data is
+ *     stored on the operator&apos;s systems at all).
+ *
+ * The page now states the actual current state. When the
+ * deferred items activate, the page is updated to match.
  */
 
 import { Container, Section } from '@/components/site';
@@ -53,10 +71,43 @@ export default function PrivacyPage() {
           <a href={`tel:${BUSINESS.phoneTel}`}>{BUSINESS.phone}</a>.
         </p>
 
-        <h2>Data storage</h2>
+        <h2>Data storage (current state)</h2>
         <p>
-          Customer data is stored in Supabase (Postgres) in the US. SMS/email is sent via Twilio and
-          Resend respectively. Payments are processed by Stripe — we do not store credit card numbers.
+          The business is in pre-launch / cash-min mode (see
+          <code> state/ledger.yaml -&gt; objectives.deferred_cash_constrained </code>
+          for the deferred items). The current data flow is:
+        </p>
+        <ul>
+          <li>
+            <strong>Quote/contact form submissions</strong> arrive at the steward&apos;s
+            <code> {BUSINESS.email} </code> inbox (Gmail; Google is a sub-processor for
+            email storage).
+          </li>
+          <li>
+            <strong>Customer records</strong> are maintained in a single steward-managed
+            spreadsheet (Google Sheets; Google is a sub-processor) until volume justifies
+            a dedicated customer database.
+          </li>
+          <li>
+            <strong>SMS</strong> uses the steward&apos;s personal number until Twilio binds;
+            once bound, Twilio becomes a sub-processor.
+          </li>
+          <li>
+            <strong>Email</strong> uses Gmail; once Resend binds, Resend becomes the
+            transactional-email sub-processor.
+          </li>
+          <li>
+            <strong>Payments</strong> are Cash / Venmo / Zelle / card-on-phone. We do
+            <strong> not</strong> store credit card numbers on any of our systems. Card
+            data is held by the card reader / Venmo / Zelle. Online card payments via
+            Stripe (and the Stripe data sub-processor relationship) are planned once
+            invoice volume justifies the integration cost.
+          </li>
+        </ul>
+        <p>
+          When the deferred items activate, this section is updated to list Supabase,
+          Twilio, Resend, and Stripe as the data sub-processors (each with a linked
+          privacy policy and a US-only data residency commitment).
         </p>
         </div>
       </Container>
