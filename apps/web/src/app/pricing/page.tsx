@@ -26,6 +26,7 @@ import {
 } from '@/components/sections';
 import { BUSINESS } from '@/lib/business';
 import { faq } from '@/lib/content';
+import { JsonLd } from '@/lib/json-ld';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -51,11 +52,7 @@ export default function PricingPage() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: SEO JSON-LD
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
+      <JsonLd data={faqJsonLd} />
       <PricingHero />
       <PricingComparisonTable />
       <PricingFAQ />

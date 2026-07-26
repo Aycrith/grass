@@ -7,9 +7,17 @@
  * the same @context/@type/itemListElement scaffolding. The
  * `breadcrumbJsonLd` helper below is the single source of truth.
  *
+ * The `<JsonLd>` component encapsulates the
+ * `<script type="application/ld+json" dangerouslySetInnerHTML=...>`
+ * tag + the per-call biome-ignore directive into a single
+ * primitive, so route files don't each carry their own copy of
+ * the lint suppression.
+ *
  * Satori / Next.js ImageResponse do NOT use this — those render
  * PNGs, not HTML, and the JSON-LD doesn't apply.
  */
+
+import type { ReactElement } from 'react';
 
 const SITE_URL = 'https://largolawn.pro';
 
@@ -19,9 +27,8 @@ const SITE_URL = 'https://largolawn.pro';
  * @param trail - the breadcrumb trail from root → current. The
  *   first item MUST be Home. The last item is the current page
  *   (its `item` is the canonical URL).
- * @returns a plain object suitable for
- *   `JSON.stringify(...)` + `dangerouslySetInnerHTML={{ __html }}`
- *   in a <script type="application/ld+json"> tag.
+ * @returns a plain object suitable for `JSON.stringify(...)` and
+ *   then passing to <JsonLd data={...} />.
  */
 export function breadcrumbJsonLd(
   trail: ReadonlyArray<{ name: string; href: string }>,
@@ -64,4 +71,27 @@ export function detailBreadcrumb(args: {
     { name: args.parentLabel, href: args.parentHref },
     { name: args.currentLabel, href: args.currentHref },
   ]);
+}
+
+/**
+ * `<JsonLd>` — render a schema.org JSON-LD block as a
+ * <script type="application/ld+json"> tag. Encapsulates the
+ * per-call `dangerouslySetInnerHTML` so the route files
+ * don't each carry their own biome-ignore directive.
+ *
+ * The data is JSON-serialized at render time (so the route
+ * composes the object via the breadcrumbJsonLd / detailBreadcrumb
+ * helpers above, then passes it here). Satori / ImageResponse
+ * pages do NOT use this — see note at top of file.
+ */
+export function JsonLd({ data }: { data: object }): ReactElement {
+  return (
+    <script
+      type="application/ld+json"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: SEO JSON-LD
+      // (this whole primitive exists so the biome-ignore lives in
+      // one place rather than being copy-pasted to every route)
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
 }

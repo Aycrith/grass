@@ -25,6 +25,7 @@
 import { HurricaneBanner, SiteFooter, SiteHeader } from '@/components/site';
 import { LenisProvider, MotionConfig } from '@/components/motion';
 import { BUSINESS } from '@/lib/business';
+import { JsonLd } from '@/lib/json-ld';
 import type { Metadata } from 'next';
 import { Fraunces, Inter } from 'next/font/google';
 import './globals.css';
@@ -130,11 +131,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${fraunces.variable}`}>
       <body>
         {/* JSON-LD: rendered in <body> so it doesn't shadow metadata-API tags. */}
-        <script
-          type="application/ld+json"
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: SEO JSON-LD
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        <JsonLd data={jsonLd} />
         <a className="skip-link" href="#main">
           Skip to main content
         </a>

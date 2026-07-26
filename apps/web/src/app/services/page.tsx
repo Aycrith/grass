@@ -16,6 +16,7 @@
 import { ServiceDirectory, FinalCTABanner } from '@/components/sections';
 import { BUSINESS } from '@/lib/business';
 import { services } from '@/lib/content';
+import { JsonLd } from '@/lib/json-ld';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -39,14 +40,10 @@ export default function ServicesIndexPage() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: SEO JSON-LD
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            ...itemListJsonLd,
-            provider: { '@type': 'LandscapingBusiness', name: BUSINESS.name },
-          }),
+      <JsonLd
+        data={{
+          ...itemListJsonLd,
+          provider: { '@type': 'LandscapingBusiness', name: BUSINESS.name },
         }}
       />
       <ServiceDirectory />

@@ -34,7 +34,7 @@ import {
 } from '@/components/sections';
 import { BUSINESS } from '@/lib/business';
 import { areaDetail } from '@/lib/content';
-import { detailBreadcrumb } from '@/lib/json-ld';
+import { detailBreadcrumb, JsonLd } from '@/lib/json-ld';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -96,16 +96,8 @@ export default async function AreaDetailPage({ params }: AreaParams) {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: SEO JSON-LD
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: SEO JSON-LD
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
+      <JsonLd data={jsonLd} />
+      <JsonLd data={breadcrumbSchema} />
       <AreaHero detail={detail} />
       <AreaNeighborhoodNotes detail={detail} />
       <AreaServiceOffer zip={zip} />
