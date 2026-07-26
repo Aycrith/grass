@@ -19,7 +19,7 @@ import { cn } from '@/lib/cn';
 
 import styles from './Card.module.css';
 
-export type CardVariant = 'service' | 'area' | 'pricing' | 'insight';
+type CardVariant = 'service' | 'area' | 'pricing' | 'insight';
 
 type ArticleOnlyProps = Omit<HTMLAttributes<HTMLElement>, 'title' | 'children' | 'className'>;
 
@@ -39,8 +39,6 @@ interface CardProps extends ArticleOnlyProps {
   className?: string;
   children?: ReactNode;
 }
-
-export type { CardProps };
 
 export function Card({
   variant = 'service',

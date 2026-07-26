@@ -21,8 +21,8 @@ import { cn } from '@/lib/cn';
 
 import styles from './Button.module.css';
 
-export type ButtonVariant = 'primary' | 'sun' | 'sand' | 'outline' | 'ghost' | 'danger';
-export type ButtonSize = 'sm' | 'md' | 'lg';
+type ButtonVariant = 'primary' | 'sun' | 'sand' | 'outline' | 'ghost' | 'danger';
+type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface CommonProps {
   variant?: ButtonVariant;
@@ -51,7 +51,7 @@ type LinkElementProps = CommonProps &
     href: string;
   };
 
-export type ButtonProps = ButtonElementProps | AnchorElementProps | LinkElementProps;
+type ButtonProps = ButtonElementProps | AnchorElementProps | LinkElementProps;
 
 const sizeClass: Record<ButtonSize, string> = {
   sm: styles.sm ?? '',

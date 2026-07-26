@@ -45,7 +45,7 @@ type SelectFieldProps = BaseFieldProps & {
   options: ReadonlyArray<{ value: string; label: string }>;
 } & Omit<ComponentPropsWithoutRef<'select'>, 'className' | 'children'>;
 
-export type InputProps = TextFieldProps | TextAreaFieldProps | SelectFieldProps;
+type InputProps = TextFieldProps | TextAreaFieldProps | SelectFieldProps;
 
 export const Input = forwardRef<
   HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
