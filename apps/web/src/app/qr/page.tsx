@@ -93,7 +93,7 @@ export default async function QRPage() {
   return (
     <>
       <Section rhythm="loose" tone="default" className={cn(styles.hero)}>
-        <div className="container">
+        <Container>
           <Eyebrow tone="default">Steward tools · Print assets</Eyebrow>
           <h1 className={cn(styles.h1)}>QR Codes</h1>
           <p className={cn(styles.lede)}>
@@ -108,11 +108,11 @@ export default async function QRPage() {
             the <strong>Google Review QR</strong>, replace the target with the
             live GBP write-review URL once GBP is verified (OBJ-M2-006).
           </p>
-        </div>
+        </Container>
       </Section>
 
       <Section rhythm="default" tone="soft" className={cn(styles.gridSection)}>
-        <div className="container">
+        <Container>
           <div className={cn(styles.grid)}>
             {svgs.map((c) => (
               <Card key={c.target} variant="insight" className={cn(styles.qrCard)}>
@@ -140,7 +140,7 @@ export default async function QRPage() {
               </Card>
             ))}
           </div>
-        </div>
+        </Container>
       </Section>
 
       <Section rhythm="default" tone="default" className={cn(styles.guideSection)}>
