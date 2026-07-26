@@ -31,11 +31,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Apply display font to headlines only (Fraunces).
- * (Removed h1.display, h2.display, .display selectors — no consumer.
- * Each section renders its headlines inside a co-located CSS
- * module that picks the display font via the .root class on the
- * surrounding <Eyebrow> / <Section> primitives instead.) */
+/* Apply display font to headlines only (Fraunces). */
 
 /* ---------- Type scale utilities (apply to plain h1/h2/h3/h4) ---------- */
 
@@ -86,12 +82,6 @@ small {
   line-height: var(--type-small-line);
 }
 
-/* (Removed the .text-small, .eyebrow, .display-xl/lg/sm utility
- * classes — no consumer in apps/web/src. Each section picks the
- * right font/size/weight via the <Eyebrow> primitive or a
- * co-located CSS module class. See components/site/Eyebrow.tsx
- * and the section .module.css files for the modern equivalents.) */
-
 /* Link defaults (callers can override) */
 a {
   color: var(--ll-sky);
@@ -131,8 +121,4 @@ textarea:focus-visible,
     font-size: var(--type-h2);
     line-height: var(--type-h2-line);
   }
-  /* (Removed the .display-xl / .display-lg mobile-scale override —
-   * the dead classes were just dropped from the desktop block above.
-   * Sections pick their own display scale via co-located CSS
-   * modules.) */
 }
