@@ -13,7 +13,7 @@
  * ItemList of Service entries for richer search snippets.
  */
 
-import { ServiceDirectory } from '@/components/sections';
+import { ServiceDirectory, FinalCTABanner } from '@/components/sections';
 import { BUSINESS } from '@/lib/business';
 import { services } from '@/lib/content';
 import type { Metadata } from 'next';
@@ -50,6 +50,11 @@ export default function ServicesIndexPage() {
         }}
       />
       <ServiceDirectory />
+      {/* Page closer — same FinalCTABanner used on /, /pricing, /about
+       * so every deep-link page ends with a conversion CTA. A visitor
+       * who lands on /services/mowing from search and reads the page
+       * has no in-page path to /quote besides the header nav. */}
+      <FinalCTABanner />
     </>
   );
 }

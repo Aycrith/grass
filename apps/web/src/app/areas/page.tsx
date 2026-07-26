@@ -23,6 +23,7 @@ import type { Metadata } from 'next';
 
 import { FadeUp } from '@/components/motion';
 import { Eyebrow } from '@/components/site';
+import { FinalCTABanner } from '@/components/sections';
 import { BUSINESS } from '@/lib/business';
 import { areaDetail, areaImages } from '@/lib/content';
 
@@ -97,6 +98,12 @@ export default function AreasIndexPage() {
           </p>
         </div>
       </section>
+
+      {/* Page closer — FinalCTABanner is the same one used on /,
+       * /pricing, /about, and /services. Without it, a visitor who
+       * lands on /areas from a "Largo lawn care 33770" search has
+       * no in-page path to /quote besides the header nav. */}
+      <FinalCTABanner />
     </main>
   );
 }
