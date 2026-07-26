@@ -286,7 +286,6 @@ export function WordReveal({
           // biome-ignore lint/suspicious/noArrayIndexKey: stable per-render order
           key={idx}
           className={styles.wordWindow}
-          style={{ paddingBottom: '0.08em' }}
         >
           <motion.span
             className={styles.wordInner}
