@@ -104,12 +104,27 @@ export const hero = {
  * the side rail. Layout coordinates (x/y per pin) live in the
  * component, not here: they're SVG layout config, not copy.
  *
- * Adding a new service-area ZIP only needs two edits:
- *   1. Add the ZIP to `BUSINESS.service_area_zips` and
- *      `PIN_LAYOUT` (in the component).
- *   2. Add the matching label here.
+ * Adding a new service-area ZIP needs 3 edits:
+ *   1. Add the ZIP to `BUSINESS.service_area_zips`.
+ *   2. Add the matching label to `serviceAreaMap.pinLocations` (the
+ *      `Record<BusinessZip, string>` type below fails compilation
+ *      if a key is missing, so TypeScript catches it).
+ *   3. Add the layout entry to `PIN_LAYOUT` (in the component).
  */
-export const serviceAreaMap = {
+import { BUSINESS } from './business';
+
+type BusinessZip = (typeof BUSINESS.service_area_zips)[number];
+
+export const serviceAreaMap: {
+  eyebrow: string;
+  heading: string;
+  subhead: string;
+  svgAriaLabel: string;
+  tampaBayLabel: string;
+  gulfOfMexicoLabel: string;
+  railTitle: string;
+  pinLocations: Record<BusinessZip, string>;
+} = {
   eyebrow: 'Where I mow',
   // D-0028: heading + subhead retargeted from "Six ZIPs, one route." to
   // lead with the neighborhood word the user actually thinks in. The ZIP
@@ -131,7 +146,7 @@ export const serviceAreaMap = {
     '33774': 'Largo / Ridgecrest',
     '33778': 'Seminole / Largo West',
   },
-} as const;
+};
 
 /**
  * Per-ZIP service-area images. D-0034: storybook-painted

@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { CheckCircle2, Loader2 } from 'lucide-react';
 
 import { Button, Card, Input } from '@/components/ui';
-import { inServiceArea } from '@/lib/business';
+import { BUSINESS, inServiceArea } from '@/lib/business';
 import { cn } from '@/lib/cn';
 
 import styles from './QuoteCalculator.module.css';
@@ -27,7 +27,16 @@ const FREQUENCY_OPTIONS: ReadonlyArray<{ value: Frequency; label: string }> = [
   { value: 'weekly', label: 'Weekly (best value)' },
 ];
 
-const ZIP_OPTIONS = ['33771', '33770', '33778', '33773', '33774', '33756'];
+// Home ZIP hoisted to the front (most common), then the rest of
+// BUSINESS.service_area_zips in their canonical order. The quote
+// form's ZIP dropdown shows home base first because most leads
+// come from the home ZIP (per the lead analytics), and the
+// remaining 5 in canonical order so the dropdown matches every
+// other surface (footer, sitemap, JSON-LD, coverage check).
+const ZIP_OPTIONS: ReadonlyArray<string> = [
+  BUSINESS.address.zip,
+  ...BUSINESS.service_area_zips.filter((z) => z !== BUSINESS.address.zip),
+];
 
 // Pricing matrix — sourced from research/pricing/price-book.yaml (live Largo FL 2026)
 const MOW_BASE: Record<LotSize, number> = {
