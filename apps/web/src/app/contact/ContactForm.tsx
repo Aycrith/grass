@@ -120,7 +120,7 @@ export default function ContactForm({ source }: ContactFormProps) {
   }
 
   return (
-    <form onSubmit={onSubmit} className={cn(styles.form)} noValidate={false}>
+    <form onSubmit={onSubmit} className={cn(styles.form)}>
       <div className={cn(styles.row)}>
         <Input
           label="First name"
