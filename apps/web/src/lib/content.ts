@@ -1150,6 +1150,56 @@ export const pricingTiers = [
   },
 ] as const;
 
+/**
+ * FAQ page (`/faq`) — page-level hero copy. Distinct from `faqHeader`,
+ * which is the eyebrow/heading for the FAQAccordion section on the
+ * homepage (where the eyebrow reads "08 - Questions" as part of the
+ * 14-section editorial composition). The /faq page is a standalone
+ * destination: search engines index it as the canonical FAQ surface
+ * and the page h1 should not carry the homepage's "08 - Questions"
+ * section number. The Q&A list itself is the same `faq` array the
+ * homepage accordion consumes — single source of truth.
+ */
+export const faqPage = {
+  eyebrow: 'Common questions',
+  heading: 'Frequently asked questions.',
+  tagline:
+    'Honest answers to the things homeowners ask before the first visit. If your question is not here, the phone and email are at the bottom of the page.',
+  relatedHeading: 'Other places to look',
+  relatedLinks: [
+    {
+      href: '/pricing',
+      label: 'Pricing',
+      blurb: 'Floor rates, discounts, what is and is not included.',
+    },
+    {
+      href: '/quote',
+      label: 'Get a free quote',
+      blurb: 'A two-minute form. Same-day reply during business days.',
+    },
+    {
+      href: '/contact',
+      label: 'Contact',
+      blurb: 'Phone, email, and the lead form. A text usually gets the fastest reply.',
+    },
+    {
+      href: '/services',
+      label: 'All services',
+      blurb: 'Mowing, edging, mulching, hedge trim, hurricane prep, seasonal cleanup.',
+    },
+    {
+      href: '/areas',
+      label: 'Where we work',
+      blurb: 'The six Pinellas ZIPs on the route, with per-area notes and FAQs.',
+    },
+    {
+      href: '/terms',
+      label: 'Terms + payment',
+      blurb: 'Quote, scheduling, payment, liability, disputes. Cash-min mode current state.',
+    },
+  ] as const,
+} as const;
+
 export const faqHeader = {
   eyebrow: '08 - Questions',
   heading: 'Honest answers.',

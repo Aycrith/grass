@@ -1,8 +1,8 @@
 /**
  * sitemap.xml — auto-generated from service slugs + area ZIPs.
  *
- * 19 routes: 1 home + 1 services index + 6 service detail + 1 pricing
- * + 1 about + 1 contact + 1 areas index + 6 area detail + 2 legal = 19.
+ * 20 routes: 1 home + 1 services index + 6 service detail + 1 pricing
+ * + 1 about + 1 contact + 1 areas index + 6 area detail + 1 faq + 2 legal = 20.
  * (D-0034: per-area ZIP pages re-included. D-0033 had removed them;
  * D-0034 restores them with substantive local content + 6 painted
  * storybook illustrations. The form on the homepage is still the
@@ -45,6 +45,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/about`, lastModified: lastmod, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${base}/contact`, lastModified: lastmod, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${base}/areas`, lastModified: lastmod, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${base}/faq`, lastModified: lastmod, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${base}/privacy`, lastModified: lastmod, changeFrequency: 'yearly', priority: 0.2 },
     { url: `${base}/terms`, lastModified: lastmod, changeFrequency: 'yearly', priority: 0.2 },
 
