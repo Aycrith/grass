@@ -26,6 +26,7 @@ import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
 
+import { Container } from '@/components/site';
 import { Button, LogoLockup } from '@/components/ui';
 
 import styles from './SiteHeader.module.css';
@@ -143,7 +144,7 @@ export function SiteHeader({ className }: SiteHeaderProps): ReactNode {
   return (
     <>
       <header className={cn(styles.root, scrolled && styles.scrolled, className)}>
-        <div className="container">
+        <Container size="content">
           <div className={styles.inner}>
             <Link href="/" className={styles.brand} aria-label={`${BUSINESS.name} home`}>
               <LogoLockup word={BUSINESS.name} markSize={32} />
@@ -179,7 +180,7 @@ export function SiteHeader({ className }: SiteHeaderProps): ReactNode {
               </button>
             </div>
           </div>
-        </div>
+        </Container>
       </header>
       <MobileDrawer open={drawerOpen} onOpenChange={setDrawerOpen} />
     </>
