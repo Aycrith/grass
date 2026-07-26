@@ -197,7 +197,7 @@ export default function HomePage() {
        * scrolls past the hero, hides when the final CTA is in
        * view. Single primary "Get a free quote" CTA is always
        * within reach. */}
-      <ConversionRail heroId="hero" finalCtaId="final-cta" />
+      <ConversionRail />
     </>
   );
 }
