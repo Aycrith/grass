@@ -68,7 +68,7 @@ export default function GbpLandingPage() {
               <Button as="link" href="/contact" variant="primary" size="lg">
                 Request a quote
               </Button>
-              <Button as="a" href={`tel:${BUSINESS.phone}`} variant="sun" size="lg">
+              <Button as="a" href={`tel:${BUSINESS.phoneTel}`} variant="sun" size="lg">
                 <Phone size={18} aria-hidden="true" />
                 Call {BUSINESS.phone}
               </Button>

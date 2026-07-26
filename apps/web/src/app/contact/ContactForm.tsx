@@ -110,7 +110,7 @@ export default function ContactForm({ source }: ContactFormProps) {
         <p className={cn(styles.successBody)}>
           We received your request and will follow up within 24 hours during business days. For
           urgent requests, call{' '}
-          <a href={`tel:${BUSINESS.phone}`} className={cn(styles.successLink)}>
+          <a href={`tel:${BUSINESS.phoneTel}`} className={cn(styles.successLink)}>
             {BUSINESS.phone}
           </a>
           .

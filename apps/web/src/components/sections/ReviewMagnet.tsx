@@ -69,7 +69,7 @@ export function ReviewMagnet({ className }: ReviewMagnetProps): ReactNode {
                 <div className={styles.cardActions}>
                   <Button
                     as="a"
-                    href={`tel:${BUSINESS.phone.replace(/\D/g, '')}`}
+                    href={`tel:${BUSINESS.phoneTel}`}
                     variant="primary"
                     size="md"
                   >

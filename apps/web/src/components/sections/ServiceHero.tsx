@@ -35,7 +35,7 @@ interface ServiceHeroProps {
 export function ServiceHero({ slug, className }: ServiceHeroProps): ReactNode {
   const svc = services[slug];
   const detail = serviceDetail[slug];
-  const phoneHref = `tel:${BUSINESS.phone}`;
+  const phoneHref = `tel:${BUSINESS.phoneTel}`;
   return (
     <section className={cn(styles.root, className)}>
       <div className={styles.media} aria-hidden="true">

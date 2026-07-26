@@ -50,7 +50,7 @@ export default function PrivacyPage() {
         <p>
           You can request a copy of your data, request deletion, or opt out of communications at any
           time by emailing <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a> or calling{' '}
-          <a href={`tel:${BUSINESS.phone}`}>{BUSINESS.phone}</a>.
+          <a href={`tel:${BUSINESS.phoneTel}`}>{BUSINESS.phone}</a>.
         </p>
 
         <h2>Data storage</h2>

@@ -34,7 +34,7 @@ interface AreaHeroProps {
 }
 
 export function AreaHero({ detail, className }: AreaHeroProps): ReactNode {
-  const phoneHref = `tel:${BUSINESS.phone}`;
+  const phoneHref = `tel:${BUSINESS.phoneTel}`;
   const imageSlot = areaImages[detail.zip] ?? '/illustrations/pinellas-palm-v3-600x400.webp';
   const imageAlt = `Storybook-painted ${detail.name} neighborhood at golden hour — Largo, FL ${detail.zip}.`;
 

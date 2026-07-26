@@ -44,7 +44,7 @@ export function QuoteConfirmation({ className }: QuoteConfirmationProps): ReactN
           </ol>
           <p className={styles.tail}>{quotePage.talkTail}</p>
           <p className={styles.phoneLine}>
-            <a href={`tel:${BUSINESS.phone.replace(/\D/g, '')}`}>{BUSINESS.phone}</a>
+            <a href={`tel:${BUSINESS.phoneTel}`}>{BUSINESS.phone}</a>
           </p>
         </FadeUp>
       </div>

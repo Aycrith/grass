@@ -80,7 +80,7 @@ export function SiteFooter({ className }: SiteFooterProps): ReactNode {
             <div className={styles.contactStack}>
               <span className={styles.contactLine}>
                 <Phone size={16} aria-hidden="true" />
-                <a href={`tel:${BUSINESS.phone}`}>{BUSINESS.phone}</a>
+                <a href={`tel:${BUSINESS.phoneTel}`}>{BUSINESS.phone}</a>
               </span>
               <span className={styles.contactLine}>
                 <Mail size={16} aria-hidden="true" />

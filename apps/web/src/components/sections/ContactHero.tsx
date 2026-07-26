@@ -63,7 +63,7 @@ export function ContactHero({ hurricaneMode, className }: ContactHeroProps): Rea
             </Link>
           </p>
           <p className={styles.phoneLine}>
-            <a href={`tel:${BUSINESS.phone}`}>{BUSINESS.phone}</a> ·{' '}
+            <a href={`tel:${BUSINESS.phoneTel}`}>{BUSINESS.phone}</a> ·{' '}
             <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
           </p>
         </FadeUp>

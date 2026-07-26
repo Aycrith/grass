@@ -42,7 +42,7 @@ export function QuoteHero({ className }: QuoteHeroProps): ReactNode {
           <p className={styles.tagline}>{quotePage.tagline}</p>
           <p className={styles.phoneLine}>
             Prefer a voice?{' '}
-            <a href={`tel:${BUSINESS.phone}`}>{BUSINESS.phone}</a> ·{' '}
+            <a href={`tel:${BUSINESS.phoneTel}`}>{BUSINESS.phone}</a> ·{' '}
             <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
           </p>
         </FadeUp>

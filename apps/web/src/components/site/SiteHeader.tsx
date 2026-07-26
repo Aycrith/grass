@@ -112,7 +112,7 @@ function MobileDrawer({
 
           <div className={styles.dialogFooter}>
             <p>
-              <a href={`tel:${BUSINESS.phone}`}>{BUSINESS.phone}</a>
+              <a href={`tel:${BUSINESS.phoneTel}`}>{BUSINESS.phone}</a>
               <br />
               <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
             </p>

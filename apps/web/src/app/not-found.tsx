@@ -110,7 +110,7 @@ export default function NotFound(): ReactNode {
                     <span className="sr-only">Phone</span>
                   </dt>
                   <dd>
-                    <a href={`tel:${BUSINESS.phone}`}>{BUSINESS.phone}</a>
+                    <a href={`tel:${BUSINESS.phoneTel}`}>{BUSINESS.phone}</a>
                   </dd>
                 </div>
                 <div className={styles.contactRow}>

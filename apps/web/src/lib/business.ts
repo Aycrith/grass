@@ -11,7 +11,22 @@ export const BUSINESS = {
   name: 'Largo Lawn',
   legal_entity: 'Largo Lawn',
   url: 'https://largolawn.pro',
+  /**
+   * Display phone (formatted for humans). Use for any visible
+   * text rendering — header, footer, contact page, success
+   * states, etc.
+   */
   phone: '+1-727-555-0123',
+  /**
+   * E.164-format phone (digits only) for `tel:` hrefs. Most
+   * modern browsers (Chrome, Safari, Firefox, iOS Safari,
+   * Android Chrome) accept the dashed `+1-727-555-0123` form
+   * in `tel:` hrefs, but a small number of legacy devices
+   * (older flip phones, some car infotainment systems) strip
+   * everything but digits. Use `BUSINESS.phoneTel` for any
+   * `href={\`tel:${...}\`}` so the link works on every device.
+   */
+  phoneTel: '+17275550123',
   email: 'hello@largolawn.pro',
   address: {
     line1: '12345 Starkey Rd',

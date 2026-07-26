@@ -72,7 +72,7 @@ export default function TermsPage() {
         <h2>Contact</h2>
         <p>
           <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a> ·{' '}
-          <a href={`tel:${BUSINESS.phone}`}>{BUSINESS.phone}</a>
+          <a href={`tel:${BUSINESS.phoneTel}`}>{BUSINESS.phone}</a>
         </p>
         </div>
       </Container>
