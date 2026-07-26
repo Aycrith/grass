@@ -175,13 +175,48 @@ class BusinessNAP:
     hours_weekdays: str
     hours_saturday: str
     hours_sunday: str
+    address_public: bool = True
 
     @property
     def nap_block(self) -> str:
-        """The single canonical NAP block used in every citation."""
+        """The single canonical NAP block used in every citation.
+
+        In SAB mode (addressPublic=False), the street address line
+        is omitted. Most directories (Yelp, BBB, Manta, etc.) allow
+        a service-area business to be listed with city/state/zip
+        only; the GBP is the only directory that requires a real
+        mail-receivable street address for verification, and that
+        is handled separately by the `nap_block_with_address` property.
+        """
+        if self.address_public and self.address_line1:
+            return (
+                f"{self.name}\n"
+                f"{self.address_line1}\n"
+                f"{self.address_city}, {self.address_state} {self.address_zip}\n"
+                f"{self.phone_display}\n"
+                f"{self.email}\n"
+                f"{self.url}"
+            )
+        # SAB mode: city/state/zip only.
         return (
             f"{self.name}\n"
-            f"{self.address_line1}\n"
+            f"{self.address_city}, {self.address_state} {self.address_zip}\n"
+            f"{self.phone_display}\n"
+            f"{self.email}\n"
+            f"{self.url}"
+        )
+
+    @property
+    def nap_block_with_address(self) -> str:
+        """The NAP block WITH the street address line.
+
+        Used ONLY for the GBP directory, which requires a real
+        mail-receivable address for the verification postcard.
+        All other directories use nap_block (SAB mode).
+        """
+        return (
+            f"{self.name}\n"
+            f"{self.address_line1 or '[address withheld — see steward]'}\n"
             f"{self.address_city}, {self.address_state} {self.address_zip}\n"
             f"{self.phone_display}\n"
             f"{self.email}\n"
@@ -243,6 +278,12 @@ def parse_business_ts(path: Path = BUSINESS_TS) -> BusinessNAP:
 
     address = extract_nested("address")
 
+    # Parse the addressPublic flag (defaults to True for backward compat).
+    m = re.search(r"addressPublic:\s*(true|false)", text, re.IGNORECASE)
+    address_public = True
+    if m:
+        address_public = m.group(1).lower() == "true"
+
     return BusinessNAP(
         name=extract("name"),
         legal_entity=extract("legal_entity"),
@@ -258,6 +299,7 @@ def parse_business_ts(path: Path = BUSINESS_TS) -> BusinessNAP:
         hours_weekdays=extract("weekdays"),
         hours_saturday=extract("saturday"),
         hours_sunday=extract("sunday"),
+        address_public=address_public,
     )
 
 
@@ -984,10 +1026,32 @@ def format_url(nap: BusinessNAP, fmt: str) -> str:
 
 
 def render_nap_block(nap: BusinessNAP, directory: DirectoryConfig) -> str:
-    """Render the NAP block with per-directory format overrides."""
+    """Render the NAP block with per-directory format overrides.
+
+    SAB mode (default): street address line is omitted for all
+    directories. The GBP is the only directory that can use
+    `nap_block_with_address`; the rest get the city/state/zip only.
+
+    When `--with-address` is passed to emit, the GBP block
+    includes the street address line for verification purposes.
+    All other directories still get SAB mode (the address is
+    private to the GBP verification flow).
+    """
+    if directory.slug == "google-business-profile" and nap.address_line1:
+        # GBP is the only directory that can include the street address.
+        # The block is marked clearly so the steward knows to hide it
+        # from public view in the GBP dashboard (SAB mode toggle).
+        return (
+            f"{nap.name}\n"
+            f"{nap.address_line1}\n"
+            f"{nap.address_city}, {nap.address_state} {nap.address_zip}\n"
+            f"{format_phone(nap, directory.phone_format)}\n"
+            f"{nap.email}\n"
+            f"{format_url(nap, directory.url_format)}"
+        )
+    # All other directories: SAB mode (no street address).
     return (
         f"{nap.name}\n"
-        f"{nap.address_line1}\n"
         f"{nap.address_city}, {nap.address_state} {nap.address_zip}\n"
         f"{format_phone(nap, directory.phone_format)}\n"
         f"{nap.email}\n"

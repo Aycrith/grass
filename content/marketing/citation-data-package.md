@@ -42,11 +42,23 @@
 > **Source of truth:** `apps/web/src/lib/business.ts → BUSINESS.*`
 > Re-render this block on every directory. **Do not edit by hand.**
 
+**SAB mode (the default — no street address anywhere except GBP verification):**
+
 ```
 Largo Lawn
-12345 Starkey Rd
 Largo, FL 33771
-+1-727-555-0123
++1-727-313-8011
+hello@largolawn.pro
+https://largolawn.pro
+```
+
+**GBP-only block (includes street address for verification):**
+
+```
+Largo Lawn
+[street address on file with the steward — see `business.ts`]
+Largo, FL 33771
++1-727-313-8011
 hello@largolawn.pro
 https://largolawn.pro
 ```
@@ -55,33 +67,47 @@ https://largolawn.pro
 
 - **Name:** "Largo Lawn" — never "LargoLawn" or "Largo Lawn Care" or
   "LargoLawn.pro" or "Largo Lawn Service". A solo brand, one name.
-- **Address line 1:** "12345 Starkey Rd" — street number spelled out
-  numerically (not "12345-Starkey"), no "#" or "Unit" or "Suite"
-  unless a real suite number is added to business.ts.
+- **Address:** the business operates as a service-area business
+  (SAB). Per the steward's explicit instruction (2026-07-26), the
+  street address is **not** included in any public-facing citation,
+  on the website, in the JSON-LD, or anywhere else. The address
+  is held privately by the steward for the single use case of the
+  GBP verification postcard (the one directory that requires a
+  mail-receivable address). All 24 other directories get the
+  city/state/zip only.
 - **City:** "Largo" — not "Largo, FL 33771" as a single string
   (the ZIP and state have their own fields on every platform).
 - **State:** "FL" — not "Florida".
-- **ZIP:** "33771" — 5 digits, no ZIP+4 (drop "-XXXX" if
-  business.ts grows one).
-- **Phone (display):** "+1-727-555-0123" — the canonical dashed
-  form. **Phone (tel):** "+17275550123" — only used in `tel:` hrefs.
+- **ZIP:** "33771" — 5 digits, no ZIP+4.
+- **Phone (display):** "+1-727-313-8011" — the canonical dashed
+  form. **Phone (tel):** "+17273138011" — only used in `tel:` hrefs.
 - **Email:** "hello@largolawn.pro" — lowercase, no display-name
   prefix.
 - **URL:** "https://largolawn.pro" — no trailing slash, include
   `https://` (the script auto-strips it for platforms that reject
   it; see the per-directory override block).
 
-### What if the address moves?
+### What if the address ever needs to change?
 
 The address lives in **one place** in the website code
 (`apps/web/src/lib/business.ts → BUSINESS.address`). To update
 every citation, run `bun scripts/citation-payload-generator.py
---emit` after the source change. The script does NOT push to the
+emit` after the source change. The script does NOT push to the
 directories automatically — it regenerates the paste blocks so
-the steward can update each directory manually. (See
-`content/marketing/sab-strategy.md` for the policy on service-area
-business address visibility — most directories let you hide the
-address from public view while keeping it for verification.)
+the steward can update each directory manually.
+
+The `addressPublic` flag in `business.ts` is a hard gate: when
+`false` (the default), the street address is **never** rendered
+on the website or in any citation block. When the steward
+flips it to `true` (e.g., for a future storefront), the
+address appears everywhere. The citation script respects this
+flag — see `scripts/citation-payload-generator.py →
+render_nap_block`.
+
+(See `content/marketing/sab-strategy.md` for the policy on
+service-area business address visibility — most directories
+let you hide the address from public view while keeping it
+for verification.)
 
 ---
 
@@ -634,14 +660,34 @@ A **service-area business (SAB)** is one that serves customers
 at their location, not at a storefront. Google, Yelp, and most
 directories have specific rules for SABs:
 
-- **Address field:** must contain a real, mail-receivable
-  address. For verification, this address must receive
-  postcards / phone calls. **Do not** use a P.O. Box — most
-  directories reject P.O. Boxes for SAB.
-- **Public visibility of address:** on most directories, you
-  can choose to **hide** the address from public view while
-  keeping it on file. GBP, Bing, and Apple Maps all have
-  this toggle.
+- **Address field:** the business operates in strict SAB mode
+  (per the steward's explicit instruction, 2026-07-26). The
+  street address is **never** included in any public citation
+  block. The address is held privately by the steward for the
+  single use case of the GBP verification postcard. The
+  `render_nap_block` function in
+  `scripts/citation-payload-generator.py` enforces this
+  policy: the GBP directory is the only one that can include
+  the street address, and only for the verification flow.
+
+  - **For the GBP:** the steward enters the address directly
+    at `business.google.com` (NOT via the citation script).
+    After verification, the steward hides the address from
+    public view in the GBP dashboard (Settings → Info → clear
+    "Show customer-facing address"). The website, all 24
+    other citations, and the JSON-LD all stay in SAB mode.
+
+  - **For all other directories:** the citation block
+    contains only city/state/zip. This is the standard SAB
+    pattern; most directories accept it.
+
+  - **Do not** use a P.O. Box. Even in SAB mode, the GBP
+    requires a real mail-receivable address for the
+    verification postcard.
+- **Public visibility of address:** on most directories, the
+  address is already private by default in SAB mode. The
+  citation script enforces this; the steward does not need to
+  toggle "hide address" manually on every directory.
 - **Service area field:** list the cities/ZIPs you serve,
   not a single "service area radius in miles" (the 6-ZIP
   list is more precise for hyperlocal).
@@ -652,7 +698,11 @@ directories have specific rules for SABs:
 > **Policy source:** `content/marketing/sab-strategy.md`
 > covers the broader SEO + legal-entity rationale. This
 > document is the operational checklist for filling out the
-> directory forms.
+> directory forms. The
+> `apps/web/src/lib/business.ts → BUSINESS.addressPublic`
+> flag is the hard gate — when `false`, the street address
+> is never rendered on the website, in any citation block,
+> or in the JSON-LD.
 
 ---
 
@@ -806,11 +856,23 @@ of waiting for verification.
 - **Don't** use a different name format anywhere — "LargoLawn"
   on one platform and "Largo Lawn" on another = NAP
   inconsistency = ranking penalty.
-- **Don't** use a different phone format. Even the parens vs
-  dash discrepancy between "(727) 555-0123" and "+1-727-555-0123"
-  is a NAP inconsistency on Yelp.
-- **Don't** put a P.O. Box in the address field if you're a
-  service-area business — most directories reject P.O. Boxes.
+- **Don't** use a different phone format. The canonical
+  display phone is `+1-727-313-8011`; Yelp wants the
+  parenthesized form `(727) 313-8011` (the script auto-formats
+  for the Yelp directory). Mixing parens and dashes across
+  platforms is a NAP inconsistency.
+- **Don't** include a street address in any citation block.
+  The business operates in SAB (service-area business) mode;
+  the street address is private. The `render_nap_block`
+  function in `scripts/citation-payload-generator.py` omits
+  the address for all directories except the GBP (which
+  needs it for the verification postcard). The
+  `addressPublic` flag in `business.ts` is a hard gate.
+- **Don't** put a P.O. Box in the GBP address field when
+  requesting the verification postcard. Google will reject
+  the postcard. The street address is private to the steward;
+  the GBP dashboard lets you hide it from public view after
+  verification.
 - **Don't** create the GBP with a placeholder address. Google
   will reject the postcard and may suspend the listing.
 - **Don't** enable lead-gen on Angi / HomeAdvisor / Thumbtack

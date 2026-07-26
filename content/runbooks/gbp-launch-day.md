@@ -26,11 +26,19 @@ within 5-14 days. Use the wait time productively:
 
 ### Day 0 — request postcard
 
-- [ ] **Confirm `apps/web/src/lib/business.ts → BUSINESS.address`
-      is a real, mail-receivable address.** The postcard will not
-      deliver to a P.O. Box.
-- [ ] **Confirm `BUSINESS.phone` is the real phone number** (not
-      a 555-XX-XXXX placeholder). Some verification calls
+- [ ] **The street address is held privately by the steward.** The
+      business operates in SAB (service-area business) mode. The
+      street address is **not** on the website, in any citation
+      block, or in the JSON-LD. The GBP verification postcard is
+      the single exception — Google must mail the PIN to a real
+      address, so the steward enters the address at
+      `business.google.com` directly (not via the citation
+      script). Hide the address from public view in the GBP
+      dashboard after verification (Settings → Info → clear
+      "Show customer-facing address"). The website, all 24
+      other citations, and the JSON-LD all stay in SAB mode.
+- [ ] **Confirm `BUSINESS.phone` is the real phone number.**
+      Currently `+1-727-313-8011`. Some GBP verification calls
       happen by phone.
 - [ ] Sign in to `business.google.com` with the same Google
       account the website is verified on (helps NAP consistency
@@ -271,7 +279,7 @@ Post 1 per day for the first 7 days. Use the same
 | 1 | "Hey neighbors — Largo Lawn is officially open for business. Mowing, edging, mulching, hedge trim, and pre-/post-storm hurricane prep. Free quotes within 24 hours, no contracts, mid-market pricing. Type your ZIP at largolawn.pro to check coverage." | Cover photo (freshly-mowed lawn + truck) |
 | 2 | "Mowing schedule for this week: Ridgecrest on Monday, Belleair Bluffs on Tuesday, Seminole on Wednesday. Same truck, same Tuesday, every week. Book at largolawn.pro/quote." | Truck or trailer photo |
 | 3 | "What's the difference between mowing and edging? Mowing cuts the grass. Edging cuts the lawn-to-curb transition so the line is crisp against the walk. We include edging in every mow — it's not a separate charge. Pictured: a 33774 curb after a Tuesday visit." | Edging close-up |
-| 4 | "Mid-week storm prep. We're checking the radar every 6 hours from Sunday through Wednesday. Pre-storm yard prep is $95-150 per activation; post-storm cleanup is hourly. Text us at (727) 555-0123 if you want on the prep list." | Pre-storm or work-in-progress photo |
+| 4 | "Mid-week storm prep. We're checking the radar every 6 hours from Sunday through Wednesday. Pre-storm yard prep is $95-150 per activation; post-storm cleanup is hourly. Text us at (727) 313-8011 if you want on the prep list." | Pre-storm or work-in-progress photo |
 | 5 | "Friday lawn refresh in 33773. 1/4-acre lot, weekly mow, mechanical edging along the driveway. Took 38 minutes, no bagging, no contracts. Same time next Friday." | Friday work photo |
 | 6 | "Saturday hours: 8 AM to 2 PM. We do Saturday mows for customers who can't be home on weekdays. The rest of the week is route days — Tuesday 33771, Wednesday 33773, etc. Coverage check at largolawn.pro." | Saturday work photo (or wide shot of a finished yard) |
 | 7 | "Week 1 of Largo Lawn in the books. 6 yards mowed, 2 edging-only visits, 1 mulch job booked for next week. Thanks to the neighbors who trusted us with the first visit. Next week's route is locked in." | Owner portrait or work-in-progress |
