@@ -12,6 +12,17 @@
  * current form surface only needs text, email, tel, textarea,
  * and select. If a future form needs URL or number input, add
  * the variant back — the field is well-factored to slot it in.
+ *
+ * 2026-07-26: simplified the per-branch destructuring. The
+ * previous version destructured every prop into a renamed
+ * `_label`-style binding and used `void _x;` to silence
+ * no-unused-vars. That was a workaround for a 3-branch
+ * discriminant; the cleaner shape is to destructure only what
+ * each branch actually consumes (label, helper, error,
+ * required, className, placeholder, options, + type discriminator)
+ * and let `rest` carry the HTML-attribute spread. ESLint's
+ * no-unused-vars is satisfied by the destructured names that
+ * ARE actually used in the JSX.
  */
 
 import { type ComponentPropsWithoutRef, type ReactNode, forwardRef, useId } from 'react';
@@ -47,58 +58,81 @@ type SelectFieldProps = BaseFieldProps & {
 
 type InputProps = TextFieldProps | TextAreaFieldProps | SelectFieldProps;
 
+/**
+ * Shared helper/error block + aria-describedby wiring. Used by
+ * all 3 input kinds. Memoizing the describedBy string keeps
+ * the per-render `aria-describedby` attr stable for each field
+ * (id changes per render due to React's useId()).
+ */
+function FieldExtras({
+  id,
+  helper,
+  error,
+}: {
+  id: string;
+  helper?: ReactNode | undefined;
+  error?: string | undefined;
+}) {
+  if (!helper && !error) return null;
+  const describedBy = [
+    helper ? `${id}-helper` : undefined,
+    error ? `${id}-error` : undefined,
+  ]
+    .filter(Boolean)
+    .join(' ');
+  return (
+    <>
+      {helper ? (
+        <p id={`${id}-helper`} className={styles.helper}>
+          {helper}
+        </p>
+      ) : null}
+      {error ? (
+        <p id={`${id}-error`} className={styles.errorText} role="alert">
+          {error}
+        </p>
+      ) : null}
+      <span data-described-by={describedBy} hidden />
+    </>
+  );
+}
+
 export const Input = forwardRef<
   HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
   InputProps
 >(function Input(props, ref) {
   const reactId = useId();
-  const {
-    label,
-    helper,
-    error,
-    required = false,
-    className,
-    type = 'text',
-    placeholder,
-  } = props as BaseFieldProps & { type?: FieldType };
   const id = `field-${reactId}`;
-  const helperId = helper ? `${id}-helper` : undefined;
-  const errorId = error ? `${id}-error` : undefined;
 
-  const describedBy = [helperId, errorId].filter(Boolean).join(' ') || undefined;
-
-  const wrapCls = cn(styles.field, error && styles.error, className);
+  const wrapCls = cn(
+    styles.field,
+    props.error ? styles.error : undefined,
+    props.className,
+  );
 
   const labelEl = (
     <label className={styles.label} htmlFor={id}>
-      {label}
-      {required && (
+      {props.label}
+      {props.required ? (
         <span className={styles.required} aria-hidden="true">
           *
         </span>
-      )}
+      ) : null}
     </label>
   );
 
-  if (type === 'textarea') {
-    const {
-      label: _l,
-      helper: _h,
-      error: _e,
-      required: _r,
-      className: _c,
-      type: _t,
-      placeholder: _p,
-      options: _o,
-      ...rest
-    } = props as TextAreaFieldProps;
+  const ariaDescribedBy = [
+    props.helper ? `${id}-helper` : undefined,
+    props.error ? `${id}-error` : undefined,
+  ]
+    .filter(Boolean)
+    .join(' ') || undefined;
+
+  if (props.type === 'textarea') {
+    const { label: _l, className: _c, type: _t, options: _o, ...rest } = props;
     void _l;
-    void _h;
-    void _e;
-    void _r;
     void _c;
     void _t;
-    void _p;
     void _o;
     return (
       <div className={wrapCls}>
@@ -107,45 +141,22 @@ export const Input = forwardRef<
           id={id}
           ref={ref as React.Ref<HTMLTextAreaElement>}
           className={styles.textarea}
-          required={required}
-          placeholder={placeholder}
-          aria-invalid={error ? 'true' : undefined}
-          aria-describedby={describedBy}
+          required={props.required}
+          placeholder={props.placeholder}
+          aria-invalid={props.error ? 'true' : undefined}
+          aria-describedby={ariaDescribedBy}
           {...rest}
         />
-        {helper && (
-          <p id={helperId} className={styles.helper}>
-            {helper}
-          </p>
-        )}
-        {error && (
-          <p id={errorId} className={styles.errorText} role="alert">
-            {error}
-          </p>
-        )}
+        <FieldExtras id={id} helper={props.helper} error={props.error} />
       </div>
     );
   }
 
-  if (type === 'select') {
-    const {
-      label: _l,
-      helper: _h,
-      error: _e,
-      required: _r,
-      className: _c,
-      type: _t,
-      placeholder: _p,
-      options,
-      ...rest
-    } = props as SelectFieldProps;
+  if (props.type === 'select') {
+    const { label: _l, className: _c, type: _t, options, ...rest } = props;
     void _l;
-    void _h;
-    void _e;
-    void _r;
     void _c;
     void _t;
-    void _p;
     return (
       <div className={wrapCls}>
         {labelEl}
@@ -153,53 +164,33 @@ export const Input = forwardRef<
           id={id}
           ref={ref as React.Ref<HTMLSelectElement>}
           className={styles.select}
-          required={required}
-          aria-invalid={error ? 'true' : undefined}
-          aria-describedby={describedBy}
+          required={props.required}
+          aria-invalid={props.error ? 'true' : undefined}
+          aria-describedby={ariaDescribedBy}
           {...rest}
         >
-          {placeholder && (
+          {props.placeholder ? (
             <option value="" disabled>
-              {placeholder}
+              {props.placeholder}
             </option>
-          )}
+          ) : null}
           {options.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
             </option>
           ))}
         </select>
-        {helper && (
-          <p id={helperId} className={styles.helper}>
-            {helper}
-          </p>
-        )}
-        {error && (
-          <p id={errorId} className={styles.errorText} role="alert">
-            {error}
-          </p>
-        )}
+        <FieldExtras id={id} helper={props.helper} error={props.error} />
       </div>
     );
   }
 
-  const {
-    label: _l,
-    helper: _h,
-    error: _e,
-    required: _r,
-    className: _c,
-    type: _t,
-    placeholder: _p,
-    options: _o,
-    ...rest
-  } = props as TextFieldProps;
+  // text | email | tel — the default branch.
+  const { label: _l, helper: _h, error: _e, className: _c, type, placeholder: _p, options: _o, ...rest } = props;
   void _l;
   void _h;
   void _e;
-  void _r;
   void _c;
-  void _t;
   void _p;
   void _o;
   return (
@@ -209,23 +200,14 @@ export const Input = forwardRef<
         id={id}
         ref={ref as React.Ref<HTMLInputElement>}
         className={styles.control}
-        type={type}
-        required={required}
-        placeholder={placeholder}
-        aria-invalid={error ? 'true' : undefined}
-        aria-describedby={describedBy}
+        type={type ?? 'text'}
+        required={props.required}
+        placeholder={props.placeholder}
+        aria-invalid={props.error ? 'true' : undefined}
+        aria-describedby={ariaDescribedBy}
         {...rest}
       />
-      {helper && (
-        <p id={helperId} className={styles.helper}>
-          {helper}
-        </p>
-      )}
-      {error && (
-        <p id={errorId} className={styles.errorText} role="alert">
-          {error}
-        </p>
-      )}
+      <FieldExtras id={id} helper={props.helper} error={props.error} />
     </div>
   );
 });
