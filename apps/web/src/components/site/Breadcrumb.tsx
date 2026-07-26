@@ -75,7 +75,7 @@ export function Breadcrumb({
         {items.map((item, i) => {
           const isLast = i === items.length - 1;
           return (
-            <li key={`${item.label}-${i}`} className={styles.item}>
+            <li key={item.label} className={styles.item}>
               {isLast || !item.href ? (
                 <span className={styles.current} aria-current="page">
                   {item.label}
