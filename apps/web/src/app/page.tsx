@@ -79,7 +79,9 @@ import {
 import { BehindTheScenes } from '@/components/sections/BehindTheScenes';
 import { ConversionRail } from '@/components/site';
 import { SectionDivider } from '@/components/ui';
-import { hero as heroContent } from '@/lib/content';
+import { BUSINESS } from '@/lib/business';
+import { hero as heroContent, faq } from '@/lib/content';
+import { JsonLd } from '@/lib/json-ld';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -87,8 +89,29 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
+  // FAQPage JSON-LD — mirrors the 6 Q&As visible in the <FAQAccordion>
+  // section at the bottom of the home page. Google can render these
+  // as rich-result FAQ snippets in search. /pricing already has the
+  // same block (it owns the canonical pricing FAQ); the home FAQ is
+  // distinct — the same 6 questions but the home FAQ is for the
+  // top-of-funnel "is this a real business" question, not pricing.
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: f.a,
+      },
+    })),
+    provider: { '@type': 'LandscapingBusiness', name: BUSINESS.name },
+  };
+
   return (
     <>
+      <JsonLd data={faqJsonLd} />
       {/* 01 — Hero (D-0042: Field Telemetry + WebGL grass field) */}
       <HeroFieldTelemetry
         eyebrow={heroContent.eyebrow}

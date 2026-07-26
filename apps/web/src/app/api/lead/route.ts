@@ -13,7 +13,7 @@
  * browser. The `lead_id` here is for support only, stored in PostHog.
  */
 
-import { inServiceArea } from '@/lib/business';
+import { BUSINESS, inServiceArea } from '@/lib/business';
 import type { Principal } from '@grass/auth';
 import { createLead } from '@grass/crm-core';
 import { sendLeadResponse } from '@grass/notifications-core';
@@ -44,7 +44,7 @@ function validateLead(
   if (!inServiceArea(input.zip)) {
     return {
       ok: false,
-      error: `Sorry. We don't currently service ${input.zip}. We cover ${process.env.NEXT_PUBLIC_SERVICE_AREA ?? '33756, 33770, 33771, 33773, 33774, 33778'}.`,
+      error: `Sorry. We don't currently service ${input.zip}. We cover ${BUSINESS.service_area_zips.join(', ')}.`,
     };
   }
   return {
