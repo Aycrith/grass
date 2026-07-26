@@ -22,6 +22,7 @@ export const metadata: Metadata = {
   title: 'Services',
   description:
     'Six residential lawn-care services for Largo and Pinellas County: mowing, edging, mulching, hedge trimming, hurricane prep, seasonal cleanup.',
+  alternates: { canonical: '/services' },
 };
 
 export default function ServicesIndexPage() {

@@ -8,6 +8,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Terms of Service',
   description: `${BUSINESS.name} terms of service — quote, scheduling, payment, cancellation.`,
+  alternates: { canonical: '/terms' },
 };
 
 export default function TermsPage() {

@@ -19,6 +19,7 @@ export const metadata: Metadata = {
   title: 'Leave a Review · Largo Lawn',
   description:
     'If Largo Lawn serviced your yard, a 30-second Google review helps a local small business more than you know.',
+  alternates: { canonical: '/review' },
 };
 
 export default function ReviewPage() {

@@ -29,6 +29,12 @@ export const metadata: Metadata = {
   title: 'QR Codes · Largo Lawn',
   description:
     'Print-ready QR codes for Largo Lawn yard signs, door hangers, business cards, and review-magnet cards.',
+  // The QR page is a steward-facing print-asset page, not
+  // a customer landing page. A 4-up grid of QR SVGs is
+  // useless as a search result and could end up outranking
+  // the real /quote page if indexed.
+  robots: { index: false, follow: false },
+  alternates: { canonical: '/qr' },
 };
 
 // Generate static QR SVGs at build time so the steward can copy-paste them
