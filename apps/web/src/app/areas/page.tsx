@@ -55,7 +55,7 @@ const STAGGER_STEP_S = 0.06;
 
 export default function AreasIndexPage() {
   return (
-    <main className={styles.root}>
+    <div className={styles.root}>
       <section className={styles.hero}>
         <Container>
           <FadeUp>
@@ -104,6 +104,6 @@ export default function AreasIndexPage() {
        * lands on /areas from a "Largo lawn care 33770" search has
        * no in-page path to /quote besides the header nav. */}
       <FinalCTABanner />
-    </main>
+    </div>
   );
 }
