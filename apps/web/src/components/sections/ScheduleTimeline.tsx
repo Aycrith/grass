@@ -72,6 +72,7 @@ import {
   currentRouteProgress,
   dayIndex,
   daysSinceLastMow,
+  emptyDayRecord,
   neighborhoodFor,
   nextMowForZip,
   todayKey,
@@ -211,16 +212,11 @@ export function ScheduleTimeline({ className }: ScheduleTimelineProps): ReactNod
   const reducedMotion = useReducedMotion();
 
   // --- Derived data tables (memoized) ----------------------------------
+  // Each block uses emptyDayRecord(default) to initialize a
+  // Record<DayKey, V> with every day-key mapped to the same
+  // default, then populates from weeklySchedule / dayMeta.
   const zipsByDay = useMemo<Record<DayKey, ReadonlyArray<string>>>(() => {
-    const m: Record<DayKey, ReadonlyArray<string>> = {
-      Mon: [],
-      Tue: [],
-      Wed: [],
-      Thu: [],
-      Fri: [],
-      Sat: [],
-      Sun: [],
-    };
+    const m = emptyDayRecord<ReadonlyArray<string>>([]);
     for (const day of weeklySchedule) {
       m[day.day as DayKey] = day.zips;
     }
@@ -228,9 +224,7 @@ export function ScheduleTimeline({ className }: ScheduleTimelineProps): ReactNod
   }, []);
 
   const yardsByDay = useMemo<Record<DayKey, number>>(() => {
-    const m: Record<DayKey, number> = {
-      Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0, Sun: 0,
-    };
+    const m = emptyDayRecord<number>(0);
     for (const day of weeklySchedule) {
       m[day.day as DayKey] = day.yards;
     }
@@ -238,17 +232,13 @@ export function ScheduleTimeline({ className }: ScheduleTimelineProps): ReactNod
   }, []);
 
   const etaStartByDay = useMemo<Record<DayKey, string | null>>(() => {
-    const m: Record<DayKey, string | null> = {
-      Mon: null, Tue: null, Wed: null, Thu: null, Fri: null, Sat: null, Sun: null,
-    };
+    const m = emptyDayRecord<string | null>(null);
     for (const k of Object.keys(dayMeta) as DayKey[]) m[k] = dayMeta[k].etaStart;
     return m;
   }, []);
 
   const etaEndByDay = useMemo<Record<DayKey, string | null>>(() => {
-    const m: Record<DayKey, string | null> = {
-      Mon: null, Tue: null, Wed: null, Thu: null, Fri: null, Sat: null, Sun: null,
-    };
+    const m = emptyDayRecord<string | null>(null);
     for (const k of Object.keys(dayMeta) as DayKey[]) m[k] = dayMeta[k].etaEnd;
     return m;
   }, []);

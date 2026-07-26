@@ -23,6 +23,26 @@ export type DayKey = 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun';
 /** JS Date.getDay() (0=Sun) -> day-key used in weeklySchedule / dayMeta. */
 export const DAY_KEYS: ReadonlyArray<DayKey> = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
+/**
+ * Build a `Record<DayKey, V>` with every day-key mapped to
+ * the same default value. Replaces the 7-line `{ Mon: X, Tue: X,
+ * Wed: X, Thu: X, Fri: X, Sat: X, Sun: X }` literal that the
+ * ScheduleTimeline component needed 4 times (for zipsByDay,
+ * yardsByDay, etaStartByDay, etaEndByDay). The `V` type is
+ * inferred from the argument.
+ */
+export function emptyDayRecord<V>(defaultValue: V): Record<DayKey, V> {
+  return {
+    Mon: defaultValue,
+    Tue: defaultValue,
+    Wed: defaultValue,
+    Thu: defaultValue,
+    Fri: defaultValue,
+    Sat: defaultValue,
+    Sun: defaultValue,
+  };
+}
+
 /** Opposite of DAY_KEYS — index for a given day-key. */
 export function dayIndex(key: DayKey): number {
   return DAY_KEYS.indexOf(key);
