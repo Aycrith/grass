@@ -104,7 +104,7 @@ export default function ContactForm({ source }: ContactFormProps) {
     return (
       <Card variant="insight">
         <div className={cn(styles.successIconRow)}>
-          <CheckCircle2 size={28} aria-hidden="true" style={{ color: 'var(--ll-green)' }} />
+          <CheckCircle2 size={28} aria-hidden="true" className={cn(styles.successIcon)} />
           <h2 className={cn(styles.successHeading)}>Thanks, {form.first_name}!</h2>
         </div>
         <p className={cn(styles.successBody)}>

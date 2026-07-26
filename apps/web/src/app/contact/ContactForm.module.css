@@ -69,6 +69,11 @@
   margin-bottom: var(--space-3);
 }
 
+.successIcon {
+  color: var(--ll-green);
+  flex-shrink: 0;
+}
+
 .successHeading {
   margin: 0;
   font-family: var(--font-fraunces), serif;
