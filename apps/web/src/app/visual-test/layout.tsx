@@ -1,9 +1,9 @@
 /**
- * `_visual` test-only route group.
+ * `visual-test` test-only route group.
  *
  * Excluded from sitemap + `robots: noindex`. NOT linked from any nav. The
  * only consumer is Playwright via `visual/components.spec.ts`, which
- * navigates to `/_visual#hero` (etc.) and captures each section
+ * navigates to `/visual-test#<section-anchor>` and captures each section
  * in isolation.
  *
  * Lives under `app/` (rather than outside it) so the route inherits the
