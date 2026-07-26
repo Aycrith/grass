@@ -7,14 +7,21 @@
  * plain-local 500 with a retry button (per brand voice: no platitudes).
  * The actual error is logged server-side; we only show a generic
  * message to the customer and a "try again" affordance.
+ *
+ * Refactored 2026-07-25 to consume the new shared
+ * `status-page.module.css` AND the shared <Button> primitive.
+ * The previous implementation used a hand-rolled `<button
+ * className={styles.primaryCta}>` and `<Link className={styles.outlineCta}>`
+ * (raw anchor with the legacy outline-cta class). Now uses
+ * <Button variant="primary"> + <Button as="link" variant="outline">.
  */
 
-import Link from 'next/link';
 import { useEffect } from 'react';
 
 import { Container, Section } from '@/components/site';
+import { Button } from '@/components/ui';
 
-import styles from './not-found.module.css';
+import styles from './status-page.module.css';
 
 export default function GlobalError({
   error,
@@ -40,12 +47,12 @@ export default function GlobalError({
             straight to voicemail and we listen every morning.
           </p>
           <div className={styles.ctaRow}>
-            <button type="button" onClick={reset} className={styles.primaryCta}>
+            <Button type="button" variant="primary" size="md" onClick={reset}>
               Try again
-            </button>
-            <Link href="/" className={styles.outlineCta}>
+            </Button>
+            <Button as="link" href="/" variant="outline" size="md">
               Back to home
-            </Link>
+            </Button>
           </div>
         </div>
       </Container>
