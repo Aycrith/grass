@@ -11,7 +11,7 @@
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Eyebrow, Section } from '@/components/site';
+import { Container, Eyebrow, Section } from '@/components/site';
 import { cn } from '@/lib/cn';
 import { aboutPage } from '@/lib/content';
 
@@ -24,7 +24,7 @@ interface AboutHeroProps {
 export function AboutHero({ className }: AboutHeroProps): ReactNode {
   return (
     <Section rhythm="loose" className={cn(styles.root, className)}>
-      <div className="container">
+      <Container>
         <FadeUp className={styles.copy}>
           <Eyebrow tone="default" className={styles.eyebrow}>
             {aboutPage.eyebrow}
@@ -32,7 +32,7 @@ export function AboutHero({ className }: AboutHeroProps): ReactNode {
           <h1 className={styles.title}>{aboutPage.heading}</h1>
           <p className={styles.tagline}>{aboutPage.tagline}</p>
         </FadeUp>
-      </div>
+      </Container>
     </Section>
   );
 }
