@@ -40,8 +40,6 @@ export const BUSINESS = {
     sunday: 'Closed',
   },
   service_area_zips: ['33770', '33771', '33773', '33774', '33778', '33756'] as const,
-  // Sales tax is 6% FL + 0.75% Pinellas = 6.75% effective 2025-01-01.
-  sales_tax_pct: 6.75,
   /**
    * Hurricane mode flag. When true, the site-wide HurricaneBanner
    * mounts and the ServiceBento hurricane-prep card gains a 2px
@@ -55,8 +53,6 @@ export const BUSINESS = {
   // winds >=30 mph. Hard charter rule, enforced by scheduling constraint.
   hurricane_wind_threshold_mph: 30,
 } as const;
-
-export type ServiceAreaZip = (typeof BUSINESS.service_area_zips)[number];
 
 /**
  * Pricing floor per service. Numbers are conservative Q3-2026 Pinellas costs
@@ -77,15 +73,6 @@ export const PRICING_FLOOR_CENTS = {
 
 export function inServiceArea(zip: string): boolean {
   return (BUSINESS.service_area_zips as readonly string[]).includes(zip);
-}
-
-export function estimatedQuoteCents(
-  service: keyof typeof PRICING_FLOOR_CENTS,
-): number {
-  if (service === 'mowing_per_visit_small') return PRICING_FLOOR_CENTS.mowing_per_visit_small;
-  if (service === 'mowing_per_visit_medium') return PRICING_FLOOR_CENTS.mowing_per_visit_medium;
-  if (service === 'mowing_per_visit_large') return PRICING_FLOOR_CENTS.mowing_per_visit_large;
-  return PRICING_FLOOR_CENTS[service];
 }
 
 /**
