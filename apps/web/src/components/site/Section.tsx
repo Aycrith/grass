@@ -15,8 +15,8 @@ import { cn } from '@/lib/cn';
 
 import styles from './Section.module.css';
 
-export type SectionTone = 'default' | 'dark' | 'warm' | 'soft' | 'white';
-export type SectionRhythm = 'default' | 'tight' | 'loose' | 'hero';
+type SectionTone = 'default' | 'dark' | 'warm' | 'soft' | 'white';
+type SectionRhythm = 'default' | 'tight' | 'loose' | 'hero';
 
 interface SectionProps extends HTMLAttributes<HTMLElement> {
   tone?: SectionTone;

@@ -39,7 +39,7 @@ import { cn } from '@/lib/cn';
 
 import styles from './Breadcrumb.module.css';
 
-export interface BreadcrumbItem {
+interface BreadcrumbItem {
   /** Display label. Required. */
   label: string;
   /** Link target. Omit on the last item (the current page). */
