@@ -162,7 +162,12 @@ export default function ContactForm({ source }: ContactFormProps) {
         onChange={(e) => update('zip', e.target.value)}
         autoComplete="postal-code"
         placeholder="33771"
-        helper="We mow across {33771, 33770, 33778, 33773, 33774, 33756}. Outside that? We may still be able to help — leave a note."
+        helper={
+          <>
+            We mow across {BUSINESS.service_area_zips.join(', ')}. Outside that? We may still be
+            able to help — leave a note.
+          </>
+        }
       />
       <Input
         label="Tell us about your yard"
