@@ -16,6 +16,7 @@ import Link from 'next/link';
 import type { HTMLAttributes, ReactNode } from 'react';
 
 import { cn } from '@/lib/cn';
+import { compactUndefined } from '@/lib/props';
 
 import styles from './Card.module.css';
 
@@ -85,18 +86,15 @@ export function Card({
 
   if (href !== undefined) {
     const safeHref: string = href;
-    const anchorRest = rest as Record<string, unknown>;
-    const cleaned: Record<string, unknown> = {};
-    for (const [k, v] of Object.entries(anchorRest)) {
-      if (k === 'href') continue;
-      if (v === undefined) continue;
-      cleaned[k] = v;
-    }
+    const { href: _href, ...restWithoutHref } = rest as Record<string, unknown> & {
+      href?: unknown;
+    };
+    void _href;
     return (
       <Link
         href={safeHref}
         className={cn(cls, styles.asLink)}
-        {...cleaned}
+        {...compactUndefined(restWithoutHref as Record<string, unknown>)}
       >
         {inner}
       </Link>

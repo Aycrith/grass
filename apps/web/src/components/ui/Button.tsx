@@ -6,7 +6,8 @@
  *
  * Accepts the standard HTML attribute spreads for each element type. Because
  * the project enables `exactOptionalPropertyTypes: true`, we strip the props
- * we handle and compact undefined values before forwarding.
+ * we handle and compact undefined values before forwarding. The `compactUndefined`
+ * helper in `lib/props.ts` is shared with Card.tsx.
  */
 
 import Link from 'next/link';
@@ -18,6 +19,7 @@ import {
 } from 'react';
 
 import { cn } from '@/lib/cn';
+import { compactUndefined } from '@/lib/props';
 
 import styles from './Button.module.css';
 
@@ -59,51 +61,39 @@ const sizeClass: Record<ButtonSize, string> = {
   lg: styles.lg ?? '',
 };
 
-function compactUndefined<T extends Record<string, unknown>>(obj: T): Partial<T> {
-  const out: Partial<T> = {};
-  for (const k of Object.keys(obj) as Array<keyof T>) {
-    const v = obj[k];
-    if (v === undefined) continue;
-    out[k] = v;
-  }
-  return out;
-}
-
 export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
   function Button(props, ref) {
-    const cls = cn(
-      styles.root,
-      styles[props.variant ?? 'primary'],
-      sizeClass[props.size ?? 'md'],
-      props.inverse && styles.inverse,
-      props.className,
-    );
-
+    // Destructure the props the component handles by name. `as` and
+    // `href` stay on `props` (not destructured) so TypeScript can
+    // narrow the union member when checking `props.as` in the 3
+    // branches below. Everything else drops into `rest` for the
+    // HTML-attribute spread.
     const {
-      as: _as,
-      variant: _v,
-      size: _s,
-      inverse: _i,
-      className: _c,
+      variant,
+      size,
+      inverse,
+      className,
       iconLeft,
       iconRight,
       children,
       ...rest
-    } = props as CommonProps & { as?: string } & Record<string, unknown>;
-    void _as;
-    void _v;
-    void _s;
-    void _i;
-    void _c;
+    } = props as CommonProps & Record<string, unknown>;
+
+    const cls = cn(
+      styles.root,
+      styles[variant ?? 'primary'],
+      sizeClass[size ?? 'md'],
+      inverse && styles.inverse,
+      className,
+    );
 
     if (props.as === 'link') {
-      const linkRest = compactUndefined(rest);
       return (
         <Link
           ref={ref as React.Ref<HTMLAnchorElement>}
           href={props.href}
           className={cls}
-          {...linkRest}
+          {...compactUndefined(rest)}
         >
           {iconLeft}
           {children}
@@ -113,13 +103,12 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
     }
 
     if (props.as === 'a') {
-      const anchorRest = compactUndefined(rest);
       return (
         <a
           ref={ref as React.Ref<HTMLAnchorElement>}
           href={props.href}
           className={cls}
-          {...anchorRest}
+          {...compactUndefined(rest)}
         >
           {iconLeft}
           {children}
@@ -128,13 +117,12 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
       );
     }
 
-    const buttonRest = compactUndefined(rest);
     return (
       <button
         ref={ref as React.Ref<HTMLButtonElement>}
         type="button"
         className={cls}
-        {...buttonRest}
+        {...compactUndefined(rest)}
       >
         {iconLeft}
         {children}
