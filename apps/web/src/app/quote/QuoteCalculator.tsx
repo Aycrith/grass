@@ -293,7 +293,7 @@ export function QuoteCalculator({
           type="tel"
           value={phoneVal}
           onChange={(e) => setPhoneVal(e.target.value)}
-          placeholder="(727) 555-0123"
+          placeholder="(727) 313-8011"
           autoComplete="tel"
           helper="Recommended for fastest quote — a text beats email every time."
         />

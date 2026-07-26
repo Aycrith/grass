@@ -6,7 +6,7 @@
  * Full-bleed image at top with editorial Fraunces display
  * heading + tagline + 60–120 word intro floating on top. Two
  * CTAs: primary "Get a free quote" + secondary "Call (727)
- * 555-0123".
+ * 313-8011".
  *
  * Reads from `lib/content.ts → serviceDetail[slug]` for copy
  * and `services[slug]` for imageSlot/imageAlt. The section is

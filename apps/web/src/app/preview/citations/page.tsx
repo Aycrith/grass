@@ -29,8 +29,9 @@ export default async function PreviewCitations() {
       <h2>NAP Template (copy verbatim into every directory)</h2>
       <pre style={{ background: 'var(--ll-cream)', padding: '1rem', borderRadius: 'var(--radius)' }}>
 {`Name:    Largo Lawn
-Address: 12345 Starkey Rd, Largo, FL 33771
-Phone:   +1-727-555-0123
+Address: (SAB — city/state/zip only; street address withheld)
+         Largo, FL 33771
+Phone:   +1-727-313-8011
 Email:   hello@largolawn.pro
 URL:     https://largolawn.pro
 Hours:   Mon–Fri 7:00 AM – 5:00 PM | Sat 8:00 AM – 2:00 PM | Sun Closed

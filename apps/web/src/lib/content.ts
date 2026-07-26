@@ -32,7 +32,7 @@ export const hero = {
   subhead:
     'Local, solo-operator lawn care in Largo and the five adjacent Pinellas ZIPs. Free quotes within 24 hours. No contract, no franchise markup.',
   primaryCta: { label: 'Get a free quote', href: '/quote' },
-  secondaryCta: { label: 'Call (727) 555-0123', href: 'tel:+17275550123' },
+  secondaryCta: { label: 'Call (727) 313-8011', href: 'tel:+17273138011' },
   /**
    * D-0049 — second pinned scene that appears after the photo
    * (scroll > 0.40). Copy voice matches scene 1 but shifts from
