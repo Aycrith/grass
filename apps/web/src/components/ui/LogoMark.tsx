@@ -10,6 +10,14 @@
  * `variant="line"`.
  *
  * Sized via the `size` prop (px) — defaults to 32.
+ *
+ * WP34 follow-up: removed the inline `style={{ width, height }}` so
+ * consumer-provided `className` can override the rendered size
+ * (e.g. `className={styles.brandMark}` in SiteHeader.module.css
+ * already declares `width: 32px; height: 32px`). The HTML
+ * width/height attributes still declare the intrinsic dimensions
+ * for layout pre-paint and aspect-ratio fallback. Same fix as
+ * Illustration.tsx.
  */
 
 import { cn } from '@/lib/cn';
@@ -17,13 +25,13 @@ import { cn } from '@/lib/cn';
 import styles from './LogoMark.module.css';
 
 interface LogoMarkProps {
-  size?: number;
-  className?: string;
+  size?: number | undefined;
+  className?: string | undefined;
   /** Override the asset path. Defaults to v3 painted webp. */
-  src?: string;
+  src?: string | undefined;
   /** Mark style. "painted" uses the v3 webp; "line" uses the SVG. */
-  variant?: 'painted' | 'line';
-  title?: string;
+  variant?: 'painted' | 'line' | undefined;
+  title?: string | undefined;
 }
 
 const PAINTED_SRC = '/illustrations/logo-mark-v3-64.webp';
@@ -48,11 +56,10 @@ export function LogoMark({
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={resolvedSrc}
-      alt={title}
+      alt={title ?? 'Largo Lawn'}
       width={size}
       height={size}
       className={cn(styles.mark, className)}
-      style={{ width: size, height: size }}
       {...(isPainted ? { srcSet: PAINTED_SRCSET, sizes: `${size}px` } : {})}
     />
   );
