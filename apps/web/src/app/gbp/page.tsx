@@ -17,7 +17,6 @@
 
 import { BUSINESS } from '@/lib/business';
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { Phone } from 'lucide-react';
 
 import { FadeUp } from '@/components/motion';
@@ -76,9 +75,11 @@ export default function GbpLandingPage() {
               ))}
             </ul>
 
-            <p>
-              <Link href="/">← Back to our main site</Link>
-            </p>
+            <div className={styles.backLinkRow}>
+              <Button as="link" href="/" variant="ghost" size="md">
+                ← Back to our main site
+              </Button>
+            </div>
           </div>
         </FadeUp>
       </div>

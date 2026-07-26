@@ -24,3 +24,7 @@
     align-items: stretch;
   }
 }
+
+.backLinkRow {
+  margin-top: var(--space-5);
+}
