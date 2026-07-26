@@ -5843,3 +5843,98 @@ changelog:
       - "photo subcommand: type=edging, cover, team, mulching, storm-prep all work"
       - "auto-suggest: filename tokens correctly extract type, zip, yards, height, storm name"
       - "smart-crop: 4:3 source -> 16:9 target crops sides, 1:1 target crops top/bottom"
+
+  - id: 2026-07-26-citation-build-payload-generator
+    date: "2026-07-26"
+    title: "Citation build: 25-directory payload generator + expanded data package"
+    summary: |
+      Closes the '25-citation build' sub-deliverable of OBJ-M2-006
+      on the prep side. The 25 directories are now enumerated, the
+      per-directory data quirks are documented, and an operational
+      script generates paste-ready submission blocks from the
+      canonical NAP source. The submission day is gated on the
+      steward flipping D-0007 phase B (publishing authorization)
+      + a real mail-receivable address in business.ts.
+
+      Three artifacts:
+
+        1. content/marketing/citation-data-package.md
+           (REWRITTEN, 35 KB) — expanded from 5 directories to 25.
+           Tier 1 (7): GBP, Apple Maps, Bing, Facebook, Yelp,
+           Nextdoor, LinkedIn. Tier 2 (8): Yellow Pages, Superpages,
+           Manta, BBB, MapQuest, TomTom, Foursquare, Citysearch.
+           Tier 3 (10): Angi, HomeAdvisor, Thumbtack, Porch, Houzz,
+           Bark, LawnSite, Greater Largo Chamber (deferred), Patch,
+           CityOf.com. Each directory has: submission URL, why-it-
+           matters, time, cost, verification step, per-directory
+           quirks, lead-gen flag, pre-launch-only flag, and a
+           day-of-execution checklist.
+
+        2. scripts/citation-payload-generator.py (NEW, 52 KB)
+           Three subcommands:
+             - validate: parses business.ts, warns on placeholder
+               address/phone, confirms 25-directory roster is
+               complete, catches unknown description variants or
+               missing per-directory quirks.
+             - roster: prints the 25-directory table (used in this
+               session's PLAN-AND-EXECUTE step to confirm the
+               data package matches the script).
+             - emit: writes 25 per-directory submission blocks
+               into a date-stamped folder (e.g.
+               drafts/citations/2026-07-26/) plus an INDEX.md
+               with a status grid. Supports --only <slug> for
+               incremental submission. Reads NAP from
+               apps/web/src/lib/business.ts and re-renders per
+               directory (Yelp gets '(727) 555-0123' parens
+               format, Bing gets 'largolawn.pro' no-protocol URL,
+               etc.). Total time across all 25 directories: ~9h
+               15m (single sitting for Tier 1+2, two sittings for
+               Tier 3 with screening calls).
+
+        3. The script's 3 subcommands + 25 directory configs +
+           5 description variants + per-directory format overrides
+           (phone_format: display/parens/e164; url_format: full/
+           no-protocol/no-slash) together form the
+           operational+technical+compliance contract for the
+           citation build. Adding a 26th directory = 1 entry in
+           the DIRECTORIES list + 1 row in the data package.
+
+      Cross-references:
+        - OBJ-M2-006 (the active objective this serves).
+        - The existing 2026-07-24-gbp-photo-pipeline entry
+          (the photo half of the GBP launch).
+        - The 2026-07-23-push-remediation-governance entry
+          (lesson: main branch requires explicit steward
+          confirmation; this work is local-only, not pushed).
+        - content/marketing/sab-strategy.md (the broader SAB
+          SEO policy this build executes).
+    by: "Mavis (orchestrator, 2026-07-26 16:30 EDT)"
+    cross_project: false
+    files_changed:
+      added:
+        - "scripts/citation-payload-generator.py"
+      modified:
+        - "content/marketing/citation-data-package.md"
+    verified:
+      - "validate: 0 errors, 1 warning (555-XX-XXXX placeholder phone, expected — see validate output)"
+      - "roster: 25 directories, 6 lead-gen, 6 pre-launch-only, $250 total cost (only Chamber dues)"
+      - "emit --only yelp-business: 1 file (05-yelp-business.md, 4.6 KB) with correct parens phone + no-protocol URL"
+      - "emit: 26 files (25 per-directory + INDEX.md) into tmp/citations-test/, manually verified GBP/Bing/Yelp/Angi for correct per-directory quirks + lead-gen policy"
+      - "typecheck (apps/web): EXIT 0 (no TS code changed by this work)"
+      - "test:charter: 3/3 (lint-agents, lint-capabilities, ledger-freshness) — no charter impact"
+    references:
+      - "content/marketing/citation-data-package.md (the human-readable data package)"
+      - "scripts/citation-payload-generator.py (the operational executor)"
+      - "OBJ-M2-006 (the active objective this work serves)"
+      - "Sister artifact: 2026-07-24-gbp-photo-pipeline (the photo half of the GBP launch)"
+    next_step:
+      - "Steward review: confirm the 25-directory roster + per-directory quirks are correct."
+      - "Steward action: when ready, swap placeholder phone '(727) 555-0123' to the real number in apps/web/src/lib/business.ts."
+      - "Steward action: confirm '12345 Starkey Rd' is a real mail-receivable address (the GBP verification postcard must deliver)."
+      - "On publishing authorization: `python scripts/citation-payload-generator.py emit --output drafts/citations/<date>/` then submit each per-directory file into its form."
+    lessons:
+      - "Reusing a single Python script (rather than a YAML sidecar) keeps the directory-quirk notes next to the directory config — the alternative (separate YAML + script) invites the YAML to drift from the script logic."
+      - "Re-rendering NAP from business.ts on every emit means the citation block always matches the website; a single source of truth, even when the data is hand-edited in TypeScript."
+      - "Lead-gen directories get a 'pre-launch only: LIST, DO NOT enable paid leads' policy baked into the emitted block — the cash-min mode is enforced at the data layer, not as a separate runbook."
+
+
