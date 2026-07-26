@@ -45,3 +45,30 @@
 .accordion {
   max-width: 56rem;
 }
+
+/* "Still have questions?" call-strip. Quiet typographic tail
+ * below the accordion so the FAQ doesn't dead-end at the last
+ * question. Phone is the primary link (most common follow-up
+ * is a 30-second voice call), email is the secondary fallback. */
+.moreHelpWrap {
+  margin-top: var(--space-5);
+}
+
+.moreHelp {
+  margin: 0;
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+}
+
+.moreHelp a {
+  color: var(--ll-sky);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.moreHelp a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
