@@ -18,7 +18,7 @@ import Image from 'next/image';
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Breadcrumb, Eyebrow } from '@/components/site';
+import { Breadcrumb, Container, Eyebrow, Section } from '@/components/site';
 import { Button } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
@@ -37,7 +37,7 @@ export function ServiceHero({ slug, className }: ServiceHeroProps): ReactNode {
   const detail = serviceDetail[slug];
   const phoneHref = `tel:${BUSINESS.phoneTel}`;
   return (
-    <section className={cn(styles.root, className)}>
+    <Section className={cn(styles.root, className)}>
       <div className={styles.media} aria-hidden="true">
         <Image
           src={svc.imageSlot}
@@ -50,7 +50,7 @@ export function ServiceHero({ slug, className }: ServiceHeroProps): ReactNode {
         <div className={styles.scrim} />
       </div>
 
-      <div className="container">
+      <Container>
         <div className={styles.copy}>
           <FadeUp>
             <Breadcrumb
@@ -78,7 +78,7 @@ export function ServiceHero({ slug, className }: ServiceHeroProps): ReactNode {
             </div>
           </FadeUp>
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   );
 }

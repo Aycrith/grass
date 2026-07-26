@@ -19,6 +19,7 @@
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
+import { Container, Section } from '@/components/site';
 import { Button } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { type ServiceKey, serviceDetail } from '@/lib/content';
@@ -33,8 +34,8 @@ interface ServiceIncludesProps {
 export function ServiceIncludes({ slug, className }: ServiceIncludesProps): ReactNode {
   const detail = serviceDetail[slug];
   return (
-    <section className={cn(styles.root, className)}>
-      <div className="container">
+    <Section className={cn(styles.root, className)}>
+      <Container>
         <div className={styles.grid}>
           <FadeUp className={styles.copy}>
             <span className={styles.eyebrow}>What&apos;s included</span>
@@ -67,7 +68,7 @@ export function ServiceIncludes({ slug, className }: ServiceIncludesProps): Reac
             </div>
           </FadeUp>
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   );
 }
