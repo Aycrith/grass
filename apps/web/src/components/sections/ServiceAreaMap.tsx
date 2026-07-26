@@ -218,7 +218,12 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
   const showResult = result?.kind === 'hit' || result?.kind === 'miss';
 
   return (
-    <Section rhythm="loose" className={cn(styles.root, className)} data-test-section="service-area-map">
+    <Section
+      rhythm="loose"
+      id="coverage"
+      className={cn(styles.root, className)}
+      data-test-section="service-area-map"
+    >
       <div className="container">
         <div className={styles.inner}>
           {/* Section header — small + centered. */}

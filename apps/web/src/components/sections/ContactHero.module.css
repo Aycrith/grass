@@ -71,6 +71,22 @@
   max-width: 40rem;
 }
 
+/* Coverage line CTA — links to /#coverage so a visitor
+ * on /contact who isn't sure if their ZIP is in our
+ * service area can jump straight to the homepage
+ * coverage form without manually navigating back. */
+.coverageLink {
+  color: var(--ll-clay);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.coverageLink:hover,
+.coverageLink:focus-visible {
+  text-decoration: none;
+}
+
 .phoneLine {
   font-family: var(--font-inter);
   font-size: 1rem;

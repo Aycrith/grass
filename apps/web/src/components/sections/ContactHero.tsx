@@ -19,6 +19,7 @@
  * /api/lead. We only own the editorial frame around it.
  */
 
+import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
@@ -55,7 +56,12 @@ export function ContactHero({ hurricaneMode, className }: ContactHeroProps): Rea
           {hurricaneMode || BUSINESS.hurricaneModeActive ? (
             <p className={styles.hurricaneCallout}>{contactPage.hurricaneCopy}</p>
           ) : null}
-          <p className={styles.coverage}>{contactPage.coverageLine}</p>
+          <p className={styles.coverage}>
+            {contactPage.coverageLine.prefix}{' '}
+            <Link href="/#coverage" className={styles.coverageLink}>
+              {contactPage.coverageLine.ctaLabel} →
+            </Link>
+          </p>
           <p className={styles.phoneLine}>
             <a href={`tel:${BUSINESS.phone}`}>{BUSINESS.phone}</a> ·{' '}
             <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>

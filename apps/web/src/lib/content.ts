@@ -951,8 +951,21 @@ export const contactPage = {
     'Tell us about your yard and we will get back to you within 24 hours during business days. Or call us directly.',
   hurricaneCopy:
     'Hurricane Mode Active: We are prioritizing prep and cleanup requests. Please include your address and any concerns in the message field below.',
-  coverageLine:
-    'We currently service 33756, 33770, 33771, 33773, 33774, 33778. Not sure if we cover your ZIP? Enter it in the form and we will let you know.',
+  /**
+   * Coverage-line copy. `prefix` is the static ZIP-list intro.
+   * `ctaLabel` is the link text for the action that takes the
+   * visitor to the homepage coverage form (anchored at
+   * /#coverage). Split out from a single string so the
+   * ContactHero can render the CTA as a real <a> link with
+   * the href pointing at the homepage coverage form, not a
+   * naked phrase that the visitor has to manually translate
+   * into navigation.
+   */
+  coverageLine: {
+    prefix:
+      'We currently service 33756, 33770, 33771, 33773, 33774, 33778. Not sure if we cover your ZIP?',
+    ctaLabel: 'Try your ZIP on the homepage coverage form',
+  },
 } as const;
 
 /**
