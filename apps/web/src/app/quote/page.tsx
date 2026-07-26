@@ -23,9 +23,13 @@ import { Suspense } from 'react';
 
 import { Container, Section } from '@/components/site';
 import { QuoteConfirmation, QuoteHero } from '@/components/sections';
+import { Card } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
+import { cn } from '@/lib/cn';
 import type { Metadata } from 'next';
 import { QuoteCalculator } from './QuoteCalculator';
+
+import styles from './QuoteCalculator.module.css';
 
 export const metadata: Metadata = {
   title: 'Free Quote · Largo Lawn',
@@ -58,9 +62,9 @@ export default function QuotePage() {
 
 function QuoteCalculatorSkeleton() {
   return (
-    <section
-      className="card"
-      style={{ marginTop: '2rem', minHeight: '24rem' }}
+    <Card
+      variant="insight"
+      className={cn(styles.skeleton)}
       aria-hidden="true"
     />
   );

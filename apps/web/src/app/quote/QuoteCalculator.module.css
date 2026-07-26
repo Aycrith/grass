@@ -212,3 +212,17 @@
   font-size: 0.95rem;
   color: var(--gray-700);
 }
+
+/* ---------- Skeleton (D-0028 Suspense fallback) ----------
+ *
+ * The QuoteCalculator uses useSearchParams() to read ?zip= and
+ * opts the page into dynamic rendering. To keep the rest of /quote
+ * prerenderable, the parent wraps the calculator in <Suspense>
+ * with this skeleton as the fallback. Dimensions match the
+ * calculator's outermost <Card> so the layout doesn't shift when
+ * the calculator client-side hydrates.
+ */
+.skeleton {
+  margin-top: var(--space-7);
+  min-height: 24rem;
+}
