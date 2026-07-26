@@ -26,6 +26,7 @@ import { Container, Eyebrow } from '@/components/site';
 import { FinalCTABanner } from '@/components/sections';
 import { BUSINESS } from '@/lib/business';
 import { areaDetail, areaImages } from '@/lib/content';
+import { JsonLd, pageBreadcrumb } from '@/lib/json-ld';
 
 import { AreaCard } from './AreaCard';
 import styles from './areas.module.css';
@@ -54,8 +55,13 @@ const DISPLAY_ORDER: ReadonlyArray<string> = [
 const STAGGER_STEP_S = 0.06;
 
 export default function AreasIndexPage() {
+  const breadcrumbSchema = pageBreadcrumb({
+    currentLabel: 'Service areas',
+    currentHref: '/areas',
+  });
   return (
     <div className={styles.root}>
+      <JsonLd data={breadcrumbSchema} />
       <section className={styles.hero}>
         <Container>
           <FadeUp>

@@ -26,6 +26,7 @@ import { QuoteConfirmation, QuoteHero } from '@/components/sections';
 import { Card } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
+import { JsonLd, pageBreadcrumb } from '@/lib/json-ld';
 import type { Metadata } from 'next';
 import { QuoteCalculator } from './QuoteCalculator';
 
@@ -39,8 +40,13 @@ export const metadata: Metadata = {
 };
 
 export default function QuotePage() {
+  const breadcrumbSchema = pageBreadcrumb({
+    currentLabel: 'Free quote',
+    currentHref: '/quote',
+  });
   return (
     <>
+      <JsonLd data={breadcrumbSchema} />
       <QuoteHero />
       <Section tone="warm" rhythm="loose">
         <Container>

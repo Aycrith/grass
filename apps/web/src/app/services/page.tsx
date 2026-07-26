@@ -16,7 +16,7 @@
 import { ServiceDirectory, FinalCTABanner } from '@/components/sections';
 import { BUSINESS } from '@/lib/business';
 import { services } from '@/lib/content';
-import { JsonLd } from '@/lib/json-ld';
+import { JsonLd, pageBreadcrumb } from '@/lib/json-ld';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -38,6 +38,11 @@ export default function ServicesIndexPage() {
     })),
   };
 
+  const breadcrumbSchema = pageBreadcrumb({
+    currentLabel: 'Services',
+    currentHref: '/services',
+  });
+
   return (
     <>
       <JsonLd
@@ -46,6 +51,7 @@ export default function ServicesIndexPage() {
           provider: { '@type': 'LandscapingBusiness', name: BUSINESS.name },
         }}
       />
+      <JsonLd data={breadcrumbSchema} />
       <ServiceDirectory />
       {/* Page closer — same FinalCTABanner used on /, /pricing, /about
        * so every deep-link page ends with a conversion CTA. A visitor

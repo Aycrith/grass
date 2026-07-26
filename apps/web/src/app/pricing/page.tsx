@@ -26,7 +26,7 @@ import {
 } from '@/components/sections';
 import { BUSINESS } from '@/lib/business';
 import { faq } from '@/lib/content';
-import { JsonLd } from '@/lib/json-ld';
+import { JsonLd, pageBreadcrumb } from '@/lib/json-ld';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -50,9 +50,15 @@ export default function PricingPage() {
     provider: { '@type': 'LandscapingBusiness', name: BUSINESS.name },
   };
 
+  const breadcrumbSchema = pageBreadcrumb({
+    currentLabel: 'Pricing',
+    currentHref: '/pricing',
+  });
+
   return (
     <>
       <JsonLd data={faqJsonLd} />
+      <JsonLd data={breadcrumbSchema} />
       <PricingHero />
       <PricingComparisonTable />
       <PricingFAQ />

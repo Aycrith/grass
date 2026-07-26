@@ -3,9 +3,14 @@
  *
  * The `BreadcrumbList` schema.org block is emitted on every detail
  * page (/services/[slug], /areas/[zip], future /blog/[slug] once
- * the blog ships). Each detail page had its own 22-line copy of
- * the same @context/@type/itemListElement scaffolding. The
+ * the blog ships) AND on every top-level page (/, /pricing, /about,
+ * /contact, /quote, /services, /areas). Each page had its own 22-line
+ * copy of the same @context/@type/itemListElement scaffolding. The
  * `breadcrumbJsonLd` helper below is the single source of truth.
+ *
+ * Two shorthand helpers wrap the common shapes:
+ *   - `detailBreadcrumb` — 3-step (Home > Parent > Current) for detail pages
+ *   - `pageBreadcrumb`   — 2-step (Home > Current) for top-level pages
  *
  * The `<JsonLd>` component encapsulates the
  * `<script type="application/ld+json" dangerouslySetInnerHTML=...>`
@@ -71,6 +76,21 @@ export function detailBreadcrumb(args: {
   return breadcrumbJsonLd([
     { name: 'Home', href: '/' },
     { name: args.parentLabel, href: args.parentHref },
+    { name: args.currentLabel, href: args.currentHref },
+  ]);
+}
+
+/**
+ * Shorthand for the 2-step top-level page breadcrumb
+ * (Home > Current). Used by /pricing, /about, /contact, /quote,
+ * /services, /areas — pages that don't have a parent in the
+ * main nav hierarchy (the nav already shows them as siblings
+ * of "Home" in the header, so a 3-step crumb would be
+ * misleading). Each calls this with its own current label/href.
+ */
+export function pageBreadcrumb(args: { currentLabel: string; currentHref: string }) {
+  return breadcrumbJsonLd([
+    { name: 'Home', href: '/' },
     { name: args.currentLabel, href: args.currentHref },
   ]);
 }
