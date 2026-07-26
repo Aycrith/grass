@@ -18,7 +18,7 @@ import type { Metadata } from 'next';
 import QRCode from 'qrcode';
 import { Download } from 'lucide-react';
 
-import { Eyebrow, Section } from '@/components/site';
+import { Container, Eyebrow, Section } from '@/components/site';
 import { Button, Card } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
@@ -144,7 +144,7 @@ export default async function QRPage() {
       </Section>
 
       <Section rhythm="default" tone="default" className={cn(styles.guideSection)}>
-        <div className="container container--prose">
+        <Container size="prose">
           <div className="prose">
             <h2>Where each QR goes</h2>
             <ul>
@@ -193,7 +193,7 @@ export default async function QRPage() {
               Phone: {BUSINESS.phone} · Hours: {BUSINESS.hours.weekdays}
             </p>
           </div>
-        </div>
+        </Container>
       </Section>
     </>
   );
