@@ -21,6 +21,7 @@
 
 import { Suspense } from 'react';
 
+import { Container, Section } from '@/components/site';
 import { QuoteConfirmation, QuoteHero } from '@/components/sections';
 import { BUSINESS } from '@/lib/business';
 import type { Metadata } from 'next';
@@ -37,8 +38,8 @@ export default function QuotePage() {
   return (
     <>
       <QuoteHero />
-      <section style={{ background: 'var(--ll-sand-bleached)', paddingBottom: 'var(--space-12)' }}>
-        <div className="container">
+      <Section tone="warm" rhythm="loose">
+        <Container>
           {/* D-0028: Suspense boundary for the useSearchParams()
              call inside QuoteCalculator (reads ?zip= to prefill
              from the Coverage Check CTA on the homepage). The
@@ -48,8 +49,8 @@ export default function QuotePage() {
           <Suspense fallback={<QuoteCalculatorSkeleton />}>
             <QuoteCalculator serviceArea={BUSINESS.service_area_zips} />
           </Suspense>
-        </div>
-      </section>
+        </Container>
+      </Section>
       <QuoteConfirmation />
     </>
   );

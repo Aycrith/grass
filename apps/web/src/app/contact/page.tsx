@@ -12,6 +12,7 @@
  */
 
 import { ContactHero } from '@/components/sections';
+import { Container, Section } from '@/components/site';
 import { BUSINESS } from '@/lib/business';
 import type { Metadata } from 'next';
 import ContactForm from './ContactForm';
@@ -31,11 +32,11 @@ export default async function ContactPage({ searchParams }: ContactProps) {
   return (
     <>
       <ContactHero hurricaneMode={source === 'hurricane'} />
-      <section style={{ background: 'var(--ll-cream)', paddingBottom: 'var(--space-12)' }}>
-        <div className="container">
+      <Section tone="soft" rhythm="loose">
+        <Container>
           <ContactForm source={source} />
-        </div>
-      </section>
+        </Container>
+      </Section>
     </>
   );
 }

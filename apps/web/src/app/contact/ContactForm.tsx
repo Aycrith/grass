@@ -26,6 +26,13 @@
  *     before the fetch fires.
  *   - The success state keeps the same copy but uses the brand Card
  *     "insight" variant so it sits flush with the rest of the section.
+ *
+ * 2026-07-25 follow-up: the 9 leftover React.CSSProperties objects
+ * (formStyle, rowStyle, actionsStyle, legalStyle, errorBannerStyle,
+ * successIconRowStyle, successHeadingStyle, successBodyStyle,
+ * successLinkStyle) and the magic-string className
+ * ('contact-form-success') for the success <Card> are now in a
+ * co-located `ContactForm.module.css`. Behavior is unchanged.
  */
 
 import { useState } from 'react';
@@ -33,6 +40,9 @@ import { CheckCircle2, Loader2 } from 'lucide-react';
 
 import { Button, Card, Input } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
+import { cn } from '@/lib/cn';
+
+import styles from './ContactForm.module.css';
 
 interface ContactFormProps {
   source?: string | undefined;
@@ -92,15 +102,15 @@ export default function ContactForm({ source }: ContactFormProps) {
 
   if (status === 'success') {
     return (
-      <Card variant="insight" className={successCardClass}>
-        <div style={successIconRowStyle}>
+      <Card variant="insight">
+        <div className={cn(styles.successIconRow)}>
           <CheckCircle2 size={28} aria-hidden="true" style={{ color: 'var(--ll-green)' }} />
-          <h2 style={successHeadingStyle}>Thanks, {form.first_name}!</h2>
+          <h2 className={cn(styles.successHeading)}>Thanks, {form.first_name}!</h2>
         </div>
-        <p style={successBodyStyle}>
+        <p className={cn(styles.successBody)}>
           We received your request and will follow up within 24 hours during business days. For
           urgent requests, call{' '}
-          <a href={`tel:${BUSINESS.phone}`} style={successLinkStyle}>
+          <a href={`tel:${BUSINESS.phone}`} className={cn(styles.successLink)}>
             {BUSINESS.phone}
           </a>
           .
@@ -110,8 +120,8 @@ export default function ContactForm({ source }: ContactFormProps) {
   }
 
   return (
-    <form onSubmit={onSubmit} style={formStyle} noValidate={false}>
-      <div style={rowStyle}>
+    <form onSubmit={onSubmit} className={cn(styles.form)} noValidate={false}>
+      <div className={cn(styles.row)}>
         <Input
           label="First name"
           required
@@ -164,12 +174,12 @@ export default function ContactForm({ source }: ContactFormProps) {
       />
 
       {status === 'error' ? (
-        <p style={errorBannerStyle} role="alert">
+        <p className={cn(styles.errorBanner)} role="alert">
           {errorMessage}
         </p>
       ) : null}
 
-      <div style={actionsStyle}>
+      <div className={cn(styles.actions)}>
         <Button
           type="submit"
           variant="primary"
@@ -183,81 +193,10 @@ export default function ContactForm({ source }: ContactFormProps) {
         >
           {status === 'submitting' ? 'Sending…' : 'Get My Quote'}
         </Button>
-        <p style={legalStyle}>
+        <p className={cn(styles.legal)}>
           We respond within 24 hours on business days. No spam, no list-rentals.
         </p>
       </div>
     </form>
   );
 }
-
-// ---------- Inline styles (kept local to this file; the rest of the form
-// lives inside the design-system primitives, so these are just the form
-// shell + the success/error callouts that don't have a dedicated Card
-// variant yet). ----------
-
-const formStyle: React.CSSProperties = {
-  display: 'grid',
-  gap: 'var(--space-5)',
-  maxWidth: 640,
-  width: '100%',
-};
-
-const rowStyle: React.CSSProperties = {
-  display: 'grid',
-  gap: 'var(--space-5)',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-};
-
-const actionsStyle: React.CSSProperties = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  alignItems: 'center',
-  gap: 'var(--space-4)',
-  marginTop: 'var(--space-2)',
-};
-
-const legalStyle: React.CSSProperties = {
-  fontSize: 'var(--type-small)',
-  color: 'var(--gray-700)',
-  margin: 0,
-  lineHeight: 1.4,
-};
-
-const errorBannerStyle: React.CSSProperties = {
-  margin: 0,
-  padding: 'var(--space-3) var(--space-4)',
-  borderRadius: 'var(--radius-md)',
-  border: '1px solid var(--color-error)',
-  background: 'color-mix(in srgb, var(--color-error) 8%, var(--ll-shell))',
-  color: 'var(--color-error)',
-  fontSize: 'var(--type-small)',
-  fontWeight: 500,
-};
-
-const successCardClass = 'contact-form-success';
-const successIconRowStyle: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: 'var(--space-3)',
-  marginBottom: 'var(--space-3)',
-};
-const successHeadingStyle: React.CSSProperties = {
-  margin: 0,
-  fontFamily: 'var(--font-fraunces), serif',
-  fontSize: '1.5rem',
-  fontWeight: 700,
-  color: 'var(--ll-palm-bark)',
-  letterSpacing: '-0.01em',
-};
-const successBodyStyle: React.CSSProperties = {
-  margin: 0,
-  color: 'var(--ll-palm-bark)',
-  lineHeight: 1.55,
-};
-const successLinkStyle: React.CSSProperties = {
-  color: 'var(--ll-palm-shadow)',
-  fontWeight: 600,
-  textDecoration: 'underline',
-  textUnderlineOffset: '0.2em',
-};

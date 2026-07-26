@@ -1,178 +1,92 @@
-/* ============================================================
- * ContactForm — Mission 1
+/* ContactForm — layout + success/error callouts.
  *
- * Two-column layout on desktop (form left / sidebar copy right),
- * single-column on mobile. Form uses design-system <Input> +
- * <Button>; sidebar uses the warm sand-bleached background.
- * ============================================================ */
-
-.root {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-5);
-}
-
-@media (min-width: 900px) {
-  .root {
-    grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
-    gap: var(--space-6);
-    align-items: start;
-  }
-}
+ * Co-located CSS module for the client-side <ContactForm>.
+ * Before 2026-07-25 these styles were 9 React.CSSProperties
+ * objects inlined at the bottom of ContactForm.tsx — they
+ * didn't reference any design-system token that the rest of
+ * the site uses, didn't respect prefers-reduced-motion on
+ * the spinner swap, and used a string-literal className
+ * ('contact-form-success') for the success <Card> that was
+ * never wired to a real stylesheet.
+ *
+ * Moved to a CSS module so:
+ *   - styles.X returns a stable string at build time (no
+ *     object-identity churn between renders)
+ *   - the success card uses the same module class as the
+ *     form shell, not a magic-string className
+ *   - everything stays token-driven (var(--space-*), etc.)
+ */
 
 .form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
+  display: grid;
+  gap: var(--space-5);
+  max-width: 640px;
+  width: 100%;
 }
 
-.formActions {
+.row {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.actions {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
   margin-top: var(--space-2);
 }
 
-.formNote {
-  font-family: var(--font-inter);
-  font-size: 0.8rem;
-  color: var(--ll-palm-bark);
-  opacity: 0.7;
-  line-height: 1.5;
+.legal {
+  font-size: var(--type-small);
+  color: var(--gray-700);
+  margin: 0;
+  line-height: 1.4;
 }
 
-.formError {
-  font-family: var(--font-inter);
-  font-size: 0.85rem;
+/* Error banner — surfaced above the submit button when /api/lead
+ * returns a non-ok response. The 8% alpha over --ll-shell keeps
+ * the cream background of the surrounding section visible
+ * (matches the inline color-mix in the original). */
+.errorBanner {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-error);
+  background: color-mix(in srgb, var(--color-error) 8%, var(--ll-shell));
   color: var(--color-error);
+  font-size: var(--type-small);
   font-weight: 500;
-  line-height: 1.5;
 }
 
-.fieldRow {
-  display: grid;
-  grid-template-columns: 1fr;
+/* Success state — rendered inside the insight <Card>. The
+ * icon row, heading, body, and link each own a slot. */
+.successIconRow {
+  display: flex;
+  align-items: center;
   gap: var(--space-3);
+  margin-bottom: var(--space-3);
 }
 
-@media (min-width: 600px) {
-  .fieldRow {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.sidebar {
-  background: var(--ll-sand-bleached);
-  border: 1px solid var(--ll-sand);
-  border-radius: var(--radius-lg);
-  padding: var(--space-5);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.sidebarEyebrow {
-  font-family: var(--font-inter);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ll-palm-bark);
-  opacity: 0.7;
-}
-
-.sidebarHeading {
+.successHeading {
+  margin: 0;
   font-family: var(--font-fraunces), serif;
-  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-size: 1.5rem;
   font-weight: 700;
-  color: var(--ll-palm-shadow);
-  margin: 0;
-  line-height: 1.2;
-}
-
-.sidebarBody {
-  font-family: var(--font-inter);
-  font-size: 0.95rem;
-  line-height: 1.55;
   color: var(--ll-palm-bark);
-  opacity: 0.9;
-  margin: 0;
-}
-
-.sidebarList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  font-family: var(--font-inter);
-  font-size: 0.85rem;
-  color: var(--ll-palm-bark);
-}
-
-.sidebarList li {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-2);
-}
-
-.sidebarBullet {
-  font-family: var(--font-fraunces), serif;
-  font-weight: 700;
-  color: var(--ll-clay);
-}
-
-.success {
-  background: var(--ll-shell);
-  border: 1px solid var(--ll-sage-muted);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  text-align: center;
-}
-
-.successTitle {
-  font-family: var(--font-fraunces), serif;
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 700;
-  color: var(--ll-palm-shadow);
-  margin: 0;
+  letter-spacing: -0.01em;
 }
 
 .successBody {
-  font-family: var(--font-inter);
-  font-size: 1rem;
+  margin: 0;
+  color: var(--ll-palm-bark);
   line-height: 1.55;
-  color: var(--ll-palm-bark);
-  opacity: 0.9;
-  margin: 0;
 }
 
-.successContact {
-  font-family: var(--font-inter);
-  font-size: 0.95rem;
-  color: var(--ll-palm-bark);
-  opacity: 0.85;
-  margin: var(--space-2) 0 0;
-}
-
-.hurricaneNotice {
-  background: var(--ll-clay);
-  color: var(--ll-shell);
-  padding: var(--space-4) var(--space-5);
-  border-radius: var(--radius);
-  font-family: var(--font-inter);
-  font-size: 0.95rem;
-  line-height: 1.5;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  margin: 0;
-}
-
-.hurricaneNotice strong {
-  font-weight: 700;
+.successLink {
+  color: var(--ll-palm-shadow);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
