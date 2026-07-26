@@ -15,7 +15,7 @@
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Eyebrow, Section } from '@/components/site';
+import { Container, Eyebrow, Section } from '@/components/site';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
 import { quotePage } from '@/lib/content';
@@ -29,7 +29,7 @@ interface QuoteConfirmationProps {
 export function QuoteConfirmation({ className }: QuoteConfirmationProps): ReactNode {
   return (
     <Section rhythm="loose" className={cn(styles.root, className)}>
-      <div className="container">
+      <Container>
         <FadeUp className={styles.inner}>
           <Eyebrow tone="default" className={styles.eyebrow}>
             {quotePage.confirmationEyebrow}
@@ -47,7 +47,7 @@ export function QuoteConfirmation({ className }: QuoteConfirmationProps): ReactN
             <a href={`tel:${BUSINESS.phoneTel}`}>{BUSINESS.phone}</a>
           </p>
         </FadeUp>
-      </div>
+      </Container>
     </Section>
   );
 }
