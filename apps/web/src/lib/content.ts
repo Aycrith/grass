@@ -95,10 +95,6 @@ export const hero = {
   scene3: {},
 } as const;
 
-export const trustStrip = {
-  copy: 'Proudly serving 33771 · 33770 · 33773 · 33774 · 33778 · 33756 - and counting.',
-} as const;
-
 /**
  * Service area map: section 06 on the landing page.
  *
