@@ -22,7 +22,7 @@
 import type { Metadata } from 'next';
 
 import { FadeUp } from '@/components/motion';
-import { Eyebrow } from '@/components/site';
+import { Container, Eyebrow } from '@/components/site';
 import { FinalCTABanner } from '@/components/sections';
 import { BUSINESS } from '@/lib/business';
 import { areaDetail, areaImages } from '@/lib/content';
@@ -57,7 +57,7 @@ export default function AreasIndexPage() {
   return (
     <main className={styles.root}>
       <section className={styles.hero}>
-        <div className="container">
+        <Container>
           <FadeUp>
             <Eyebrow tone="default" className={styles.eyebrow}>
               01 — Service areas
@@ -69,11 +69,11 @@ export default function AreasIndexPage() {
               what I do about it, and the local questions that come up at quote-time.
             </p>
           </FadeUp>
-        </div>
+        </Container>
       </section>
 
       <section className={styles.directory}>
-        <div className="container">
+        <Container>
           <ul className={styles.grid}>
             {DISPLAY_ORDER.map((zip, i) => {
               const detail = areaDetail[zip];
@@ -96,7 +96,7 @@ export default function AreasIndexPage() {
             Outside these six? Type your ZIP in the form on the homepage and we will route you to a
             quote — I am flexible about nearby ZIPs while I am building the route.
           </p>
-        </div>
+        </Container>
       </section>
 
       {/* Page closer — FinalCTABanner is the same one used on /,

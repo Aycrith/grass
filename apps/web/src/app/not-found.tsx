@@ -19,7 +19,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Eyebrow, Section } from '@/components/site';
+import { Container, Eyebrow, Section } from '@/components/site';
 import { Button, Card, Illustration } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
 
@@ -29,7 +29,7 @@ export default function NotFound(): ReactNode {
   return (
     <>
       <Section tone="soft" rhythm="loose" className={styles.hero}>
-        <div className="container">
+        <Container>
           <FadeUp className={styles.copy}>
             <Eyebrow tone="default" className={styles.eyebrow}>
               404 · Page not found
@@ -51,11 +51,11 @@ export default function NotFound(): ReactNode {
               />
             </div>
           </FadeUp>
-        </div>
+        </Container>
       </Section>
 
       <Section tone="default" rhythm="loose" className={styles.actions}>
-        <div className="container">
+        <Container>
           <FadeUp className={styles.cardGrid}>
             <Card variant="insight">
               <h2 className={styles.cardTitle}>
@@ -125,7 +125,7 @@ export default function NotFound(): ReactNode {
               </dl>
             </Card>
           </FadeUp>
-        </div>
+        </Container>
       </Section>
     </>
   );
