@@ -57,7 +57,7 @@ import Image from 'next/image';
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Section } from '@/components/site';
+import { Container, Section } from '@/components/site';
 import { Illustration } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { operator } from '@/lib/content';
@@ -123,7 +123,7 @@ export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
           />
         ))}
       </div>
-      <div className="container">
+      <Container>
         <div className={styles.inner}>
           <FadeUp as="div" className={styles.portrait} delay={STAGGER_STEP_S * 0}>
             <div className={styles.portraitInner}>
@@ -207,7 +207,7 @@ export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
             </ul>
           </FadeUp>
         </div>
-      </div>
+      </Container>
     </Section>
   );
 }
