@@ -1,78 +1,23 @@
 /* ============================================================
  * Motion utilities — Mission 1
  *
- * CSS-only transitions for non-React bits (focus rings, hover
- * states, layout-driven reveals). Framer Motion owns the more
- * complex scroll-driven pieces (see components/motion/).
+ * Continuous spin for the Loader2 icon on form submit buttons
+ * and any other indeterminate-progress affordance. The keyframe
+ * itself is always defined; the animation is gated on
+ * prefers-reduced-motion so the icon freezes if the user has the
+ * OS setting on (the submit still completes; the icon just stops
+ * spinning).
  *
- * Consumes tokens from styles/tokens.css.
+ * Earlier revisions also exposed .reveal / .hover-lift /
+ * .hover-zoom / .press / .transition-bg / .transition-colors
+ * utility classes. All were replaced by per-section co-located
+ * .module.css declarations when each section was migrated to the
+ * <Section> + <Container> + co-located design system, and the
+ * globals had no remaining consumers (verified via rg).
  * ============================================================ */
 
 @media (prefers-reduced-motion: no-preference) {
-  /* Subtle entrance — used on cards and links */
-  .reveal {
-    animation: reveal var(--motion-duration-slow) var(--motion-easing-default) both;
-  }
-
-  @keyframes reveal {
-    from {
-      opacity: 0;
-      transform: translateY(8px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-}
-
-/* Hover lift — used on cards, image tiles, pricing tiers */
-.hover-lift {
-  transition: transform var(--motion-duration-fast) var(--motion-easing-default), box-shadow
-    var(--motion-duration-fast) var(--motion-easing-default);
-}
-
-.hover-lift:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--elevation-2);
-}
-
-/* Image zoom on hover (parent .hover-zoom controls child .zoom-target) */
-.hover-zoom .zoom-target {
-  transition: transform var(--motion-duration-base) var(--motion-easing-default);
-}
-
-.hover-zoom:hover .zoom-target {
-  transform: scale(1.03);
-}
-
-/* Button press */
-.press {
-  transition: transform var(--motion-duration-fast) var(--motion-easing-default);
-}
-
-.press:active {
-  transform: scale(0.97);
-}
-
-/* Smooth hover color transitions for any interactive element */
-.transition-bg {
-  transition: background-color var(--motion-duration-fast) var(--motion-easing-default);
-}
-
-.transition-colors {
-  transition: background-color var(--motion-duration-fast) var(--motion-easing-default), color
-    var(--motion-duration-fast) var(--motion-easing-default), border-color
-    var(--motion-duration-fast) var(--motion-easing-default);
-}
-
-/* Continuous spin — used on the Loader2 icon in form submit buttons
- * and any other indeterminate-progress affordance. We gate on
- * prefers-reduced-motion so the icon freezes if the user has the OS
- * setting on (the submit still completes; the icon just stops spinning). */
-@media (prefers-reduced-motion: no-preference) {
-  .ll-spin,
-  [style*="ll-spin"] {
+  .ll-spin {
     animation: ll-spin 0.9s linear infinite;
   }
 }
