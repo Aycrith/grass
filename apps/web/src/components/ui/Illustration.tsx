@@ -1,8 +1,7 @@
 /**
  * Illustration — wrapper for hand-authored SVG illustrations in
- * `apps/web/public/illustrations/`. Provides consistent sizing, alt
- * text defaulting to empty (decorative), and a `tone` switch for
- * dark backgrounds.
+ * `apps/web/public/illustrations/`. Provides consistent sizing and
+ * alt text defaulting to empty (decorative).
  *
  * Sized via `width` / `height` (px) — defaults to 600×400 (matches the
  * 600×400 viewBox of all illustrations in the kit). Aspect ratio is
@@ -16,25 +15,28 @@
  * aria-label baked into the asset itself. To force a custom label,
  * pass `alt`; to mark the illustration decorative (skip SR), pass
  * `alt=""`.
+ *
+ * 2026-07-25: removed the `tone?: 'default' | 'dark'` prop. It had
+ * no live callers (verified with rg) — the only existing usage is
+ * on the not-found 404 page, which uses the default (light) tone.
+ * If a future surface needs a luminosity lift on dark backgrounds,
+ * add a per-call className with the appropriate CSS rather than
+ * reaching for a binary tone prop.
  */
 
 import { cn } from '@/lib/cn';
 
 import styles from './Illustration.module.css';
 
-export type IllustrationTone = 'default' | 'dark';
-
 interface IllustrationProps {
   /** Path under /public, e.g. "/illustrations/mower-side-profile.svg". */
   src: string;
   /** Width in px (HTML attribute — intrinsic size for layout pre-paint). Defaults to 600. */
-  width?: number;
+  width?: number | undefined;
   /** Height in px (HTML attribute — intrinsic size for layout pre-paint). Defaults to 400. */
-  height?: number;
+  height?: number | undefined;
   /** Override accessible label. Pass "" for purely decorative. */
-  alt?: string;
-  /** Tone switch for dark backgrounds. */
-  tone?: IllustrationTone;
+  alt?: string | undefined;
   /** Optional additional className. */
   className?: string | undefined;
 }
@@ -44,7 +46,6 @@ export function Illustration({
   width = 600,
   height = 400,
   alt,
-  tone = 'default',
   className,
 }: IllustrationProps) {
   // WP34 — removed the inline `style={{ width, height }}` so CSS class
@@ -61,7 +62,7 @@ export function Illustration({
       alt={alt ?? ''}
       width={width}
       height={height}
-      className={cn(styles.illustration, styles[tone], className)}
+      className={cn(styles.illustration, className)}
       loading="lazy"
       decoding="async"
     />
