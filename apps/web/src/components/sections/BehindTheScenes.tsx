@@ -62,7 +62,7 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, type ReactNode } from 'react';
 
-import { Section } from '@/components/site';
+import { Container, Section } from '@/components/site';
 
 import styles from './BehindTheScenes.module.css';
 
@@ -114,7 +114,7 @@ export function BehindTheScenes({
       className={styles.root}
       data-test-section={`behind-the-scenes-${dataTestSectionSuffix}`}
     >
-      <div className="container">
+      <Container>
         <div className={styles.inner} ref={innerRef}>
           <motion.div
             className={styles.eyebrowBlock}
@@ -170,7 +170,7 @@ export function BehindTheScenes({
             </p>
           </motion.div>
         </div>
-      </div>
+      </Container>
     </Section>
   );
 }

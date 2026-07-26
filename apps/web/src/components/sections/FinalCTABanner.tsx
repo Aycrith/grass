@@ -12,6 +12,7 @@
  */
 
 import { FadeUp } from '@/components/motion';
+import { Container } from '@/components/site';
 import { Button } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { finalCta } from '@/lib/content';
@@ -27,7 +28,7 @@ interface FinalCTABannerProps {
 export function FinalCTABanner({ className, eyebrow, href }: FinalCTABannerProps): React.ReactNode {
   return (
     <section className={cn(styles.root, className)} id="final-cta" data-test-section="final-cta-banner">
-      <div className="container">
+      <Container>
         <FadeUp as="div" className={styles.inner}>
           <span className={styles.eyebrow}>{eyebrow ?? 'Ready when you are'}</span>
           {/* D-0059 rev4 — quote-mark illustration REMOVED.
@@ -51,7 +52,7 @@ export function FinalCTABanner({ className, eyebrow, href }: FinalCTABannerProps
             </Button>
           </div>
         </FadeUp>
-      </div>
+      </Container>
     </section>
   );
 }

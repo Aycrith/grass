@@ -18,7 +18,7 @@
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Eyebrow, Section } from '@/components/site';
+import { Container, Eyebrow, Section } from '@/components/site';
 import { PRICING_FLOOR_CENTS } from '@/lib/business';
 import { cn } from '@/lib/cn';
 import { pricingPage } from '@/lib/content';
@@ -90,7 +90,7 @@ export function PricingComparisonTable({ className }: PricingComparisonTableProp
   return (
     <>
       <Section rhythm="loose" className={cn(styles.tableSection, className)}>
-        <div className="container">
+        <Container>
           <FadeUp>
             <Eyebrow tone="default" className={styles.tableEyebrow}>
               Floor rates
@@ -117,11 +117,11 @@ export function PricingComparisonTable({ className }: PricingComparisonTableProp
               </tbody>
             </table>
           </FadeUp>
-        </div>
+        </Container>
       </Section>
 
       <Section rhythm="loose" className={cn(styles.discountSection)}>
-        <div className="container">
+        <Container>
           <header className={styles.subhead}>
             <Eyebrow tone="default" >
               {pricingPage.discountEyebrow}
@@ -133,11 +133,11 @@ export function PricingComparisonTable({ className }: PricingComparisonTableProp
               <DiscountCard key={d.label} discount={d} />
             ))}
           </div>
-        </div>
+        </Container>
       </Section>
 
       <Section rhythm="loose" className={cn(styles.notIncludedSection)}>
-        <div className="container">
+        <Container>
           <FadeUp className={styles.notIncluded}>
             <Eyebrow tone="default" >
               {pricingPage.notIncludedTitle}
@@ -150,18 +150,18 @@ export function PricingComparisonTable({ className }: PricingComparisonTableProp
             </ul>
             <p className={styles.notIncludedTail}>{pricingPage.notIncludedTail}</p>
           </FadeUp>
-        </div>
+        </Container>
       </Section>
 
       <Section rhythm="loose" className={cn(styles.taxSection)}>
-        <div className="container">
+        <Container>
           <FadeUp className={styles.tax}>
             <Eyebrow tone="default" >
               {pricingPage.taxEyebrow}
             </Eyebrow>
             <p className={styles.taxBody}>{pricingPage.taxBody}</p>
           </FadeUp>
-        </div>
+        </Container>
       </Section>
     </>
   );

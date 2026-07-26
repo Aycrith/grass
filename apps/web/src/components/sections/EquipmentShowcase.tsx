@@ -22,7 +22,7 @@ import Image from 'next/image';
 import type { ReactNode } from 'react';
 
 import { FadeUp, StaggerGroup } from '@/components/motion';
-import { Eyebrow, Section } from '@/components/site';
+import { Container, Eyebrow, Section } from '@/components/site';
 import { cn } from '@/lib/cn';
 import { operator } from '@/lib/content';
 
@@ -54,7 +54,7 @@ export function EquipmentShowcase({ className }: EquipmentShowcaseProps): ReactN
       className={cn(styles.root, className)}
       data-test-section="equipment-showcase"
     >
-      <div className="container">
+      <Container>
         <FadeUp>
           <Eyebrow tone="default" className={styles.eyebrow}>
             The kit
@@ -93,7 +93,7 @@ export function EquipmentShowcase({ className }: EquipmentShowcaseProps): ReactN
             );
           })}
         </StaggerGroup>
-      </div>
+      </Container>
     </Section>
   );
 }

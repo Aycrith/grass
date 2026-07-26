@@ -41,7 +41,7 @@ import { motion, useInView } from 'framer-motion';
 import Image from 'next/image';
 import { useRef, type ReactNode } from 'react';
 
-import { Section } from '@/components/site';
+import { Container, Section } from '@/components/site';
 
 import styles from './SpecimenPlate.module.css';
 
@@ -90,7 +90,7 @@ export function SpecimenPlate(): ReactNode {
       className={styles.root}
       data-test-section="specimen-plate"
     >
-      <div className="container">
+      <Container>
         <div className={styles.inner}>
           {/* Zone 1 + 2 + 3: eyebrow + H2 + subhead (fade-up) */}
           <motion.div
@@ -167,7 +167,7 @@ export function SpecimenPlate(): ReactNode {
             . I&apos;ll tell you before I quote.
           </motion.p>
         </div>
-      </div>
+      </Container>
     </Section>
   );
 }

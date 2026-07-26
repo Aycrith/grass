@@ -25,7 +25,7 @@
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Eyebrow, Section } from '@/components/site';
+import { Container, Eyebrow, Section } from '@/components/site';
 import { Button } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
@@ -42,7 +42,7 @@ export function ReviewMagnet({ className }: ReviewMagnetProps): ReactNode {
   return (
     <>
       <Section rhythm="loose" className={cn(styles.heroSection, className)}>
-        <div className="container">
+        <Container>
           <FadeUp className={styles.copy}>
             <Eyebrow tone="default" className={styles.eyebrow}>
               {reviewPage.eyebrow}
@@ -50,11 +50,11 @@ export function ReviewMagnet({ className }: ReviewMagnetProps): ReactNode {
             <h1 className={styles.title}>{reviewPage.heading}</h1>
             <p className={styles.tagline}>{reviewPage.tagline}</p>
           </FadeUp>
-        </div>
+        </Container>
       </Section>
 
       <Section rhythm="loose" className={cn(styles.comingSoonSection)}>
-        <div className="container">
+        <Container>
           <FadeUp className={styles.card}>
             <Eyebrow tone="default" >
               {reviewPage.reviewMagnetEnabled ? 'How was it?' : 'Coming soon'}
@@ -79,11 +79,11 @@ export function ReviewMagnet({ className }: ReviewMagnetProps): ReactNode {
               </>
             )}
           </FadeUp>
-        </div>
+        </Container>
       </Section>
 
       <Section rhythm="loose" className={cn(styles.notRightSection)}>
-        <div className="container">
+        <Container>
           <FadeUp className={styles.card}>
             <Eyebrow tone="default" >
               When something isn&apos;t right
@@ -91,7 +91,7 @@ export function ReviewMagnet({ className }: ReviewMagnetProps): ReactNode {
             <h2 className={styles.cardHeading}>{reviewPage.notRightTitle}</h2>
             <p className={styles.cardBody}>{reviewPage.notRightBody}</p>
           </FadeUp>
-        </div>
+        </Container>
       </Section>
     </>
   );

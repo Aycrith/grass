@@ -11,6 +11,7 @@
 
 import type { ReactNode } from 'react';
 
+import { Container } from '@/components/site';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
 
@@ -25,7 +26,7 @@ export function TrustStrip({ className }: TrustStripProps): ReactNode {
 
   return (
     <aside className={cn(styles.root, className)} aria-label="Service area">
-      <div className="container">
+      <Container>
         <div className={styles.inner}>
           <span className={styles.prefix}>Proudly serving</span>
           <ul className={styles.zipList}>
@@ -38,7 +39,7 @@ export function TrustStrip({ className }: TrustStripProps): ReactNode {
           </ul>
           <span className={styles.suffix}>— and the surrounding Pinellas County.</span>
         </div>
-      </div>
+      </Container>
     </aside>
   );
 }

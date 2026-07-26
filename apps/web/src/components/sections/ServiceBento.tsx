@@ -48,7 +48,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 import { FadeUp, useFadeUp } from '@/components/motion';
-import { Section } from '@/components/site';
+import { Container, Section } from '@/components/site';
 import { BUSINESS, PRICING_FLOOR_CENTS } from '@/lib/business';
 import { cn } from '@/lib/cn';
 import { type ServiceKey, services } from '@/lib/content';
@@ -180,7 +180,7 @@ export function ServiceBento({ className }: ServiceBentoProps): ReactNode {
       data-test-section="service-bento"
       data-hurricane-mode={BUSINESS.hurricaneModeActive ? 'true' : undefined}
     >
-      <div className="container">
+      <Container>
         <FadeUp as="header" className={styles.header}>
           <h2 className={styles.headerHeading}>Six things, done well.</h2>
           <p className={styles.headerSub}>
@@ -222,7 +222,7 @@ export function ServiceBento({ className }: ServiceBentoProps): ReactNode {
             );
           })}
         </div>
-      </div>
+      </Container>
     </Section>
   );
 }

@@ -33,7 +33,7 @@ import Image from 'next/image';
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Section } from '@/components/site';
+import { Container, Section } from '@/components/site';
 import { Button, Illustration } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { pricingHeader, pricingTiers } from '@/lib/content';
@@ -113,7 +113,7 @@ function PricingTierCard({ tier, delay = 0 }: PricingTierCardProps): ReactNode {
 export function PricingTiers({ className }: PricingTiersProps): ReactNode {
   return (
     <Section rhythm="loose" className={cn(styles.root, className)} data-test-section="pricing-tiers">
-      <div className="container">
+      <Container>
         <FadeUp as="header" className={styles.header}>
           <h2 className={styles.headerHeading}>{pricingHeader.heading}</h2>
           <p className={styles.headerSub}>{pricingHeader.subhead}</p>
@@ -143,7 +143,7 @@ export function PricingTiers({ className }: PricingTiersProps): ReactNode {
             />
           ))}
         </div>
-      </div>
+      </Container>
     </Section>
   );
 }

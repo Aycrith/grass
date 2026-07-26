@@ -24,7 +24,7 @@
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { type ReactNode, useRef } from 'react';
 
-import { Section } from '@/components/site';
+import { Container, Section } from '@/components/site';
 import { Button } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { processSteps } from '@/lib/content';
@@ -43,7 +43,7 @@ export function ProcessSteps({ className }: ProcessStepsProps): ReactNode {
 
   return (
     <Section rhythm="loose" className={cn(styles.root, className)} data-test-section="process-steps">
-      <div className="container">
+      <Container>
         <header className={styles.header}>
           <h2 className={styles.headerHeading}>{processSteps.heading}</h2>
         </header>
@@ -93,7 +93,7 @@ export function ProcessSteps({ className }: ProcessStepsProps): ReactNode {
             <span aria-hidden="true"> →</span>
           </Button>
         </div>
-      </div>
+      </Container>
     </Section>
   );
 }

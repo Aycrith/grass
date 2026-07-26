@@ -35,7 +35,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion
 import Image from 'next/image';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 
-import { Eyebrow, Section } from '@/components/site';
+import { Container, Eyebrow, Section } from '@/components/site';
 import { cn } from '@/lib/cn';
 
 import styles from './ServiceBeforeAfter.module.css';
@@ -91,7 +91,7 @@ export function ServiceBeforeAfter({ copy, className }: ServiceBeforeAfterProps)
         data-test-section="service-before-after"
         suppressHydrationWarning
       >
-        <div className="container">
+        <Container>
           <Eyebrow tone="default" className={styles.eyebrow}>
             Before &amp; after
           </Eyebrow>
@@ -123,7 +123,7 @@ export function ServiceBeforeAfter({ copy, className }: ServiceBeforeAfterProps)
             </figure>
           </div>
           <p className={styles.attribution}>{copy.attribution}</p>
-        </div>
+        </Container>
       </Section>
     );
   }
@@ -136,12 +136,12 @@ export function ServiceBeforeAfter({ copy, className }: ServiceBeforeAfterProps)
       data-test-section="service-before-after"
       suppressHydrationWarning
     >
-      <div className="container">
+      <Container>
         <Eyebrow tone="default" className={styles.eyebrow}>
           Before &amp; after
         </Eyebrow>
         <p className={styles.caption}>{copy.caption}</p>
-      </div>
+      </Container>
 
       <PinnedBeforeAfter
         beforeSrc={copy.beforeSrc}
@@ -150,9 +150,9 @@ export function ServiceBeforeAfter({ copy, className }: ServiceBeforeAfterProps)
         afterAlt={copy.afterAlt}
       />
 
-      <div className="container">
+      <Container>
         <p className={styles.attribution}>{copy.attribution}</p>
-      </div>
+      </Container>
     </Section>
   );
 }

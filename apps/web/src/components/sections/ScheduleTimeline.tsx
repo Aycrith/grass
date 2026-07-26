@@ -63,7 +63,7 @@ import {
   useState,
 } from 'react';
 
-import { Section } from '@/components/site';
+import { Container, Section } from '@/components/site';
 import { Button } from '@/components/ui';
 import {
   type DayKey,
@@ -386,7 +386,7 @@ export function ScheduleTimeline({ className }: ScheduleTimelineProps): ReactNod
       className={cn(styles.root, className)}
       data-test-section="schedule-timeline"
     >
-      <div className="container">
+      <Container>
         {/* === Header (compact) ============================================ */}
         <header className={styles.header}>
           <div className={styles.headerRow}>
@@ -851,7 +851,7 @@ export function ScheduleTimeline({ className }: ScheduleTimelineProps): ReactNod
             {subscribeToRoute.cta} &rarr;
           </Button>
         </section>
-      </div>
+      </Container>
     </Section>
   );
 }

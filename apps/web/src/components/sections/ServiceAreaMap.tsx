@@ -53,7 +53,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { type FormEvent, type ReactNode, useId, useState } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Eyebrow, Section } from '@/components/site';
+import { Container, Eyebrow, Section } from '@/components/site';
 import { Button } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
@@ -224,7 +224,7 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
       className={cn(styles.root, className)}
       data-test-section="service-area-map"
     >
-      <div className="container">
+      <Container>
         <div className={styles.inner}>
           {/* Section header — small + centered. */}
           <FadeUp as="header" className={styles.header}>
@@ -350,7 +350,7 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
              (autocomplete for neighborhood names) but no longer
              drives a visible chip strip. */}
         </div>
-      </div>
+      </Container>
     </Section>
   );
 }

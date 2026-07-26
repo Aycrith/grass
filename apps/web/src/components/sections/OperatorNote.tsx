@@ -23,7 +23,7 @@ import Image from 'next/image';
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Section } from '@/components/site';
+import { Container, Section } from '@/components/site';
 import { cn } from '@/lib/cn';
 import { operator, operatorNote } from '@/lib/content';
 
@@ -36,7 +36,7 @@ interface OperatorNoteProps {
 export function OperatorNote({ className }: OperatorNoteProps): ReactNode {
   return (
     <Section rhythm="loose" tone="warm" className={cn(styles.root, className)}>
-      <div className="container">
+      <Container>
         <div className={styles.inner}>
           <div className={styles.copy}>
             <FadeUp>
@@ -57,7 +57,7 @@ export function OperatorNote({ className }: OperatorNoteProps): ReactNode {
             />
           </div>
         </div>
-      </div>
+      </Container>
     </Section>
   );
 }
