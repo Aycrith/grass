@@ -26,6 +26,7 @@ import {
 } from '@/components/sections';
 import { BUSINESS } from '@/lib/business';
 import { type ServiceKey, isKnownService, serviceDetail, services } from '@/lib/content';
+import { detailBreadcrumb } from '@/lib/json-ld';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -71,30 +72,12 @@ export default async function ServiceDetailPage({ params }: ServiceParams) {
 
   const beforeAfterCopy = services[slug as ServiceKey]?.beforeAfter;
 
-  const breadcrumbJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Home',
-        item: 'https://largolawn.pro/',
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: 'Services',
-        item: 'https://largolawn.pro/services',
-      },
-      {
-        '@type': 'ListItem',
-        position: 3,
-        name: detail.name,
-        item: `https://largolawn.pro/services/${slug}`,
-      },
-    ],
-  };
+  const breadcrumbSchema = detailBreadcrumb({
+    parentLabel: 'Services',
+    parentHref: '/services',
+    currentLabel: detail.name,
+    currentHref: `/services/${slug}`,
+  });
 
   return (
     <>
@@ -106,7 +89,7 @@ export default async function ServiceDetailPage({ params }: ServiceParams) {
       <script
         type="application/ld+json"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: SEO JSON-LD
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <ServiceHero slug={slug as ServiceKey} />
       <ServiceIncludes slug={slug as ServiceKey} />
