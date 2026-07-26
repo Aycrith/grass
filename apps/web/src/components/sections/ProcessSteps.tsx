@@ -54,7 +54,6 @@ export function ProcessSteps({ className }: ProcessStepsProps): ReactNode {
             initial={{ scaleX: reduced ? 1 : 0 }}
             animate={inView ? { scaleX: 1 } : { scaleX: reduced ? 1 : 0 }}
             transition={{ duration: reduced ? 0.01 : 1.2, ease: [0.16, 1, 0.3, 1] }}
-            style={{ transformOrigin: 'left center' }}
             aria-hidden="true"
           />
           {processSteps.steps.map((step, i) => (

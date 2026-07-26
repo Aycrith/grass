@@ -67,6 +67,11 @@
   border-top: 2px dashed var(--ll-clay);
   opacity: 0.45;
   pointer-events: none;
+  /* Framer Motion animates scaleX 0 → 1 on viewport entry. The
+   * origin pins the scale to the left edge so the line "draws
+   * in" from left to right (matching the operator's actual
+   * route direction). */
+  transform-origin: left center;
 }
 
 @media (max-width: 900px) {
