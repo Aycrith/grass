@@ -23,7 +23,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Eyebrow, Section } from '@/components/site';
+import { Container, Eyebrow, Section } from '@/components/site';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
 import { contactPage } from '@/lib/content';
@@ -46,7 +46,7 @@ interface ContactHeroProps {
 export function ContactHero({ hurricaneMode, className }: ContactHeroProps): ReactNode {
   return (
     <Section rhythm="loose" className={cn(styles.root, className)}>
-      <div className="container">
+      <Container>
         <FadeUp className={styles.copy}>
           <Eyebrow tone="default" className={styles.eyebrow}>
             {contactPage.eyebrow}
@@ -67,7 +67,7 @@ export function ContactHero({ hurricaneMode, className }: ContactHeroProps): Rea
             <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
           </p>
         </FadeUp>
-      </div>
+      </Container>
     </Section>
   );
 }
