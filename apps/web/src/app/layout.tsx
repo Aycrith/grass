@@ -103,7 +103,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       postalCode: BUSINESS.address.zip,
       addressCountry: 'US',
     },
-    areaServed: BUSINESS.service_area_zips.map((zip: string) => ({
+    areaServed: BUSINESS.service_area_zips.map((zip) => ({
       '@type': 'PostalAddress',
       postalCode: zip,
       addressCountry: 'US',
