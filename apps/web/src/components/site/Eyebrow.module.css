@@ -18,20 +18,8 @@
   line-height: 1;
 }
 
-.dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--ll-clay);
-  flex-shrink: 0;
-}
-
 .dark {
   color: var(--ll-sand-bleached);
-}
-
-.dark .dot {
-  background: var(--ll-sand);
 }
 
 .lg {
