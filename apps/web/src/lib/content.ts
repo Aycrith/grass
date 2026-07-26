@@ -1171,7 +1171,7 @@ export const faq = [
   },
   {
     q: 'How does billing work?',
-    a: 'I send an invoice the same day I mow. Pay by card, ACH, or Venmo. Monthly statements if you would rather receive one bill.',
+    a: 'I send an invoice the same day I mow. Pay by cash, Venmo, Zelle, or card-on-phone (the operator swipes your card on their personal phone). Monthly statements if you would rather receive one bill.',
   },
   {
     q: 'How much lead time before the first visit?',
