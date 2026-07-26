@@ -19,7 +19,7 @@
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Eyebrow, Section } from '@/components/site';
+import { Container, Eyebrow, Section } from '@/components/site';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
 import { quotePage } from '@/lib/content';
@@ -33,7 +33,7 @@ interface QuoteHeroProps {
 export function QuoteHero({ className }: QuoteHeroProps): ReactNode {
   return (
     <Section rhythm="loose" className={cn(styles.root, className)}>
-      <div className="container">
+      <Container>
         <FadeUp className={styles.copy}>
           <Eyebrow tone="default" className={styles.eyebrow}>
             {quotePage.eyebrow}
@@ -46,7 +46,7 @@ export function QuoteHero({ className }: QuoteHeroProps): ReactNode {
             <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
           </p>
         </FadeUp>
-      </div>
+      </Container>
     </Section>
   );
 }
