@@ -50,7 +50,7 @@
  */
 
 import { motion, useReducedMotion } from 'framer-motion';
-import { type FormEvent, type ReactNode, useId, useState } from 'react';
+import { type FormEvent, type ReactNode, useEffect, useId, useState } from 'react';
 
 import { FadeUp } from '@/components/motion';
 import { Container, Eyebrow, Section } from '@/components/site';
@@ -58,6 +58,7 @@ import { Button } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
 import { serviceAreaMap } from '@/lib/content';
+import { recallZip, rememberZip } from '@/lib/zip-memory';
 
 import styles from './ServiceAreaMap.module.css';
 
@@ -209,9 +210,26 @@ export function ServiceAreaMap({ className }: ServiceAreaMapProps): ReactNode {
   const helperId = useId();
   const liveId = useId();
 
+  // ZIP memory: 2026-07-26 — prefill the form with the user's
+  // last entered ZIP on mount (if any). Returning visitors no
+  // longer have to retype their ZIP just to see the same
+  // "Yes, we cover 33771" result. `recallZip()` is SSR-safe and
+  // returns null on first visit, so the visible UX is identical
+  // to before for new users.
+  useEffect(() => {
+    const remembered = recallZip();
+    if (remembered) setQuery(remembered);
+  }, []);
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    setResult(resolveQuery(query));
+    const trimmed = query.trim();
+    // Persist the ZIP for next time. Only valid 5-digit ZIPs are
+    // remembered (neighborhood names are not — too many overlapping
+    // names like "Largo" / "Largo central" / "Largo east" would
+    // make a name-based memory unreliable).
+    if (/^\d{5}$/.test(trimmed)) rememberZip(trimmed);
+    setResult(resolveQuery(trimmed));
   };
 
   const showInvalidHelper = result?.kind === 'invalid';

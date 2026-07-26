@@ -26,6 +26,12 @@
  *     before the fetch fires.
  *   - The success state keeps the same copy but uses the brand Card
  *     "insight" variant so it sits flush with the rest of the section.
+ *   - ZIP prefill: 2026-07-26 — form pre-fills the user's last
+ *     entered ZIP from localStorage (if any) so returning visitors
+ *     don't have to retype it. The form's `?zip=` URL param still
+ *     takes precedence (it overrides the remembered ZIP), so the
+ *     homepage Coverage Check CTA → /contact?zip=33771 path still
+ *     works.
  *
  * 2026-07-25 follow-up: the 9 leftover React.CSSProperties objects
  * (formStyle, rowStyle, actionsStyle, legalStyle, errorBannerStyle,
@@ -35,12 +41,13 @@
  * co-located `ContactForm.module.css`. Behavior is unchanged.
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CheckCircle2, Loader2 } from 'lucide-react';
 
 import { Button, Card, Input } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
+import { recallZip, rememberZip } from '@/lib/zip-memory';
 
 import styles from './ContactForm.module.css';
 
@@ -73,6 +80,23 @@ export default function ContactForm({ source }: ContactFormProps) {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
+  // ZIP memory: prefill with the last entered ZIP from localStorage
+  // on first mount. The `?zip=` URL param (set by the homepage
+  // Coverage Check CTA when it routes to /contact?zip=33771) takes
+  // precedence — the useEffect reads the URL once and overrides the
+  // remembered value if the URL param is set and in-service-area.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const urlZip = params.get('zip');
+    if (urlZip && /^\d{5}$/.test(urlZip)) {
+      setForm((f) => ({ ...f, zip: urlZip }));
+      return;
+    }
+    const remembered = recallZip();
+    if (remembered) setForm((f) => ({ ...f, zip: remembered }));
+  }, []);
+
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((f) => ({ ...f, [key]: value }));
   }
@@ -81,6 +105,11 @@ export default function ContactForm({ source }: ContactFormProps) {
     e.preventDefault();
     setStatus('submitting');
     setErrorMessage('');
+    // Persist the ZIP for next time the user visits /quote, /contact,
+    // or the homepage coverage check. Successful submit is the right
+    // moment to write — the user has now confirmed this is a ZIP
+    // they care about.
+    if (form.zip) rememberZip(form.zip);
     try {
       const res = await fetch('/api/lead', {
         method: 'POST',

@@ -7,6 +7,7 @@ import { CheckCircle2, Loader2 } from 'lucide-react';
 import { Button, Card, Input } from '@/components/ui';
 import { BUSINESS, inServiceArea } from '@/lib/business';
 import { cn } from '@/lib/cn';
+import { recallZip, rememberZip } from '@/lib/zip-memory';
 
 import styles from './QuoteCalculator.module.css';
 
@@ -93,8 +94,12 @@ export function QuoteCalculator({
   // /quote page can still prerender statically.
   const searchParams = useSearchParams();
 
-  // Read UTM params + ?zip= prefill once on mount so attribution
-  // and the Coverage Check loop both flow through to the lead.
+  // Read UTM params + ?zip= prefill + remembered ZIP once on mount
+  // so attribution and the Coverage Check loop both flow through to
+  // the lead. Precedence: ?zip= URL param > localStorage remembered
+  // ZIP > default '33771'. The localStorage value is the user's
+  // last entered ZIP across the homepage coverage check,
+  // /contact, and /quote — one canonical "their ZIP" per device.
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
@@ -106,6 +111,11 @@ export function QuoteCalculator({
     const zipParam = searchParams?.get('zip');
     if (zipParam && inServiceArea(zipParam)) {
       setZip(zipParam);
+      return;
+    }
+    const remembered = recallZip();
+    if (remembered && inServiceArea(remembered)) {
+      setZip(remembered);
     }
   }, [searchParams]);
 
@@ -131,6 +141,11 @@ export function QuoteCalculator({
     if (submitting) return;
     setSubmitting(true);
     setSubmitted(null);
+    // Persist the ZIP for next time across the homepage coverage
+    // check + /contact + /quote. Successful submit confirms this
+    // is a ZIP the user actually cares about — that's the right
+    // moment to write.
+    if (zip) rememberZip(zip);
     const body = {
       first_name: firstName,
       last_name: lastName,
