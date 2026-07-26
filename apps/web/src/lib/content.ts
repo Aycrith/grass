@@ -905,6 +905,7 @@ export const aboutPage = {
   whySolo:
     "Most landscaping companies grow fast, hire subcontractors, and lose quality control. We don't. Largo Lawn is a one-crew operation: every job is performed by the same person who quoted it. When you book, you know exactly who's coming.",
   valuesEyebrow: 'Our values',
+  valuesHeading: 'What you can count on.',
   values: [
     {
       label: 'Transparent pricing',

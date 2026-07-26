@@ -67,7 +67,7 @@ export function OperatorBio({ className }: OperatorBioProps): ReactNode {
             <Eyebrow tone="default" >
               {aboutPage.valuesEyebrow}
             </Eyebrow>
-            <h2 className={styles.valuesHeading}>{aboutPage.valuesEyebrow}.</h2>
+            <h2 className={styles.valuesHeading}>{aboutPage.valuesHeading}</h2>
           </header>
           <div className={styles.valuesGrid}>
             {aboutPage.values.map((v) => (
