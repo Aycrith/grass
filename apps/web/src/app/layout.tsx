@@ -122,9 +122,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     telephone: BUSINESS.phone,
     email: BUSINESS.email,
     url: BUSINESS.url,
+    // SAB (service-area business) address — when BUSINESS.addressPublic is
+    // false, the streetAddress field is omitted. schema.org accepts a
+    // PostalAddress with only addressLocality/addressRegion/postalCode
+    // for SABs and Google's local pack does not penalize the omission.
+    // See BUSINESS.addressPublic in lib/business.ts.
     address: {
       '@type': 'PostalAddress',
-      streetAddress: BUSINESS.address.line1,
+      ...(BUSINESS.addressPublic && BUSINESS.address.line1
+        ? { streetAddress: BUSINESS.address.line1 }
+        : {}),
       addressLocality: BUSINESS.address.city,
       addressRegion: BUSINESS.address.state,
       postalCode: BUSINESS.address.zip,

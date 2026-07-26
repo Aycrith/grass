@@ -72,8 +72,12 @@ export function SiteFooter({ className }: SiteFooterProps): ReactNode {
             <div className={styles.brandLine}>
               <span className={styles.brandEntity}>{BUSINESS.legal_entity}</span>
               <span className={styles.brandAddress}>
-                {BUSINESS.address.line1}
-                <br />
+                {BUSINESS.addressPublic && BUSINESS.address.line1 && (
+                  <>
+                    {BUSINESS.address.line1}
+                    <br />
+                  </>
+                )}
                 {BUSINESS.address.city}, {BUSINESS.address.state} {BUSINESS.address.zip}
               </span>
             </div>

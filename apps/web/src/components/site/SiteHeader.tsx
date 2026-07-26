@@ -118,7 +118,10 @@ function MobileDrawer({
               <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
             </p>
             <p className={styles.dialogFooterGap}>
-              {BUSINESS.address.line1}, {BUSINESS.address.city}, {BUSINESS.address.state}{' '}
+              {BUSINESS.addressPublic && BUSINESS.address.line1
+                ? `${BUSINESS.address.line1}, `
+                : ''}
+              {BUSINESS.address.city}, {BUSINESS.address.state}{' '}
               {BUSINESS.address.zip}
             </p>
           </div>

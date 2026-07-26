@@ -42,24 +42,44 @@ export const BUSINESS = {
    * text rendering — header, footer, contact page, success
    * states, etc.
    */
-  phone: '+1-727-555-0123',
+  phone: '+1-727-313-8011',
   /**
    * E.164-format phone (digits only) for `tel:` hrefs. Most
    * modern browsers (Chrome, Safari, Firefox, iOS Safari,
-   * Android Chrome) accept the dashed `+1-727-555-0123` form
+   * Android Chrome) accept the dashed `+1-727-313-8011` form
    * in `tel:` hrefs, but a small number of legacy devices
    * (older flip phones, some car infotainment systems) strip
    * everything but digits. Use `BUSINESS.phoneTel` for any
    * `href={\`tel:${...}\`}` so the link works on every device.
    */
-  phoneTel: '+17275550123',
+  phoneTel: '+17273138011',
   email: 'hello@largolawn.pro',
+  /**
+   * Service-area business (SAB) address policy.
+   *
+   * The business operates as a service-area business — the
+   * operator travels to the customer. Per the steward's
+   * explicit instruction (2026-07-26), no street address is
+   * shown publicly anywhere on the site or in any citation
+   * submission. The address below is for the steward's
+   * private reference only (e.g., the GBP verification
+   * postcard, when the steward is ready to submit).
+   *
+   * The `addressPublic` flag controls whether the address
+   * line is rendered in the public UI. When `false` (the
+   * default), the SiteHeader, SiteFooter, Contact page, and
+   * the JSON-LD `streetAddress` field all suppress the
+   * street line and show only the city/state/zip. This is
+   * the correct SAB pattern for a home-based or
+   * service-only operation.
+   */
   address: {
-    line1: '12345 Starkey Rd',
+    line1: '', // Private — not rendered publicly. See steward only.
     city: 'Largo',
     state: 'FL',
     zip: '33771',
   },
+  addressPublic: false,
   hours: {
     weekdays: 'Mon to Fri, 7:00 AM to 5:00 PM',
     saturday: 'Sat, 8:00 AM to 2:00 PM',
