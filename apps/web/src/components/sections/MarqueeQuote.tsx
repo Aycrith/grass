@@ -95,7 +95,7 @@ export function MarqueeQuote({ className }: MarqueeQuoteProps): ReactNode {
           }}
         >
           {doubled.map((line, i) => (
-            <span key={`${i}-${line}`} className={styles.item}>
+            <span key={i} className={styles.item}>
               <span className={styles.quoteMark} aria-hidden="true">
                 “
               </span>
