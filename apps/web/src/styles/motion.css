@@ -7,13 +7,6 @@
  * prefers-reduced-motion so the icon freezes if the user has the
  * OS setting on (the submit still completes; the icon just stops
  * spinning).
- *
- * Earlier revisions also exposed .reveal / .hover-lift /
- * .hover-zoom / .press / .transition-bg / .transition-colors
- * utility classes. All were replaced by per-section co-located
- * .module.css declarations when each section was migrated to the
- * <Section> + <Container> + co-located design system, and the
- * globals had no remaining consumers (verified via rg).
  * ============================================================ */
 
 @media (prefers-reduced-motion: no-preference) {
