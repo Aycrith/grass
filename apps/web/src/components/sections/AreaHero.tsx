@@ -20,7 +20,7 @@ import Image from 'next/image';
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Breadcrumb, Eyebrow } from '@/components/site';
+import { Breadcrumb, Container, Eyebrow, Section } from '@/components/site';
 import { Button } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
@@ -39,7 +39,7 @@ export function AreaHero({ detail, className }: AreaHeroProps): ReactNode {
   const imageAlt = `Storybook-painted ${detail.name} neighborhood at golden hour — Largo, FL ${detail.zip}.`;
 
   return (
-    <section className={cn(styles.root, className)}>
+    <Section className={cn(styles.root, className)}>
       <div className={styles.media} aria-hidden="true">
         <Image
           src={imageSlot}
@@ -52,7 +52,7 @@ export function AreaHero({ detail, className }: AreaHeroProps): ReactNode {
         <div className={styles.scrim} />
       </div>
 
-      <div className="container">
+      <Container>
         <div className={styles.copy}>
           <FadeUp>
             <Breadcrumb
@@ -80,7 +80,7 @@ export function AreaHero({ detail, className }: AreaHeroProps): ReactNode {
             </div>
           </FadeUp>
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   );
 }

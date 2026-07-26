@@ -19,6 +19,7 @@
 
 import type { ReactNode } from 'react';
 
+import { Container, Section } from '@/components/site';
 import { Button } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import type { AreaDetail } from '@/lib/content';
@@ -32,8 +33,8 @@ interface AreaCTAProps {
 
 export function AreaCTA({ detail, className }: AreaCTAProps): ReactNode {
   return (
-    <section className={cn(styles.root, className)}>
-      <div className="container">
+    <Section className={cn(styles.root, className)}>
+      <Container>
         <div className={styles.inner}>
           <span className={styles.eyebrow}>Ready when you are</span>
           <h2 className={styles.headline}>Get a free quote for {detail.zip}.</h2>
@@ -51,7 +52,7 @@ export function AreaCTA({ detail, className }: AreaCTAProps): ReactNode {
             </Button>
           </div>
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   );
 }
