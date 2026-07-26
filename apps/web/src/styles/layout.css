@@ -170,6 +170,24 @@
  * reads as an intended affordance, not a debug element.
  * ============================================================ */
 
+/* ---------- In-page anchor offset ----------
+ *
+ * The SiteHeader is `position: sticky; top: 0` with a known
+ * height (`--header-height` token = 72px). When a user
+ * activates an in-page anchor (the skip link, #hero, #final-cta,
+ * any future section[id]), the target would otherwise land
+ * underneath the sticky header. Adding `scroll-margin-top`
+ * shifts the scroll target down by the header height so the
+ * anchor lands flush below the header.
+ *
+ * `:where()` keeps this rule at 0 specificity so component-
+ * scoped styles can still override it (e.g. a hero that
+ * wants to land flush with the viewport top on its own
+ * ID can set its own scroll-margin-top). */
+:where(main[id], section[id]) {
+  scroll-margin-top: var(--header-height);
+}
+
 .skip-link {
   position: absolute;
   top: 0;
