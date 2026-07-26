@@ -59,6 +59,7 @@ import type { ReactNode } from 'react';
 import { FadeUp } from '@/components/motion';
 import { Container, Section } from '@/components/site';
 import { Illustration } from '@/components/ui';
+import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
 import { operator } from '@/lib/content';
 
@@ -162,10 +163,15 @@ export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
 
             {/* D-0029 — inline "we know what we're doing" stat row
              * folded from the demoted ServiceAreaStats panel. The
-             * bio is the operator's voice section, so two specific
+             * bio is the operator's voice section, so specific
              * numbers ("47 yards on the route" + "18h median quote
-             * turnaround") reinforce that voice without a separate
-             * stats section. Quiet typographic row above the
+             * turnaround" + "6 ZIPs on the route") reinforce that
+             * voice without a separate stats section. 2026-07-26:
+             * added the 3rd stat ("6 ZIPs") so the row reads as a
+             * full triptych instead of an unbalanced 2-up — the
+             * 6-ZIP count anchors the operator's reach in the same
+             * fact the user will see on /areas and in the homepage
+             * coverage-check. Quiet typographic row above the
              * signature mark; no chart, no card, no CTA. */}
             <ul className={styles.bioStatRow} aria-label="Operator stats">
               <li className={styles.bioStat}>
@@ -175,6 +181,10 @@ export function OperatorStrip({ className }: OperatorStripProps): ReactNode {
               <li className={styles.bioStat}>
                 <span className={styles.bioStatValue}>18 h</span>
                 <span className={styles.bioStatLabel}>Median quote turnaround</span>
+              </li>
+              <li className={styles.bioStat}>
+                <span className={styles.bioStatValue}>{BUSINESS.service_area_zips.length}</span>
+                <span className={styles.bioStatLabel}>ZIPs on the route</span>
               </li>
             </ul>
 
