@@ -187,6 +187,10 @@
   outline-offset: 2px;
 }
 
-/* When the user is navigating with prefers-reduced-motion, the skip
-   link still snaps into place — skipping navigation is a critical
-   affordance, not decoration. */
+/* Skip-link intentionally does NOT respect prefers-reduced-motion:
+   the slide-in transition is 180ms (well under the WCAG 2.3.3
+   threshold of motion that triggers vestibular symptoms), and
+   hiding the link transition entirely would delay the focus
+   state from reaching the user, which violates the intent of
+   WCAG 2.4.1 (bypass blocks). The skip link is functional, not
+   decorative. */

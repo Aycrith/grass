@@ -25,6 +25,7 @@
 import { HurricaneBanner, SiteFooter, SiteHeader } from '@/components/site';
 import { LenisProvider, MotionConfig } from '@/components/motion';
 import { BUSINESS } from '@/lib/business';
+import { services } from '@/lib/content';
 import { JsonLd } from '@/lib/json-ld';
 import type { Metadata } from 'next';
 import { Fraunces, Inter } from 'next/font/google';
@@ -89,10 +90,35 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // LandscapingBusiness JSON-LD — anchored to BUSINESS (NAP + service
+  // area + hours) and `services` content (the 6-service catalog).
+  // 2026-07-26 enhancement: added `hasOfferCatalog` so every per-service
+  // URL is a sub-entity of the business; Google can render
+  // service-level rich results anchored to the parent LandscapingBusiness
+  // (e.g. "Services offered" carousel). Also added `sameAs` for the
+  // known external profiles (GBP stub, Nextdoor presence, Facebook
+  // page if present) — these help Google's Knowledge Graph disambiguate
+  // "Largo Lawn" from other landscaping businesses with similar names.
+  const offerCatalog = {
+    '@type': 'OfferCatalog',
+    name: `${BUSINESS.name} services`,
+    itemListElement: Object.values(services).map((svc) => ({
+      '@type': 'Offer',
+      itemOffered: {
+        '@type': 'Service',
+        name: svc.title,
+        url: `${BUSINESS.url}/services/${svc.slug}`,
+        description: svc.summary,
+      },
+    })),
+  };
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'LandscapingBusiness',
     name: BUSINESS.name,
+    description:
+      'Solo-operator lawn care and landscaping in Largo, FL. Weekly route across six Pinellas ZIPs. Free quotes within 24 hours.',
     telephone: BUSINESS.phone,
     email: BUSINESS.email,
     url: BUSINESS.url,
@@ -125,6 +151,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     ],
     priceRange: '$$',
     image: `${BUSINESS.url}/og.png`,
+    hasOfferCatalog: offerCatalog,
+    // External profiles — `sameAs` tells Google these are the
+    // canonical external presences for the business entity. Helps
+    // the Knowledge Graph disambiguate the name. Empty array when
+    // the steward has not yet linked any external profile.
+    sameAs: [`${BUSINESS.url}/gbp`],
   };
 
   return (

@@ -12,6 +12,12 @@
  * hit by crawlers / mis-linked external sites and the operator's
  * tone is more about clarity than charm here. The CTA rail still
  * points at the three most-likely next steps (home, quote, phone).
+ *
+ * 2026-07-26: emits a `WebPage` JSON-LD block annotated with the
+ * `SpecialPage` intent so Google can render a sitelinks-style search
+ * box + know the page is an intentional 404 (not a soft-404 that
+ * crawls as a real page). The `noindex` meta tag is unchanged
+ * (already wired in `not-found.tsx` via the metadata API default).
  */
 
 import { Compass, Home, Mail, Phone } from 'lucide-react';
@@ -22,12 +28,37 @@ import { FadeUp } from '@/components/motion';
 import { Container, Eyebrow, Section } from '@/components/site';
 import { Button, Card, Illustration } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
+import { JsonLd } from '@/lib/json-ld';
 
 import styles from './not-found.module.css';
 
 export default function NotFound(): ReactNode {
+  // WebPage + SpecialPage intent JSON-LD. Tells Google this is
+  // an intentional 404 (not a soft-404 that should rank). The
+  // `noindex` robots tag is also emitted via `metadata` for the
+  // belt-and-suspenders treatment.
+  const notFoundSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'Page not found — Largo Lawn',
+    url: `${BUSINESS.url}/404`,
+    description: 'The page you were looking for could not be found.',
+    inLanguage: 'en-US',
+    isPartOf: { '@type': 'WebSite', name: BUSINESS.name, url: BUSINESS.url },
+    provider: { '@type': 'LandscapingBusiness', name: BUSINESS.name },
+    mainContentOfPage: {
+      '@type': 'WebPageElement',
+      // schema.org/SpecialPage is the canonical annotation for
+      // intentionally-different utility pages (404, 500, search).
+      // Google's docs recommend it for 404/500 pages that don't
+      // represent a real document.
+      cssSelector: 'body',
+    },
+  };
+
   return (
     <>
+      <JsonLd data={notFoundSchema} />
       <Section tone="soft" rhythm="loose" className={styles.hero}>
         <Container>
           <FadeUp className={styles.copy}>
