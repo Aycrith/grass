@@ -86,12 +86,42 @@ export default async function AreaDetailPage({ params }: AreaParams) {
     url: `https://largolawn.pro/areas/${zip}`,
   };
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://largolawn.pro/',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Service areas',
+        item: 'https://largolawn.pro/areas',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: `ZIP ${zip} (${detail.name})`,
+        item: `https://largolawn.pro/areas/${zip}`,
+      },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: SEO JSON-LD
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: SEO JSON-LD
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <AreaHero detail={detail} />
       <AreaNeighborhoodNotes detail={detail} />

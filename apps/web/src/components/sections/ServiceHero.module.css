@@ -53,6 +53,10 @@
   }
 }
 
+.breadcrumb {
+  margin-bottom: var(--space-4);
+}
+
 .eyebrow {
   /* Eyebrow tone="dark" handles the sand-on-palm color; this
    * class is here for the dot + tracking pattern. */

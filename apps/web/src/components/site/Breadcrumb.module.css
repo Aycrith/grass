@@ -1,0 +1,80 @@
+/* Breadcrumb — small Inter nav trail.
+ *
+ * Used on /services/[slug] and /areas/[zip] above the page
+ * hero. Sits on a dark/colorful hero background by default
+ * (the heroes are full-bleed photo with a clay-warm scrim);
+ * pass `tone="default"` when mounting on a light surface.
+ */
+
+.root {
+  font-family: var(--font-inter);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ll-sand-bleached);
+  /* Drop the default <nav> margin so it composes with
+   * the surrounding <Eyebrow> + <h1> stack. */
+  margin: 0;
+}
+
+.list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  gap: var(--space-2);
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  line-height: 1;
+}
+
+.link {
+  color: var(--ll-sand-bleached);
+  text-decoration: none;
+  opacity: 0.85;
+  transition: opacity var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.link:hover,
+.link:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  opacity: 1;
+}
+
+.sep {
+  opacity: 0.6;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.current {
+  font-weight: 700;
+  color: var(--ll-sand-bleached);
+}
+
+/* `default` tone — for light surfaces (e.g. if a future
+ * section page wants breadcrumbs above a white background).
+ * Palm-bark text + palm-shadow links. */
+.dark {
+  /* No overrides needed — the base .root is already the
+   * "on-dark" colorway. This class is the explicit
+   * identity for callers who think in default/dark
+   * the same way <Section> and <Eyebrow> do. */
+}
+
+.root:not(.dark) {
+  color: var(--ll-palm-bark);
+}
+
+.root:not(.dark) .link,
+.root:not(.dark) .current {
+  color: var(--ll-palm-bark);
+}

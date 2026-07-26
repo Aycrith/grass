@@ -18,7 +18,7 @@ import Image from 'next/image';
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Eyebrow } from '@/components/site';
+import { Breadcrumb, Eyebrow } from '@/components/site';
 import { Button } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
@@ -53,6 +53,15 @@ export function ServiceHero({ slug, className }: ServiceHeroProps): ReactNode {
       <div className="container">
         <div className={styles.copy}>
           <FadeUp>
+            <Breadcrumb
+              tone="dark"
+              className={styles.breadcrumb}
+              items={[
+                { label: 'Home', href: '/' },
+                { label: 'Services', href: '/services' },
+                { label: detail.name },
+              ]}
+            />
             <Eyebrow tone="dark" className={styles.eyebrow}>
               {svc.eyebrow} — {svc.title}
             </Eyebrow>

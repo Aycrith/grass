@@ -14,3 +14,4 @@ export { SiteHeader } from './SiteHeader';
 export { SiteFooter } from './SiteFooter';
 export { HurricaneBanner } from './HurricaneBanner';
 export { ConversionRail } from './ConversionRail';
+export { Breadcrumb, type BreadcrumbItem } from './Breadcrumb';
