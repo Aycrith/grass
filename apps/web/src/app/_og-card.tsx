@@ -1,14 +1,22 @@
 /**
- * Shared card composition for /opengraph-image and /twitter-image.
+ * Shared card composition for /opengraph-image and /twitter-image,
+ * plus all per-route OG images (services/[slug], areas/[zip], /about,
+ * /pricing, /contact, /quote, /services, /areas).
  *
- * Both route files (app/opengraph-image.tsx + app/twitter-image.tsx)
- * render a 1200×630 PNG with the same brand mark, sun accent, and
- * editorial headline. Before this refactor, the JSX was duplicated
- * byte-for-byte between the two files (≈ 100 lines each). This
- * shared component is imported by both, so the brand mark only
- * needs to be edited in one place when the steward updates the
- * logo or copy.
+ * Per-route OG images: 2026-07-26 — previously every page on the
+ * site shared the same brand-default OgCard rendered at the app
+ * root. Social previews for /services/mowing, /areas/33771, /pricing,
+ * /about, /contact, /quote, /services, /areas all looked identical,
+ * which hurts both click-through (no context for the user scrolling
+ * a feed) and SEO (Twitter/LinkedIn/Facebook rank distinct OG
+ * images in their caches, so a single image dampens every link's
+ * reach).
  *
+ * The composition is now parameterised by:
+ *   - eyebrow: short uppercase tag (e.g. "LAWN CARE · 33771")
+ *   - headline: 1-2 line page title (e.g. "Mowing in Largo, FL.")
+ *   - subhead: 1-2 line page subtitle (e.g. "Weekly, solo-operator.")
+ *   - tone: 'sand' (default cream) or 'palm' (deep green)
  * Satori renders this JSX as a static PNG — it does NOT run in the
  * browser. The inline `style={{...}}` props are Satori's required
  * API (no CSS modules, no Tailwind). Do not refactor to CSS classes.
@@ -22,7 +30,27 @@
 
 export const OG_CARD_SIZE = { width: 1200, height: 630 } as const;
 
-export function OgCard(): React.ReactNode {
+export type OgCardTone = 'sand' | 'palm';
+
+export interface OgCardProps {
+  eyebrow?: string;
+  headline: string;
+  subhead?: string;
+  tone?: OgCardTone;
+}
+
+export function OgCard({
+  eyebrow = 'LAWN CARE IN 33771',
+  headline,
+  subhead = 'Local, solo-operator lawn care in Largo and the adjacent five Pinellas ZIPs. Free quotes within 24 hours.',
+  tone = 'sand',
+}: OgCardProps): React.ReactNode {
+  const isPalm = tone === 'palm';
+  const bg = isPalm ? '#1F4E2C' : '#F4E8D0'; // --ll-green : --ll-sand-bleached
+  const fg = isPalm ? '#F4E8D0' : '#1A1F1B'; // --ll-sand-bleached : --ll-palm-bark
+  const accent = isPalm ? '#E8B65A' : '#B5651D'; // --ll-sun : --ll-clay
+  const subheadAlpha = isPalm ? 0.85 : 0.78;
+
   return (
     <div
       style={{
@@ -30,9 +58,9 @@ export function OgCard(): React.ReactNode {
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: '#F4E8D0', // --ll-sand-bleached
+        backgroundColor: bg,
         padding: 80,
-        color: '#1A1F1B', // --ll-palm-bark
+        color: fg,
         position: 'relative',
       }}
     >
@@ -46,7 +74,7 @@ export function OgCard(): React.ReactNode {
           height: 96,
           borderRadius: 9999,
           backgroundColor: '#E8B65A', // --ll-sun
-          opacity: 0.85,
+          opacity: isPalm ? 0.9 : 0.85,
           display: 'flex',
         }}
       />
@@ -66,7 +94,7 @@ export function OgCard(): React.ReactNode {
             style={{
               width: 24,
               height: 100,
-              backgroundColor: '#1F4E2C', // --ll-green
+              backgroundColor: isPalm ? '#F4E8D0' : '#1F4E2C',
               borderRadius: 12,
               transform: 'rotate(-8deg)',
             }}
@@ -75,7 +103,7 @@ export function OgCard(): React.ReactNode {
             style={{
               width: 24,
               height: 100,
-              backgroundColor: '#1F4E2C', // --ll-green
+              backgroundColor: isPalm ? '#F4E8D0' : '#1F4E2C',
               borderRadius: 12,
             }}
           />
@@ -83,7 +111,7 @@ export function OgCard(): React.ReactNode {
             style={{
               width: 24,
               height: 100,
-              backgroundColor: '#1F4E2C', // --ll-green
+              backgroundColor: isPalm ? '#F4E8D0' : '#1F4E2C',
               borderRadius: 12,
               transform: 'rotate(8deg)',
             }}
@@ -94,7 +122,7 @@ export function OgCard(): React.ReactNode {
             style={{
               fontSize: 56,
               fontWeight: 700,
-              color: '#1F4E2C', // --ll-green
+              color: isPalm ? '#F4E8D0' : '#1F4E2C',
               lineHeight: 1,
             }}
           >
@@ -105,7 +133,7 @@ export function OgCard(): React.ReactNode {
               marginTop: 8,
               fontSize: 14,
               fontWeight: 500,
-              color: '#1F4E2C', // --ll-green
+              color: isPalm ? '#F4E8D0' : '#1F4E2C',
               opacity: 0.7,
               letterSpacing: 2,
             }}
@@ -118,47 +146,48 @@ export function OgCard(): React.ReactNode {
       <div
         style={{
           marginTop: 96,
-          fontSize: 16,
+          fontSize: 18,
           fontWeight: 700,
-          color: '#B5651D', // --ll-clay
+          color: accent,
           letterSpacing: 3,
           display: 'flex',
         }}
       >
-        LAWN CARE IN 33771
+        {eyebrow}
       </div>
 
       <div
         style={{
           marginTop: 16,
-          fontSize: 92,
+          fontSize: 84,
           fontWeight: 700,
-          color: '#1A1F1B', // --ll-palm-bark
+          color: fg,
           letterSpacing: -2,
           lineHeight: 1.05,
           display: 'flex',
           flexDirection: 'column',
         }}
       >
-        <span>Your neighbor&apos;s</span>
-        <span>lawn mower.</span>
+        <span>{headline}</span>
       </div>
 
       <div
         style={{
           marginTop: 32,
-          fontSize: 22,
+          fontSize: 24,
           fontWeight: 500,
-          color: '#1A1F1B', // --ll-palm-bark
-          opacity: 0.78,
+          color: fg,
+          opacity: subheadAlpha,
           lineHeight: 1.4,
           display: 'flex',
           flexDirection: 'column',
         }}
       >
-        <span>Local, solo-operator lawn care in Largo and the adjacent</span>
-        <span>five Pinellas ZIPs. Free quotes within 24 hours.</span>
+        {subhead.split('\n').map((line) => (
+          <span key={line}>{line}</span>
+        ))}
       </div>
     </div>
   );
 }
+

@@ -25,7 +25,16 @@ export const size = OG_CARD_SIZE;
 export const contentType = 'image/png';
 
 export default async function Image() {
-  return new ImageResponse(<OgCard />, {
-    ...size,
-  });
+  return new ImageResponse(
+    <OgCard
+      eyebrow="LAWN CARE IN 33771"
+      headline="Your neighbor's lawn mower."
+      subhead={
+        'Local, solo-operator lawn care in Largo and the adjacent\nfive Pinellas ZIPs. Free quotes within 24 hours.'
+      }
+    />,
+    {
+      ...size,
+    },
+  );
 }

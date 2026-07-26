@@ -28,10 +28,19 @@ export const size = OG_CARD_SIZE;
 export const contentType = 'image/png';
 
 export default async function Image() {
-  return new ImageResponse(<OgCard />, {
-    ...size,
-    // No custom fonts — satori uses its default which is bundled
-    // in the next/og package. Avoids the font.fetch / font.arrayBuffer
-    // TypeError that broke /opengraph-image in Next 15.5.20.
-  });
+  return new ImageResponse(
+    <OgCard
+      eyebrow="LAWN CARE IN 33771"
+      headline="Your neighbor's lawn mower."
+      subhead={
+        'Local, solo-operator lawn care in Largo and the adjacent\nfive Pinellas ZIPs. Free quotes within 24 hours.'
+      }
+    />,
+    {
+      ...size,
+      // No custom fonts — satori uses its default which is bundled
+      // in the next/og package. Avoids the font.fetch / font.arrayBuffer
+      // TypeError that broke /opengraph-image in Next 15.5.20.
+    },
+  );
 }
