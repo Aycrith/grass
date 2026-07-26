@@ -97,8 +97,7 @@ export function Card({
     return (
       <Link
         href={safeHref}
-        className={cls}
-        style={{ textDecoration: 'none', color: 'inherit' }}
+        className={cn(cls, styles.asLink)}
         {...cleaned}
       >
         {inner}
