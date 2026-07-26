@@ -13,8 +13,8 @@
  *
  * WP34 follow-up: removed the inline `style={{ width, height }}` so
  * consumer-provided `className` can override the rendered size
- * (e.g. `className={styles.brandMark}` in SiteHeader.module.css
- * already declares `width: 32px; height: 32px`). The HTML
+ * (e.g. `className={styles.brandMark}` in SiteFooter.module.css
+ * already declares `width: 36px; height: 36px`). The HTML
  * width/height attributes still declare the intrinsic dimensions
  * for layout pre-paint and aspect-ratio fallback. Same fix as
  * Illustration.tsx.
