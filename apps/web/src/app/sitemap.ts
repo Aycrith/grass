@@ -1,10 +1,10 @@
 /**
  * sitemap.xml — auto-generated from service slugs + area ZIPs.
  *
- * 24 routes: 1 home + 1 services index + 6 service detail + 1 pricing
+ * 25 routes: 1 home + 1 services index + 6 service detail + 1 pricing
  * + 1 about + 1 contact + 1 areas index + 6 area detail + 1 faq +
  * 1 hurricane-prep + 1 process + 1 reviews + 1 areas-near-me +
- * 2 legal = 24.
+ * 1 door-hanger + 2 legal = 25.
  *
  * Topical /editorial hubs (high SEO value, distinct from the
  * service-card / per-ZIP surfaces):
@@ -64,6 +64,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/process`, lastModified: lastmod, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${base}/reviews`, lastModified: lastmod, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${base}/areas-near-me`, lastModified: lastmod, changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${base}/door-hanger`, lastModified: lastmod, changeFrequency: 'yearly', priority: 0.1 },
     { url: `${base}/privacy`, lastModified: lastmod, changeFrequency: 'yearly', priority: 0.2 },
     { url: `${base}/terms`, lastModified: lastmod, changeFrequency: 'yearly', priority: 0.2 },
 

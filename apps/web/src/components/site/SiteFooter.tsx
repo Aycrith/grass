@@ -52,6 +52,7 @@ const RESOURCES_HREFS: ReadonlyArray<{ href: string; label: string }> = [
   { href: '/reviews', label: 'Reviews' },
   { href: '/faq', label: 'Frequently asked' },
   { href: '/areas-near-me', label: 'Areas near me' },
+  { href: '/door-hanger', label: 'Print door hanger' },
 ];
 
 const LEGAL_HREFS: ReadonlyArray<{ href: string; label: string }> = [

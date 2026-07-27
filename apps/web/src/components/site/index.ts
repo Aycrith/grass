@@ -17,3 +17,4 @@ export { SiteFooter } from './SiteFooter';
 export { HurricaneBanner } from './HurricaneBanner';
 export { ConversionRail } from './ConversionRail';
 export { Breadcrumb } from './Breadcrumb';
+export { CookieConsent } from './CookieConsent';

@@ -22,7 +22,7 @@
  * while leaving <head> entirely to the metadata API.
  */
 
-import { HurricaneBanner, SiteFooter, SiteHeader } from '@/components/site';
+import { CookieConsent, HurricaneBanner, SiteFooter, SiteHeader } from '@/components/site';
 import { LenisProvider, MotionConfig } from '@/components/motion';
 import { BUSINESS } from '@/lib/business';
 import { services } from '@/lib/content';
@@ -228,6 +228,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
          * and the header takes over the viewport top as the visitor
          * scrolls past it. */}
         {BUSINESS.hurricaneModeActive ? <HurricaneBanner /> : null}
+        {/* D-000x (2026-07-26): Cookie consent banner — shown once per device.
+         * Dismissed state persists in localStorage so it doesn't reappear. */}
+        <CookieConsent />
         {/* WP19 - LenisProvider mounts smooth-scroll so the ParallaxImage
          * site-wide) actually sees a non-zero `scrollYProgress`. The
          * provider is gated for prefers-reduced-motion + coarse-pointer +
