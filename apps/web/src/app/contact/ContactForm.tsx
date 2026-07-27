@@ -41,7 +41,7 @@
  * co-located `ContactForm.module.css`. Behavior is unchanged.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CheckCircle2, Loader2 } from 'lucide-react';
 
 import { Button, Card, Input } from '@/components/ui';
@@ -79,6 +79,19 @@ export default function ContactForm({ source }: ContactFormProps) {
   const [form, setForm] = useState<FormState>({ ...INITIAL_STATE, source: source ?? 'website' });
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const errorRef = useRef<HTMLParagraphElement | null>(null);
+
+  // Focus management: when the form enters the 'error' state, move
+  // keyboard focus to the error banner so the user (and any screen
+  // reader) immediately lands on the explanation. The <p> already
+  // has role="alert" so AT will announce it on render; explicit
+  // focus() is the belt-and-suspenders for keyboard users who
+  // tabbed past the submit button.
+  useEffect(() => {
+    if (status === 'error' && errorRef.current) {
+      errorRef.current.focus();
+    }
+  }, [status]);
 
   // ZIP memory: prefill with the last entered ZIP from localStorage
   // on first mount. The `?zip=` URL param (set by the homepage
@@ -208,7 +221,12 @@ export default function ContactForm({ source }: ContactFormProps) {
       />
 
       {status === 'error' ? (
-        <p className={cn(styles.errorBanner)} role="alert">
+        <p
+          ref={errorRef}
+          className={cn(styles.errorBanner)}
+          role="alert"
+          tabIndex={-1}
+        >
           {errorMessage}
         </p>
       ) : null}

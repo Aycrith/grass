@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { CheckCircle2, Loader2 } from 'lucide-react';
 
 import { Button, Card, Input } from '@/components/ui';
@@ -83,6 +83,19 @@ export function QuoteCalculator({
   const [submitted, setSubmitted] = useState<null | { ok: boolean; message: string }>(null);
   const [submitting, setSubmitting] = useState(false);
   const [utm, setUtm] = useState<{ source: string; campaign: string; medium: string } | null>(null);
+  const errorRef = useRef<HTMLParagraphElement | null>(null);
+
+  // Focus management: when the submission result is !ok, move
+  // keyboard focus to the error banner so keyboard / screen-reader
+  // users land on the explanation. The <p> already has role="alert"
+  // so AT will announce it on render; explicit focus() is the
+  // belt-and-suspenders for keyboard users who tabbed past the
+  // submit button.
+  useEffect(() => {
+    if (submitted && !submitted.ok && errorRef.current) {
+      errorRef.current.focus();
+    }
+  }, [submitted]);
 
   // D-0028: read the `?zip=` search param (set by the Coverage Check
   // CTA on the homepage ServiceAreaMap) and prefill the ZIP select if
@@ -299,7 +312,12 @@ export function QuoteCalculator({
         />
 
         {submitted && !submitted.ok ? (
-          <p className={cn(styles.errorBanner)} role="alert">
+          <p
+            ref={errorRef}
+            className={cn(styles.errorBanner)}
+            role="alert"
+            tabIndex={-1}
+          >
             {submitted.message}
           </p>
         ) : null}

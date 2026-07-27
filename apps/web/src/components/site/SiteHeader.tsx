@@ -89,21 +89,26 @@ function MobileDrawer({
                   href="/"
                   className={styles.dialogLink}
                   data-active={pathname === '/' ? 'true' : undefined}
+                  aria-current={pathname === '/' ? 'page' : undefined}
                 >
                   Home
                 </Link>
               </li>
-              {NAV_ITEMS.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className={styles.dialogLink}
-                    data-active={isActiveRoute(pathname, item.href) ? 'true' : undefined}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
+              {NAV_ITEMS.map((item) => {
+                const isActive = isActiveRoute(pathname, item.href);
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={styles.dialogLink}
+                      data-active={isActive ? 'true' : undefined}
+                      aria-current={isActive ? 'page' : undefined}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </nav>
 
@@ -156,17 +161,21 @@ export function SiteHeader({ className }: SiteHeaderProps): ReactNode {
             <div className={styles.nav}>
               <nav aria-label="Primary">
                 <ul className={styles.navList}>
-                  {NAV_ITEMS.map((item) => (
-                    <li key={item.href}>
-                      <Link
-                        href={item.href}
-                        className={styles.navLink}
-                        data-active={isActiveRoute(pathname, item.href) ? 'true' : undefined}
-                      >
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))}
+                  {NAV_ITEMS.map((item) => {
+                    const isActive = isActiveRoute(pathname, item.href);
+                    return (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          className={styles.navLink}
+                          data-active={isActive ? 'true' : undefined}
+                          aria-current={isActive ? 'page' : undefined}
+                        >
+                          {item.label}
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
               </nav>
               <Button as="link" href="/quote" variant="sun" size="md" className={styles.cta}>

@@ -169,6 +169,47 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${fraunces.variable}`}>
       <body>
+        {/*
+         * <noscript> fallback — the site is heavily JS-dependent
+         * (hero animations, form validation, accordions, the
+         * coverage check, the quote calculator). When JS is off,
+         * the user sees a single-line phone + email prompt with
+         * the option to use a mailto: or tel: link. Better than
+         * the blank page they would otherwise see.
+         *
+         * Rendered as the first child of <body> (not <head>) so it
+         * doesn't fight Next 15's metadata-managed <head> pipeline.
+         * The CSS is inlined (1 rule) so the noscript block doesn't
+         * depend on a stylesheet that also requires JS.
+         */}
+        <noscript>
+          <div
+            style={{
+              padding: '12px 16px',
+              background: '#1F4E2C',
+              color: '#F4E8D0',
+              textAlign: 'center',
+              fontFamily: 'system-ui, sans-serif',
+              fontSize: '14px',
+            }}
+          >
+            For the best experience, enable JavaScript. You can still reach us at{' '}
+            <a
+              href={`tel:${BUSINESS.phoneTel}`}
+              style={{ color: '#F4E8D0', textDecoration: 'underline' }}
+            >
+              {BUSINESS.phone}
+            </a>{' '}
+            or{' '}
+            <a
+              href={`mailto:${BUSINESS.email}`}
+              style={{ color: '#F4E8D0', textDecoration: 'underline' }}
+            >
+              {BUSINESS.email}
+            </a>
+            .
+          </div>
+        </noscript>
         {/* JSON-LD: rendered in <body> so it doesn't shadow metadata-API tags. */}
         <JsonLd data={jsonLd} />
         <a className="skip-link" href="#main">
