@@ -41,6 +41,19 @@ const COMPANY_HREFS: ReadonlyArray<{ href: string; label: string }> = [
   { href: '/review', label: 'Leave a review' },
 ];
 
+// 2026-07-26 — added after the 4 new hub pages landed
+// (/hurricane-prep, /process, /reviews, /areas-near-me, /faq).
+// The primary header nav stays at 4 items (Services, Areas, Pricing,
+// About); the footer is the right place to surface the deeper
+// content so the header does not get crowded.
+const RESOURCES_HREFS: ReadonlyArray<{ href: string; label: string }> = [
+  { href: '/hurricane-prep', label: 'Hurricane prep + cleanup' },
+  { href: '/process', label: 'How it works' },
+  { href: '/reviews', label: 'Reviews' },
+  { href: '/faq', label: 'Frequently asked' },
+  { href: '/areas-near-me', label: 'Areas near me' },
+];
+
 const LEGAL_HREFS: ReadonlyArray<{ href: string; label: string }> = [
   { href: '/privacy', label: 'Privacy' },
   { href: '/terms', label: 'Terms' },
@@ -132,6 +145,17 @@ export function SiteFooter({ className }: SiteFooterProps): ReactNode {
               {LEGAL_HREFS.map((l) => (
                 <li key={l.href}>
                   <Link href={l.href}>{l.label}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className={styles.col}>
+            <h3 className={styles.colTitle}>Resources</h3>
+            <ul className={styles.linkList}>
+              {RESOURCES_HREFS.map((r) => (
+                <li key={r.href}>
+                  <Link href={r.href}>{r.label}</Link>
                 </li>
               ))}
             </ul>

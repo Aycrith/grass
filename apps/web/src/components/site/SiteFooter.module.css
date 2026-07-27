@@ -23,7 +23,13 @@
 
 .grid {
   display: grid;
-  grid-template-columns: 1.4fr repeat(3, 1fr);
+  /* 2026-07-26: was 1.4fr repeat(3, 1fr) (4 cols: brand + 3). Added
+   * a 5th column for the new Resources link group (hurricane-prep /
+   * process / reviews / faq / areas-near-me). Adjusted each col to
+   * 1fr so the 5 columns fit on a 1280px+ desktop without crowding
+   * the brand column. On tablet (2-col) and mobile (1-col) the
+   * column count gracefully degrades via the media queries below. */
+  grid-template-columns: 1.4fr repeat(4, 1fr);
   gap: var(--space-9);
   align-items: flex-start;
 }
