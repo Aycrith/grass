@@ -223,3 +223,74 @@ describe('migration: migrateLegacyLead — idempotency', () => {
     expect(JSON.stringify(lead)).toBe(snapshot);
   });
 });
+
+describe('migration: migrateLegacyLead — partial-fill semantics', () => {
+  // Per the docstring on migrateLegacyLead: "Never overwrites non-NULL
+  // fields". The tests below exhaustively cover every combination of
+  // (utm_source present|absent) × (utm_medium present|absent) ×
+  // (utm_campaign present|absent) for a parseable legacy source.
+
+  it('fills only the missing fields when utm_source is already populated', () => {
+    const lead: LegacyLead = {
+      id: 'p1',
+      source: 'nextdoor:free_first_mow',
+      utm_source: 'manual_override', // steward hand-edited — must NOT clobber
+    };
+    const result = migrateLegacyLead(lead);
+    expect(result.changed).toBe(true);
+    expect(result.lead.utm_source).toBe('manual_override');
+    expect(result.lead.utm_medium).toBe('social');
+    expect(result.lead.utm_campaign).toBe('free_first_mow');
+  });
+
+  it('fills only the missing fields when utm_medium is already populated', () => {
+    const lead: LegacyLead = {
+      id: 'p2',
+      source: 'nextdoor:free_first_mow',
+      utm_medium: 'referral', // steward corrected — must NOT clobber
+    };
+    const result = migrateLegacyLead(lead);
+    expect(result.changed).toBe(true);
+    expect(result.lead.utm_source).toBe('nextdoor');
+    expect(result.lead.utm_medium).toBe('referral');
+    expect(result.lead.utm_campaign).toBe('free_first_mow');
+  });
+
+  it('fills only the missing fields when utm_campaign is already populated', () => {
+    const lead: LegacyLead = {
+      id: 'p3',
+      source: 'nextdoor:free_first_mow',
+      utm_campaign: 'cleaned_in_spring_2026',
+    };
+    const result = migrateLegacyLead(lead);
+    expect(result.changed).toBe(true);
+    expect(result.lead.utm_source).toBe('nextdoor');
+    expect(result.lead.utm_medium).toBe('social');
+    expect(result.lead.utm_campaign).toBe('cleaned_in_spring_2026');
+  });
+
+  it('fills all three fields when none are populated (the canonical happy path)', () => {
+    const lead: LegacyLead = { id: 'p4', source: 'craigslist:tampa_bay' };
+    const result = migrateLegacyLead(lead);
+    expect(result.changed).toBe(true);
+    expect(result.lead.utm_source).toBe('craigslist');
+    expect(result.lead.utm_medium).toBe('cpc');
+    expect(result.lead.utm_campaign).toBe('tampa_bay');
+  });
+
+  it('skips migration when only utm_source is present (legacy squash detected)', () => {
+    // 2 of 3 fields are populated — the migrator's `fields_already_populated`
+    // check requires ALL three, so this falls through to the parser path.
+    // The parser fills the missing fields; changed=true.
+    const lead: LegacyLead = {
+      id: 'p5',
+      source: 'facebook:marketplace_listing',
+      utm_source: 'facebook',
+    };
+    const result = migrateLegacyLead(lead);
+    expect(result.changed).toBe(true);
+    expect(result.lead.utm_source).toBe('facebook');
+    expect(result.lead.utm_medium).toBe('social');
+    expect(result.lead.utm_campaign).toBe('marketplace_listing');
+  });
+});

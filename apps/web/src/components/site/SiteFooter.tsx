@@ -182,19 +182,25 @@ export function SiteFooter({ className }: SiteFooterProps): ReactNode {
               </li>
             ))}
           </ul>
-          {/* Stage 3 (Q-5) + B-3 follow-up: footer notice replacing the previous
-              CookieConsent banner. Honest characterization:
-              - PostHog is a first-party analytics processor; events are keyed
-                by `lead.id` and include ZIP + landing_path (correlates to PII).
+          {/* Stage 3 (Q-5) + B-3 + B-3a follow-up: honest characterization of
+              the actual data flow.
+              - PostHog is a server-side analytics sub-processor; events are
+                keyed by `lead.id` and include ZIP + landing_path. Fires on
+                every form submit (no consent gate — the user just provided
+                the data by submitting the form).
               - The browser stores an attribution key (`grass_attribution_v1`,
-                30-day TTL) so the UTMs survive page reloads — it is a
-                functional local copy, not an advertising tracker.
-              No client-side tracking tags, no advertising cookies, no opt-out
-              required because there is nothing to opt out of. The privacy
-              page (see /privacy) describes the actual data flow. */}
+                30-day TTL) so the UTMs survive page reloads. Functional,
+                not advertising.
+              - Google Analytics 4 + Google Ads (gtag.js) and Meta Pixel
+                (fbevents.js) load only after the consent banner is accepted.
+                Rejecting the banner keeps gtag in cookieless consent-mode v2
+                default-deny and prevents the Meta script from loading.
+              - Consent choice persisted in localStorage as
+                `grass:analytics-consent` (v1). Manage via the banner.
+              The privacy page (see /privacy) is the canonical source. */}
           <span className={styles.analyticsNote}>
-            First-party analytics (PostHog, server-side; keyed to your lead id). One local-storage
-            attribution key (grass_attribution_v1, 30 days). No advertising cookies.
+            Server-side analytics (PostHog, keyed by lead id). After consent: GA4 + Meta Pixel.
+            One local-storage attribution key (grass_attribution_v1, 30 days).{' '}
           </span>
           <span>
             Built in Largo ·{' '}

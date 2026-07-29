@@ -107,19 +107,54 @@ describe('posthog-payload: buildLeadCapturedEvent', () => {
   });
 
   it('does NOT include PII beyond ZIP / distinct_id / landing_path', () => {
-    // The privacy page (B-3 follow-up) commits to a constrained payload:
-    // no email, no phone, no first/last name, no message body. Enforce
-    // that contract here so a future refactor cannot quietly add PII.
+    // The privacy page (B-3 + B-3a follow-up) commits to a constrained
+    // payload: no email, no phone, no first/last name, no message body,
+    // and NO other PII-bearing fields a future refactor might quietly
+    // add. Enforce via exact allowlist (not denylist) so adding
+    // `address`, `full_name`, `notes`, or any other PII field fails this
+    // test loudly. See the privacy page's "What we don't do" section.
     const payload = buildLeadCapturedEvent(SYNTHETIC_LEAD, 'phc_test_key');
+    const TOP_LEVEL_KEYS = ['api_key', 'event', 'distinct_id', 'properties'];
+    const PROPERTIES_KEYS = [
+      'device_class',
+      'first_touch_at',
+      'gclid',
+      'landing_path',
+      'referrer',
+      'sms_consent',
+      'source',
+      'utm_campaign',
+      'utm_content',
+      'utm_medium',
+      'utm_source',
+      'utm_term',
+      'zip',
+    ];
+    expect(Object.keys(payload).sort()).toEqual(TOP_LEVEL_KEYS.sort());
+    expect(Object.keys(payload.properties).sort()).toEqual(PROPERTIES_KEYS.sort());
+    // Explicit denylist of common PII names — defense in depth.
+    const FORBIDDEN = [
+      'email',
+      'phone',
+      'first_name',
+      'last_name',
+      'full_name',
+      'address',
+      'message',
+      'notes',
+      'ip',
+      'user_agent',
+      'ssn',
+      'dob',
+      'birthday',
+    ];
     const allKeys = [
       ...Object.keys(payload),
       ...Object.keys(payload.properties),
     ];
-    expect(allKeys).not.toContain('email');
-    expect(allKeys).not.toContain('phone');
-    expect(allKeys).not.toContain('first_name');
-    expect(allKeys).not.toContain('last_name');
-    expect(allKeys).not.toContain('message');
+    for (const forbidden of FORBIDDEN) {
+      expect(allKeys).not.toContain(forbidden);
+    }
   });
 
   it('distinct_id is the lead.id (server-generated), never a user-supplied identifier', () => {

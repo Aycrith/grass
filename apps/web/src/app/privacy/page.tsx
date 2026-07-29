@@ -1,30 +1,23 @@
 /**
  * Privacy page — honest about the actual current data flow.
  *
- * Stage 3 reconciliation (B-3 follow-up): the previous version described
- * a GA4 + Meta Pixel + CallRail + CookieConsent banner flow that no
- * longer exists in the code. CookieConsent was removed in S3.10; no
- * client-side tracking tags are loaded; the only analytics source is
- * server-side PostHog fired from the /api/lead route handler after a
- * lead is persisted.
+ * After B-3 + B-3a review: the previous version described a
+ * server-side-only PostHog flow that did NOT match reality. The
+ * layout actually mounts:
  *
- * What this page must describe accurately:
- *   1. PostHog server-side events keyed by `lead.id` (acts as
- *      distinct_id) — first-party analytics processor.
- *   2. `grass_attribution_v1` localStorage key — first-touch attribution
- *      (UTM trio + gclid + landing_path + referrer + device_class +
- *      first_touch_at), 30-day TTL.
- *   3. The lead row itself (email, phone, ZIP, message) and its
- *      10 attribution fields.
+ *   - ConsentBanner (always visible at the bottom; Accept / Reject /
+ *     Manage choices persist in localStorage as `grass:analytics-consent`
+ *     with version `v1`)
+ *   - AnalyticsProvider which composes:
+ *     - GoogleAnalytics (loads gtag.js from googletag.net after consent,
+ *       consent-mode v2 default-deny before script load; sets _ga / _ga_*)
+ *     - MetaPixel (loads fbevents.js from connect.facebook.net after
+ *       consent; sets _fbp)
  *
- * What this page must NOT mention (out-of-scope for the pilot, deferred
- * until Stage 6 outcome ADR):
- *   - Google Analytics 4 / gtag
- *   - Meta Pixel / Meta CAPI
- *   - CallRail or any call-tracking SaaS
- *   - Retargeting audiences
- *   - CookieConsent banner (the only client state is the localStorage
- *     attribution key, which is functional, not a tracking choice)
+ * Plus, on every form submit:
+ *   - Server-side PostHog `lead_captured` event (no consent gate,
+ *     keyed by lead.id — analytics sub-processor)
+ *   - grass_attribution_v1 localStorage (30-day TTL, no consent gate)
  */
 
 import { Container, Section } from '@/components/site';
@@ -76,7 +69,14 @@ export default function PrivacyPage() {
             <li>
               <strong>Server-side PostHog events:</strong> when you submit a form, the server
               fires one analytics event to PostHog with the lead id, ZIP, and landing path. No
-              client-side tracking tags (no GA4, no Meta Pixel, no cookies) are loaded.
+              consent gate — PostHog receives only what is in your lead record (which you
+              provided by submitting the form).
+            </li>
+            <li>
+              <strong>Analytics consent choice (<code>grass:analytics-consent</code>, v1):</strong>
+              when the consent banner appears at the bottom of any page, your choice (Accept,
+              Reject, or Manage) is stored in localStorage. The choice is remembered on
+              subsequent visits. You can change it at any time via the banner.
             </li>
           </ul>
 
@@ -91,17 +91,62 @@ export default function PrivacyPage() {
             </li>
           </ul>
 
+          <h2>Client-side analytics (consent-gated)</h2>
+          <p>
+            When you accept the consent banner, two third-party scripts load in your browser:
+          </p>
+          <ul>
+            <li>
+              <strong>Google Analytics 4 + Google Ads</strong> load{' '}
+              <code>https://www.googletag.net/gtag.js</code>. Google uses the events per its{' '}
+              <a
+                href="https://policies.google.com/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                privacy policy
+              </a>
+              . We apply consent-mode v2 with a default-deny state — even if you reject the
+              banner, gtag fires <em>cookieless</em> pings (no <code>_ga</code> /
+              <code>_ga_*</code> cookies). Full-fidelity tracking resumes only after Accept.
+            </li>
+            <li>
+              <strong>Meta (Facebook) Pixel</strong> loads{' '}
+              <code>https://connect.facebook.net/en_US/fbevents.js</code>. Meta uses the events
+              per its{' '}
+              <a
+                href="https://www.facebook.com/privacy/policy/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                privacy policy
+              </a>
+              . The pixel sets a <code>_fbp</code> cookie. The script does not load and no
+              cookies are set until you accept the consent banner.
+            </li>
+          </ul>
+          <p>
+            If you reject the banner, neither script runs. Server-side PostHog and the
+            local-storage attribution key still operate (they are functional, not advertising),
+            so the lead form and the attribution pipeline keep working — but no advertising
+            pixels observe your visit.
+          </p>
+          <p>
+            To change your choice, clear the <code>grass:analytics-consent</code> key in your
+            browser&apos;s site data, or re-open the consent banner via the &ldquo;Cookie
+            settings&rdquo; link in the footer (when present).
+          </p>
+
           <h2>What we don&apos;t do</h2>
           <ul>
             <li>We do not sell your information to third parties.</li>
             <li>
-              We do not load client-side advertising or tracking tags (no Google Analytics, no
-              Meta Pixel, no call-tracking widgets). There is no consent banner because there is
-              nothing to consent to.
+              We do not load advertising or tracking pixels before you accept the consent banner.
+              We do not retarget you across other websites.
             </li>
             <li>
-              We do not retarget you across other websites. There is no advertising audience
-              built from this site.
+              We do not ship PII (email, phone, first/last name, message body) to PostHog — the
+              server-side event carries only the lead id, ZIP, landing path, and UTMs.
             </li>
           </ul>
 
@@ -129,40 +174,36 @@ export default function PrivacyPage() {
             <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>, or by calling{' '}
             <a href={`tel:${BUSINESS.phoneTel}`}>{BUSINESS.phone}</a>.
           </p>
-          <p>
-            We honor the STOP and HELP keywords at any time after consent is given. Persistent
-            opt-out state is recorded against your lead record.
-          </p>
 
-          <h2>Data storage (current state)</h2>
+          <h2>Data storage and sub-processors (current state)</h2>
           <p>
             The business is in pre-launch / cash-min mode (see{' '}
             <code>state/ledger.yaml -&gt; objectives.deferred_cash_constrained</code> for the
-            deferred items). The current data flow is:
+            deferred items). Sub-processors currently in the data flow:
           </p>
           <ul>
             <li>
-              <strong>Quote/contact form submissions</strong> arrive at the steward&apos;s{' '}
-              <code>{BUSINESS.email}</code> inbox (Gmail; Google is a sub-processor for email
-              storage).
+              <strong>Google (Gmail + Google Sheets)</strong> — quote/contact form submissions
+              arrive at the steward&apos;s <code>{BUSINESS.email}</code> inbox (Gmail) and are
+              maintained in a steward-managed spreadsheet (Sheets).
             </li>
             <li>
-              <strong>Customer records</strong> are maintained in a single steward-managed
-              spreadsheet (Google Sheets; Google is a sub-processor) until volume justifies a
-              dedicated customer database.
+              <strong>PostHog</strong> — server-side analytics processor; events are keyed by{' '}
+              <code>lead.id</code> and include ZIP and landing path. PostHog is a hosted
+              analytics sub-processor (no self-hosting yet).
+            </li>
+            <li>
+              <strong>Google (gtag.js / GA4 / Google Ads)</strong> — loaded in your browser only
+              after consent is granted. Sets <code>_ga</code> / <code>_ga_*</code> cookies when
+              consented.
+            </li>
+            <li>
+              <strong>Meta (fbevents.js / Facebook Pixel)</strong> — loaded in your browser only
+              after consent is granted. Sets a <code>_fbp</code> cookie when consented.
             </li>
             <li>
               <strong>SMS</strong> uses the steward&apos;s personal number until Twilio binds;
               once bound, Twilio becomes a sub-processor.
-            </li>
-            <li>
-              <strong>Email</strong> uses Gmail; once Resend binds, Resend becomes the
-              transactional-email sub-processor.
-            </li>
-            <li>
-              <strong>Analytics</strong> goes to PostHog server-side only. PostHog is a
-              first-party analytics processor; events are keyed by <code>lead.id</code> and
-              include ZIP and landing path. No cookies are set in your browser by this site.
             </li>
             <li>
               <strong>Payments</strong> are Cash / Venmo / Zelle / card-on-phone. We do{' '}
@@ -173,9 +214,9 @@ export default function PrivacyPage() {
             </li>
           </ul>
           <p>
-            When the deferred items activate, this section is updated to list Supabase, Twilio,
-            Resend, and Stripe as the data sub-processors (each with a linked privacy policy and
-            a US-only data residency commitment).
+            When the deferred items activate (Supabase, Twilio, Resend, Stripe), this section is
+            updated to add them as sub-processors (each with a linked privacy policy and a
+            US-only data residency commitment).
           </p>
         </div>
       </Container>
