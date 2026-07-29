@@ -58,21 +58,60 @@ export async function sendLeadResponse(
     phone?: string;
     email?: string;
     preferred_contact_method?: NotificationChannel;
+    /**
+     * TCPA consent captured at form submit time (per D-0066).
+     * SMS is only sent when this is explicitly true. If the caller
+     * prefers SMS but consent is missing, the function falls back to
+     * email rather than send any SMS — preserving the consent gate
+     * end-to-end.
+     */
+    sms_consent?: boolean;
   },
   p: Principal,
-): Promise<SmsResult | EmailResult | null> {
-  const channel = lead.preferred_contact_method ?? (lead.phone ? 'sms' : 'email');
-  if (channel === 'sms' && lead.phone) {
-    return sendSms(lead.phone, `Hi ${lead.first_name ?? 'there'}, thanks for reaching out!`, p);
+): Promise<{
+  channel: 'sms' | 'email';
+  status: 'sent' | 'failed';
+  cost_cents: number;
+  error?: string;
+} | null> {
+  // Honour the consent gate first. If the caller preferred SMS but did
+  // not obtain explicit consent, fall back to email rather than sending
+  // an SMS that would violate D-0066.
+  const wantsSms =
+    lead.preferred_contact_method === 'sms' ||
+    (lead.preferred_contact_method === undefined && Boolean(lead.phone));
+  const canSendSms = wantsSms && Boolean(lead.phone) && lead.sms_consent === true;
+  const canSendEmail = Boolean(lead.email);
+
+  if (canSendSms) {
+    const r = await sendSms(
+      lead.phone as string,
+      `Hi ${lead.first_name ?? 'there'}, thanks for reaching out!`,
+      p,
+    );
+    return {
+      channel: 'sms',
+      status: r.status === 'queued' ? 'sent' : 'failed',
+      cost_cents: r.cost_cents,
+      ...(r.status !== 'queued' ? { error: 'sms_send_failed' } : {}),
+    };
   }
-  if (channel === 'email' && lead.email) {
-    return sendEmail(
-      lead.email,
+  if (canSendEmail) {
+    const r = await sendEmail(
+      lead.email as string,
       'Your Largo lawn-care inquiry',
       '<p>Got it — we will be in touch shortly.</p>',
       p,
     );
+    return {
+      channel: 'email',
+      status: r.status === 'queued' ? 'sent' : 'failed',
+      cost_cents: r.cost_cents,
+      ...(r.status !== 'queued' ? { error: 'email_send_failed' } : {}),
+    };
   }
+  // No reachable channel — return null so the caller can record the
+  // failure for steward follow-up.
   return null;
 }
 

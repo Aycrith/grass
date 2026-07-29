@@ -30,5 +30,6 @@ export {
   resumeCustomer,
   sendQuote,
   updateCustomer,
+  updateLeadAcknowledgement,
   updateProperty,
 } from './service.ts';

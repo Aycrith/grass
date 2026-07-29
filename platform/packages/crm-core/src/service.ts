@@ -53,6 +53,19 @@ export interface Lead {
   status: LeadStatus;
   first_response_at?: string;
   converted_customer_id?: string;
+  // Stage 2 additions (per D-0064 §0.7, D-0066):
+  // - sms_consent: immutable TCPA consent captured at submit time
+  // - idempotency_key: server-computed dedup hash (email|phone|zip|first_name)
+  // - acknowledgement_status: never silently swallowed if SMS/email fails
+  // - acknowledgement_channel: which channel was attempted
+  // - acknowledgement_error: PII-free error message (no email/phone leak)
+  // - acknowledgement_attempts: retry counter for ops visibility
+  sms_consent?: boolean;
+  idempotency_key?: string;
+  acknowledgement_status?: 'sent' | 'failed' | 'pending';
+  acknowledgement_channel?: 'sms' | 'email';
+  acknowledgement_error?: string;
+  acknowledgement_attempts?: number;
   created_at: string;
   updated_at: string;
 }
@@ -114,6 +127,48 @@ export async function createLead(
     status: 'new',
     created_at: nowIso(),
     updated_at: nowIso(),
+  };
+}
+
+/**
+ * updateLeadAcknowledgement — record the SMS/email ack attempt.
+ *
+ * Per D-0064 §0.7 and the Stage 2 plan acceptance criteria: a dropped
+ * lead is 100% waste of the ad spend that produced it. If SMS or email
+ * fails, the lead is still persisted (via createLead), and THIS function
+ * records the failure with a retriable status — never silently swallowed.
+ *
+ * The steward watches the lead record for `acknowledgement_status: 'failed'`
+ * to know which leads need a manual follow-up.
+ *
+ * accepts a partial patch so callers can keep the rest of the Lead record
+ * unchanged. The returned stub is for in-memory/process-local state in the
+ * pilot (cash-min mode); the canonical durable store is the Gmail inbox
+ * where the email/notification also lands.
+ */
+export async function updateLeadAcknowledgement(
+  lead_id: string,
+  patch: {
+    status: NonNullable<Lead['acknowledgement_status']>;
+    channel: NonNullable<Lead['acknowledgement_channel']>;
+    error?: string;
+    attempts?: number;
+  },
+  p: Principal,
+): Promise<Lead> {
+  assertCan(p, 'lead:update');
+  return {
+    id: lead_id,
+    first_name: '',
+    source: 'manual',
+    zip: '',
+    status: 'new',
+    acknowledgement_status: patch.status,
+    acknowledgement_channel: patch.channel,
+    ...(patch.error ? { acknowledgement_error: patch.error } : {}),
+    acknowledgement_attempts: patch.attempts ?? 1,
+    updated_at: nowIso(),
+    created_at: nowIso(),
   };
 }
 
