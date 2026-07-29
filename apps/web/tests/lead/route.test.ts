@@ -91,6 +91,22 @@ const mockMarkLeadContacted = mock(async (id: string, _p: unknown) => ({
   created_at: new Date().toISOString(),
 }));
 
+// Stage 3: appendLeadEvent is called from /api/lead after createLead to
+// append the lead_captured event to the audit log. The mock returns a
+// stub LeadEvent. Tests don't assert on event_id/occurred_at here.
+const mockAppendLeadEvent = mock(async (input: unknown) => {
+  const i = input as { lead_id: string; event_type: string };
+  return {
+    event_id: `evt_test_${Date.now()}`,
+    lead_id: i.lead_id,
+    event_type: i.event_type,
+    from_stage: null,
+    to_stage: 'new' as const,
+    actor_id: 'system',
+    occurred_at: new Date().toISOString(),
+  };
+});
+
 const mockSendLeadResponse = mock(async (_lead: unknown, _p: unknown): Promise<AckResult> => {
   return {
     channel: 'email' as const,
@@ -100,6 +116,7 @@ const mockSendLeadResponse = mock(async (_lead: unknown, _p: unknown): Promise<A
 });
 
 mock.module('@grass/crm-core', () => ({
+  appendLeadEvent: mockAppendLeadEvent,
   createLead: mockCreateLead,
   markLeadContacted: mockMarkLeadContacted,
   updateLeadAcknowledgement: mockUpdateLeadAcknowledgement,

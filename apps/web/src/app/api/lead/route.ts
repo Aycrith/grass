@@ -42,6 +42,7 @@ import { createHash } from 'node:crypto';
 import { BUSINESS, inServiceArea } from '@/lib/business';
 import type { Principal } from '@grass/auth';
 import { createLead, markLeadContacted, updateLeadAcknowledgement } from '@grass/crm-core';
+import { appendLeadEvent } from '@grass/crm-core';
 import type { Lead } from '@grass/crm-core';
 import { sendLeadResponse } from '@grass/notifications-core';
 import { NextResponse } from 'next/server';
@@ -323,6 +324,31 @@ export async function POST(req: Request) {
   idempotencyStore.set(idemKey, {
     lead_id: lead.id,
     expires_at: Date.now() + IDEMPOTENCY_WINDOW_MS,
+  });
+
+  // 6.5 Stage 3: append the lead_captured event to the audit log. This is
+  //     the first row in the lead's lifecycle trail. The route handler is
+  //     the canonical writer — every state transition flows through here
+  //     (or the matching update handler) so the audit table stays complete.
+  const actorId = SYSTEM_PRINCIPAL.kind === 'system' ? SYSTEM_PRINCIPAL.workflow_id : 'system';
+  void appendLeadEvent({
+    lead_id: lead.id,
+    event_type: 'lead_captured',
+    from_stage: null,
+    to_stage: 'new',
+    actor_id: actorId,
+    metadata: {
+      source: lead.source ?? 'unknown',
+      zip: lead.zip,
+      has_utm: lead.utm_source ? 1 : 0,
+    },
+  }).catch((err) => {
+    // Audit-log failures MUST NOT block lead capture. The lead is already
+    // persisted; the event append is best-effort with PII-safe error log.
+    console.error('[lead] lead_events append failed', {
+      lead_id: lead.id,
+      error: err instanceof Error ? err.message : 'unknown',
+    });
   });
 
   // 7. Fire-and-forget acknowledgement (SMS only if sms_consent, else

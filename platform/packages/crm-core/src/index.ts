@@ -42,3 +42,9 @@ export {
   leadLifecycleStage,
   setLifecycleOverride,
 } from './lifecycle.ts';
+export {
+  type AppendLeadEventInput,
+  type LeadEvent,
+  type LeadEventType,
+  appendLeadEvent,
+} from './lead-events.ts';
