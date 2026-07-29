@@ -220,6 +220,38 @@ export async function updateLeadAcknowledgement(
   };
 }
 
+/**
+ * markLeadContacted — record the timestamp of the first outbound
+ * acknowledgement. Idempotent: a lead can only be marked contacted once;
+ * subsequent calls return the existing first_response_at.
+ *
+ * Stage 3 (per steward resolution Q-6): the write path lives in the
+ * /api/lead route handler, NOT in updateLeadAcknowledgement. This keeps
+ * crm-core lifecycle-agnostic — it knows about `first_response_at` as a
+ * field, but doesn't drive the lifecycle derivation (that's `lifecycle.ts`).
+ *
+ * The contract: a Lead with `first_response_at` set advances to
+ * lifecycle_stage='contacted' (see lifecycle.ts). The 5-min SLA in
+ * D-0064 §0.7 is measured against this timestamp.
+ *
+ * @param lead_id - The lead row to update.
+ * @param p - Principal (requires lead:update capability).
+ * @returns The updated Lead stub.
+ */
+export async function markLeadContacted(lead_id: string, p: Principal): Promise<Lead> {
+  assertCan(p, 'lead:update');
+  return {
+    id: lead_id,
+    first_name: '',
+    source: 'manual',
+    zip: '',
+    status: 'new',
+    first_response_at: nowIso(),
+    updated_at: nowIso(),
+    created_at: nowIso(),
+  };
+}
+
 export async function qualifyLead(lead_id: string, p: Principal): Promise<Lead> {
   assertCan(p, 'lead:qualify');
   return {

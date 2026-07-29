@@ -25,6 +25,7 @@ export {
   customerHasContact,
   churnCustomer,
   leadResponseTimeMs,
+  markLeadContacted,
   pauseCustomer,
   propertyHasAddress,
   qualifyLead,

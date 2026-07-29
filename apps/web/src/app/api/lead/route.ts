@@ -41,7 +41,7 @@
 import { createHash } from 'node:crypto';
 import { BUSINESS, inServiceArea } from '@/lib/business';
 import type { Principal } from '@grass/auth';
-import { createLead, updateLeadAcknowledgement } from '@grass/crm-core';
+import { createLead, markLeadContacted, updateLeadAcknowledgement } from '@grass/crm-core';
 import type { Lead } from '@grass/crm-core';
 import { sendLeadResponse } from '@grass/notifications-core';
 import { NextResponse } from 'next/server';
@@ -58,6 +58,20 @@ interface LeadInput {
   sms_consent?: boolean;
   /** Caller's preference; overridden by sms_consent for the SMS path. */
   preferred_contact_method?: 'sms' | 'email' | 'phone';
+  // Stage 3 attribution (per paid-pilot-landing-spec.md §5:108-121).
+  // All nullable. Captured client-side from URL params + localStorage
+  // (see apps/web/src/lib/attribution.ts) and shipped with the form
+  // payload to /api/lead. Server-side persistence happens in createLead.
+  utm_source?: string | null;
+  utm_medium?: string | null;
+  utm_campaign?: string | null;
+  utm_term?: string | null;
+  utm_content?: string | null;
+  gclid?: string | null;
+  landing_path?: string | null;
+  referrer?: string | null;
+  device_class?: 'mobile' | 'tablet' | 'desktop' | null;
+  first_touch_at?: string | null;
 }
 
 // --- In-memory stores -----------------------------------------------------
@@ -186,6 +200,17 @@ function validateLead(
       ...(input.preferred_contact_method
         ? { preferred_contact_method: input.preferred_contact_method }
         : {}),
+      // Stage 3 attribution — pass through, nullable passthrough.
+      ...(input.utm_source !== undefined ? { utm_source: input.utm_source } : {}),
+      ...(input.utm_medium !== undefined ? { utm_medium: input.utm_medium } : {}),
+      ...(input.utm_campaign !== undefined ? { utm_campaign: input.utm_campaign } : {}),
+      ...(input.utm_term !== undefined ? { utm_term: input.utm_term } : {}),
+      ...(input.utm_content !== undefined ? { utm_content: input.utm_content } : {}),
+      ...(input.gclid !== undefined ? { gclid: input.gclid } : {}),
+      ...(input.landing_path !== undefined ? { landing_path: input.landing_path } : {}),
+      ...(input.referrer !== undefined ? { referrer: input.referrer } : {}),
+      ...(input.device_class !== undefined ? { device_class: input.device_class } : {}),
+      ...(input.first_touch_at !== undefined ? { first_touch_at: input.first_touch_at } : {}),
     },
   };
 }
@@ -247,21 +272,38 @@ export async function POST(req: Request) {
         ...(validated.data.phone ? { phone: validated.data.phone } : {}),
         zip: validated.data.zip,
         ...(validated.data.message ? { message: validated.data.message } : {}),
-        source:
-          (validated.data.source as
-            | 'gbp'
-            | 'website'
-            | 'referral'
-            | 'yard_sign'
-            | 'nextdoor'
-            | 'manual'
-            | undefined) ?? 'website',
+        source: (validated.data.source ?? 'website') as Lead['source'],
         // sms_consent is unconditional — the validator normalizes it to
         // boolean. We pass it explicitly so the lead record carries the
         // consent flag (per D-0066) regardless of the optional-field
         // contract.
         sms_consent: validated.data.sms_consent ?? false,
         idempotency_key: idemKey,
+        // Stage 3 attribution passthrough — already validated as nullable.
+        ...(validated.data.utm_source !== undefined
+          ? { utm_source: validated.data.utm_source }
+          : {}),
+        ...(validated.data.utm_medium !== undefined
+          ? { utm_medium: validated.data.utm_medium }
+          : {}),
+        ...(validated.data.utm_campaign !== undefined
+          ? { utm_campaign: validated.data.utm_campaign }
+          : {}),
+        ...(validated.data.utm_term !== undefined ? { utm_term: validated.data.utm_term } : {}),
+        ...(validated.data.utm_content !== undefined
+          ? { utm_content: validated.data.utm_content }
+          : {}),
+        ...(validated.data.gclid !== undefined ? { gclid: validated.data.gclid } : {}),
+        ...(validated.data.landing_path !== undefined
+          ? { landing_path: validated.data.landing_path }
+          : {}),
+        ...(validated.data.referrer !== undefined ? { referrer: validated.data.referrer } : {}),
+        ...(validated.data.device_class !== undefined
+          ? { device_class: validated.data.device_class }
+          : {}),
+        ...(validated.data.first_touch_at !== undefined
+          ? { first_touch_at: validated.data.first_touch_at }
+          : {}),
       },
       SYSTEM_PRINCIPAL,
     );
@@ -309,6 +351,13 @@ export async function POST(req: Request) {
           },
           SYSTEM_PRINCIPAL,
         );
+        // Stage 3 (Q-6): write first_response_at on the ack-sent branch
+        // (route handler, not crm-core, per the synthesis recommendation).
+        // `markLeadContacted` is idempotent — a lead is marked contacted
+        // exactly once, regardless of how many ack retries fire.
+        if (result.status === 'sent') {
+          await markLeadContacted(lead.id, SYSTEM_PRINCIPAL);
+        }
       } else {
         // No reachable channel — record as failed so the steward follows
         // up manually.
@@ -348,6 +397,8 @@ export async function POST(req: Request) {
   })();
 
   // 8. PostHog event (fire-and-forget — never block UX on analytics).
+  //    Stage 3: include the 10 attribution fields as discrete properties so
+  //    PostHog funnels can segment by source / medium / campaign / device.
   if (process.env.NEXT_PUBLIC_POSTHOG_KEY) {
     void fetch(`${process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://app.posthog.com'}/capture/`, {
       method: 'POST',
@@ -360,6 +411,17 @@ export async function POST(req: Request) {
           zip: lead.zip,
           source: lead.source,
           sms_consent: lead.sms_consent === true,
+          // Stage 3 attribution — every field as a discrete property.
+          utm_source: lead.utm_source ?? null,
+          utm_medium: lead.utm_medium ?? null,
+          utm_campaign: lead.utm_campaign ?? null,
+          utm_term: lead.utm_term ?? null,
+          utm_content: lead.utm_content ?? null,
+          gclid: lead.gclid ?? null,
+          landing_path: lead.landing_path ?? null,
+          referrer: lead.referrer ?? null,
+          device_class: lead.device_class ?? null,
+          first_touch_at: lead.first_touch_at ?? null,
         },
       }),
     }).catch((err) => {

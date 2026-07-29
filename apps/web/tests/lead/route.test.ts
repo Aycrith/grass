@@ -77,6 +77,20 @@ const mockUpdateLeadAcknowledgement = mock(async (_id: string, _patch: unknown, 
   created_at: new Date().toISOString(),
 }));
 
+// Stage 3: markLeadContacted is called from /api/lead when ack status='sent'.
+// The mock returns a stub Lead; tests don't assert on first_response_at here
+// (that's covered by attribution/lifecycle-derivation.test.ts in Stage 3.12).
+const mockMarkLeadContacted = mock(async (id: string, _p: unknown) => ({
+  id,
+  first_name: '',
+  source: 'manual' as const,
+  zip: '',
+  status: 'new' as const,
+  first_response_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+  created_at: new Date().toISOString(),
+}));
+
 const mockSendLeadResponse = mock(async (_lead: unknown, _p: unknown): Promise<AckResult> => {
   return {
     channel: 'email' as const,
@@ -87,6 +101,7 @@ const mockSendLeadResponse = mock(async (_lead: unknown, _p: unknown): Promise<A
 
 mock.module('@grass/crm-core', () => ({
   createLead: mockCreateLead,
+  markLeadContacted: mockMarkLeadContacted,
   updateLeadAcknowledgement: mockUpdateLeadAcknowledgement,
 }));
 
