@@ -5,6 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { Button, Card, Checkbox, Input } from '@/components/ui';
+import type { AttributionPayload } from '@/lib/attribution';
+import { captureAttribution, persistAttribution } from '@/lib/attribution';
 import { BUSINESS, inServiceArea } from '@/lib/business';
 import { cn } from '@/lib/cn';
 import { recallZip, rememberZip } from '@/lib/zip-memory';
@@ -80,7 +82,7 @@ export function QuoteCalculator({ serviceArea }: { serviceArea: readonly string[
   const [phoneVal, setPhoneVal] = useState('');
   const [submitted, setSubmitted] = useState<null | { ok: boolean; message: string }>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [utm, setUtm] = useState<{ source: string; campaign: string; medium: string } | null>(null);
+  const [attribution, setAttribution] = useState<AttributionPayload | null>(null);
   const [smsConsent, setSmsConsent] = useState(false);
   const [phoneTouched, setPhoneTouched] = useState(false);
   const errorRef = useRef<HTMLParagraphElement | null>(null);
@@ -113,13 +115,18 @@ export function QuoteCalculator({ serviceArea }: { serviceArea: readonly string[
   // ZIP > default '33771'. The localStorage value is the user's
   // last entered ZIP across the homepage coverage check,
   // /contact, and /quote — one canonical "their ZIP" per device.
+  //
+  // Stage 3: the legacy `utm` partial capture (`utm_source` + `utm_campaign`
+  // + `utm_medium` only) was replaced with the full AttributionPayload.
+  // The `source` squash (`${utm.source}:${utm.campaign}`) is also gone —
+  // attribution.source is already derived in captureAttribution().
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const params = new URLSearchParams(window.location.search);
-    const source = params.get('utm_source');
-    const campaign = params.get('utm_campaign');
-    const medium = params.get('utm_medium');
-    if (source) setUtm({ source, campaign: campaign ?? '', medium: medium ?? '' });
+    const ua = window.navigator?.userAgent ?? '';
+    const ref = document.referrer ?? '';
+    const captured = captureAttribution(ref, ua);
+    const persisted = persistAttribution(captured);
+    setAttribution(persisted);
 
     const zipParam = searchParams?.get('zip');
     if (zipParam && inServiceArea(zipParam)) {
@@ -169,9 +176,28 @@ export function QuoteCalculator({ serviceArea }: { serviceArea: readonly string[
       phone: phoneVal,
       zip,
       message: `lot=${lot} freq=${freq} addons=${Array.from(addons).join(',')} est_per_visit=$${estimate.perVisit.toFixed(0)}`,
-      source: utm ? `${utm.source}:${utm.campaign}` : 'quote-calculator:direct',
+      // Stage 3: source + 10 attribution fields from the captured payload.
+      source: attribution?.source ?? 'quote_calculator',
       sms_consent: smsConsent,
       preferred_contact_method: phoneVal ? 'sms' : 'email',
+      ...(attribution?.utm_source !== undefined ? { utm_source: attribution.utm_source } : {}),
+      ...(attribution?.utm_medium !== undefined ? { utm_medium: attribution.utm_medium } : {}),
+      ...(attribution?.utm_campaign !== undefined
+        ? { utm_campaign: attribution.utm_campaign }
+        : {}),
+      ...(attribution?.utm_term !== undefined ? { utm_term: attribution.utm_term } : {}),
+      ...(attribution?.utm_content !== undefined ? { utm_content: attribution.utm_content } : {}),
+      ...(attribution?.gclid !== undefined ? { gclid: attribution.gclid } : {}),
+      ...(attribution?.landing_path !== undefined
+        ? { landing_path: attribution.landing_path }
+        : {}),
+      ...(attribution?.referrer !== undefined ? { referrer: attribution.referrer } : {}),
+      ...(attribution?.device_class !== undefined
+        ? { device_class: attribution.device_class }
+        : {}),
+      ...(attribution?.first_touch_at !== undefined
+        ? { first_touch_at: attribution.first_touch_at }
+        : {}),
     };
     try {
       const res = await fetch('/api/lead', {

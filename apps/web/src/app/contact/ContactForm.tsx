@@ -45,6 +45,8 @@ import { CheckCircle2, Loader2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 import { Button, Card, Checkbox, Input } from '@/components/ui';
+import type { AttributionPayload } from '@/lib/attribution';
+import { captureAttribution, persistAttribution } from '@/lib/attribution';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
 import { recallZip, rememberZip } from '@/lib/zip-memory';
@@ -64,6 +66,9 @@ interface FormState {
   message: string;
   source: string;
   sms_consent: boolean;
+  // Stage 3 attribution — captured once on mount, persisted to
+  // localStorage, shipped with the form payload to /api/lead.
+  attribution: AttributionPayload | null;
 }
 
 const INITIAL_STATE: FormState = {
@@ -75,6 +80,7 @@ const INITIAL_STATE: FormState = {
   message: '',
   source: 'website',
   sms_consent: false,
+  attribution: null,
 };
 
 // D-0066 — TCPA consent language. Single source of truth for the checkbox
@@ -120,6 +126,19 @@ export default function ContactForm({ source }: ContactFormProps) {
     if (remembered) setForm((f) => ({ ...f, zip: remembered }));
   }, []);
 
+  // Stage 3: capture attribution from the current URL + UA + localStorage
+  // and persist to localStorage. First-touch fields are preserved across
+  // page loads (utm_source/medium/campaign, gclid, landing_path,
+  // first_touch_at). Last-touch fields update on each capture.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const ua = window.navigator?.userAgent ?? '';
+    const ref = document.referrer ?? '';
+    const captured = captureAttribution(ref, ua);
+    const persisted = persistAttribution(captured);
+    setForm((f) => ({ ...f, attribution: persisted }));
+  }, []);
+
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((f) => ({ ...f, [key]: value }));
   }
@@ -134,10 +153,41 @@ export default function ContactForm({ source }: ContactFormProps) {
     // they care about.
     if (form.zip) rememberZip(form.zip);
     try {
+      // Stage 3: spread attribution fields into the lead payload. The
+      // server-side validator handles undefined/missing fields gracefully.
+      const attribution = form.attribution;
+      const leadPayload = {
+        first_name: form.first_name,
+        last_name: form.last_name,
+        email: form.email,
+        phone: form.phone,
+        zip: form.zip,
+        message: form.message,
+        source: attribution?.source ?? form.source,
+        sms_consent: form.sms_consent,
+        ...(attribution?.utm_source !== undefined ? { utm_source: attribution.utm_source } : {}),
+        ...(attribution?.utm_medium !== undefined ? { utm_medium: attribution.utm_medium } : {}),
+        ...(attribution?.utm_campaign !== undefined
+          ? { utm_campaign: attribution.utm_campaign }
+          : {}),
+        ...(attribution?.utm_term !== undefined ? { utm_term: attribution.utm_term } : {}),
+        ...(attribution?.utm_content !== undefined ? { utm_content: attribution.utm_content } : {}),
+        ...(attribution?.gclid !== undefined ? { gclid: attribution.gclid } : {}),
+        ...(attribution?.landing_path !== undefined
+          ? { landing_path: attribution.landing_path }
+          : {}),
+        ...(attribution?.referrer !== undefined ? { referrer: attribution.referrer } : {}),
+        ...(attribution?.device_class !== undefined
+          ? { device_class: attribution.device_class }
+          : {}),
+        ...(attribution?.first_touch_at !== undefined
+          ? { first_touch_at: attribution.first_touch_at }
+          : {}),
+      };
       const res = await fetch('/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify(leadPayload),
       });
       const data = (await res.json()) as { ok: boolean; message?: string; error?: string };
       if (!data.ok) {
