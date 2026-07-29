@@ -21,6 +21,8 @@ export interface Customer {
   status: CustomerStatus;
   source: 'gbp' | 'website' | 'referral' | 'yard_sign' | 'nextdoor' | 'manual';
   tags: string[];
+  /** ISO 8601 UTC. Null while active; stamped on churn. Per Q-8. */
+  churned_at?: string;
   created_at: string;
   updated_at: string;
 }
@@ -47,12 +49,19 @@ export interface Lead {
   phone?: string;
   email?: string;
   preferred_contact_method?: 'sms' | 'email' | 'phone';
-  source: Customer['source'];
+  source:
+    | Customer['source']
+    | 'paid_ad'
+    | 'paid_search'
+    | 'door_hanger'
+    | 'walk_in'
+    | 'quote_calculator';
   zip: string;
   message?: string;
   status: LeadStatus;
   first_response_at?: string;
   converted_customer_id?: string;
+  converted_quote_id?: string;
   // Stage 2 additions (per D-0064 §0.7, D-0066):
   // - sms_consent: immutable TCPA consent captured at submit time
   // - idempotency_key: server-computed dedup hash (email|phone|zip|first_name)
@@ -66,9 +75,48 @@ export interface Lead {
   acknowledgement_channel?: 'sms' | 'email';
   acknowledgement_error?: string;
   acknowledgement_attempts?: number;
+  // Stage 3 attribution (per plan Stage 3, paid-pilot-landing-spec.md §5:108-121):
+  // All nullable, snake_case, server-side capture. First-touch immutable
+  // for the discrete UTM trio + gclid + landing_path + first_touch_at.
+  // Last-touch for utm_term/utm_content/referrer/device_class.
+  utm_source?: string | null;
+  utm_medium?: string | null;
+  utm_campaign?: string | null;
+  utm_term?: string | null;
+  utm_content?: string | null;
+  gclid?: string | null;
+  landing_path?: string | null;
+  referrer?: string | null;
+  device_class?: 'mobile' | 'tablet' | 'desktop' | null;
+  first_touch_at?: string | null;
+  // Stage 3 lifecycle override (steward escape hatch; default = derived):
+  // leadLifecycleStage() returns the derived stage. When steward forces
+  // a stage (rare, e.g. re-engagement), the override is honored and the
+  // derivation is skipped. Override requires principal.role='steward'.
+  lifecycle_stage_override?: LifecycleStage | null;
+  lifecycle_stage_override_at?: string | null;
+  lifecycle_stage_override_by?: string | null;
   created_at: string;
   updated_at: string;
 }
+
+/**
+ * LifecycleStage — derived lifecycle of a Lead from `new` to `retained`.
+ *
+ * Derived by `leadLifecycleStage()` from the Lead + related Quote + Job +
+ * Invoice + Customer records. Materialized only by the nightly KPI snapshot
+ * job (`workflows/nightly-kpi-snapshot.ts`). Per steward resolution Q-1,
+ * the 5th stage uses the explicit token `invoice_paid` (not `collected`)
+ * so the lifecycle vocabulary stays unambiguous against paid-traffic vocab
+ * (`utm_medium='cpc'`).
+ */
+export type LifecycleStage =
+  | 'new'
+  | 'contacted'
+  | 'quoted'
+  | 'booked'
+  | 'invoice_paid'
+  | 'retained';
 
 export interface QuoteLineItem {
   description: string;

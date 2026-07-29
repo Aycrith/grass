@@ -1,7 +1,7 @@
 /**
  * @grass/crm-core — CRM service layer.
  *
- * Re-exports service functions and twin-model types from service.ts.
+ * Re-exports service functions and twin-model types from service.ts and lifecycle.ts.
  */
 
 export {
@@ -10,6 +10,7 @@ export {
   type CustomerStatus,
   type Lead,
   type LeadStatus,
+  type LifecycleStage,
   type Property,
   type Quote,
   type QuoteLineItem,
@@ -33,3 +34,10 @@ export {
   updateLeadAcknowledgement,
   updateProperty,
 } from './service.ts';
+export {
+  type LifecycleInputs,
+  type LifecycleInvoice,
+  type LifecycleJob,
+  leadLifecycleStage,
+  setLifecycleOverride,
+} from './lifecycle.ts';
