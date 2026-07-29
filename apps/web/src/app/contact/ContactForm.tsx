@@ -41,10 +41,10 @@
  * co-located `ContactForm.module.css`. Behavior is unchanged.
  */
 
-import { useEffect, useRef, useState } from 'react';
 import { CheckCircle2, Loader2 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
-import { Button, Card, Input } from '@/components/ui';
+import { Button, Card, Checkbox, Input } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
 import { recallZip, rememberZip } from '@/lib/zip-memory';
@@ -63,6 +63,7 @@ interface FormState {
   zip: string;
   message: string;
   source: string;
+  sms_consent: boolean;
 }
 
 const INITIAL_STATE: FormState = {
@@ -73,10 +74,19 @@ const INITIAL_STATE: FormState = {
   zip: '',
   message: '',
   source: 'website',
+  sms_consent: false,
 };
+
+// D-0066 — TCPA consent language. Single source of truth for the checkbox
+// label across contact, quote, and (future) pet-waste forms. The exact
+// wording is documented in `apps/web/src/app/privacy/page.tsx` so the
+// privacy page and the consent checkbox stay in lockstep.
+const SMS_CONSENT_LABEL =
+  'I agree to receive SMS messages from Largo Lawn at the number provided. Message frequency varies. Reply STOP to opt out, HELP for help. Message and data rates may apply.';
 
 export default function ContactForm({ source }: ContactFormProps) {
   const [form, setForm] = useState<FormState>({ ...INITIAL_STATE, source: source ?? 'website' });
+  const [phoneTouched, setPhoneTouched] = useState(false);
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const errorRef = useRef<HTMLParagraphElement | null>(null);
@@ -150,8 +160,8 @@ export default function ContactForm({ source }: ContactFormProps) {
           <h2 className={cn(styles.successHeading)}>Thanks, {form.first_name}!</h2>
         </div>
         <p className={cn(styles.successBody)}>
-          We received your request and will follow up within 24 hours during business days. For
-          urgent requests, call{' '}
+          We text or email within 5 minutes during business hours (Mon-Fri 7a-5p, Sat 8a-2p). After
+          hours we&apos;ll reply first thing next business morning. For urgent requests, call{' '}
           <a href={`tel:${BUSINESS.phoneTel}`} className={cn(styles.successLink)}>
             {BUSINESS.phone}
           </a>
@@ -192,6 +202,7 @@ export default function ContactForm({ source }: ContactFormProps) {
         type="tel"
         value={form.phone}
         onChange={(e) => update('phone', e.target.value)}
+        onBlur={() => setPhoneTouched(true)}
         autoComplete="tel"
         placeholder="(727) 313-8011"
         helper="Optional, but a text is the fastest way to quote you."
@@ -220,13 +231,26 @@ export default function ContactForm({ source }: ContactFormProps) {
         rows={4}
       />
 
+      {/* D-0066 SMS consent — only required when a phone number is provided.
+          When phone is blank, the consent is irrelevant (we'll email) so the
+          checkbox is hidden. The phone blur tracks whether the user has typed
+          a value so the consent appears immediately as they fill the field. */}
+      {form.phone.trim().length > 0 ? (
+        <Checkbox
+          label={SMS_CONSENT_LABEL}
+          checked={form.sms_consent}
+          onChange={(checked) => update('sms_consent', checked)}
+          required={phoneTouched}
+          helper={
+            phoneTouched && !form.sms_consent
+              ? 'Required to text you back. We will email instead if you prefer.'
+              : undefined
+          }
+        />
+      ) : null}
+
       {status === 'error' ? (
-        <p
-          ref={errorRef}
-          className={cn(styles.errorBanner)}
-          role="alert"
-          tabIndex={-1}
-        >
+        <p ref={errorRef} className={cn(styles.errorBanner)} role="alert" tabIndex={-1}>
           {errorMessage}
         </p>
       ) : null}
@@ -246,7 +270,8 @@ export default function ContactForm({ source }: ContactFormProps) {
           {status === 'submitting' ? 'Sending…' : 'Get My Quote'}
         </Button>
         <p className={cn(styles.legal)}>
-          We respond within 24 hours on business days. No spam, no list-rentals.
+          We respond within 5 minutes during business hours, first thing next business morning after
+          hours. No spam, no list-rentals.
         </p>
       </div>
     </form>

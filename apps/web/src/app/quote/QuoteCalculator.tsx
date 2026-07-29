@@ -1,10 +1,10 @@
 'use client';
 
+import { CheckCircle2, Loader2 } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { CheckCircle2, Loader2 } from 'lucide-react';
 
-import { Button, Card, Input } from '@/components/ui';
+import { Button, Card, Checkbox, Input } from '@/components/ui';
 import { BUSINESS, inServiceArea } from '@/lib/business';
 import { cn } from '@/lib/cn';
 import { recallZip, rememberZip } from '@/lib/zip-memory';
@@ -69,9 +69,7 @@ function fmtUSD(n: number): string {
   return `$${n.toFixed(0)}`;
 }
 
-export function QuoteCalculator({
-  serviceArea,
-}: { serviceArea: readonly string[] }) {
+export function QuoteCalculator({ serviceArea }: { serviceArea: readonly string[] }) {
   const [lot, setLot] = useState<LotSize>('medium');
   const [freq, setFreq] = useState<Frequency>('weekly');
   const [addons, setAddons] = useState<Set<AddOn>>(new Set(['edging']));
@@ -83,6 +81,8 @@ export function QuoteCalculator({
   const [submitted, setSubmitted] = useState<null | { ok: boolean; message: string }>(null);
   const [submitting, setSubmitting] = useState(false);
   const [utm, setUtm] = useState<{ source: string; campaign: string; medium: string } | null>(null);
+  const [smsConsent, setSmsConsent] = useState(false);
+  const [phoneTouched, setPhoneTouched] = useState(false);
   const errorRef = useRef<HTMLParagraphElement | null>(null);
 
   // Focus management: when the submission result is !ok, move
@@ -137,7 +137,10 @@ export function QuoteCalculator({
     const mowed = base * FREQ_MULTIPLIER[freq];
     const addonTotal = Array.from(addons).reduce((sum, a) => sum + ADDON_PRICE[a], 0);
     const perVisit = mowed + addonTotal;
-    return { perVisit, monthlyEstimate: perVisit * (freq === 'weekly' ? 4.33 : freq === 'bi-weekly' ? 2.17 : 0) };
+    return {
+      perVisit,
+      monthlyEstimate: perVisit * (freq === 'weekly' ? 4.33 : freq === 'bi-weekly' ? 2.17 : 0),
+    };
   }, [lot, freq, addons]);
 
   const toggleAddon = (a: AddOn) => {
@@ -167,6 +170,8 @@ export function QuoteCalculator({
       zip,
       message: `lot=${lot} freq=${freq} addons=${Array.from(addons).join(',')} est_per_visit=$${estimate.perVisit.toFixed(0)}`,
       source: utm ? `${utm.source}:${utm.campaign}` : 'quote-calculator:direct',
+      sms_consent: smsConsent,
+      preferred_contact_method: phoneVal ? 'sms' : 'email',
     };
     try {
       const res = await fetch('/api/lead', {
@@ -180,10 +185,12 @@ export function QuoteCalculator({
       }
       setSubmitted({
         ok: true,
-        message: 'Quote request received. We will text or email within 24 hours.',
+        message:
+          'Quote request received. We text or email within 5 minutes during business hours (Mon-Fri 7a-5p, Sat 8a-2p). After hours we reply first thing next business morning.',
       });
     } catch (e) {
-      const msg = e instanceof Error ? e.message : 'Something went wrong. Please text or call us directly.';
+      const msg =
+        e instanceof Error ? e.message : 'Something went wrong. Please text or call us directly.';
       setSubmitted({ ok: false, message: msg });
     } finally {
       setSubmitting(false);
@@ -246,7 +253,7 @@ export function QuoteCalculator({
 
       <div className={cn(styles.addonBlock)}>
         <div className={cn(styles.addonLabel)}>Add-ons</div>
-        <div className={cn(styles.addonList)} role="group" aria-label="Optional add-on services">
+        <fieldset className={cn(styles.addonList)} aria-label="Optional add-on services">
           {(['edging', 'mulching', 'hedge', 'hurricane'] as AddOn[]).map((a) => {
             const isOn = addons.has(a);
             const meta = ADDON_META[a];
@@ -258,12 +265,11 @@ export function QuoteCalculator({
                 aria-pressed={isOn}
                 className={cn(styles.addonChip, isOn && styles.addonChipOn)}
               >
-                {meta.label}{' '}
-                <span className={cn(styles.addonPrice)}>({meta.priceSuffix})</span>
+                {meta.label} <span className={cn(styles.addonPrice)}>({meta.priceSuffix})</span>
               </button>
             );
           })}
-        </div>
+        </fieldset>
       </div>
 
       <div className={cn(styles.estimateBox)} aria-live="polite">
@@ -306,18 +312,29 @@ export function QuoteCalculator({
           type="tel"
           value={phoneVal}
           onChange={(e) => setPhoneVal(e.target.value)}
+          onBlur={() => setPhoneTouched(true)}
           placeholder="(727) 313-8011"
           autoComplete="tel"
           helper="Recommended for fastest quote — a text beats email every time."
         />
 
+        {/* D-0066 SMS consent — only shown when phone is provided. */}
+        {phoneVal.trim().length > 0 ? (
+          <Checkbox
+            label="I agree to receive SMS messages from Largo Lawn at the number provided. Message frequency varies. Reply STOP to opt out, HELP for help. Message and data rates may apply."
+            checked={smsConsent}
+            onChange={setSmsConsent}
+            required={phoneTouched}
+            helper={
+              phoneTouched && !smsConsent
+                ? 'Required to text you back. We will email instead if you prefer.'
+                : undefined
+            }
+          />
+        ) : null}
+
         {submitted && !submitted.ok ? (
-          <p
-            ref={errorRef}
-            className={cn(styles.errorBanner)}
-            role="alert"
-            tabIndex={-1}
-          >
+          <p ref={errorRef} className={cn(styles.errorBanner)} role="alert" tabIndex={-1}>
             {submitted.message}
           </p>
         ) : null}
@@ -329,15 +346,14 @@ export function QuoteCalculator({
             size="lg"
             disabled={submitting}
             iconLeft={
-              submitting ? (
-                <Loader2 size={18} aria-hidden="true" className="ll-spin" />
-              ) : undefined
+              submitting ? <Loader2 size={18} aria-hidden="true" className="ll-spin" /> : undefined
             }
           >
             {submitting ? 'Sending…' : 'Send me this quote'}
           </Button>
           <p className={cn(styles.legal)}>
-            We respond within 24 hours on business days. No spam, no list-rentals.
+            We respond within 5 minutes during business hours, first thing next business morning
+            after hours. No spam, no list-rentals.
           </p>
         </div>
       </form>

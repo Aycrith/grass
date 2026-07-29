@@ -1,0 +1,70 @@
+/* ============================================================
+ * Checkbox — Mission 1
+ * Matches the design-system Input family (label + control + helper).
+ * Border accent on error state.
+ * ============================================================ */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.label {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-size: 0.9rem;
+  color: var(--ll-palm-bark);
+  line-height: 1.4;
+}
+
+.control {
+  flex: 0 0 auto;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-top: 0.15rem;
+  accent-color: var(--ll-palm-shadow);
+  cursor: pointer;
+}
+
+.control:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.control:focus-visible {
+  outline: 3px solid var(--ll-sun);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.text {
+  flex: 1 1 auto;
+}
+
+.required {
+  color: var(--color-error);
+  font-weight: 700;
+}
+
+.helper {
+  font-size: 0.8rem;
+  color: var(--gray-700);
+  line-height: 1.4;
+  margin-left: calc(1.1rem + var(--space-3));
+}
+
+.errorText {
+  font-size: 0.8rem;
+  color: var(--color-error);
+  font-weight: 500;
+  line-height: 1.4;
+  margin-left: calc(1.1rem + var(--space-3));
+}
+
+.error .control {
+  outline: 2px solid var(--color-error);
+  outline-offset: 1px;
+  border-radius: 2px;
+}

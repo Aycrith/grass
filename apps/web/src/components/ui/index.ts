@@ -12,6 +12,7 @@
 export { Button } from './Button';
 export { Card } from './Card';
 export { Input } from './Input';
+export { Checkbox } from './Checkbox';
 export { Accordion } from './Accordion';
 export { LogoMark } from './LogoMark';
 export { LogoLockup } from './LogoLockup';
