@@ -55,7 +55,23 @@ export interface Lead {
     | 'paid_search'
     | 'door_hanger'
     | 'walk_in'
-    | 'quote_calculator';
+    | 'quote_calculator'
+    // Stage 3 + B-2 follow-up: widen the union to accept any canonical
+    // channel token the attribution lib may write. The discrete
+    // utm_source/utm_campaign fields are the source of truth for
+    // attribution analytics; `source` is a coarse-grained join key for
+    // legacy filters. Including the full ChannelToken set lets us drop
+    // the `as Lead['source']` cast in apps/web/src/lib/attribution.ts.
+    | 'google'
+    | 'google_ads'
+    | 'bing_ads'
+    | 'nextdoor'
+    | 'facebook'
+    | 'craigslist'
+    | 'thumbtack'
+    | 'business_card'
+    | 'yard_sign'
+    | 'review_magnet';
   zip: string;
   message?: string;
   status: LeadStatus;

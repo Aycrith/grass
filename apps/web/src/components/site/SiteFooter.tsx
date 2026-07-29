@@ -182,13 +182,19 @@ export function SiteFooter({ className }: SiteFooterProps): ReactNode {
               </li>
             ))}
           </ul>
-          {/* Stage 3 (Q-5): footer notice replacing the previous CookieConsent
-              banner. Server-side PostHog only — no client-side tracking tags,
-              no advertising cookies, no opt-out needed. Keeps the privacy
-              page's anonymous-PostHog claim accurate. */}
+          {/* Stage 3 (Q-5) + B-3 follow-up: footer notice replacing the previous
+              CookieConsent banner. Honest characterization:
+              - PostHog is a first-party analytics processor; events are keyed
+                by `lead.id` and include ZIP + landing_path (correlates to PII).
+              - The browser stores an attribution key (`grass_attribution_v1`,
+                30-day TTL) so the UTMs survive page reloads — it is a
+                functional local copy, not an advertising tracker.
+              No client-side tracking tags, no advertising cookies, no opt-out
+              required because there is nothing to opt out of. The privacy
+              page (see /privacy) describes the actual data flow. */}
           <span className={styles.analyticsNote}>
-            Anonymous server-side analytics (PostHog). No advertising cookies, no client-side
-            tracking.
+            First-party analytics (PostHog, server-side; keyed to your lead id). One local-storage
+            attribution key (grass_attribution_v1, 30 days). No advertising cookies.
           </span>
           <span>
             Built in Largo ·{' '}

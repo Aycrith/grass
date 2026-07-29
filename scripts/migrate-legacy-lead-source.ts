@@ -42,10 +42,17 @@
  */
 
 import { readFileSync } from 'node:fs';
+import { UTM_MEDIUM_BY_SOURCE, FALLBACK_MEDIUM } from '../apps/web/src/lib/channels';
 
-// --- Types ------------------------------------------------------------------
+// Re-export the canonical UtmMedium type from the channels module so
+// downstream consumers don't need to know about the lib/channels path.
+export type UtmMedium = import('../apps/web/src/lib/channels').UtmMedium;
 
-export type UtmMedium = 'cpc' | 'social' | 'referral' | 'email' | 'print';
+// Re-export the source-by-medium map for tests that need to enumerate
+// the canonical channel set. The Map adapter below is the production
+// path; this re-export exists solely so migration.test.ts can assert
+// every entry round-trips through parseLegacySource.
+export { UTM_MEDIUM_BY_SOURCE };
 
 /**
  * Legacy `source` token shape before Stage 3 (v2 taxonomy). Colon-separated.
@@ -75,32 +82,17 @@ export interface LegacyLead {
 
 // --- Per-source utm_medium map ---------------------------------------------
 //
-// Mirrors the per-row `utm_medium` from
-// `apps/web/src/app/t/[source]/route.ts` CHANNELS table, which was the
-// canonical source-of-truth for the v3 utm_medium vocabulary. Keeping this
-// map co-located with the parser means anyone changing a redirect's
-// medium needs to update both places (charter principle: single source
-// of truth).
+// Imported from `apps/web/src/lib/channels.ts` (single source of truth
+// shared with `apps/web/src/app/t/[source]/route.ts`). Adding a new
+// channel = one row in lib/channels.ts + one row in the route's
+// CHANNELS map (the route has rows the backfill doesn't, and
+// vice-versa; the canonical medium is here).
 
-const UTM_MEDIUM_BY_SOURCE: ReadonlyMap<string, UtmMedium> = new Map([
-  // paid
-  ['google_ads', 'cpc'],
-  ['bing_ads', 'cpc'],
-  ['meta_ads', 'cpc'], // legacy: meta_ads slug is now paused (S3.7); backfill stays correct
-  // social (organic / Nextdoor / Facebook groups)
-  ['nextdoor', 'social'],
-  ['facebook', 'social'],
-  // referral
-  ['thumbtack', 'referral'],
-  ['craigslist', 'referral'],
-  // print / offline collateral
-  ['door_hanger', 'print'],
-  ['yard_sign', 'print'],
-  ['business_card', 'print'],
-  ['review_magnet', 'print'],
-]);
-
-const FALLBACK_MEDIUM: UtmMedium = 'referral';
+// `UTM_MEDIUM_BY_SOURCE` is now an object (not a Map) imported from
+// lib/channels.ts. Adapter to Map for the parser's `.get()` API.
+const UTM_MEDIUM_BY_SOURCE_MAP: ReadonlyMap<string, UtmMedium> = new Map(
+  Object.entries(UTM_MEDIUM_BY_SOURCE),
+);
 
 // --- Pure-function parser --------------------------------------------------
 
@@ -123,7 +115,7 @@ export function parseLegacySource(source: string): LegacyAttribution | null {
 
   const utm_source = rawSource.toLowerCase();
   const utm_campaign = rawCampaign.toLowerCase();
-  const utm_medium = UTM_MEDIUM_BY_SOURCE.get(utm_source) ?? FALLBACK_MEDIUM;
+  const utm_medium = UTM_MEDIUM_BY_SOURCE_MAP.get(utm_source) ?? FALLBACK_MEDIUM;
 
   return { utm_source, utm_campaign, utm_medium };
 }
@@ -241,18 +233,25 @@ function printDryRun(): void {
 }
 
 // --- Main ------------------------------------------------------------------
+//
+// Only run the CLI dispatch when invoked as a script (`bun run` / direct
+// invocation). When imported by `apps/web/tests/attribution/migration.test.ts`
+// the pure-function exports are the only surface used; without this guard
+// `bun test` would print the coverage table on every test run.
 
-const args = new Set(process.argv.slice(2));
+if (import.meta.main) {
+  const args = new Set(process.argv.slice(2));
 
-if (args.has('--dry-run')) {
-  printDryRun();
-} else if (args.has('--coverage')) {
-  printCoverageTable();
-} else {
-  // Default to coverage when called without args — useful for `bun run` and CI.
-  printCoverageTable();
+  if (args.has('--dry-run')) {
+    printDryRun();
+  } else if (args.has('--coverage')) {
+    printCoverageTable();
+  } else {
+    // Default to coverage when called without args — useful for `bun run` and CI.
+    printCoverageTable();
+  }
+
+  // Touch readFileSync so the file is treated as ESM by `bun run`.
+  // (No-op runtime; the actual export surface is the pure functions above.)
+  void readFileSync;
 }
-
-// Touch readFileSync so the file is treated as ESM by `bun run`.
-// (No-op runtime; the actual export surface is the pure functions above.)
-void readFileSync;

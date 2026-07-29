@@ -32,7 +32,7 @@ const SYNTHETIC_AD_CLICK: AttributionPayload = {
   referrer: 'google.com',
   device_class: 'mobile',
   first_touch_at: '2026-07-29T12:00:00.000Z',
-  source: 'google:pw_search',
+  source: 'google', // B-2: canonical channel token, not v2 colon-squash
 };
 
 describe('attribution: discrete fields', () => {
@@ -78,18 +78,14 @@ describe('attribution: discrete fields', () => {
     expect(fields.source).toBe('website');
   });
 
-  it('source is preserved as the legacy coarse token (NOT a replacement)', () => {
-    // The source column is the legacy coarse summary. Per plan §5 the
-    // discrete utm_* fields are the source of truth for attribution;
-    // `source` is kept for backward compatibility with the 6-value
-    // `Lead.source` union until the source taxonomy is fully migrated.
-    // The colon-squashed `google:pw_search` is a v2 token that doesn't
-    // fit the widened Stage 3 union — attributionToLeadFields casts it
-    // through `as Lead['source']` for backward compatibility.
+  it('source is the canonical channel token, NOT a v2 colon-squash', () => {
+    // B-2 follow-up: dropped the v2 `deriveLegacySource()` squash on new
+    // leads. The `source` field is the canonical channel token (same as
+    // utm_source) so `WHERE source IN (...)` filters hit both redirected
+    // and direct-arrival leads. The discrete utm_* trio remains the
+    // source of truth; `source` is the coarse-grained join key.
     const fields = attributionToLeadFields(SYNTHETIC_AD_CLICK);
-    // Cast to `string` because the Stage 3 union doesn't cover the v2
-    // squash token; production does the same cast.
-    expect(fields.source as string).toBe('google:pw_search');
+    expect(fields.source).toBe('google');
   });
 
   it('produces a Pick<Lead, ...> shape with the 11 documented keys', () => {

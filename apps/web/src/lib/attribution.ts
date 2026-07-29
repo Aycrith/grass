@@ -24,16 +24,20 @@
  */
 
 import type { Lead } from '@grass/crm-core';
+import { toLeadSource } from '@/lib/channels';
 
 /**
  * The complete attribution payload captured on the client. Mirrors the
  * Lead row's attribution fields (10 discrete fields + first_touch_at).
  * All fields are nullable — server-side capture tolerates missing data.
  *
- * The `source` token is the legacy coarser-grained summary (e.g.
- * 'nextdoor:free_first_mow' or 'paid_ad'). It's kept for backward
- * compatibility with the existing 6-value `Lead.source` union until
- * the source taxonomy is fully migrated to discrete fields.
+ * The `source` field is a coarse summary kept for backward compatibility
+ * with the existing 6-value `Lead.source` union. It holds the canonical
+ * channel token (e.g. `'nextdoor'`, `'google_ads'`) — never the v2
+ * colon-squashed form (`'nextdoor:free_first_mow'`). The discrete
+ * utm_source/utm_campaign fields are the source of truth; `source` is
+ * only useful for `WHERE source IN (...)` filters. See B-2 in the
+ * Stage 3 review notes (`/governance/decisions/0068-stage-3-review-followups.md`).
  */
 export interface AttributionPayload {
   utm_source: string | null;
@@ -47,7 +51,12 @@ export interface AttributionPayload {
   device_class: 'mobile' | 'tablet' | 'desktop' | null;
   first_touch_at: string | null;
   /** Coarse-grained summary derived from UTMs (or hardcoded). */
-  source: string;
+  // B-2: narrowed to Lead['source'] union (was `string`). The attribution
+  // payload always produces a canonical channel token (utm_source or
+  // 'website'), which fits the widened union in
+  // platform/packages/crm-core/src/service.ts. This lets
+  // `attributionToLeadFields()` return `source` without an `as` cast.
+  source: Lead['source'];
 }
 
 const STORAGE_KEY = 'grass_attribution_v1';
@@ -99,7 +108,10 @@ export function captureAttribution(
     referrer: referrerHostname(referrer),
     device_class: parseDeviceClass(userAgent),
     first_touch_at: null, // populated only on first write
-    source: deriveLegacySource(params.get('utm_source'), params.get('utm_campaign')),
+    // B-2 follow-up: use the canonical channel token (utm_source) here,
+    // not the v2 colon-squash. The discrete-fields test that asserted
+    // `'google:pw_search'` has been updated to match the new contract.
+    source: toLeadSource(params.get('utm_source')),
   };
 }
 
@@ -207,7 +219,11 @@ export function attributionToLeadFields(
     referrer: attribution.referrer,
     device_class: attribution.device_class,
     first_touch_at: attribution.first_touch_at,
-    source: attribution.source as Lead['source'],
+    // B-2 follow-up: `source` is now a Lead['source']-compatible
+    // canonical token (utm_source ?? 'website'). The pre-Stage-3 cast
+    // was needed because deriveLegacySource produced v2 colon-squash
+    // tokens that didn't fit the union. No cast needed anymore.
+    source: attribution.source,
   };
 }
 
@@ -243,10 +259,4 @@ export function parseDeviceClass(userAgent: string): 'mobile' | 'tablet' | 'desk
     return 'mobile';
   }
   return 'desktop';
-}
-
-function deriveLegacySource(utmSource: string | null, utmCampaign: string | null): string {
-  if (utmSource && utmCampaign) return `${utmSource}:${utmCampaign}`;
-  if (utmSource) return utmSource;
-  return 'website';
 }

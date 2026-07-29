@@ -29,10 +29,10 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
 /**
- * Controlled vocab for utm_medium per analytics/kpi-taxonomy.md.
- * Keep these strings exact — PostHog funnels segment by them.
+ * Controlled vocab for utm_medium — imported from `@/lib/channels`
+ * (single source of truth shared with the legacy migration script).
  */
-type UtmMedium = 'cpc' | 'social' | 'referral' | 'email' | 'print';
+import { type UtmMedium } from '@/lib/channels';
 
 const CHANNELS: Record<
   string,

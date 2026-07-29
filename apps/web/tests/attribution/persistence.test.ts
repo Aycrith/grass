@@ -188,7 +188,7 @@ describe('attribution: persistence across navigation', () => {
       referrer: null,
       device_class: null,
       first_touch_at: '2026-06-01T00:00:00.000Z',
-      source: 'google:pw_search',
+      source: 'google',
     };
     b.localStorage.data.set(
       'grass_attribution_v1',
