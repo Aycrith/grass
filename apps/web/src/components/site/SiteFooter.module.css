@@ -227,6 +227,15 @@
   text-underline-offset: 0.2em;
 }
 
+/* Stage 3 (Q-5): analytics note replacing the removed CookieConsent
+   banner. Server-side PostHog only — no client-side tracking, no
+   advertising cookies. */
+.analyticsNote {
+  font-size: 0.75rem;
+  color: var(--gray-600);
+  font-style: italic;
+}
+
 .legalLinks {
   display: flex;
   gap: var(--space-4);

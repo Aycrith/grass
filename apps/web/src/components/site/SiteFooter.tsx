@@ -165,7 +165,8 @@ export function SiteFooter({ className }: SiteFooterProps): ReactNode {
           <div className={styles.col}>
             <h3 className={styles.colTitle}>Service Area</h3>
             <p className={styles.areaNote}>
-              Solo-operator lawn care across Largo and the surrounding Pinellas County neighborhoods. Type your ZIP on the homepage to check coverage.
+              Solo-operator lawn care across Largo and the surrounding Pinellas County
+              neighborhoods. Type your ZIP on the homepage to check coverage.
             </p>
           </div>
         </FadeUp>
@@ -181,6 +182,14 @@ export function SiteFooter({ className }: SiteFooterProps): ReactNode {
               </li>
             ))}
           </ul>
+          {/* Stage 3 (Q-5): footer notice replacing the previous CookieConsent
+              banner. Server-side PostHog only — no client-side tracking tags,
+              no advertising cookies, no opt-out needed. Keeps the privacy
+              page's anonymous-PostHog claim accurate. */}
+          <span className={styles.analyticsNote}>
+            Anonymous server-side analytics (PostHog). No advertising cookies, no client-side
+            tracking.
+          </span>
           <span>
             Built in Largo ·{' '}
             <a href={BUSINESS.url} target="_blank" rel="noopener noreferrer">

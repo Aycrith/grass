@@ -22,8 +22,8 @@
  * while leaving <head> entirely to the metadata API.
  */
 
-import { CookieConsent, HurricaneBanner, SiteFooter, SiteHeader } from '@/components/site';
 import { LenisProvider, MotionConfig } from '@/components/motion';
+import { HurricaneBanner, SiteFooter, SiteHeader } from '@/components/site';
 import { BUSINESS } from '@/lib/business';
 import { services } from '@/lib/content';
 import { JsonLd } from '@/lib/json-ld';
@@ -74,8 +74,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary',
     title: `${BUSINESS.name}: Lawn Care in ${BUSINESS.address.city}, FL`,
-    description:
-      'Affordable, reliable lawn care and landscaping in Largo and Pinellas County.',
+    description: 'Affordable, reliable lawn care and landscaping in Largo and Pinellas County.',
   },
   robots: {
     index: true,
@@ -228,9 +227,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
          * and the header takes over the viewport top as the visitor
          * scrolls past it. */}
         {BUSINESS.hurricaneModeActive ? <HurricaneBanner /> : null}
-        {/* D-000x (2026-07-26): Cookie consent banner — shown once per device.
-         * Dismissed state persists in localStorage so it doesn't reappear. */}
-        <CookieConsent />
+        {/* Stage 3 (Q-5): CookieConsent banner removed. Server-side PostHog
+         * is the only analytics source — no client-side tracking tags, no
+         * advertising cookies, no opt-out needed. The footer (SiteFooter)
+         * carries the accurate notice. */}
         {/* WP19 - LenisProvider mounts smooth-scroll so the ParallaxImage
          * site-wide) actually sees a non-zero `scrollYProgress`. The
          * provider is gated for prefers-reduced-motion + coarse-pointer +
