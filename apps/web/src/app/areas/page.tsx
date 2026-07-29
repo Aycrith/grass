@@ -22,9 +22,11 @@
 import type { Metadata } from 'next';
 
 import { FadeUp } from '@/components/motion';
-import { Eyebrow } from '@/components/site';
+import { Container, Eyebrow } from '@/components/site';
+import { FinalCTABanner } from '@/components/sections';
 import { BUSINESS } from '@/lib/business';
 import { areaDetail, areaImages } from '@/lib/content';
+import { JsonLd, pageBreadcrumb } from '@/lib/json-ld';
 
 import { AreaCard } from './AreaCard';
 import styles from './areas.module.css';
@@ -53,10 +55,15 @@ const DISPLAY_ORDER: ReadonlyArray<string> = [
 const STAGGER_STEP_S = 0.06;
 
 export default function AreasIndexPage() {
+  const breadcrumbSchema = pageBreadcrumb({
+    currentLabel: 'Service areas',
+    currentHref: '/areas',
+  });
   return (
-    <main className={styles.root}>
+    <div className={styles.root}>
+      <JsonLd data={breadcrumbSchema} />
       <section className={styles.hero}>
-        <div className="container">
+        <Container>
           <FadeUp>
             <Eyebrow tone="default" className={styles.eyebrow}>
               01 — Service areas
@@ -68,11 +75,11 @@ export default function AreasIndexPage() {
               what I do about it, and the local questions that come up at quote-time.
             </p>
           </FadeUp>
-        </div>
+        </Container>
       </section>
 
       <section className={styles.directory}>
-        <div className="container">
+        <Container>
           <ul className={styles.grid}>
             {DISPLAY_ORDER.map((zip, i) => {
               const detail = areaDetail[zip];
@@ -95,8 +102,14 @@ export default function AreasIndexPage() {
             Outside these six? Type your ZIP in the form on the homepage and we will route you to a
             quote — I am flexible about nearby ZIPs while I am building the route.
           </p>
-        </div>
+        </Container>
       </section>
-    </main>
+
+      {/* Page closer — FinalCTABanner is the same one used on /,
+       * /pricing, /about, and /services. Without it, a visitor who
+       * lands on /areas from a "Largo lawn care 33770" search has
+       * no in-page path to /quote besides the header nav. */}
+      <FinalCTABanner />
+    </div>
   );
 }

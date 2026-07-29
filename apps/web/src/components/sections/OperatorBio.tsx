@@ -16,7 +16,7 @@
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Eyebrow, Section } from '@/components/site';
+import { Container, Eyebrow, Section } from '@/components/site';
 import { cn } from '@/lib/cn';
 import { aboutPage } from '@/lib/content';
 
@@ -44,7 +44,7 @@ export function OperatorBio({ className }: OperatorBioProps): ReactNode {
   return (
     <>
       <Section rhythm="loose" className={cn(styles.missionSection, className)}>
-        <div className="container">
+        <Container>
           <FadeUp className={styles.prose}>
             <Eyebrow tone="default" >
               {aboutPage.missionEyebrow}
@@ -58,27 +58,27 @@ export function OperatorBio({ className }: OperatorBioProps): ReactNode {
             </Eyebrow>
             <p className={styles.body}>{aboutPage.whySolo}</p>
           </FadeUp>
-        </div>
+        </Container>
       </Section>
 
       <Section rhythm="loose" className={cn(styles.valuesSection, className)}>
-        <div className="container">
+        <Container>
           <header className={styles.valuesHeader}>
             <Eyebrow tone="default" >
               {aboutPage.valuesEyebrow}
             </Eyebrow>
-            <h2 className={styles.valuesHeading}>{aboutPage.valuesEyebrow}.</h2>
+            <h2 className={styles.valuesHeading}>{aboutPage.valuesHeading}</h2>
           </header>
           <div className={styles.valuesGrid}>
             {aboutPage.values.map((v) => (
               <ValueCard key={v.label} label={v.label} body={v.body} />
             ))}
           </div>
-        </div>
+        </Container>
       </Section>
 
       <Section rhythm="loose" className={cn(styles.registerSection, className)}>
-        <div className="container">
+        <Container>
           <FadeUp className={styles.registerInner}>
             <Eyebrow tone="default" >
               {aboutPage.registerEyebrow}
@@ -89,7 +89,7 @@ export function OperatorBio({ className }: OperatorBioProps): ReactNode {
               ))}
             </ul>
           </FadeUp>
-        </div>
+        </Container>
       </Section>
     </>
   );

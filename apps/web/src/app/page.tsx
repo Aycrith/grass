@@ -4,56 +4,41 @@
  * Targets: "lawn care Largo FL", "landscaping 33771", "yard maintenance Pinellas".
  * GBP-style NAP block matches schema.org/LandscapingBusiness in layout.
  *
- * Canonical section composition (9 sections, eyebrows 01-09):
- *   HeroMowerScene → ServiceAreaMap → OperatorStrip → ServiceBento →
- *   PricingTiers → ProcessSteps → ScheduleTimeline → FAQAccordion →
- *   FinalCTABanner
+ * Canonical section composition (14 sections, eyebrows 01-09 + decimals):
+ *   01  HeroFieldTelemetry  (cinematic dark hero)
+ *   02  ServiceAreaMap       (ZIP-or-neighborhood coverage check)
+ *   03  OperatorStrip        (operator bio + 2 folded-in stats)
+ *   03.5 PocketMap           (storybook painted Pinellas map)
+ *   04  FieldLog             (hand-drawn route + passport stamp)
+ *   04.05/04.06 BehindTheScenes × 2 (truck + yard)
+ *   05  ServiceBento         (6-card service grid)
+ *   05.5 SpecimenPlate       (4-grass pressed-herbarium plate)
+ *   06  PricingTiers
+ *   07  ProcessSteps
+ *   08  ScheduleTimeline     (weekly route day-by-day)
+ *   09  FAQAccordion
+ *   -   FinalCTABanner       (the closer)
  *
- * D-0029 (Wave B of three sequential design changes) collapsed the
- * 14-section composition to 9. Two problems drove the cut:
+ * D-0029 (Wave B) collapsed the 14-section composition to 9 by
+ * demoting `OperatorNote` + `MarqueeQuote` (operator voice
+ * duplicated by OperatorStrip) and folding the strongest 2
+ * stats from `ServiceAreaStats` into OperatorStrip's bio card.
  *
- *   1. **Late coverage decision.** The user's first conversion question
- *      is "am I in your service area?" In the 14-section order, the
- *      Coverage Check sat at position 6 of 14 — after the operator
- *      intro, the service grid, pricing, an editorial break, and a
- *      stats panel. By fold 3 the user had scrolled past ~8 full-bleed
- *      editorial blocks before being able to answer the conversion
- *      question. The first paint after the hero should already be the
- *      Coverage Check (D-0028's section), so we move it to position 2.
+ * D-0058 / D-0055 / D-0057 / 2026-07-23 BTS-split / 2026-07-26 OG
+ * pass added 5 more editorial sections to the composition:
+ *   - PocketMap       (D-0058 — folk-cartoon painted map)
+ *   - FieldLog        (D-0055 — hand-drawn route + pull-quote)
+ *   - BehindTheScenes × 2 (split into "truck" + "yard" instances)
+ *   - SpecimenPlate   (D-0057 — pressed-herbarium turf-grass plate)
+ * The current 14-section composition is the result of those
+ * additions; stewards can collapse back to 9 by demoting any
+ * of the editorial sections.
  *
- *   2. **Operator voice was duplicated.** OperatorStrip's bio already
- *      says "Same guy, same day, every week." in the first-person bio.
- *      `OperatorNote` (typographic pause) and `MarqueeQuote` (slow
- *      horizontal scroll) both carried the same operator-voice content
- *      in different visual idioms — three of the same section. We keep
- *      OperatorStrip as the canonical operator-voice section and demote
- *      OperatorNote + MarqueeQuote to the library (still available for
- *      /about and seasonal campaigns).
- *
- *      swapped for HeroMowerScene. The storybook-painted-static-image
- *      hero felt dated and earned repeated steward pushback. The new
- *      hero is a hand-authored animated SVG landscape where a small
- *      lawn mower crosses the scene on scroll, revealing the headline
- *      in its mowed path. Multiple parallax layers, ambient CSS
- *      animations (drifting clouds, swaying palms, blooming wildflowers),
- *      and magnetic CTAs. The same id="hero" anchor is preserved so
- *      the library for /visual-test and as a fallback.
- *
- * `EditorialBreak` (pretty, non-converting full-bleed image pause) and
- * `ServiceAreaStats` (the "47 / 89 / 18h / 6 yrs" data panel) were
- * also demoted. The two strongest stats from `ServiceAreaStats` were
- * folded into `OperatorStrip`'s bio card — the bio is the operator's
- * voice section, so "47 yards on the route" + "18h median quote
- * turnaround" reinforce that voice without an extra section. The full
- * 4-stat panel stays in the library for /about and other surfaces.
- *
- * Section dividers are reserved for the three major tone shifts on
- * the new composition:
- *   - between Hero and Coverage (cinematic dark → dark form section)
- *   - between Coverage and Operator (dark form → light bio card)
- *   - between FAQ and FinalCTA (light → dark closer)
- * No dividers between same-tone neighbors (Bento → Pricing → Process
- * are all light editorial; Schedule → FAQ is also light editorial).
+ * Section dividers are reserved for the three major tone shifts:
+ *   - between Hero (01) and Coverage (02)
+ *   - between Coverage (02) and Operator (03)
+ *   - between FAQ (09) and FinalCTA (the closer)
+ * No dividers between same-tone editorial neighbors.
  *
  * This page is the production surface for every component in the
  * `sections/` library. visual-test/page.tsx only mounts a subset of
@@ -79,7 +64,9 @@ import {
 import { BehindTheScenes } from '@/components/sections/BehindTheScenes';
 import { ConversionRail } from '@/components/site';
 import { SectionDivider } from '@/components/ui';
-import { hero as heroContent } from '@/lib/content';
+import { BUSINESS } from '@/lib/business';
+import { hero as heroContent, faq } from '@/lib/content';
+import { JsonLd } from '@/lib/json-ld';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -87,8 +74,29 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
+  // FAQPage JSON-LD — mirrors the 6 Q&As visible in the <FAQAccordion>
+  // section at the bottom of the home page. Google can render these
+  // as rich-result FAQ snippets in search. /pricing already has the
+  // same block (it owns the canonical pricing FAQ); the home FAQ is
+  // distinct — the same 6 questions but the home FAQ is for the
+  // top-of-funnel "is this a real business" question, not pricing.
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: f.a,
+      },
+    })),
+    provider: { '@type': 'LandscapingBusiness', name: BUSINESS.name },
+  };
+
   return (
     <>
+      <JsonLd data={faqJsonLd} />
       {/* 01 — Hero (D-0042: Field Telemetry + WebGL grass field) */}
       <HeroFieldTelemetry
         eyebrow={heroContent.eyebrow}
@@ -197,7 +205,7 @@ export default function HomePage() {
        * scrolls past the hero, hides when the final CTA is in
        * view. Single primary "Get a free quote" CTA is always
        * within reach. */}
-      <ConversionRail heroId="hero" finalCtaId="final-cta" />
+      <ConversionRail />
     </>
   );
 }

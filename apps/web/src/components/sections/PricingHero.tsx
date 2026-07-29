@@ -13,7 +13,7 @@
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Eyebrow, Section } from '@/components/site';
+import { Container, Eyebrow, Section } from '@/components/site';
 import { cn } from '@/lib/cn';
 import { pricingPage } from '@/lib/content';
 
@@ -26,7 +26,7 @@ interface PricingHeroProps {
 export function PricingHero({ className }: PricingHeroProps): ReactNode {
   return (
     <Section rhythm="loose" className={cn(styles.root, className)}>
-      <div className="container">
+      <Container>
         <FadeUp className={styles.copy}>
           <Eyebrow tone="default" className={styles.eyebrow}>
             {pricingPage.eyebrow}
@@ -34,7 +34,7 @@ export function PricingHero({ className }: PricingHeroProps): ReactNode {
           <h1 className={styles.title}>{pricingPage.heading}</h1>
           <p className={styles.tagline}>{pricingPage.tagline}</p>
         </FadeUp>
-      </div>
+      </Container>
     </Section>
   );
 }

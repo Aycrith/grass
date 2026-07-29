@@ -7,8 +7,3 @@
   /* Hand-authored SVGs preserve stroke crispness at any size. */
   shape-rendering: geometricPrecision;
 }
-
-.illustration.dark {
-  /* Tone switch for use on dark surfaces — slight luminosity lift. */
-  filter: brightness(1.05);
-}

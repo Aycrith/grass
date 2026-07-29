@@ -1,122 +1,151 @@
-/* Shared status-page layout for not-found, error, and loading.
+/* ============================================================
+ * not-found — 404 page.
  *
- * Owns: root container stack, the eyebrow "label" span, the
- * Fraunces h1, body copy, and the CTA row (button + outline link).
- */
+ * Editorial 404 in the brand voice. Mirrors ContactHero's vertical
+ * rhythm and the Card grid from FAQAccordion's wrap-up. Values
+ * reference tokens from styles/tokens.css.
+ * ============================================================ */
 
-.root {
+.hero {
+  padding-block: var(--space-12) var(--space-10);
+}
+
+.copy {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-5);
-  padding-block: var(--space-11);
+  gap: var(--space-4);
+  max-width: 720px;
+  text-align: center;
+  align-items: center;
+  margin-inline: auto;
 }
 
-.label {
-  font-family: var(--font-inter);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+.eyebrow {
   color: var(--ll-clay);
-}
-
-.labelMuted {
-  font-family: var(--font-inter);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ll-sand);
 }
 
 .title {
   font-family: var(--font-fraunces), serif;
   font-weight: 700;
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
   line-height: 1.05;
   letter-spacing: -0.02em;
-  color: var(--ll-palm-shadow);
-  margin: 0;
-}
-
-.body {
-  font-family: var(--font-inter);
-  font-size: 1.1rem;
-  line-height: 1.55;
   color: var(--ll-palm-bark);
   margin: 0;
-  max-width: 32rem;
 }
 
-.ctaRow {
+.lede {
+  font-family: var(--font-inter);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--ll-palm-bark);
+  opacity: 0.85;
+  margin: 0;
+  max-width: 38rem;
+}
+
+.illustration {
+  margin-top: var(--space-5);
+  width: 100%;
+  max-width: 420px;
+}
+
+.illustration img {
+  width: 100%;
+  height: auto;
+}
+
+.actions {
+  padding-block: var(--space-7) var(--space-12);
+}
+
+.cardGrid {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  max-width: var(--max-width-marketing);
+  margin-inline: auto;
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-fraunces), serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ll-palm-bark);
+  margin: 0 0 var(--space-3);
+  letter-spacing: -0.01em;
+}
+
+.cardIcon {
+  color: var(--ll-clay);
+  flex-shrink: 0;
+}
+
+.cardBody {
+  color: var(--ll-palm-bark);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  margin: 0 0 var(--space-4);
+  opacity: 0.9;
+}
+
+.cardFooter {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-3);
 }
 
-.primaryCta {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--space-3) var(--space-6);
-  background: var(--ll-sun);
-  color: var(--ll-palm-bark);
-  font-family: var(--font-inter);
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  text-decoration: none;
-  border: none;
-  border-radius: var(--radius);
-  box-shadow: var(--elevation-2);
-  cursor: pointer;
-  font-family: var(--font-inter);
-}
-
-.primaryCta:hover,
-.primaryCta:focus {
-  filter: brightness(0.96);
-}
-
-.outlineCta {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--space-3) var(--space-6);
-  background: transparent;
-  color: var(--ll-palm-shadow);
-  font-family: var(--font-inter);
-  font-size: 0.95rem;
+.secondaryLink {
+  font-size: 0.9rem;
   font-weight: 600;
+  color: var(--ll-palm-shadow);
   text-decoration: none;
-  border: 1.5px solid var(--ll-palm-shadow);
-  border-radius: var(--radius);
 }
 
-.outlineCta:hover,
-.outlineCta:focus {
-  background: var(--ll-palm-shadow);
-  color: var(--ll-sand-bleached);
+.secondaryLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 
-/* Loading-only — spinner frame and keyframes. */
-.spinner {
-  width: 4rem;
-  height: 4rem;
-  border-radius: 50%;
-  border: 3px solid var(--ll-sand-bleached);
-  border-top-color: var(--ll-palm-shadow);
-  animation: spin 0.9s linear infinite;
+.contactList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+.contactRow {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .spinner {
-    animation: none;
-    border-top-color: var(--ll-sand);
-  }
+.contactRow dt {
+  color: var(--ll-clay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contactRow dd {
+  margin: 0;
+  font-weight: 600;
+  color: var(--ll-palm-bark);
+}
+
+.contactRow a {
+  color: var(--ll-palm-bark);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.contactRow a:hover {
+  color: var(--ll-palm-shadow);
 }

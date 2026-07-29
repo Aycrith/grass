@@ -14,7 +14,7 @@
 
 import type { ReactNode } from 'react';
 
-import { Eyebrow } from '@/components/site';
+import { Container, Eyebrow, Section } from '@/components/site';
 import { Accordion } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { faq } from '@/lib/content';
@@ -27,8 +27,8 @@ interface PricingFAQProps {
 
 export function PricingFAQ({ className }: PricingFAQProps): ReactNode {
   return (
-    <section className={cn(styles.root, className)}>
-      <div className="container">
+    <Section className={cn(styles.root, className)}>
+      <Container>
         <header className={styles.header}>
           <Eyebrow tone="default" className={styles.headerEyebrow}>
             Questions about pricing
@@ -43,7 +43,7 @@ export function PricingFAQ({ className }: PricingFAQProps): ReactNode {
           items={faq.map((f) => ({ q: f.q, a: <p>{f.a}</p> }))}
           className={styles.accordion}
         />
-      </div>
-    </section>
+      </Container>
+    </Section>
   );
 }

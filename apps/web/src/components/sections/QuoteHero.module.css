@@ -47,3 +47,26 @@
   margin: 0;
   max-width: 40rem;
 }
+
+/* "Prefer a voice?" phone + email line. Slightly more
+ * prominent than the standard legal line — this is a
+ * primary conversion path, not a footnote. */
+.phoneLine {
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ll-palm-bark);
+  margin: var(--space-2) 0 0;
+}
+
+.phoneLine a {
+  color: var(--ll-palm-shadow);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.phoneLine a:hover,
+.phoneLine a:focus-visible {
+  text-decoration: none;
+}

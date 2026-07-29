@@ -24,7 +24,7 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
-import { Eyebrow, Section } from '@/components/site';
+import { Container, Eyebrow, Section } from '@/components/site';
 import { PRICING_FLOOR_CENTS } from '@/lib/business';
 import { cn } from '@/lib/cn';
 import { type ServiceKey, services } from '@/lib/content';
@@ -64,7 +64,7 @@ function floorPrice(key: ServiceKey): string {
 export function AreaServiceOffer({ zip, className }: AreaServiceOfferProps): ReactNode {
   return (
     <Section rhythm="loose" className={cn(styles.root, className)}>
-      <div className="container">
+      <Container>
         <div className={styles.header}>
           <Eyebrow tone="default">What we do here</Eyebrow>
           <h2 className={styles.heading}>Six services, no franchise swap.</h2>
@@ -105,7 +105,7 @@ export function AreaServiceOffer({ zip, className }: AreaServiceOfferProps): Rea
             );
           })}
         </ul>
-      </div>
+      </Container>
     </Section>
   );
 }

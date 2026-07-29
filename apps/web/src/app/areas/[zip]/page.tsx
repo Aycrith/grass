@@ -34,6 +34,7 @@ import {
 } from '@/components/sections';
 import { BUSINESS } from '@/lib/business';
 import { areaDetail } from '@/lib/content';
+import { detailBreadcrumb, JsonLd } from '@/lib/json-ld';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -83,16 +84,20 @@ export default async function AreaDetailPage({ params }: AreaParams) {
       addressCountry: 'US',
       addressLocality: detail.name,
     },
-    url: `https://largolawn.pro/areas/${zip}`,
+    url: `${BUSINESS.url}/areas/${zip}`,
   };
+
+  const breadcrumbSchema = detailBreadcrumb({
+    parentLabel: 'Service areas',
+    parentHref: '/areas',
+    currentLabel: `ZIP ${zip} (${detail.name})`,
+    currentHref: `/areas/${zip}`,
+  });
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: SEO JSON-LD
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
+      <JsonLd data={breadcrumbSchema} />
       <AreaHero detail={detail} />
       <AreaNeighborhoodNotes detail={detail} />
       <AreaServiceOffer zip={zip} />

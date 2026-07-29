@@ -6,11 +6,30 @@
  * 1. We have a destination matching the citation NAP
  * 2. We capture any traffic that bypasses the main homepage
  * 3. We provide a direct "request a quote" CTA for hot GBP leads
+ *
+ * Refactored 2026-07-25 to use the shared <Section> + <Button>
+ * primitives and the .prose typography class. Before this refactor
+ * the page was a bare <section className="container"> with raw
+ * <h1>/<h2>/<ul>/<p> and a hand-rolled anchor with `className="btn"`
+ * (the .btn class was never actually defined in the global CSS — the
+ * anchors were just rendering as default blue underlines).
+ *
+ * 2026-07-25 follow-up: the inner <div className="container
+ * container--prose"> wrapper migrated to the <Container size="prose">
+ * React primitive. The legacy global classes are still defined in
+ * styles/layout.css for /qr's print-asset prose guide, but every
+ * customer-facing page now uses the React primitive.
  */
 
 import { BUSINESS } from '@/lib/business';
 import type { Metadata } from 'next';
-import Link from 'next/link';
+import { Phone } from 'lucide-react';
+
+import { FadeUp } from '@/components/motion';
+import { Container, Section } from '@/components/site';
+import { Button } from '@/components/ui';
+
+import styles from './page.module.css';
 
 export const metadata: Metadata = {
   title: `${BUSINESS.name}: Google Profile Visitors`,
@@ -18,43 +37,58 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
+const HIGHLIGHTS: ReadonlyArray<string> = [
+  'Locally owned & operated',
+  'Transparent pricing — no surprise fees',
+  'Free quotes within 24 hours',
+  'Weather-fair scheduling (no charge for rain cancellations)',
+  'Hurricane mode: auto-pause + auto-reschedule during named storms',
+  'Local, solo-founder accountability',
+];
+
 export default function GbpLandingPage() {
   return (
-    <section className="container">
-      <h1>Welcome from Google</h1>
-      <p>
-        Thanks for finding us on Google! {BUSINESS.name} is a locally-owned lawn-care service based
-        in {BUSINESS.address.city}, FL. We serve {BUSINESS.service_area_zips.length} ZIP codes in
-        Pinellas County.
-      </p>
+    <Section rhythm="loose" tone="soft">
+      <Container size="prose">
+        <FadeUp>
+          <div className="prose">
+            <h1>Welcome from Google</h1>
+            <p>
+              Thanks for finding us on Google! {BUSINESS.name} is a locally-owned
+              lawn-care service based in {BUSINESS.address.city}, FL. We serve{' '}
+              {BUSINESS.service_area_zips.length} ZIP codes in Pinellas County.
+            </p>
 
-      <h2>Get a Free Quote</h2>
-      <p>
-        Most quotes are returned within 24 hours during business days. Use the form below or call us
-        directly.
-      </p>
-      <p>
-        <Link href="/contact" className="btn">
-          Request a Quote
-        </Link>{' '}
-        <a href={`tel:${BUSINESS.phone}`} className="btn" style={{ background: 'var(--gray-700)' }}>
-          Call {BUSINESS.phone}
-        </a>
-      </p>
+            <h2>Get a free quote</h2>
+            <p>
+              Most quotes are returned within 24 hours during business days. Use
+              the buttons below, or call us directly.
+            </p>
+            <div className={styles.ctaRow}>
+              <Button as="link" href="/contact" variant="primary" size="lg">
+                Request a quote
+              </Button>
+              <Button as="a" href={`tel:${BUSINESS.phoneTel}`} variant="sun" size="lg">
+                <Phone size={18} aria-hidden="true" />
+                Call {BUSINESS.phone}
+              </Button>
+            </div>
 
-      <h2>Why Google Visitors Choose Us</h2>
-      <ul>
-        <li>✓ Locally owned & operated</li>
-        <li>✓ Transparent pricing. No surprise fees.</li>
-        <li>✓ Free quotes within 24 hours</li>
-        <li>✓ Weather-fair scheduling (no charge for rain cancellations)</li>
-        <li>✓ Hurricane mode: auto-pause + auto-reschedule during named storms</li>
-        <li>✓ Local, solo-founder accountability</li>
-      </ul>
+            <h2>Why Google visitors choose us</h2>
+            <ul>
+              {HIGHLIGHTS.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
 
-      <p style={{ marginTop: '2rem' }}>
-        <Link href="/">← Back to our main site</Link>
-      </p>
-    </section>
+            <div className={styles.backLinkRow}>
+              <Button as="link" href="/" variant="ghost" size="md">
+                ← Back to our main site
+              </Button>
+            </div>
+          </div>
+        </FadeUp>
+      </Container>
+    </Section>
   );
 }

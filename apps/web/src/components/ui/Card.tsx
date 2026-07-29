@@ -16,10 +16,11 @@ import Link from 'next/link';
 import type { HTMLAttributes, ReactNode } from 'react';
 
 import { cn } from '@/lib/cn';
+import { compactUndefined } from '@/lib/props';
 
 import styles from './Card.module.css';
 
-export type CardVariant = 'service' | 'area' | 'pricing' | 'insight';
+type CardVariant = 'service' | 'area' | 'pricing' | 'insight';
 
 type ArticleOnlyProps = Omit<HTMLAttributes<HTMLElement>, 'title' | 'children' | 'className'>;
 
@@ -39,8 +40,6 @@ interface CardProps extends ArticleOnlyProps {
   className?: string;
   children?: ReactNode;
 }
-
-export type { CardProps };
 
 export function Card({
   variant = 'service',
@@ -87,19 +86,15 @@ export function Card({
 
   if (href !== undefined) {
     const safeHref: string = href;
-    const anchorRest = rest as Record<string, unknown>;
-    const cleaned: Record<string, unknown> = {};
-    for (const [k, v] of Object.entries(anchorRest)) {
-      if (k === 'href') continue;
-      if (v === undefined) continue;
-      cleaned[k] = v;
-    }
+    const { href: _href, ...restWithoutHref } = rest as Record<string, unknown> & {
+      href?: unknown;
+    };
+    void _href;
     return (
       <Link
         href={safeHref}
-        className={cls}
-        style={{ textDecoration: 'none', color: 'inherit' }}
-        {...cleaned}
+        className={cn(cls, styles.asLink)}
+        {...compactUndefined(restWithoutHref as Record<string, unknown>)}
       >
         {inner}
       </Link>

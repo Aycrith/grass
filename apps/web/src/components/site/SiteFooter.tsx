@@ -41,6 +41,20 @@ const COMPANY_HREFS: ReadonlyArray<{ href: string; label: string }> = [
   { href: '/review', label: 'Leave a review' },
 ];
 
+// 2026-07-26 — added after the 4 new hub pages landed
+// (/hurricane-prep, /process, /reviews, /areas-near-me, /faq).
+// The primary header nav stays at 4 items (Services, Areas, Pricing,
+// About); the footer is the right place to surface the deeper
+// content so the header does not get crowded.
+const RESOURCES_HREFS: ReadonlyArray<{ href: string; label: string }> = [
+  { href: '/hurricane-prep', label: 'Hurricane prep + cleanup' },
+  { href: '/process', label: 'How it works' },
+  { href: '/reviews', label: 'Reviews' },
+  { href: '/faq', label: 'Frequently asked' },
+  { href: '/areas-near-me', label: 'Areas near me' },
+  { href: '/door-hanger', label: 'Print door hanger' },
+];
+
 const LEGAL_HREFS: ReadonlyArray<{ href: string; label: string }> = [
   { href: '/privacy', label: 'Privacy' },
   { href: '/terms', label: 'Terms' },
@@ -72,15 +86,19 @@ export function SiteFooter({ className }: SiteFooterProps): ReactNode {
             <div className={styles.brandLine}>
               <span className={styles.brandEntity}>{BUSINESS.legal_entity}</span>
               <span className={styles.brandAddress}>
-                {BUSINESS.address.line1}
-                <br />
+                {BUSINESS.addressPublic && BUSINESS.address.line1 && (
+                  <>
+                    {BUSINESS.address.line1}
+                    <br />
+                  </>
+                )}
                 {BUSINESS.address.city}, {BUSINESS.address.state} {BUSINESS.address.zip}
               </span>
             </div>
             <div className={styles.contactStack}>
               <span className={styles.contactLine}>
                 <Phone size={16} aria-hidden="true" />
-                <a href={`tel:${BUSINESS.phone}`}>{BUSINESS.phone}</a>
+                <a href={`tel:${BUSINESS.phoneTel}`}>{BUSINESS.phone}</a>
               </span>
               <span className={styles.contactLine}>
                 <Mail size={16} aria-hidden="true" />
@@ -134,9 +152,21 @@ export function SiteFooter({ className }: SiteFooterProps): ReactNode {
           </div>
 
           <div className={styles.col}>
+            <h3 className={styles.colTitle}>Resources</h3>
+            <ul className={styles.linkList}>
+              {RESOURCES_HREFS.map((r) => (
+                <li key={r.href}>
+                  <Link href={r.href}>{r.label}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className={styles.col}>
             <h3 className={styles.colTitle}>Service Area</h3>
             <p className={styles.areaNote}>
-              Solo-operator lawn care across Largo and the surrounding Pinellas County neighborhoods. Type your ZIP on the homepage to check coverage.
+              Solo-operator lawn care across Largo and the surrounding Pinellas County
+              neighborhoods. Type your ZIP on the homepage to check coverage.
             </p>
           </div>
         </FadeUp>
@@ -152,10 +182,30 @@ export function SiteFooter({ className }: SiteFooterProps): ReactNode {
               </li>
             ))}
           </ul>
+          {/* Stage 3 (Q-5) + B-3 + B-3a follow-up: honest characterization of
+              the actual data flow.
+              - PostHog is a server-side analytics sub-processor; events are
+                keyed by `lead.id` and include ZIP + landing_path. Fires on
+                every form submit (no consent gate — the user just provided
+                the data by submitting the form).
+              - The browser stores an attribution key (`grass_attribution_v1`,
+                30-day TTL) so the UTMs survive page reloads. Functional,
+                not advertising.
+              - Google Analytics 4 + Google Ads (gtag.js) and Meta Pixel
+                (fbevents.js) load only after the consent banner is accepted.
+                Rejecting the banner keeps gtag in cookieless consent-mode v2
+                default-deny and prevents the Meta script from loading.
+              - Consent choice persisted in localStorage as
+                `grass:analytics-consent` (v1). Manage via the banner.
+              The privacy page (see /privacy) is the canonical source. */}
+          <span className={styles.analyticsNote}>
+            Server-side analytics (PostHog, keyed by lead id). After consent: GA4 + Meta Pixel.
+            One local-storage attribution key (grass_attribution_v1, 30 days).{' '}
+          </span>
           <span>
             Built in Largo ·{' '}
-            <a href="https://largolawn.pro" target="_blank" rel="noopener noreferrer">
-              largolawn.pro
+            <a href={BUSINESS.url} target="_blank" rel="noopener noreferrer">
+              {new URL(BUSINESS.url).hostname}
             </a>
           </span>
         </FadeUp>

@@ -21,6 +21,7 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { type ReactNode, useEffect, useState } from 'react';
 
+import { Container } from '@/components/site';
 import { cn } from '@/lib/cn';
 import { operatorMarquee } from '@/lib/content';
 
@@ -60,7 +61,7 @@ export function MarqueeQuote({ className }: MarqueeQuoteProps): ReactNode {
         data-test-section="marquee-quote"
         suppressHydrationWarning
       >
-        <div className="container">
+        <Container>
           <ul className={styles.staticList}>
             {operatorMarquee.map((line) => (
               <li key={line} className={styles.staticItem}>
@@ -68,7 +69,7 @@ export function MarqueeQuote({ className }: MarqueeQuoteProps): ReactNode {
               </li>
             ))}
           </ul>
-        </div>
+        </Container>
       </section>
     );
   }
@@ -94,7 +95,7 @@ export function MarqueeQuote({ className }: MarqueeQuoteProps): ReactNode {
           }}
         >
           {doubled.map((line, i) => (
-            <span key={`${i}-${line}`} className={styles.item}>
+            <span key={i} className={styles.item}>
               <span className={styles.quoteMark} aria-hidden="true">
                 “
               </span>

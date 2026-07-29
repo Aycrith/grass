@@ -1,0 +1,133 @@
+/* Shared status-page layout for not-found, error, and loading.
+ *
+ * The 2026-07-25 polish pass split this out of not-found.module.css
+ * because the latter was being repurposed for the new editorial 404
+ * page (with .hero, .cardGrid, .eyebrow, etc. that don't apply to
+ * the bare-bones 500 / loading shells). loading.tsx and error.tsx
+ * now import THIS file; not-found.tsx keeps its own module.
+ *
+ * Owns: root container stack, the eyebrow "label" span, the
+ * Fraunces h1, body copy, the CTA row (button + outline link),
+ * and the loading spinner.
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-5);
+  padding-block: var(--space-11);
+}
+
+.label {
+  font-family: var(--font-inter);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ll-clay);
+}
+
+.labelMuted {
+  font-family: var(--font-inter);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ll-sand);
+}
+
+.title {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--ll-palm-shadow);
+  margin: 0;
+}
+
+.body {
+  font-family: var(--font-inter);
+  font-size: 1.1rem;
+  line-height: 1.55;
+  color: var(--ll-palm-bark);
+  margin: 0;
+  max-width: 32rem;
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* The legacy primary/outline CTAs are kept as fallbacks for any
+ * consumer that prefers raw buttons to the <Button> primitive.
+ * The 2026-07-25 refactor of error.tsx + loading.tsx switched to
+ * <Button> for consistency, but the styles are preserved here so
+ * any future status page can opt into them without re-deriving. */
+.primaryCta {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-6);
+  background: var(--ll-sun);
+  color: var(--ll-palm-bark);
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  border: none;
+  border-radius: var(--radius);
+  box-shadow: var(--elevation-2);
+  cursor: pointer;
+}
+
+.primaryCta:hover,
+.primaryCta:focus {
+  filter: brightness(0.96);
+}
+
+.outlineCta {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-6);
+  background: transparent;
+  color: var(--ll-palm-shadow);
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1.5px solid var(--ll-palm-shadow);
+  border-radius: var(--radius);
+}
+
+.outlineCta:hover,
+.outlineCta:focus {
+  background: var(--ll-palm-shadow);
+  color: var(--ll-sand-bleached);
+}
+
+/* Loading-only — spinner frame and keyframes. */
+.spinner {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  border: 3px solid var(--ll-sand-bleached);
+  border-top-color: var(--ll-palm-shadow);
+  animation: status-page-spin 0.9s linear infinite;
+}
+
+@keyframes status-page-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+    border-top-color: var(--ll-sand);
+  }
+}

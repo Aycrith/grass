@@ -50,19 +50,26 @@
  *   - <video> elements are aria-hidden because the content is
  *     decorative; the figcaption + pull-quote carry the meaning.
  *   - Each instance has a single semantic h2.
- *   - prefers-reduced-motion: the videos still autoplay (they're
- *     real-world footage, not animated motion), but the entrance
- *     fade-up is gated by useInView so it doesn't play during
- *     scroll for motion-sensitive users.
+ *   - prefers-reduced-data OR prefers-reduced-motion: the videos
+ *     do NOT autoplay. Reduced-data visitors explicitly opted out
+ *     of heavy payloads (the MP4s are ~2.4 MB each). Reduced-motion
+ *     visitors find a 10-second auto-loop disorienting even though
+ *     the footage is real-world. In both cases the <video> still
+ *     renders in the DOM (with the source), but autoPlay is false,
+ *     so the browser shows the poster / first frame. The figcaption
+ *     + pull-quote carry the meaning when the video is paused, so
+ *     the content is never lost. The entrance fade-up is gated by
+ *     useInView so it doesn't play during scroll for motion-
+ *     sensitive users regardless.
  *
  * See research/hero-integration-plan-2026-07-22.md §13 for the
  * full quarantine rationale.
  */
 
 import { motion, useInView } from 'framer-motion';
-import { useRef, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 
-import { Section } from '@/components/site';
+import { Container, Section } from '@/components/site';
 
 import styles from './BehindTheScenes.module.css';
 
@@ -107,6 +114,32 @@ export function BehindTheScenes({
   const innerRef = useRef<HTMLDivElement | null>(null);
   const inView = useInView(innerRef, { once: true, amount: 0.25 });
 
+  // prefers-reduced-data + prefers-reduced-motion: skip autoplay.
+  // Reduced data: don't fetch the ~2.4 MB MP4 over a metered
+  // connection — the user explicitly opted out of heavy payloads.
+  // Reduced motion: even though the videos are real-world footage
+  // (not animated), the auto-playing motion of a 10-second loop can
+  // be disorienting for motion-sensitive users; show a poster still
+  // instead. The figcaption + pull-quote still carry the meaning
+  // when the video is paused, so the content is never lost.
+  // Default `shouldAutoplay` to true so the no-JS server render
+  // doesn't surprise; the useEffect corrects to the actual user
+  // preference on mount.
+  const [shouldAutoplay, setShouldAutoplay] = useState(true);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mqReduceData = window.matchMedia('(prefers-reduced-data: reduce)');
+    const mqReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const evaluate = () => setShouldAutoplay(!mqReduceData.matches && !mqReduceMotion.matches);
+    evaluate();
+    mqReduceData.addEventListener('change', evaluate);
+    mqReduceMotion.addEventListener('change', evaluate);
+    return () => {
+      mqReduceData.removeEventListener('change', evaluate);
+      mqReduceMotion.removeEventListener('change', evaluate);
+    };
+  }, []);
+
   return (
     <Section
       tone="soft"
@@ -114,7 +147,7 @@ export function BehindTheScenes({
       className={styles.root}
       data-test-section={`behind-the-scenes-${dataTestSectionSuffix}`}
     >
-      <div className="container">
+      <Container>
         <div className={styles.inner} ref={innerRef}>
           <motion.div
             className={styles.eyebrowBlock}
@@ -151,7 +184,7 @@ export function BehindTheScenes({
               <video
                 className={styles.video}
                 src={videoSrc}
-                autoPlay
+                autoPlay={shouldAutoplay}
                 muted
                 loop
                 playsInline
@@ -170,7 +203,7 @@ export function BehindTheScenes({
             </p>
           </motion.div>
         </div>
-      </div>
+      </Container>
     </Section>
   );
 }

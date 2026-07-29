@@ -1,15 +1,26 @@
 /**
  * Public exports for the homepage section components.
+ *
+ * Verified consumers (rg -e "import.*<name> from '@/components/sections'"):
+ *   - app/page.tsx (homepage) consumes ~15 of these
+ *   - app/visual-test/page.tsx (visual baseline) consumes the
+ *     "library" components (EditorialBreak, MarqueeQuote,
+ *     ServiceAreaStats) that are not on the home composition
+ *     but kept for screenshot baselines
+ *   - app/services, app/areas, app/pricing, app/about, app/contact,
+ *     app/quote, app/review each consume their own hero + body sections
+ *
+ * The following are NOT re-exported because no consumer imports them
+ * from the barrel (some are imported via relative paths within the
+ * same directory, which is fine):
+ *   - HeroStorybookLayer (used by HeroFieldTelemetry via './HeroStorybookLayer')
+ *   - TrustStrip, OperatorNote, TestimonialQuote, EmptyState
+ *
+ * When a future page needs one of these, add the export — it's 1 line.
  */
 
 export { HeroFieldTelemetry } from './HeroFieldTelemetry';
-export { HeroStorybookLayer } from './HeroStorybookLayer';
-export { TrustStrip } from './TrustStrip';
 export { FieldLog } from './FieldLog';
-// 2026-07-22 — BehindTheScenes section. Trust-building "real footage,
-// not stock" block. Placed between FieldLog (the route) and
-// ServiceBento (the work) so it bridges "this is where we go" with
-// "this is what we do". See BehindTheScenes.tsx for the full rationale.
 export { BehindTheScenes } from './BehindTheScenes';
 export { PocketMap } from './PocketMap';
 export { SpecimenPlate } from './SpecimenPlate';
@@ -37,14 +48,10 @@ export { QuoteConfirmation } from './QuoteConfirmation';
 export { ReviewMagnet } from './ReviewMagnet';
 export { ReviewMagnetForm } from './ReviewMagnetForm';
 export { FinalCTABanner } from './FinalCTABanner';
-export { TestimonialQuote } from './TestimonialQuote';
-export { OperatorNote } from './OperatorNote';
 export { MarqueeQuote } from './MarqueeQuote';
 export { ServiceAreaStats } from './ServiceAreaStats';
 export { ScheduleTimeline } from './ScheduleTimeline';
 export { EquipmentShowcase } from './EquipmentShowcase';
-export { EmptyState } from './EmptyState';
-export type { EmptyStateVariant } from './EmptyState';
 export { AreaHero } from './AreaHero';
 export { AreaNeighborhoodNotes } from './AreaNeighborhoodNotes';
 export { AreaServiceOffer } from './AreaServiceOffer';

@@ -622,12 +622,38 @@
 
 @media (max-width: 767px) {
   .liveStatus {
-    top: auto;
-    bottom: 6.5rem;
-    right: 1.25rem;
-    left: 1.25rem;
+    /* 2026-07-25 fix (mobile CTA block): the widget used to
+     * anchor to `bottom: 6.5rem` with `left/right: 1.25rem` —
+     * a full-width strip that sat directly over the "Get a free
+     * quote" CTA in the dark green band. The widget's z-index
+     * was 4 (above the content's z-index 3), so the visitor
+     * literally could not see or tap the primary conversion
+     * button on mobile. Loss-of-leads-in-real-time bug.
+     *
+     * Fix: move the widget to the TOP of the screen (just below
+     * the nav bar) as a compact status pill. The bottom is now
+     * clear for the CTAs. The widget is a status indicator
+     * (LIVE pulse, Mowing/Next/Route state) — it reads cleanly
+     * at the top, similar to a notification badge. Reduced font
+     * sizes and tighter padding match the smaller viewport.
+     */
+    top: 4.5rem;
+    bottom: auto;
+    right: 1rem;
+    left: auto;
     min-width: 0;
-    max-width: none;
+    max-width: 200px;
+    padding: 0.5rem 0.75rem;
+    gap: 0.25rem;
+  }
+  .liveStatusLine1 {
+    font-size: 0.85rem;
+  }
+  .liveStatusLine2 {
+    font-size: 0.7rem;
+  }
+  .liveStatusMeta {
+    font-size: 0.6rem;
   }
 }
 

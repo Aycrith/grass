@@ -27,7 +27,7 @@
 import type { ReactNode } from 'react';
 
 import { StaggerGroup } from '@/components/motion';
-import { Section } from '@/components/site';
+import { Container, Section } from '@/components/site';
 import { Illustration } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { areaStats } from '@/lib/content';
@@ -53,7 +53,7 @@ export function ServiceAreaStats({ className }: ServiceAreaStatsProps): ReactNod
         height={400}
         className={styles.watermark}
       />
-      <div className="container">
+      <Container>
         <header className={styles.header}>
           <h2 className={styles.heading}>A small crew, by design.</h2>
           <p className={styles.lede}>
@@ -70,7 +70,7 @@ export function ServiceAreaStats({ className }: ServiceAreaStatsProps): ReactNod
             </div>
           ))}
         </StaggerGroup>
-      </div>
+      </Container>
     </Section>
   );
 }

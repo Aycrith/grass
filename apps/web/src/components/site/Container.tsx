@@ -15,7 +15,7 @@ import { cn } from '@/lib/cn';
 
 import styles from './Container.module.css';
 
-export type ContainerSize = 'prose' | 'content' | 'marketing' | 'wide';
+type ContainerSize = 'prose' | 'content' | 'marketing' | 'wide';
 
 interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
   size?: ContainerSize;

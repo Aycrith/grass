@@ -46,7 +46,7 @@ import { motion, useInView } from 'framer-motion';
 import Image from 'next/image';
 import { useRef, type ReactNode } from 'react';
 
-import { Section } from '@/components/site';
+import { Container, Section } from '@/components/site';
 
 import styles from './PocketMap.module.css';
 
@@ -60,7 +60,7 @@ export function PocketMap(): ReactNode {
       className={styles.root}
       data-test-section="pocket-map"
     >
-      <div className="container">
+      <Container>
         <div className={styles.inner}>
           {/* Zone 1 + 2 + 3: eyebrow + H2 + subhead (fade-up) */}
           <motion.div
@@ -132,7 +132,7 @@ export function PocketMap(): ReactNode {
             tell you that, too.
           </motion.p>
         </div>
-      </div>
+      </Container>
     </Section>
   );
 }

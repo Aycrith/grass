@@ -13,8 +13,8 @@ import { cn } from '@/lib/cn';
 
 import styles from './Pill.module.css';
 
-export type PillTone = 'neutral' | 'accent' | 'sage' | 'dark' | 'outline' | 'danger';
-export type PillSize = 'sm' | 'md' | 'lg';
+type PillTone = 'neutral' | 'accent' | 'sage' | 'dark' | 'outline' | 'danger';
+type PillSize = 'sm' | 'md' | 'lg';
 
 interface PillProps extends ComponentPropsWithoutRef<'span'> {
   tone?: PillTone;

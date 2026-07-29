@@ -1,18 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Largo Lawn — favicon. Three grass blades + soil line, brand green.
-  Next.js converts /icon.svg into the link rel="icon" tag.
+  Largo Lawn — favicon. Palm tree silhouette on transparent background.
+  Brand palette: deep green #1F4E2C trunk, warm gold #E8B65A accent.
+
+  Design: a bold, iconic palm tree with a short curved trunk and
+  5 radiating fronds. Reads clearly at 16x16, 32x32, 48x48, and
+  64x64. Flat vector — no gradients, no shadows.
+
+  Next.js converts /icon.svg into the link rel="icon" tag automatically.
+  /apple-touch-icon.svg provides the 180x180 iOS home-screen icon.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Largo Lawn">
   <title>Largo Lawn</title>
-  <g fill="#1F4E2C">
-    <!-- Center blade -->
-    <path d="M 32 60 Q 32 20 32 4 Q 32 20 32 60 Z" />
-    <!-- Left blade -->
-    <path d="M 18 60 Q 16 30 12 12 Q 18 30 22 60 Z" />
-    <!-- Right blade -->
-    <path d="M 46 60 Q 48 30 52 12 Q 46 30 42 60 Z" />
-    <!-- Soil line -->
-    <rect x="6" y="58" width="52" height="3" rx="1.5" />
-  </g>
+
+  <!-- Trunk: short, curved, deep green -->
+  <path
+    d="M 30 60 C 30 60 29 42 31 30 Q 32 26 33 30 C 35 42 34 60 34 60 Z"
+    fill="#1F4E2C"
+  />
+
+  <!-- Frond 1 — top center -->
+  <path
+    d="M 32 28 Q 32 18 32 10 Q 38 18 32 28 Z"
+    fill="#1F4E2C"
+  />
+
+  <!-- Frond 2 — upper right -->
+  <path
+    d="M 32 28 Q 46 16 54 12 Q 44 20 32 28 Z"
+    fill="#1F4E2C"
+  />
+
+  <!-- Frond 3 — right -->
+  <path
+    d="M 33 29 Q 50 30 58 28 Q 48 32 33 29 Z"
+    fill="#1F4E2C"
+  />
+
+  <!-- Frond 4 — upper left -->
+  <path
+    d="M 31 28 Q 18 16 10 12 Q 20 20 31 28 Z"
+    fill="#1F4E2C"
+  />
+
+  <!-- Frond 5 — left -->
+  <path
+    d="M 31 29 Q 14 30 6 28 Q 16 32 31 29 Z"
+    fill="#1F4E2C"
+  />
+
+  <!-- Coconuts — small gold circles at the trunk top -->
+  <circle cx="30" cy="31" r="2.2" fill="#E8B65A" />
+  <circle cx="34" cy="31" r="2.2" fill="#E8B65A" />
+  <circle cx="32" cy="33.5" r="2.2" fill="#E8B65A" />
 </svg>

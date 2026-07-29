@@ -20,7 +20,7 @@ import Image from 'next/image';
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Eyebrow } from '@/components/site';
+import { Breadcrumb, Container, Eyebrow, Section } from '@/components/site';
 import { Button } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
@@ -34,12 +34,12 @@ interface AreaHeroProps {
 }
 
 export function AreaHero({ detail, className }: AreaHeroProps): ReactNode {
-  const phoneHref = `tel:${BUSINESS.phone}`;
+  const phoneHref = `tel:${BUSINESS.phoneTel}`;
   const imageSlot = areaImages[detail.zip] ?? '/illustrations/pinellas-palm-v3-600x400.webp';
   const imageAlt = `Storybook-painted ${detail.name} neighborhood at golden hour — Largo, FL ${detail.zip}.`;
 
   return (
-    <section className={cn(styles.root, className)}>
+    <Section className={cn(styles.root, className)}>
       <div className={styles.media} aria-hidden="true">
         <Image
           src={imageSlot}
@@ -52,9 +52,18 @@ export function AreaHero({ detail, className }: AreaHeroProps): ReactNode {
         <div className={styles.scrim} />
       </div>
 
-      <div className="container">
+      <Container>
         <div className={styles.copy}>
           <FadeUp>
+            <Breadcrumb
+              tone="dark"
+              className={styles.breadcrumb}
+              items={[
+                { label: 'Home', href: '/' },
+                { label: 'Service areas', href: '/areas' },
+                { label: `ZIP ${detail.zip}` },
+              ]}
+            />
             <Eyebrow tone="dark" className={styles.eyebrow}>
               ZIP {detail.zip}
             </Eyebrow>
@@ -71,7 +80,7 @@ export function AreaHero({ detail, className }: AreaHeroProps): ReactNode {
             </div>
           </FadeUp>
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   );
 }

@@ -13,15 +13,17 @@
  * ItemList of Service entries for richer search snippets.
  */
 
-import { ServiceDirectory } from '@/components/sections';
+import { ServiceDirectory, FinalCTABanner } from '@/components/sections';
 import { BUSINESS } from '@/lib/business';
 import { services } from '@/lib/content';
+import { JsonLd, pageBreadcrumb } from '@/lib/json-ld';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Services',
   description:
     'Six residential lawn-care services for Largo and Pinellas County: mowing, edging, mulching, hedge trimming, hurricane prep, seasonal cleanup.',
+  alternates: { canonical: '/services' },
 };
 
 export default function ServicesIndexPage() {
@@ -32,23 +34,30 @@ export default function ServicesIndexPage() {
       '@type': 'ListItem',
       position: i + 1,
       name: svc.title,
-      url: `https://largolawn.pro/services/${svc.slug}`,
+      url: `${BUSINESS.url}/services/${svc.slug}`,
     })),
   };
 
+  const breadcrumbSchema = pageBreadcrumb({
+    currentLabel: 'Services',
+    currentHref: '/services',
+  });
+
   return (
     <>
-      <script
-        type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: SEO JSON-LD
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            ...itemListJsonLd,
-            provider: { '@type': 'LandscapingBusiness', name: BUSINESS.name },
-          }),
+      <JsonLd
+        data={{
+          ...itemListJsonLd,
+          provider: { '@type': 'LandscapingBusiness', name: BUSINESS.name },
         }}
       />
+      <JsonLd data={breadcrumbSchema} />
       <ServiceDirectory />
+      {/* Page closer — same FinalCTABanner used on /, /pricing, /about
+       * so every deep-link page ends with a conversion CTA. A visitor
+       * who lands on /services/mowing from search and reads the page
+       * has no in-page path to /quote besides the header nav. */}
+      <FinalCTABanner />
     </>
   );
 }

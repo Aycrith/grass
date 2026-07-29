@@ -157,7 +157,7 @@ export function ReviewMagnetForm({ className }: ReviewMagnetFormProps): ReactNod
     // params so GBP stub can attribute the visit.
     const gbpHref = reviewPage.gbpUrl
       ? `${reviewPage.gbpUrl}?src=review-magnet${form.zip ? `&zip=${encodeURIComponent(form.zip)}` : ''}`
-      : `tel:${BUSINESS.phone.replace(/\D/g, '')}`;
+      : `tel:${BUSINESS.phoneTel}`;
     return (
       <div className={cn(styles.root, className)}>
         <p className={styles.thanks}>Thank you — that means a lot.</p>
@@ -243,7 +243,7 @@ export function ReviewMagnetForm({ className }: ReviewMagnetFormProps): ReactNod
       <p className={styles.thanks}>Sent. I’ll be in touch within forty-eight hours.</p>
       <p className={styles.body}>
         If it’s urgent, the fastest path is a text to{' '}
-        <a href={`tel:${BUSINESS.phone.replace(/\D/g, '')}`} className={styles.phoneLink}>
+        <a href={`tel:${BUSINESS.phoneTel}`} className={styles.phoneLink}>
           {BUSINESS.phone}
         </a>
         .

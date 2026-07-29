@@ -1,200 +1,228 @@
 /* ============================================================
  * QuoteCalculator — Mission 1
  *
- * Two-column layout on desktop (controls left / estimate summary
- * right), single-column on mobile. Controls use design-system
- * <Input> + <Pill> + <Button>; estimate summary card uses the
- * design-system sand-bleached accent.
- *
- * The estimate card is sticky on desktop so the user sees the
- * running total while filling in their details.
+ * Refactored 2026-07-25 to consume <Input>, <Button>, and
+ * <Card> design primitives. The remaining local styles are
+ * just the bits the primitives don't cover: the option grid
+ * (3-up on desktop, 1-up on mobile), the add-on chip row, the
+ * big estimate price box, and the form action row.
  * ============================================================ */
 
 .root {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-5);
+  margin-top: var(--space-7);
+  padding: var(--space-7) var(--space-6) var(--space-7);
 }
 
-@media (min-width: 900px) {
-  .root {
-    grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
-    gap: var(--space-6);
-    align-items: start;
-  }
-}
-
-.controls {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-}
-
-.controlGroup {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.controlGroupHeading {
-  font-family: var(--font-inter);
-  font-size: 0.78rem;
+.h2 {
+  margin: 0 0 var(--space-5);
+  font-family: var(--font-fraunces), serif;
+  font-size: 1.6rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
   color: var(--ll-palm-bark);
-  opacity: 0.7;
+  letter-spacing: -0.01em;
 }
 
-.fieldRow {
+.optionGrid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-3);
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
-@media (min-width: 600px) {
-  .fieldRow {
-    grid-template-columns: 1fr 1fr;
-  }
+.addonBlock {
+  margin-top: var(--space-6);
 }
 
-.addons {
+.addonLabel {
+  font-family: var(--font-inter);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ll-palm-bark);
+  margin-bottom: var(--space-3);
+}
+
+.addonList {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
 }
 
-.addonButton {
+.addonChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--ll-palm-shadow);
+  background: var(--ll-shell);
+  color: var(--ll-palm-bark);
   font-family: var(--font-inter);
   font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--ll-palm-bark);
-  background: var(--ll-shell);
-  border: 1px solid var(--ll-palm-shadow);
-  border-radius: var(--radius-pill);
-  padding: 0.55rem 1rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color var(--motion-duration-fast) var(--motion-easing-default), color
-    var(--motion-duration-fast) var(--motion-easing-default), border-color
-    var(--motion-duration-fast) var(--motion-easing-default);
+  transition: background-color var(--motion-duration-fast) var(--motion-easing-default),
+    color var(--motion-duration-fast) var(--motion-easing-default),
+    border-color var(--motion-duration-fast) var(--motion-easing-default);
 }
 
-.addonButton:hover {
-  border-color: var(--ll-sun);
+.addonChip:hover:not(:disabled) {
+  background: var(--ll-cream);
+  border-color: var(--ll-sage-muted);
 }
 
-.addonButtonActive {
+.addonChip:focus-visible {
+  outline: 2px solid var(--ll-sun);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--ll-palm-shadow);
+}
+
+.addonChipOn {
   background: var(--ll-palm-shadow);
-  color: var(--ll-sand-bleached);
+  color: var(--ll-cream);
   border-color: var(--ll-palm-shadow);
 }
 
-.summary {
+.addonChipOn:hover:not(:disabled) {
+  background: var(--ll-green);
+  border-color: var(--ll-green);
+}
+
+.addonPrice {
+  font-size: 0.8rem;
+  opacity: 0.75;
+  font-weight: 500;
+}
+
+/* ---------- Estimate box ---------- */
+
+.estimateBox {
+  margin-top: var(--space-6);
+  padding: var(--space-5) var(--space-6);
   background: var(--ll-sand-bleached);
-  border: 1px solid var(--ll-sand);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: var(--space-5);
-  position: sticky;
-  top: var(--space-5);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
 }
 
-.summaryEyebrow {
+.estimateLabel {
   font-family: var(--font-inter);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ll-palm-bark);
-  opacity: 0.7;
+  font-size: 0.9rem;
+  color: var(--gray-700);
+  margin-bottom: var(--space-1);
 }
 
-.summaryValue {
+.estimateValue {
   font-family: var(--font-fraunces), serif;
-  font-size: clamp(2.5rem, 6vw, 3.5rem);
-  font-weight: 700;
-  line-height: 1;
+  font-size: 2.5rem;
+  font-weight: 800;
   color: var(--ll-palm-shadow);
+  line-height: 1;
   letter-spacing: -0.02em;
 }
 
-.summaryCadence {
+.estimateMeta {
   font-family: var(--font-inter);
   font-size: 0.85rem;
-  color: var(--ll-palm-bark);
-  opacity: 0.85;
-  line-height: 1.45;
+  color: var(--gray-700);
+  margin-top: var(--space-2);
+  line-height: 1.4;
 }
 
-.summaryDivider {
-  height: 1px;
-  background: var(--ll-sand);
-  opacity: 0.5;
-}
+/* ---------- Form (the contact-data block under the estimate) ---------- */
 
 .form {
-  display: flex;
-  flex-direction: column;
+  margin-top: var(--space-6);
+  display: grid;
   gap: var(--space-4);
 }
 
-.formActions {
+.nameRow {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 600px) {
+  .nameRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+.errorBanner {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-error);
+  background: color-mix(in srgb, var(--color-error) 8%, var(--ll-shell));
+  color: var(--color-error);
+  font-size: var(--type-small);
+  font-weight: 500;
+}
+
+.actions {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
   margin-top: var(--space-2);
 }
 
-.formNote {
-  font-family: var(--font-inter);
-  font-size: 0.8rem;
-  color: var(--ll-palm-bark);
-  opacity: 0.7;
-  line-height: 1.5;
+.legal {
+  font-size: var(--type-small);
+  color: var(--gray-700);
+  margin: 0;
+  line-height: 1.4;
 }
 
-.formError {
-  font-family: var(--font-inter);
-  font-size: 0.85rem;
-  color: var(--color-error);
-  font-weight: 500;
-  line-height: 1.5;
-}
+/* ---------- Success card (after submit) ---------- */
 
-.success {
-  background: var(--ll-shell);
-  border: 1px solid var(--ll-sage-muted);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
+.successCard {
+  margin-top: var(--space-7);
+  padding: var(--space-7) var(--space-6);
   text-align: center;
 }
 
-.successTitle {
-  font-family: var(--font-fraunces), serif;
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 700;
-  color: var(--ll-palm-shadow);
+.successIconRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.successIcon {
+  color: var(--ll-green);
+}
+
+.successHeading {
   margin: 0;
+  font-family: var(--font-fraunces), serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--ll-palm-bark);
+  letter-spacing: -0.01em;
 }
 
 .successBody {
-  font-family: var(--font-inter);
-  font-size: 1rem;
-  line-height: 1.55;
+  margin: 0 0 var(--space-3);
   color: var(--ll-palm-bark);
-  opacity: 0.9;
-  margin: 0;
+  line-height: 1.55;
 }
 
 .successMeta {
-  font-family: var(--font-inter);
-  font-size: 0.85rem;
-  color: var(--ll-palm-bark);
-  opacity: 0.7;
-  margin: var(--space-2) 0 0;
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--gray-700);
+}
+
+/* ---------- Skeleton (D-0028 Suspense fallback) ----------
+ *
+ * The QuoteCalculator uses useSearchParams() to read ?zip= and
+ * opts the page into dynamic rendering. To keep the rest of /quote
+ * prerenderable, the parent wraps the calculator in <Suspense>
+ * with this skeleton as the fallback. Dimensions match the
+ * calculator's outermost <Card> so the layout doesn't shift when
+ * the calculator client-side hydrates.
+ */
+.skeleton {
+  margin-top: var(--space-7);
+  min-height: 24rem;
 }

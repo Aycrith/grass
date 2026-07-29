@@ -57,33 +57,6 @@
   background: var(--color-bg-soft);
 }
 
-/* Flex / grid helpers */
-.stack {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.stack--tight {
-  gap: var(--space-2);
-}
-
-.stack--loose {
-  gap: var(--space-6);
-}
-
-.row {
-  display: flex;
-  gap: var(--space-4);
-  align-items: center;
-}
-
-/* Grid (used by services bento, area map, footer columns) */
-.grid {
-  display: grid;
-  gap: var(--space-5);
-}
-
 /* Visually hidden — for a11y labels */
 .sr-only {
   position: absolute;
@@ -170,6 +143,24 @@
  * reads as an intended affordance, not a debug element.
  * ============================================================ */
 
+/* ---------- In-page anchor offset ----------
+ *
+ * The SiteHeader is `position: sticky; top: 0` with a known
+ * height (`--header-height` token = 72px). When a user
+ * activates an in-page anchor (the skip link, #hero, #final-cta,
+ * any future section[id]), the target would otherwise land
+ * underneath the sticky header. Adding `scroll-margin-top`
+ * shifts the scroll target down by the header height so the
+ * anchor lands flush below the header.
+ *
+ * `:where()` keeps this rule at 0 specificity so component-
+ * scoped styles can still override it (e.g. a hero that
+ * wants to land flush with the viewport top on its own
+ * ID can set its own scroll-margin-top). */
+:where(main[id], section[id]) {
+  scroll-margin-top: var(--header-height);
+}
+
 .skip-link {
   position: absolute;
   top: 0;
@@ -196,6 +187,10 @@
   outline-offset: 2px;
 }
 
-/* When the user is navigating with prefers-reduced-motion, the skip
-   link still snaps into place — skipping navigation is a critical
-   affordance, not decoration. */
+/* Skip-link intentionally does NOT respect prefers-reduced-motion:
+   the slide-in transition is 180ms (well under the WCAG 2.3.3
+   threshold of motion that triggers vestibular symptoms), and
+   hiding the link transition entirely would delay the focus
+   state from reaching the user, which violates the intent of
+   WCAG 2.4.1 (bypass blocks). The skip link is functional, not
+   decorative. */

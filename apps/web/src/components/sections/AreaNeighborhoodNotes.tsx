@@ -24,7 +24,7 @@
 
 import type { ReactNode } from 'react';
 
-import { Eyebrow, Section } from '@/components/site';
+import { Container, Eyebrow, Section } from '@/components/site';
 import { cn } from '@/lib/cn';
 import type { AreaDetail } from '@/lib/content';
 
@@ -42,23 +42,23 @@ export function AreaNeighborhoodNotes({
   return (
     <>
       <Section rhythm="loose" className={cn(styles.aboutSection, className)}>
-        <div className="container">
+        <Container>
           <div className={styles.aboutHeader}>
             <Eyebrow tone="default">About this neighborhood</Eyebrow>
             <h2 className={styles.aboutHeading}>{detail.name}, on the ground.</h2>
           </div>
           <div className={styles.aboutBody}>
-            {detail.about.map((para, i) => (
-              <div key={`about-${i}`} className={styles.aboutParagraph}>
+            {detail.about.map((para) => (
+              <div key={para} className={styles.aboutParagraph}>
                 <p>{para}</p>
               </div>
             ))}
           </div>
-        </div>
+        </Container>
       </Section>
 
       <Section rhythm="loose" className={cn(styles.landmarksSection, className)}>
-        <div className="container">
+        <Container>
           <div className={styles.landmarksInner}>
             <div className={styles.landmarksHeader}>
               <Eyebrow tone="default">Nearby landmarks</Eyebrow>
@@ -76,11 +76,11 @@ export function AreaNeighborhoodNotes({
               </ul>
             </div>
           </div>
-        </div>
+        </Container>
       </Section>
 
       <Section rhythm="loose" className={cn(styles.challengesSection, className)}>
-        <div className="container">
+        <Container>
           <div className={styles.challengesInner}>
             <div className={styles.challengesHeader}>
               <Eyebrow tone="default">Common lawn challenges</Eyebrow>
@@ -104,7 +104,7 @@ export function AreaNeighborhoodNotes({
               </ul>
             </div>
           </div>
-        </div>
+        </Container>
       </Section>
     </>
   );

@@ -13,7 +13,7 @@
 
 import type { ReactNode } from 'react';
 
-import { Eyebrow } from '@/components/site';
+import { Container, Eyebrow, Section } from '@/components/site';
 import { Accordion } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { type ServiceKey, serviceDetail } from '@/lib/content';
@@ -29,8 +29,8 @@ export function ServiceFAQ({ slug, className }: ServiceFAQProps): ReactNode {
   const detail = serviceDetail[slug];
   const faqs = detail.faqs;
   return (
-    <section className={cn(styles.root, className)}>
-      <div className="container">
+    <Section className={cn(styles.root, className)}>
+      <Container>
         <header className={styles.header}>
           <Eyebrow tone="default" className={styles.headerEyebrow}>
             Questions
@@ -46,7 +46,7 @@ export function ServiceFAQ({ slug, className }: ServiceFAQProps): ReactNode {
           items={faqs.map((f) => ({ q: f.q, a: <p>{f.a}</p> }))}
           className={styles.accordion}
         />
-      </div>
-    </section>
+      </Container>
+    </Section>
   );
 }

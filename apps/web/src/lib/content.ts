@@ -32,7 +32,7 @@ export const hero = {
   subhead:
     'Local, solo-operator lawn care in Largo and the five adjacent Pinellas ZIPs. Free quotes within 24 hours. No contract, no franchise markup.',
   primaryCta: { label: 'Get a free quote', href: '/quote' },
-  secondaryCta: { label: 'Call (727) 555-0123', href: 'tel:+17275550123' },
+  secondaryCta: { label: 'Call (727) 313-8011', href: 'tel:+17273138011' },
   /**
    * D-0049 — second pinned scene that appears after the photo
    * (scroll > 0.40). Copy voice matches scene 1 but shifts from
@@ -95,10 +95,6 @@ export const hero = {
   scene3: {},
 } as const;
 
-export const trustStrip = {
-  copy: 'Proudly serving 33771 · 33770 · 33773 · 33774 · 33778 · 33756 - and counting.',
-} as const;
-
 /**
  * Service area map: section 06 on the landing page.
  *
@@ -108,12 +104,27 @@ export const trustStrip = {
  * the side rail. Layout coordinates (x/y per pin) live in the
  * component, not here: they're SVG layout config, not copy.
  *
- * Adding a new service-area ZIP only needs two edits:
- *   1. Add the ZIP to `BUSINESS.service_area_zips` and
- *      `PIN_LAYOUT` (in the component).
- *   2. Add the matching label here.
+ * Adding a new service-area ZIP needs 3 edits:
+ *   1. Add the ZIP to `BUSINESS.service_area_zips`.
+ *   2. Add the matching label to `serviceAreaMap.pinLocations` (the
+ *      `Record<BusinessZip, string>` type below fails compilation
+ *      if a key is missing, so TypeScript catches it).
+ *   3. Add the layout entry to `PIN_LAYOUT` (in the component).
  */
-export const serviceAreaMap = {
+import { BUSINESS } from './business';
+
+type BusinessZip = (typeof BUSINESS.service_area_zips)[number];
+
+export const serviceAreaMap: {
+  eyebrow: string;
+  heading: string;
+  subhead: string;
+  svgAriaLabel: string;
+  tampaBayLabel: string;
+  gulfOfMexicoLabel: string;
+  railTitle: string;
+  pinLocations: Record<BusinessZip, string>;
+} = {
   eyebrow: 'Where I mow',
   // D-0028: heading + subhead retargeted from "Six ZIPs, one route." to
   // lead with the neighborhood word the user actually thinks in. The ZIP
@@ -135,7 +146,7 @@ export const serviceAreaMap = {
     '33774': 'Largo / Ridgecrest',
     '33778': 'Seminole / Largo West',
   },
-} as const;
+};
 
 /**
  * Per-ZIP service-area images. D-0034: storybook-painted
@@ -909,6 +920,7 @@ export const aboutPage = {
   whySolo:
     "Most landscaping companies grow fast, hire subcontractors, and lose quality control. We don't. Largo Lawn is a one-crew operation: every job is performed by the same person who quoted it. When you book, you know exactly who's coming.",
   valuesEyebrow: 'Our values',
+  valuesHeading: 'What you can count on.',
   values: [
     {
       label: 'Transparent pricing',
@@ -951,9 +963,48 @@ export const contactPage = {
     'Tell us about your yard and we will get back to you within 24 hours during business days. Or call us directly.',
   hurricaneCopy:
     'Hurricane Mode Active: We are prioritizing prep and cleanup requests. Please include your address and any concerns in the message field below.',
-  coverageLine:
-    'We currently service 33756, 33770, 33771, 33773, 33774, 33778. Not sure if we cover your ZIP? Enter it in the form and we will let you know.',
+  /**
+   * Coverage-line copy. `prefix` is the static ZIP-list intro.
+   * `ctaLabel` is the link text for the action that takes the
+   * visitor to the homepage coverage form (anchored at
+   * /#coverage). Split out from a single string so the
+   * ContactHero can render the CTA as a real <a> link with
+   * the href pointing at the homepage coverage form, not a
+   * naked phrase that the visitor has to manually translate
+   * into navigation.
+   */
+  coverageLine: {
+    prefix:
+      'We currently service 33756, 33770, 33771, 33773, 33774, 33778. Not sure if we cover your ZIP?',
+    ctaLabel: 'Try your ZIP on the homepage coverage form',
+  },
 } as const;
+
+/**
+ * Legal-page "last updated" date.
+ *
+ * Before this commit, /privacy and /terms used
+ * `new Date().toISOString().split('T')[0]` at render
+ * time, which meant every deploy stamped a fresh date
+ * even if the policy text hadn't changed. A "Last
+ * updated: 2026-08-15" date that is actually just the
+ * build timestamp is misleading to a customer who
+ * reads the page and trusts the date as a recency
+ * signal.
+ *
+ * Now: the date is a single-source-of-truth const
+ * that the steward updates only when the policy
+ * actually changes. Both /privacy and /terms read
+ * from the same const so they stay in lockstep
+ * (a real-world legal review would update both at
+ * the same time, and accidentally updating only one
+ * is a footgun).
+ *
+ * Initial value: 2026-07-25 (the date of the polish
+ * pass that migrated the legal pages to the design
+ * system primitives).
+ */
+export const LEGAL_LAST_UPDATED = '2026-07-26';
 
 /**
  * Quote: `/quote` page content.
@@ -1099,6 +1150,323 @@ export const pricingTiers = [
   },
 ] as const;
 
+/**
+ * FAQ page (`/faq`) — page-level hero copy. Distinct from `faqHeader`,
+ * which is the eyebrow/heading for the FAQAccordion section on the
+ * homepage (where the eyebrow reads "08 - Questions" as part of the
+ * 14-section editorial composition). The /faq page is a standalone
+ * destination: search engines index it as the canonical FAQ surface
+ * and the page h1 should not carry the homepage's "08 - Questions"
+ * section number. The Q&A list itself is the same `faq` array the
+ * homepage accordion consumes — single source of truth.
+ */
+export const faqPage = {
+  eyebrow: 'Common questions',
+  heading: 'Frequently asked questions.',
+  tagline:
+    'Honest answers to the things homeowners ask before the first visit. If your question is not here, the phone and email are at the bottom of the page.',
+  relatedHeading: 'Other places to look',
+  relatedLinks: [
+    {
+      href: '/pricing',
+      label: 'Pricing',
+      blurb: 'Floor rates, discounts, what is and is not included.',
+    },
+    {
+      href: '/quote',
+      label: 'Get a free quote',
+      blurb: 'A two-minute form. Same-day reply during business days.',
+    },
+    {
+      href: '/contact',
+      label: 'Contact',
+      blurb: 'Phone, email, and the lead form. A text usually gets the fastest reply.',
+    },
+    {
+      href: '/services',
+      label: 'All services',
+      blurb: 'Mowing, edging, mulching, hedge trim, hurricane prep, seasonal cleanup.',
+    },
+    {
+      href: '/areas',
+      label: 'Where we work',
+      blurb: 'The six Pinellas ZIPs on the route, with per-area notes and FAQs.',
+    },
+    {
+      href: '/terms',
+      label: 'Terms + payment',
+      blurb: 'Quote, scheduling, payment, liability, disputes. Cash-min mode current state.',
+    },
+  ] as const,
+} as const;
+
+/**
+ * Hurricane Prep Hub (`/hurricane-prep`) — page-level copy for the
+ * dedicated deep-dive page. Distinct from the `/services/hurricane-prep`
+ * service detail, which is the service card (ServiceHero + Includes +
+ * FAQ + CTA). The /hurricane-prep hub is editorial: the 96-hour
+ * timeline, what's in scope vs not, insurance paperwork help, and a
+ * longer Q&A. Both surfaces are valid destinations; the service card
+ * is the "buy this service" path, the hub is the "what to do before /
+ * during / after a named storm" path. The /hurricane-prep URL is
+ * preferred for the "hurricane prep Largo FL" / "post-storm yard
+ * cleanup 33771" search intents; the service card is preferred for
+ * "mowing vs hurricane prep pricing" comparisons.
+ */
+export const hurricanePrepPage = {
+  eyebrow: 'Hurricane Season 2026',
+  heading: 'Hurricane prep + post-storm cleanup, in Largo.',
+  tagline:
+    'Pinellas County is in the cone more often than not. Pre-storm sweep, post-storm haul, and the insurance paperwork that goes with it. June through November.',
+  windThresholdMph: 30,
+  coneHoursBefore: 48,
+  stormResponseWaitHours: 24,
+  scopeHeading: "What's in scope",
+  scopeItems: [
+    'Pre-storm sweep: secure outdoor furniture, decor, lightweight items, garbage cans, and planters that can become projectiles.',
+    'Pre-storm prune: identify and remove vulnerable branches over roofs, driveways, and walkways. Lightweight dead wood first.',
+    'Pre-storm photograph: before-state photos of the yard, fence, and any pre-existing damage. Sent to you for your records.',
+    'Post-storm haul: debris removal, fallen limb haul-off (cut to curb or fully removed), damaged tree assessment.',
+    'Post-storm invoice: detailed invoice with before/after photos to support your homeowner insurance claim.',
+    'Recovery follow-up: full yard re-shape once ground is firm. Bed redefinition, fresh mulch if needed, mow at the right height.',
+  ] as const,
+  notInScopeHeading: "What's NOT in scope",
+  notInScopeItems: [
+    'Tree removal of standing trees (licensed arborist work, requires FL DEPCP certification). I will flag trees I cannot safely handle and refer out.',
+    'Roof tarping (licensed contractor work, fall risk + insurance implications).',
+    'Structural damage to fences, sheds, or buildings (general contractor work).',
+    'Inside-the-house work (dehumidification, drywall, flooring) — outside our scope.',
+    'Hurricane mode for non-Pinellas properties. The route is the six Pinellas ZIPs; anything outside the route is a referral.',
+  ] as const,
+  timelineHeading: 'The 96-hour timeline',
+  timelineIntro:
+    'What I do, hour by hour, when a named storm is forecast to threaten Pinellas County. The clock starts at "cone intersects the county line" and runs through the first post-storm mow.',
+  timeline: [
+    {
+      window: 'T minus 96 to 72 hours',
+      title: 'Cone watch',
+      body: 'I monitor the National Hurricane Center 4-day cone twice a day. No action yet — I am watching where the storm is actually going, not where the spaghetti models say it could go.',
+    },
+    {
+      window: 'T minus 72 to 48 hours',
+      title: 'Storm is plausible',
+      body: 'If the cone still intersects Pinellas, I start reaching out to active customers. Not a quote — just "are you in?" and a check on whether you want pre-storm prep on the books.',
+    },
+    {
+      window: 'T minus 48 hours',
+      title: 'Hurricane mode triggers',
+      body: 'When Pinellas is in the cone at the 48-hour mark, I trigger hurricane mode. Regular scheduling pauses; prep visits get dispatched in the order they were requested. You get a text confirmation with your window.',
+    },
+    {
+      window: 'T minus 48 to 24 hours',
+      title: 'Pre-storm sweep',
+      body: 'Yard sweep: secure loose items, photograph the before-state, remove lightweight dead branches. Mowing pauses — fresh clippings on a wet lawn are a recipe for clumping. Edging pauses too.',
+    },
+    {
+      window: 'Landfall window',
+      title: 'Stop work',
+      body: 'When sustained winds reach 30 mph, outdoor work stops. I am not on the road and I am not in your yard. This is non-negotiable. If I am mid-job when winds hit, I finish the safe part, secure my equipment, and head home.',
+    },
+    {
+      window: 'Storm passes + 24 hours',
+      title: 'Recon and response',
+      body: '24 hours after sustained winds drop below 30 mph AND conditions are safe (no flooding, no downed power lines, no road closures), I start recon. I drive the route. I photograph damage. I triage.',
+    },
+    {
+      window: 'Storm passes + 48 to 72 hours',
+      title: 'Post-storm haul',
+      body: 'Haul-off begins, in the order the recon triaged. Limbs cut to manageable sections, debris piled curbside, full removal if you opted for it. Invoice with photos sent same day.',
+    },
+    {
+      window: 'Storm passes + 1 to 2 weeks',
+      title: 'Recovery',
+      body: 'Once ground firms and grass is dry enough to mow, the regular schedule resumes. Bed redefinition, fresh mulch if the beds took a beating, and a slow mow at a higher cut to let the lawn recover.',
+    },
+  ] as const,
+  insuranceHeading: 'Insurance paperwork help',
+  insuranceIntro:
+    'Most homeowner policies in Florida cover post-storm debris removal after a named storm. The coverage is usually under "other structures" or "debris removal" — read your declarations page or call your agent to confirm. What I provide to support the claim:',
+  insuranceItems: [
+    'Detailed invoice with line items (pre-storm sweep if applicable, post-storm haul, recovery work).',
+    'Before-and-after photos: timestamped, geo-tagged when the device supports it.',
+    'Description of the storm event with the NHC advisory reference (e.g., "Hurricane Helene, September 26 2024, NHC Advisory 14").',
+    'Volume estimate (cubic yards of debris) for the haul-off line.',
+    'Licensed-and-insured documentation if your insurer requires it. Note: GL insurance binds at first paying customer (state/ledger.yaml → OBJ-M2-003); until then the waiver-of-liability on file covers the active customers.',
+  ] as const,
+  relatedHeading: 'Related',
+  relatedLinks: [
+    {
+      href: '/services/hurricane-prep',
+      label: 'Hurricane Prep & Cleanup (service card)',
+      blurb: 'The service-card view: pricing line, includes, before/after. Faster path if you already know what you want.',
+    },
+    {
+      href: '/quote',
+      label: 'Get on the prep list',
+      blurb: 'Pre-storm visits book out fast once a storm is named. Two-minute form to get on the list.',
+    },
+    {
+      href: '/contact',
+      label: 'Contact',
+      blurb: 'Phone, email, lead form. A text usually gets the fastest reply during hurricane mode.',
+    },
+    {
+      href: '/areas/33778',
+      label: 'Largo (west) — highest hurricane exposure on the route',
+      blurb: 'The 33778 ZIP is closest to the Gulf and gets the most named-storm work. Per-area page with local notes.',
+    },
+    {
+      href: '/faq',
+      label: 'Frequently asked questions',
+      blurb: 'The full FAQ: scheduling, billing, weather, dogs, gates, and the hurricane prep Q&As.',
+    },
+  ] as const,
+  faqHeading: 'Hurricane prep questions',
+  faqs: [
+    {
+      q: 'When exactly do you trigger hurricane mode?',
+      a: 'When a named storm is forecast within 48 hours and Pinellas County is in the NHC cone, OR when sustained winds reach 30 mph locally. The 48-hour mark is the trigger because that is the earliest window for a real evacuation order and the latest window to get prep work done safely.',
+    },
+    {
+      q: 'How quickly do you respond to a hurricane prep request?',
+      a: 'Pre-storm: as soon as hurricane mode triggers, in the order requests were received. Post-storm: 24 hours after sustained winds drop below 30 mph AND the route is safe to drive. I triage by damage severity, not first-come-first-served.',
+    },
+    {
+      q: 'What if I do not have pre-storm prep booked and a storm is coming?',
+      a: 'Text or call. If I have a prep window still open, I will fit you in. Hurricane mode opens prep slots based on the active customer list plus the request queue — the more lead time, the better the slot.',
+    },
+    {
+      q: 'Do you handle emergency tree removal during the storm?',
+      a: 'No. Standing-tree removal is licensed arborist work (FL DEPCP certification) and I refer it out. I can cut a fallen limb into manageable sections, but a tree on a structure or a leaning trunk needs a licensed arborist with the right equipment and insurance.',
+    },
+    {
+      q: 'Will my homeowner insurance cover post-storm debris removal?',
+      a: 'Usually yes for a named storm. Most FL homeowner policies have a debris-removal line under "other structures" or a separate "debris removal" rider. Read your declarations page or call your agent. I provide the invoice + photos to support the claim; the actual reimbursement is between you and your insurer.',
+    },
+    {
+      q: 'How is post-storm debris removal priced?',
+      a: 'A base fee covers the first cubic yard of debris (most single-tree-fall lots). Each additional cubic yard is a per-yard rate. The invoice itemizes the volume with photos, so you can see exactly what you are paying for. The pre-storm prep is a flat rate, billed same day.',
+    },
+    {
+      q: 'Do you work outside the six-ZIP route during hurricane mode?',
+      a: 'No. The route is fixed at six Pinellas ZIPs (33770, 33771, 33773, 33774, 33778, 33756) because the response-time commitment is what makes the pre-storm work useful. If you are outside the route, I can refer you to a local operator I trust.',
+    },
+    {
+      q: 'What happens to my regular mow schedule during hurricane mode?',
+      a: 'It pauses. The day the storm passes + 24 hours, the regular schedule resumes. You do not lose visits; you just get a delayed slot. If the lawn bounced back from a full-scale rescue mow, that is a separate seasonal-cleanup service.',
+    },
+  ] as const,
+} as const;
+
+/**
+ * Process page (`/process`) — page-level copy for the standalone
+ * "how it works" deep-dive. Distinct from the homepage
+ * `processSteps` (the 3-card grid that lives in the homepage's
+ * ProcessSteps section). The /process page is the long-form
+ * version: 6 steps instead of 3, with each step's body
+ * expanded to 1-2 sentences. Same content axis (coverage →
+ * quote → first mow → ongoing schedule → weather / hurricane
+ * mode → billing), just unpacked.
+ */
+export const processPage = {
+  eyebrow: 'How it works',
+  heading: 'From the first text to the 30th mow.',
+  tagline:
+    'Six steps. No portal, no subscription, no franchise markup. The same guy shows up on the same day, every week, until you say stop.',
+  steps: [
+    {
+      n: '01',
+      title: 'Check your ZIP',
+      body: 'The homepage coverage check accepts your ZIP or neighborhood. Inside 33771 or one of the five adjacent Pinellas ZIPs, you are on the route. Outside the route, I sometimes make exceptions for yards right next door — the form will tell you either way.',
+      duration: '~30 seconds',
+    },
+    {
+      n: '02',
+      title: 'Get a flat-rate quote',
+      body: 'Pick your service (mowing, edging, mulching, hedge trim, hurricane prep, seasonal cleanup), pick your lot size, pick your cadence. The quote calculator gives you a flat rate immediately. No waiting for an in-person walk-through — for the bread-and-butter lots, the photo + lot size is enough to quote accurately.',
+      duration: '~2 minutes',
+    },
+    {
+      n: '03',
+      title: 'Confirm your first mow',
+      body: 'Reply to the quote text or email and you are on the schedule. The first mow is usually within five business days of confirmation, longer during hurricane season or after a named storm. You do not have to be home; if the gate is unlocked on the day, the mower shows up, mows, edges, blows, and is gone.',
+      duration: 'Same-day reply',
+    },
+    {
+      n: '04',
+      title: 'Same day, every week',
+      body: 'You get a text the day before each visit with the ETA window. The route has been built around Tuesday / Wednesday / Friday for years — your day is your day. If something comes up (a real-estate photographer, a birthday party, a busted sprinkler), text me by Sunday night and I shift the visit by a day or skip the week. No fee, no friction.',
+      duration: '5-10 min/week of your time',
+    },
+    {
+      n: '05',
+      title: 'Weather + hurricane mode',
+      body: 'Rain pushes the visit one day. A named storm pauses the whole route and triggers prep visits. The 96-hour timeline on the /hurricane-prep page is the full breakdown, but the short version: I monitor the cone twice a day, I text you the moment a storm is plausible, and the regular schedule resumes 24 hours after the storm passes.',
+      duration: 'Zero work for you',
+    },
+    {
+      n: '06',
+      title: 'Invoice + payment',
+      body: 'I send the invoice the same day I mow. Pay by cash, Venmo, Zelle, or card-on-phone (I swipe your card on my personal phone — no card data stored on my systems). Monthly statements if you would rather receive one bill at the end of the month. Late payment after 30 days pauses service until the balance is settled; the policy is on /terms.',
+      duration: '~30 seconds to pay',
+    },
+  ] as const,
+  whyHeading: 'Why this works',
+  whyBody:
+    'A solo operator with a fixed route can out-deliver a franchise for a simple reason: nobody is incentivized to upsell you on something you do not need. The same guy shows up. The same truck shows up. The route is the route. When something is off, you text me, I see the text, and the issue is fixed on the next visit. No call center, no ticket queue, no "we will get back to you within 48 hours."',
+  differentiators: [
+    {
+      label: 'No portal',
+      body: "You do not log in to anything. The day-of text is the day-of text. The invoice is the invoice. That is the entire information flow.",
+    },
+    {
+      label: 'No subscription',
+      body: 'You can pause or cancel any time with 7 days notice — no fee, no early-termination penalty, no "annual commitment" discount that locks you in.',
+    },
+    {
+      label: 'No franchise markup',
+      body: 'The price on the quote is the price on the invoice. I am the only person on the route; the $48/week is paying for the mow, not for a regional manager.',
+    },
+    {
+      label: 'Same guy',
+      body: 'When you book, you get me. I do not subcontract, I do not have a "B-team" for overflow days, I do not bring a helper who is learning the route.',
+    },
+  ] as const,
+  relatedHeading: 'Related',
+  relatedLinks: [
+    {
+      href: '/quote',
+      label: 'Get a quote',
+      blurb: 'Two-minute form. Same-day reply during business days.',
+    },
+    {
+      href: '/pricing',
+      label: 'Pricing',
+      blurb: 'Floor rates, discounts, what is and is not included.',
+    },
+    {
+      href: '/services',
+      label: 'All services',
+      blurb: 'Mowing, edging, mulching, hedge trim, hurricane prep, seasonal cleanup.',
+    },
+    {
+      href: '/hurricane-prep',
+      label: 'Hurricane prep + cleanup',
+      blurb: 'The full 96-hour timeline, insurance paperwork help, and FAQ.',
+    },
+    {
+      href: '/areas',
+      label: 'Where we work',
+      blurb: 'The six Pinellas ZIPs on the route, with per-area notes.',
+    },
+    {
+      href: '/faq',
+      label: 'Frequently asked questions',
+      blurb: 'Scheduling, billing, weather, dogs, gates, and the hurricane prep Q&As.',
+    },
+  ] as const,
+} as const;
+
 export const faqHeader = {
   eyebrow: '08 - Questions',
   heading: 'Honest answers.',
@@ -1120,7 +1488,7 @@ export const faq = [
   },
   {
     q: 'How does billing work?',
-    a: 'I send an invoice the same day I mow. Pay by card, ACH, or Venmo. Monthly statements if you would rather receive one bill.',
+    a: 'I send an invoice the same day I mow. Pay by cash, Venmo, Zelle, or card-on-phone (the operator swipes your card on their personal phone). Monthly statements if you would rather receive one bill.',
   },
   {
     q: 'How much lead time before the first visit?',
@@ -1433,4 +1801,166 @@ export const social = {
     zip?: string;
     source?: string;
   }>,
+} as const;
+
+/**
+ * Reviews page (`/reviews`) — page-level copy for the standalone
+ * "from your neighbors" page. Distinct from the homepage
+ * TestimonialQuote section, which renders the `social.proof[]`
+ * array (empty until the steward has real reviews with explicit
+ * written permission). The /reviews page is the canonical
+ * destination: empty-state copy that names what we want from a
+ * review, plus a clear "leave a review" CTA to the /review
+ * form. When `social.proof[]` populates, the page renders the
+ * real reviews here AND on the homepage (single source of truth
+ * — the page reads `social.proof` directly, no second array).
+ */
+export const reviewsPage = {
+  eyebrow: 'From your neighbors',
+  heading: 'Reviews.',
+  tagline:
+    "Real quotes from real customers — same ZIPs you live in. We do not invent reviews, and we do not ask for them until a yard has been mowed at least a few times. Until the first one lands, this page is the empty state: who I am, what I do, and how to leave a review when you are ready.",
+  leaveHeading: 'How to leave a review',
+  leaveIntro:
+    'There are three honest ways to leave a review. Pick whichever you would actually use — all three reach the same operator, all three are appreciated.',
+  leaveOptions: [
+    {
+      label: 'Google review (highest impact)',
+      body: 'A Google review is the one future customers will see when they search "lawn care Largo FL." Until the Google Business Profile is verified, the link points to the steward-managed placeholder. Once the GBP verifies, this link updates to the real review URL automatically.',
+    },
+    {
+      label: 'Nextdoor recommendation',
+      body: 'Nextdoor recommendations are the highest-trust signal in Pinellas County neighborhoods. The /review page has a short form that posts the recommendation to the operator\'s Nextdoor profile; you can edit before posting.',
+    },
+    {
+      label: 'Direct text or email',
+      body: 'A text to the operator is the most personal. I will ask before quoting you anywhere, and your name stays off the public page unless you say it is OK.',
+    },
+  ] as const,
+  whatMattersHeading: 'What I would love a review to cover',
+  whatMattersBody:
+    'A useful review is short and specific. "Showed up on Tuesday, edged the driveway, the lawn looks great" is more useful than "great service, would recommend." Future neighbors are looking for the practical stuff.',
+  whatMattersItems: [
+    'Your ZIP — helps future neighbors know the route is real in their area.',
+    'Which service (mowing, edging, mulching, hedge trim, hurricane prep).',
+    'How many visits you have had (first mow vs. one-year customer).',
+    'Anything that surprised you — same-day reply, the photo invoice, the way the lawn bounces back from a missed week.',
+    'Anything that did not work for you — I want to hear it before it becomes a Google review.',
+  ] as const,
+  relatedHeading: 'Related',
+  relatedLinks: [
+    {
+      href: '/review',
+      label: 'Leave a review form',
+      blurb: 'Two-minute form. Posts to Nextdoor, with an opt-in to forward to Google once the GBP verifies.',
+    },
+    {
+      href: '/about',
+      label: 'About the operator',
+      blurb: 'Six years cutting grass in Largo. The equipment, the route, the why.',
+    },
+    {
+      href: '/process',
+      label: 'How it works',
+      blurb: 'The six steps from the first text to the 30th mow.',
+    },
+    {
+      href: '/areas',
+      label: 'Where we work',
+      blurb: 'The six Pinellas ZIPs on the route, with per-area notes.',
+    },
+  ] as const,
+} as const;
+
+/**
+ * Areas Near Me page (`/areas-near-me`) — page-level copy for the
+ * long-tail SEO surface that catches searches from adjacent ZIPs
+ * (33760 / 33762 / 33764 / 33765 / 33777 / 33779 / 33780 / 33781
+ * / 34695 / etc.). The route is fixed at six Pinellas ZIPs
+ * (33770, 33771, 33773, 33774, 33778, 33756), but the operator
+ * sometimes makes exceptions for yards right next door — the
+ * page is the canonical "I am one ZIP over from your route, can
+ * you help?" answer with the actual adjacent-ZIP-to-route-ZIP
+ * mapping.
+ *
+ * The page is honest about the boundary (the route is six ZIPs)
+ * and useful (each adjacent ZIP maps to the closest route ZIP
+ * so the visitor can see at a glance whether they are
+ * realistically in scope). Single source of truth for the
+ * adjacent ZIP mapping.
+ */
+export const areasNearMePage = {
+  eyebrow: 'For our neighbors',
+  heading: 'One ZIP over? Read this.',
+  tagline:
+    'The route covers six Pinellas ZIPs: 33770, 33771, 33773, 33774, 33778, 33756. If you are right outside the route, the answer is usually yes — but the answer depends on which side of the boundary you are on. This page is the canonical "I am one ZIP over, can you help?" answer.',
+  whyHeading: 'Why the route is six ZIPs, not more',
+  whyBody:
+    'A solo operator with a fixed route can out-deliver a franchise for one reason: response time. When a named storm threatens Pinellas, a same-day reply is the difference between "we got the pre-storm sweep done" and "sorry, we are booked for two weeks." Adding more ZIPs to the route pushes the response time out, and the whole model breaks. The six-ZIP route is the right size for one operator with one truck. As the route grows (a second truck, a hired operator), the boundary expands — but the model stays the same.',
+  whyItems: [
+    'A 30-minute drive from the home base in 33771 is the upper bound for same-day response.',
+    'The route is shaped to minimize drive-time between yards; adding a ZIP on the far side of the route breaks the geometry.',
+    'Hurricane mode requires the operator to be able to reach every yard on the route within 24 hours of the storm passing; more ZIPs = later response = more damage.',
+    'Six ZIPs is the right size for one operator with one truck. Future growth adds trucks, not ZIPs.',
+  ] as const,
+  adjacentHeading: 'Adjacent ZIPs (outside the route, may be reachable)',
+  adjacentIntro:
+    'If you are in one of these ZIPs, you are right outside the route. The closest route ZIP for each is listed — text or call and we can talk about whether your specific address is in scope.',
+  adjacentZips: [
+    { zip: '33760', name: 'Largo (north of 33771)', closestRoute: '33771', note: 'North of the home base, across East Bay. Sometimes reachable on a Tuesday route extension.' },
+    { zip: '33762', name: 'Clearwater (east of 33760)', closestRoute: '33771', note: 'East of 33760, north of 33771. Usually out of scope unless you are on the southern edge.' },
+    { zip: '33764', name: 'Clearwater (south of 33760)', closestRoute: '33770', note: 'East of 33770 (Belleair Bluffs). West-side addresses may be reachable on a Wednesday.' },
+    { zip: '33765', name: 'Clearwater (north of 33756)', closestRoute: '33756', note: 'North of 33756 (Belleair). Usually out of scope; check the southern half of the ZIP.' },
+    { zip: '33777', name: 'Largo (south of 33778)', closestRoute: '33778', note: 'South of 33778 (Seminole). Northern addresses may be reachable on a Friday route extension.' },
+    { zip: '33779', name: 'Largo / Pinellas Park (east of 33773)', closestRoute: '33773', note: 'East of 33773. The 33773 / 33779 boundary is fuzzy; some 33779 addresses west of Belcher are realistic.' },
+    { zip: '33780', name: 'Pinellas Park (east of 33773)', closestRoute: '33773', note: 'East of 33773, on the Pinellas Park border. The route does not extend here today; refer out.' },
+    { zip: '33781', name: 'Pinellas Park (north of 33780)', closestRoute: '33773', note: 'North of 33780. Out of scope today; refer out.' },
+    { zip: '34695', name: 'Safety Harbor / Oldsmar (east of 33761)', closestRoute: 'n/a', note: 'East of the route, across the county line. Out of scope; refer out.' },
+  ] as const,
+  faqHeading: 'Adjacent-ZIP questions',
+  faqs: [
+    {
+      q: 'I am in 33760, right across East Bay from 33771. Why is that out of scope?',
+      a: '33760 is a different route geometry — getting from 33771 to most 33760 addresses adds 15-20 minutes of drive, which means one fewer yard on the existing route. For southern-edge 33760 addresses (close to the 33771 line) the answer is sometimes yes; for northern 33760 the answer is no. Text me your cross-streets and I can tell you which side of the line you are on.',
+    },
+    {
+      q: 'What about 33778? I thought Seminole was on the route.',
+      a: 'It is. 33778 is the western-half-of-Seminole ZIP and is on the Friday route. 33777 is the southern half of the same area, and southern 33777 addresses are reachable. Northern 33777 (deeper into Seminole) is out of scope today.',
+    },
+    {
+      q: 'I am in 34695 (Safety Harbor). Can you refer me to someone?',
+      a: 'Yes. Safety Harbor is east of the route, across the county line. I have a short list of operators in the Safety Harbor / Oldsmar area I trust — text me and I will share it.',
+    },
+    {
+      q: 'Will the route ever expand?',
+      a: 'Only when there is a second operator + truck. One operator can do six ZIPs well; one operator cannot do ten ZIPs well. When the second operator joins (sometime in 2027, if the volume justifies it), the route expands — likely east into Pinellas Park (33780 / 33781) first, since that is the closest gap.',
+    },
+    {
+      q: 'How do I know for sure whether my address is in scope?',
+      a: 'Text or call. The cross-streets + a 30-second conversation is faster than the form, and I can usually tell you yes / no on the spot.',
+    },
+  ] as const,
+  relatedHeading: 'Related',
+  relatedLinks: [
+    {
+      href: '/areas',
+      label: 'The six ZIPs on the route',
+      blurb: 'The canonical service-area index. Per-ZIP pages with local notes, landmarks, and FAQ.',
+    },
+    {
+      href: '/contact',
+      label: 'Contact',
+      blurb: 'Phone, email, lead form. A text usually gets the fastest reply for adjacent-ZIP questions.',
+    },
+    {
+      href: '/process',
+      label: 'How it works',
+      blurb: 'The six steps from the first text to the 30th mow.',
+    },
+    {
+      href: '/faq',
+      label: 'Frequently asked questions',
+      blurb: 'The full FAQ including the "do you go outside Largo" entry.',
+    },
+  ] as const,
 } as const;

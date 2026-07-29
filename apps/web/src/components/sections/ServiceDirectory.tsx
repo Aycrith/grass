@@ -28,7 +28,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 import { FadeUp, useFadeUp } from '@/components/motion';
-import { Eyebrow, Section } from '@/components/site';
+import { Container, Eyebrow, Section } from '@/components/site';
 import { cn } from '@/lib/cn';
 import { type ServiceKey, services, servicesIndex } from '@/lib/content';
 
@@ -118,7 +118,7 @@ function ServiceDirectoryCard({ svc, delay = 0 }: ServiceDirectoryCardProps): Re
 export function ServiceDirectory({ className }: ServiceDirectoryProps): ReactNode {
   return (
     <Section rhythm="loose" className={cn(styles.root, className)}>
-      <div className="container">
+      <Container>
         <FadeUp as="header" className={styles.header}>
           <Eyebrow tone="default" className={styles.headerEyebrow}>
             {servicesIndex.eyebrow}
@@ -141,7 +141,7 @@ export function ServiceDirectory({ className }: ServiceDirectoryProps): ReactNod
         </div>
 
         <p className={styles.tail}>{servicesIndex.tail}</p>
-      </div>
+      </Container>
     </Section>
   );
 }

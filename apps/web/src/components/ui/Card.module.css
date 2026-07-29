@@ -25,6 +25,17 @@
   border-color: var(--ll-sage-muted);
 }
 
+/* ---------- as="a" / as="link" link-rendered variant ----------
+ * When the Card renders as an anchor (href prop), it needs to
+ * override the global <a> default (underline + accent color)
+ * so the card reads as a flat surface, not a hyperlink. The
+ * inline-style-equivalent `text-decoration: none; color: inherit`
+ * lives here as a class so consumers don't need to pass it. */
+.asLink {
+  text-decoration: none;
+  color: inherit;
+}
+
 /* ---------- Image region (service / area) ---------- */
 
 .image {

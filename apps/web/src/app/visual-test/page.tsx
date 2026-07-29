@@ -30,7 +30,8 @@
  * element-scoped for the element-level screenshot
  * (`expect(section).toHaveScreenshot(...)`).
  *
- * Not surfaced to users. `layout.tsx` exports `robots: noindex`.
+ * Not surfaced to users. `app/visual-test/layout.tsx` exports
+ * `robots: noindex` so this page is invisible to crawlers.
  */
 import {
   EditorialBreak,

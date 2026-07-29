@@ -19,6 +19,11 @@
   display: inline-block;
   overflow: hidden;
   vertical-align: baseline;
+  /* Optical alignment: the descender gutter of each word needs
+   * a hair of bottom padding so the clip window doesn't shave
+   * off the bottom of letters like g, p, y. 0.08em matches the
+   * typographic body x-height ratio. */
+  padding-bottom: 0.08em;
 }
 
 /* The motion.span itself just needs to be display: inline-block

@@ -46,7 +46,7 @@ import { motion, useInView } from 'framer-motion';
 import Image from 'next/image';
 import { useRef, type ReactNode } from 'react';
 
-import { Section } from '@/components/site';
+import { Container, Section } from '@/components/site';
 
 import styles from './FieldLog.module.css';
 
@@ -65,7 +65,7 @@ export function FieldLog(): ReactNode {
       className={styles.root}
       data-test-section="field-log"
     >
-      <div className="container">
+      <Container>
         <div className={styles.inner} ref={innerRef}>
           {/* Zone 1 + 2: eyebrow + pull-quote (fade-up on viewport entry) */}
           <motion.div
@@ -122,7 +122,7 @@ export function FieldLog(): ReactNode {
             />
           </motion.div>
         </div>
-      </div>
+      </Container>
     </Section>
   );
 }

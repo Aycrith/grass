@@ -146,3 +146,46 @@
 .actions {
   margin-top: var(--space-3);
 }
+
+/* WP39 — 4 trust-signal chips below the CTA. Sits as a single
+ * quiet row above the micro line; reads as "what you can count
+ * on" without becoming a separate section. Each chip is a
+ * sand-bordered pill with a sun icon + 2-3 word guarantee.
+ * The chips share the same shadow / radius as the eyebrow
+ * pulse so the band reads as one composed unit. */
+.guarantees {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  list-style: none;
+  max-width: 36rem;
+}
+
+.guarantee {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid
+    color-mix(in oklab, var(--ll-sun) 40%, transparent);
+  border-radius: 999px;
+  font-family: var(--font-inter);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--ll-sand-bleached);
+  background: color-mix(in oklab, var(--ll-sun) 8%, transparent);
+  white-space: nowrap;
+}
+
+.guaranteeIcon {
+  color: var(--ll-sun);
+  flex-shrink: 0;
+}
+
+.guaranteeText {
+  /* icon + text inline, no extra spacing */
+}

@@ -31,7 +31,7 @@ interface HurricaneBannerProps {
 
 export function HurricaneBanner({ className }: HurricaneBannerProps) {
   const reduced = useReducedMotion();
-  const phoneHref = `tel:${BUSINESS.phone.replace(/[^\d+]/g, '')}`;
+  const phoneHref = `tel:${BUSINESS.phoneTel}`;
 
   return (
     <motion.output

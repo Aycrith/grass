@@ -21,6 +21,7 @@ export type Action =
   | 'customer:update_own_contact'
   // CRM
   | 'lead:create'
+  | 'lead:update'
   | 'lead:qualify'
   | 'customer:create'
   | 'customer:read_all'
@@ -67,6 +68,7 @@ const AUTHORITY: Record<Action, Principal['kind'][]> = {
   'customer:update_own_contact': ['customer'],
   // CRM — leads can be created by anyone (web form), qualified by steward/system only
   'lead:create': ['customer', 'crew_member', 'steward', 'system'],
+  'lead:update': ['steward', 'system'],
   'lead:qualify': ['steward', 'system'],
   'customer:create': ['steward', 'system'],
   'customer:read_all': ['steward', 'system'],

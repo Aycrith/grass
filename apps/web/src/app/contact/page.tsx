@@ -12,7 +12,9 @@
  */
 
 import { ContactHero } from '@/components/sections';
+import { Container, Section } from '@/components/site';
 import { BUSINESS } from '@/lib/business';
+import { JsonLd, pageBreadcrumb } from '@/lib/json-ld';
 import type { Metadata } from 'next';
 import ContactForm from './ContactForm';
 
@@ -28,14 +30,19 @@ interface ContactProps {
 
 export default async function ContactPage({ searchParams }: ContactProps) {
   const { source } = await searchParams;
+  const breadcrumbSchema = pageBreadcrumb({
+    currentLabel: 'Contact',
+    currentHref: '/contact',
+  });
   return (
     <>
+      <JsonLd data={breadcrumbSchema} />
       <ContactHero hurricaneMode={source === 'hurricane'} />
-      <section style={{ background: 'var(--ll-cream)', paddingBottom: 'var(--space-12)' }}>
-        <div className="container">
+      <Section tone="soft" rhythm="loose">
+        <Container>
           <ContactForm source={source} />
-        </div>
-      </section>
+        </Container>
+      </Section>
     </>
   );
 }

@@ -15,7 +15,7 @@
 
 import type { ReactNode } from 'react';
 
-import { Eyebrow, Section } from '@/components/site';
+import { Container, Eyebrow, Section } from '@/components/site';
 import { Accordion } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import type { AreaDetail } from '@/lib/content';
@@ -30,7 +30,7 @@ interface AreaFAQProps {
 export function AreaFAQ({ detail, className }: AreaFAQProps): ReactNode {
   return (
     <Section rhythm="loose" className={cn(styles.root, className)}>
-      <div className="container">
+      <Container>
         <header className={styles.header}>
           <Eyebrow tone="default" className={styles.headerEyebrow}>
             Questions from {detail.name}
@@ -47,7 +47,7 @@ export function AreaFAQ({ detail, className }: AreaFAQProps): ReactNode {
           items={detail.faqs.map((f) => ({ q: f.q, a: <p>{f.a}</p> }))}
           className={styles.accordion}
         />
-      </div>
+      </Container>
     </Section>
   );
 }

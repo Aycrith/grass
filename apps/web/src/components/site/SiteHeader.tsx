@@ -26,12 +26,14 @@ import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
 
+import { Container } from '@/components/site';
 import { Button, LogoLockup } from '@/components/ui';
 
 import styles from './SiteHeader.module.css';
 
 const NAV_ITEMS = [
   { href: '/services', label: 'Services' },
+  { href: '/areas', label: 'Areas' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/about', label: 'About' },
 ] as const;
@@ -87,21 +89,26 @@ function MobileDrawer({
                   href="/"
                   className={styles.dialogLink}
                   data-active={pathname === '/' ? 'true' : undefined}
+                  aria-current={pathname === '/' ? 'page' : undefined}
                 >
                   Home
                 </Link>
               </li>
-              {NAV_ITEMS.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className={styles.dialogLink}
-                    data-active={isActiveRoute(pathname, item.href) ? 'true' : undefined}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
+              {NAV_ITEMS.map((item) => {
+                const isActive = isActiveRoute(pathname, item.href);
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={styles.dialogLink}
+                      data-active={isActive ? 'true' : undefined}
+                      aria-current={isActive ? 'page' : undefined}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </nav>
 
@@ -111,12 +118,15 @@ function MobileDrawer({
 
           <div className={styles.dialogFooter}>
             <p>
-              <a href={`tel:${BUSINESS.phone}`}>{BUSINESS.phone}</a>
+              <a href={`tel:${BUSINESS.phoneTel}`}>{BUSINESS.phone}</a>
               <br />
               <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
             </p>
             <p className={styles.dialogFooterGap}>
-              {BUSINESS.address.line1}, {BUSINESS.address.city}, {BUSINESS.address.state}{' '}
+              {BUSINESS.addressPublic && BUSINESS.address.line1
+                ? `${BUSINESS.address.line1}, `
+                : ''}
+              {BUSINESS.address.city}, {BUSINESS.address.state}{' '}
               {BUSINESS.address.zip}
             </p>
           </div>
@@ -142,7 +152,7 @@ export function SiteHeader({ className }: SiteHeaderProps): ReactNode {
   return (
     <>
       <header className={cn(styles.root, scrolled && styles.scrolled, className)}>
-        <div className="container">
+        <Container size="content">
           <div className={styles.inner}>
             <Link href="/" className={styles.brand} aria-label={`${BUSINESS.name} home`}>
               <LogoLockup word={BUSINESS.name} markSize={32} />
@@ -151,17 +161,21 @@ export function SiteHeader({ className }: SiteHeaderProps): ReactNode {
             <div className={styles.nav}>
               <nav aria-label="Primary">
                 <ul className={styles.navList}>
-                  {NAV_ITEMS.map((item) => (
-                    <li key={item.href}>
-                      <Link
-                        href={item.href}
-                        className={styles.navLink}
-                        data-active={isActiveRoute(pathname, item.href) ? 'true' : undefined}
-                      >
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))}
+                  {NAV_ITEMS.map((item) => {
+                    const isActive = isActiveRoute(pathname, item.href);
+                    return (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          className={styles.navLink}
+                          data-active={isActive ? 'true' : undefined}
+                          aria-current={isActive ? 'page' : undefined}
+                        >
+                          {item.label}
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
               </nav>
               <Button as="link" href="/quote" variant="sun" size="md" className={styles.cta}>
@@ -178,7 +192,7 @@ export function SiteHeader({ className }: SiteHeaderProps): ReactNode {
               </button>
             </div>
           </div>
-        </div>
+        </Container>
       </header>
       <MobileDrawer open={drawerOpen} onOpenChange={setDrawerOpen} />
     </>

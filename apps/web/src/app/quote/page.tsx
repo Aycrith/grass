@@ -21,10 +21,16 @@
 
 import { Suspense } from 'react';
 
+import { Container, Section } from '@/components/site';
 import { QuoteConfirmation, QuoteHero } from '@/components/sections';
+import { Card } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
+import { cn } from '@/lib/cn';
+import { JsonLd, pageBreadcrumb } from '@/lib/json-ld';
 import type { Metadata } from 'next';
 import { QuoteCalculator } from './QuoteCalculator';
+
+import styles from './QuoteCalculator.module.css';
 
 export const metadata: Metadata = {
   title: 'Free Quote · Largo Lawn',
@@ -34,11 +40,16 @@ export const metadata: Metadata = {
 };
 
 export default function QuotePage() {
+  const breadcrumbSchema = pageBreadcrumb({
+    currentLabel: 'Free quote',
+    currentHref: '/quote',
+  });
   return (
     <>
+      <JsonLd data={breadcrumbSchema} />
       <QuoteHero />
-      <section style={{ background: 'var(--ll-sand-bleached)', paddingBottom: 'var(--space-12)' }}>
-        <div className="container">
+      <Section tone="warm" rhythm="loose">
+        <Container>
           {/* D-0028: Suspense boundary for the useSearchParams()
              call inside QuoteCalculator (reads ?zip= to prefill
              from the Coverage Check CTA on the homepage). The
@@ -48,8 +59,8 @@ export default function QuotePage() {
           <Suspense fallback={<QuoteCalculatorSkeleton />}>
             <QuoteCalculator serviceArea={BUSINESS.service_area_zips} />
           </Suspense>
-        </div>
-      </section>
+        </Container>
+      </Section>
       <QuoteConfirmation />
     </>
   );
@@ -57,9 +68,9 @@ export default function QuotePage() {
 
 function QuoteCalculatorSkeleton() {
   return (
-    <section
-      className="card"
-      style={{ marginTop: '2rem', minHeight: '24rem' }}
+    <Card
+      variant="insight"
+      className={cn(styles.skeleton)}
       aria-hidden="true"
     />
   );

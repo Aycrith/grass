@@ -12,7 +12,7 @@
  * `socialHeader.eyebrow` (lib/content.ts).
  */
 
-import { Eyebrow, Section } from '@/components/site';
+import { Container, Eyebrow, Section } from '@/components/site';
 import { cn } from '@/lib/cn';
 import { social, socialHeader } from '@/lib/content';
 
@@ -32,7 +32,7 @@ export function TestimonialQuote({ className }: TestimonialQuoteProps): React.Re
 
   return (
     <Section rhythm="loose" tone="warm" className={cn(styles.root, className)}>
-      <div className="container">
+      <Container>
         <div className={styles.inner}>
           <Eyebrow tone="default" className={styles.eyebrow}>
             {socialHeader.eyebrow}
@@ -49,7 +49,7 @@ export function TestimonialQuote({ className }: TestimonialQuoteProps): React.Re
             {item.source ? <span className={styles.meta}>· {item.source}</span> : null}
           </footer>
         </div>
-      </div>
+      </Container>
     </Section>
   );
 }

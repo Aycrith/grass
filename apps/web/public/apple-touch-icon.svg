@@ -3,25 +3,52 @@
   Largo Lawn — Apple touch icon (180x180 source).
   iOS 17+ Safari accepts SVG touch icons. Earlier iOS versions expect
   a raster PNG — when steward generates one, save it as
-  /public/apple-touch-icon.png (180x180). The Next.js metadata icon
-  block already references /apple-touch-icon.svg; for older iOS a
-  raster fallback can be served via apple-touch-icon-precomposed.png.
+  /public/apple-touch-icon.png (180x180).
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="Largo Lawn">
   <title>Largo Lawn</title>
-  <!-- iOS renders the icon at native size with rounded corners; the OS
-       applies the mask. Keep all art inside an inner ~160px circle. -->
-  <!-- Background: brand palm-shadow. Real iOS clips to its own mask. -->
+
+  <!-- Background: deep palm green -->
   <rect width="180" height="180" rx="40" ry="40" fill="#2D5A3D"/>
 
-  <!-- Grass mark, scaled to ~120 wide, centered -->
-  <g transform="translate(30 22) scale(1.2)" fill="#F4E8D0">
-    <path d="M 50 78 Q 50 25 50 8 Q 50 25 50 78 Z" />
-    <path d="M 32 78 Q 28 35 22 18 Q 30 38 38 78 Z" />
-    <path d="M 68 78 Q 72 35 78 18 Q 70 38 62 78 Z" />
-    <rect x="14" y="76" width="72" height="4" rx="2" />
+  <!-- Palm tree icon, centered, ~100px tall -->
+  <g transform="translate(50 38)">
+    <!-- Trunk -->
+    <path
+      d="M 40 110 C 40 110 38 70 42 48 Q 44 40 46 48 C 50 70 48 110 48 110 Z"
+      fill="#F4E8D0"
+    />
+
+    <!-- Frond 1 — top center -->
+    <path d="M 43 46 Q 43 28 43 14 Q 52 28 43 46 Z" fill="#F4E8D0" />
+
+    <!-- Frond 2 — upper right -->
+    <path d="M 43 46 Q 66 24 80 18 Q 65 32 43 46 Z" fill="#F4E8D0" />
+
+    <!-- Frond 3 — right -->
+    <path d="M 44 48 Q 68 50 80 46 Q 65 54 44 48 Z" fill="#F4E8D0" />
+
+    <!-- Frond 4 — upper left -->
+    <path d="M 42 46 Q 20 24 6 18 Q 20 32 42 46 Z" fill="#F4E8D0" />
+
+    <!-- Frond 5 — left -->
+    <path d="M 41 48 Q 18 50 6 46 Q 22 54 41 48 Z" fill="#F4E8D0" />
+
+    <!-- Coconuts — warm gold -->
+    <circle cx="40" cy="50" r="4" fill="#E8B65A" />
+    <circle cx="46" cy="50" r="4" fill="#E8B65A" />
+    <circle cx="43" cy="55" r="4" fill="#E8B65A" />
   </g>
 
-  <!-- Tiny sun accent, lower-right -->
-  <circle cx="146" cy="142" r="14" fill="#E8B65A" opacity="0.9"/>
+  <!-- Brand name below icon — small, cream -->
+  <text
+    x="90"
+    y="165"
+    text-anchor="middle"
+    font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif"
+    font-size="22"
+    font-weight="600"
+    fill="#F4E8D0"
+    letter-spacing="0.05em"
+  >LARGO LAWN</text>
 </svg>

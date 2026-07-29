@@ -6,7 +6,7 @@
  * Full-bleed image at top with editorial Fraunces display
  * heading + tagline + 60–120 word intro floating on top. Two
  * CTAs: primary "Get a free quote" + secondary "Call (727)
- * 555-0123".
+ * 313-8011".
  *
  * Reads from `lib/content.ts → serviceDetail[slug]` for copy
  * and `services[slug]` for imageSlot/imageAlt. The section is
@@ -18,7 +18,7 @@ import Image from 'next/image';
 import type { ReactNode } from 'react';
 
 import { FadeUp } from '@/components/motion';
-import { Eyebrow } from '@/components/site';
+import { Breadcrumb, Container, Eyebrow, Section } from '@/components/site';
 import { Button } from '@/components/ui';
 import { BUSINESS } from '@/lib/business';
 import { cn } from '@/lib/cn';
@@ -35,9 +35,9 @@ interface ServiceHeroProps {
 export function ServiceHero({ slug, className }: ServiceHeroProps): ReactNode {
   const svc = services[slug];
   const detail = serviceDetail[slug];
-  const phoneHref = `tel:${BUSINESS.phone}`;
+  const phoneHref = `tel:${BUSINESS.phoneTel}`;
   return (
-    <section className={cn(styles.root, className)}>
+    <Section className={cn(styles.root, className)}>
       <div className={styles.media} aria-hidden="true">
         <Image
           src={svc.imageSlot}
@@ -50,9 +50,18 @@ export function ServiceHero({ slug, className }: ServiceHeroProps): ReactNode {
         <div className={styles.scrim} />
       </div>
 
-      <div className="container">
+      <Container>
         <div className={styles.copy}>
           <FadeUp>
+            <Breadcrumb
+              tone="dark"
+              className={styles.breadcrumb}
+              items={[
+                { label: 'Home', href: '/' },
+                { label: 'Services', href: '/services' },
+                { label: detail.name },
+              ]}
+            />
             <Eyebrow tone="dark" className={styles.eyebrow}>
               {svc.eyebrow} — {svc.title}
             </Eyebrow>
@@ -69,7 +78,7 @@ export function ServiceHero({ slug, className }: ServiceHeroProps): ReactNode {
             </div>
           </FadeUp>
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   );
 }
