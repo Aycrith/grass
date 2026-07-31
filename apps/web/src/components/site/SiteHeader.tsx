@@ -18,7 +18,7 @@
  */
 
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { Menu, X } from 'lucide-react';
+import { Menu, MessageCircle, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
@@ -118,7 +118,25 @@ function MobileDrawer({
 
           <div className={styles.dialogFooter}>
             <p>
-              <a href={`tel:${BUSINESS.phoneTel}`}>{BUSINESS.phone}</a>
+              {/* GTM audit Fix #2: tap-to-call + tap-to-text pair.
+               * Voice link fires a `phone` track; text link fires `sms`. */}
+              <a
+                href={`tel:${BUSINESS.phoneTel}`}
+              >
+                {BUSINESS.phone}
+              </a>
+              <br />
+              <a
+                href={
+                  'sms:' +
+                  BUSINESS.phoneTel +
+                  '?&body=' +
+                  encodeURIComponent("Hi, I'd like a quote.")
+                }
+              >
+                <MessageCircle size={14} aria-hidden="true" style={{ display: 'inline', marginRight: 4, verticalAlign: 'text-bottom' }} />
+                Text us
+              </a>
               <br />
               <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
             </p>
@@ -178,6 +196,22 @@ export function SiteHeader({ className }: SiteHeaderProps): ReactNode {
                   })}
                 </ul>
               </nav>
+              {/* GTM audit Fix #2: visible tap-to-text action. Hidden on
+               * small mobile (the hamburger → drawer surfaces it). On
+               * tablet+ this is a secondary action next to "Free quote". */}
+              <a
+                href={
+                  'sms:' +
+                  BUSINESS.phoneTel +
+                  '?&body=' +
+                  encodeURIComponent("Hi, I'd like a quote.")
+                }
+                className={styles.textLink}
+                aria-label={`Text ${BUSINESS.phone}`}
+              >
+                <MessageCircle size={16} aria-hidden="true" />
+                <span className={styles.textLinkLabel}>Text us</span>
+              </a>
               <Button as="link" href="/quote" variant="sun" size="md" className={styles.cta}>
                 Free quote
               </Button>

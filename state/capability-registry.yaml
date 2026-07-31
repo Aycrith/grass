@@ -11,7 +11,7 @@
 # ===================================================================
 
 schema_version: 0.1.0
-last_updated: "2026-07-10"
+last_updated: "2026-07-31"
 
 # -------------------------------------------------------------------
 # Mission 1 — Landscaping (Largo, FL) seed capabilities
@@ -25,10 +25,15 @@ capabilities:
   # ---------------------------------------------------------------
   # CAP-001 — Standard lawn mowing service
   # ---------------------------------------------------------------
+  # STATUS: reserved as of 2026-07-31 per D-0068 (landscape-capability-archive).
+  # Owner pivoting to a new business/strategy. Capability preserved
+  # in the registry for resumption; not actively deployed. To resume:
+  # change status back to active/draft, re-run scripts/lint-capabilities.ts,
+  # and write a D-0069 Pilot Outcome ADR per D-0064 §6.
   - cap_id: cap_mowing_standard
     name: "Standard residential lawn mowing"
     owner_agent: operations
-    status: draft
+    status: reserved
     version: 0.1.0
     maturity: designed  # not yet built
     mission: "M1"
@@ -65,10 +70,11 @@ capabilities:
   # ---------------------------------------------------------------
   # CAP-002 — Hard-edge edging
   # ---------------------------------------------------------------
+  # STATUS: reserved as of 2026-07-31 per D-0068 (landscape-capability-archive).
   - cap_id: cap_edging_hard_edge
     name: "Mechanical edging along curbs and walkways"
     owner_agent: operations
-    status: draft
+    status: reserved
     version: 0.1.0
     maturity: designed
     mission: "M1"
@@ -101,10 +107,11 @@ capabilities:
   # ---------------------------------------------------------------
   # CAP-003 — Mulch installation
   # ---------------------------------------------------------------
+  # STATUS: reserved as of 2026-07-31 per D-0068 (landscape-capability-archive).
   - cap_id: cap_mulching_install
     name: "Bulk mulch delivery and installation"
     owner_agent: operations
-    status: draft
+    status: reserved
     version: 0.1.0
     maturity: designed
     mission: "M1"
@@ -141,10 +148,11 @@ capabilities:
   # ---------------------------------------------------------------
   # CAP-004 — Hedge and shrub trimming
   # ---------------------------------------------------------------
+  # STATUS: reserved as of 2026-07-31 per D-0068 (landscape-capability-archive).
   - cap_id: cap_hedge_trim
     name: "Seasonal hedge and shrub trimming"
     owner_agent: operations
-    status: draft
+    status: reserved
     version: 0.1.0
     maturity: designed
     mission: "M1"
@@ -180,10 +188,11 @@ capabilities:
   # ---------------------------------------------------------------
   # CAP-005 — Lead capture from Google Business Profile
   # ---------------------------------------------------------------
+  # STATUS: reserved as of 2026-07-31 per D-0068 (landscape-capability-archive).
   - cap_id: cap_lead_capture_gbp
     name: "GBP form → CRM → auto-acknowledge"
     owner_agent: sales
-    status: draft
+    status: reserved
     version: 0.1.0
     maturity: designed
     mission: "M1"
@@ -216,6 +225,61 @@ capabilities:
       - "Multi-channel lead capture (Facebook, NextDoor) (Month 6+)"
     created: "2026-07-10"
     last_updated: "2026-07-10"
+
+  # ---------------------------------------------------------------
+  # CAP-006 — Pet-waste cleanup (Mission 1 pilot service line)
+  # ---------------------------------------------------------------
+  # Ratified by governance/decisions/0065-pet-waste-service-ratification.md
+  # on 2026-07-28 as a Mission 1 service line for the duration of the
+  # paid-acquisition pilot (D-0064). Reverts to status=reserved if the
+  # pilot aborts before the first paying customer is onboarded.
+  # STATUS: reserved as of 2026-07-31 per D-0068 (pilot never launched).
+  # Per D-0065 §0.7, this is the documented revert path.
+  - cap_id: cap_pet_waste_cleanup
+    name: "Weekly residential pet-waste cleanup"
+    owner_agent: operations
+    status: reserved
+    version: 0.1.0
+    maturity: designed
+    mission: "M1"
+    description: |
+      Weekly residential pet-waste cleanup. Yard visit, scoop and bag
+      all dog waste, off-yard disposal in household trash (or haul-off
+      by arrangement). Pilot service line for the paid-acquisition
+      test per governance/decisions/0064-paid-acquisition-pilot.md.
+    pricing:
+      first_cleanup_usd: 7.50
+      recurring_weekly_usd: 15.00
+      estimated_gross_margin_pct: 70
+    inputs:
+      - "Property record (yard size, dog count, gate access)"
+      - "Service frequency (default: weekly)"
+      - "Customer record (name, phone, address, pet notes)"
+      - "Disposal preference (household trash or haul-off)"
+    outputs:
+      - "Job record (date, duration, yard condition photo optional)"
+      - "Invoice line item (cleaning visit)"
+      - "Next-service-due estimate (7 days)"
+    consumers:
+      - "Scheduling agent (assigns to operator route)"
+      - "Invoicing agent (creates invoice line)"
+      - "Customer success (next-service reminder)"
+    tests:
+      - "scripts/test-capabilities/cap_pet_waste_cleanup.spec.ts (Day 5+)"
+    documentation:
+      - "research/pricing/price-book.yaml (price per visit)"
+      - "agents/operations.md (operational runbook)"
+      - "governance/decisions/0065-pet-waste-service-ratification.md (ratification)"
+    known_limitations:
+      - "Pilot scale: <=5 concurrent customers before route density review"
+      - "No automated lot-size or dog-count measurement (manual on first visit)"
+      - "Weather cancellation policy same as mowing (hurricane mode Day 1 handles named storms only)"
+    roadmap_links:
+      - "Auto-quoting from property polygon area (Month 6)"
+      - "Cross-sell to mowing service (Month 3, after pilot)"
+      - "Subscription cleanup with annual prepay discount (Month 9+)"
+    created: "2026-07-28"
+    last_updated: "2026-07-28"
 
 # -------------------------------------------------------------------
 # Reserved capabilities (defined concept, not yet authored)
@@ -260,9 +324,9 @@ reserved:
 # Updated monthly. Tracks what percentage of registered capabilities
 # are reusable across missions vs mission-specific.
 reusability:
-  total_capabilities: 5
-  reserved_capabilities: 4
-  mission_specific: 5  # all 5 landscaping seeds are M1-specific today
+  total_capabilities: 6
+  reserved_capabilities: 10  # 6 active caps + 4 reserved (all moved to reserved per D-0068)
+  mission_specific: 6  # all 6 landscaping seeds are M1-specific today
   reusable_across_missions: 0
   reusability_pct: 0.0
   target_by_month_6: 0.60
@@ -271,3 +335,22 @@ reusability:
     Mission 2 (whatever it ends up being). Refactor into
     `platform/packages/` and mark them reusable. This number is the
     single most important chart for proving the charter is working.
+
+# -------------------------------------------------------------------
+# POST-PIVOT ARCHIVE — capability-preservation note (D-0068)
+# -------------------------------------------------------------------
+# 2026-07-31: D-0068 (landscape-capability-archive) ratified. All 6
+# active capabilities (cap_mowing_standard, cap_edging_hard_edge,
+# cap_mulching_install, cap_hedge_trim, cap_lead_capture_gbp,
+# cap_pet_waste_cleanup) and the 4 reserved capabilities moved to
+# status=reserved. Pet-waste reverted to reserved per D-0065 §0.7
+# (the documented revert path for pilot abort).
+#
+# To resume landscaping work:
+#   1. Read output/plans/RESUMING.md (the resume procedure).
+#   2. Change status back to active/draft for the capabilities you want.
+#   3. Re-run scripts/lint-capabilities.ts to verify schema.
+#   4. Write a D-0069 Pilot Outcome ADR per D-0064 §6 before any
+#      first ad spend.
+#   5. Update the last_updated date to the resume date.
+# -------------------------------------------------------------------

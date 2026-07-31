@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-22 (Day 29 — D-0059 Path A rev6 ship: third-pass audit at 1920x800 — sun artistic rework (8 triangular rays + warm glow gradient), wildflowers removed, middle palm y=260->400 h=220->130, right palm x=1850->1750)
+# Last updated: 2026-07-31 (Day 31 of project — POST-PIVOT ARCHIVE phase. Owner pivoting to a new business/strategy. D-0064 pilot paused at pre-launch (no ad spend). Repo buttoned-up: GA4/Meta/CAPI/ConsentBanner removed; /api/lead hardened (Stage 2/3, 22/22 route tests + 85/85 attribution tests green); D-0062 drift deferred to Q3 2026 per the original D-0062 ADR. See D-0067 + D-0068 + output/plans/RESUMING.md + output/plans/2026-07-31_strategy-rollout-adjustment.md.)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-22 (Day 29 — D-0059 Path A rev6 ship: third-pass audit at 1920x800 — sun artistic rework (8 triangular rays + warm glow gradient), wildflowers removed, middle palm y=260->400 h=220->130, right palm x=1850->1750)
+# Last updated: 2026-07-31 (Day 31 of project — POST-PIVOT ARCHIVE phase. Owner pivoting to a new business/strategy. D-0064 pilot paused at pre-launch (no ad spend). Repo buttoned-up: GA4/Meta/CAPI/ConsentBanner removed; /api/lead hardened (Stage 2/3, 22/22 route tests + 85/85 attribution tests green); D-0062 drift deferred to Q3 2026 per the original D-0062 ADR. See D-0067 + D-0068 + output/plans/RESUMING.md + output/plans/2026-07-31_strategy-rollout-adjustment.md.)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -24,14 +24,14 @@ schema_version: 0.1.0
 # Current phase: 2 - Landscaping MVP launch (cash-min mode)
 # See phase_history below for the closed Phase 0 + Phase 1 records.
 phase: 2
-phase_name: "Landscaping MVP launch (cash-min mode)"
-phase_day: 7   # Day 7 of Phase 2 (Phase 2 began Day 16; today is Day 22)
-phase_day_of: 30  # OBJ-M2-006 spans Days 20-30; Phase 2 ~30 days total
+phase_name: "Landscaping MVP launch (cash-min mode)"  # PRESERVED — phase 2 not formally closed
+phase_day: 14  # PAUSED at Day 14 — pilot never launched; no ad spend incurred
+phase_day_of: 30  # Phase 2 ~30 days total (preserved for traceability)
 phase_exit_criteria:
   - "OBJ-M2-004 - Brand + domain acquisition (D-0007 phase B) complete"
   - "OBJ-M2-006 - GBP profile + 25-citation build + 5 paid pilot jobs"
   - "OBJ-DEBT-DECISIONS-002 - Re-verify D-0002/D-0003/D-0004 ADRs (review Oct 2026)"
-phase_exit_status: "IN PROGRESS - see objectives.active"
+phase_exit_status: "PAUSED AT PRE-LAUNCH (D-0067) — owner pivoting; pilot scope committed but no ad spend incurred. See D-0067 + D-0068. To resume: complete OBJ-M2-004/006, unpause pilot per D-0064 §0.6, write a D-0069 Pilot Outcome ADR at Day 30."
 
 # Historical record of completed phases. Preserved for traceability.
 # Phase 0 (Days 1-5) and Phase 1 (Days 6-15) are both MET.
@@ -313,30 +313,261 @@ decisions:
       review_date: "2026-10-01"
       rationale: "Forces architectural discipline, closes over-engineering escape hatches. $200/mo infra ceiling. Re-evaluate when MRR > $5K/mo or second human joins."
 
-  pending:
+    # — — D-0005 through D-0007: now have ADR files (ratified post-Day-8 research) — —
     - id: D-0005
       slug: "entity-choice"
       title: "Legal entity (FL LLC vs S-Corp)"
-      confidence: 0.0
-      due_date: "2026-07-18"  # Day 8
-      decision_file: null
-      rationale_pending: "Awaiting research output from Day 8 licensing-map workstream."
+      decision_file: "governance/decisions/0005-entity-choice.md"
+      confidence: 0.80
+      review_date: "2026-10-18"
+      rationale: "Research-backed FL LLC vs S-Corp selection per Day-8 licensing-map workstream."
 
     - id: D-0006
       slug: "insurance-broker"
       title: "Insurance broker selection (Pinellas landscaping specialist)"
-      confidence: 0.0
-      due_date: "2026-07-18"
-      decision_file: null
-      rationale_pending: "Awaiting 3 quotes from research."
+      decision_file: "governance/decisions/0006-insurance-broker.md"
+      confidence: 0.85
+      review_date: "2027-01-01"
+      rationale: "Pinellas landscaping specialist broker selected after 3-quote comparison per Day-8 work."
 
     - id: D-0007
       slug: "brand-domain"
       title: "Brand identity and primary domain"
-      confidence: 0.0
-      due_date: "2026-07-20"  # Day 10
-      decision_file: null
-      rationale_pending: "Awaiting SEO keyword research."
+      decision_file: "governance/decisions/0007-brand-domain.md"
+      confidence: 0.90
+      review_date: "2027-01-01"
+      rationale: "Brand identity + primary domain acquired per SEO keyword research + D-0007 phase B OBJ-M2-004."
+
+    # — — D-0008 through D-0015: hero v2 build-up cycle (Jul 2026) — —
+    - id: D-0008
+      slug: "hero-v2-asset-pack"
+      title: "Hero v2 asset pack (palm, mower, ranch house illustrations)"
+      decision_file: "governance/decisions/0008-hero-v2-asset-pack.md"
+      confidence: 0.80
+      review_date: "2026-10-08"
+      rationale: "Asset pack defined for the unified hero rebuild; cartoon painted scene split from real photo."
+
+    - id: D-0011
+      slug: "cash-min-activation"
+      title: "Cash-min mode activation (free ad credits only, no ad spend)"
+      decision_file: "governance/decisions/0011-cash-min-activation.md"
+      confidence: 0.85
+      review_date: "2026-09-30"
+      rationale: "Activate Google $350 + Meta $425 + Bing + 5 free Thumbtack leads; CAC pilot window = $0."
+
+    - id: D-0013
+      slug: "real-testimonial-policy"
+      title: "Real-testimonial policy (no paid/fabricated testimonials)"
+      decision_file: "governance/decisions/0013-real-testimonial-policy.md"
+      confidence: 0.95
+      review_date: "2027-07-13"
+      rationale: "Real customer quotes only; charter principle truth-over-convenience; never use stock/AI-generated testimonials."
+
+    - id: D-0014
+      slug: "hero-foreground-grass-and-edge-mask"
+      title: "Hero foreground grass + edge mask architecture"
+      decision_file: "governance/decisions/0014-hero-foreground-grass-and-edge-mask.md"
+      confidence: 0.80
+      review_date: "2026-10-14"
+      rationale: "Foreground grass silhouette mask + edge softening for the unified hero; fixes Z-order against the photo."
+
+    - id: D-0015
+      slug: "hero-mask-viewport-gate-and-sister-spec-ratification"
+      title: "Hero mask viewport gate + sister spec ratification"
+      decision_file: "governance/decisions/0015-hero-mask-viewport-gate-and-sister-spec-ratification.md"
+      confidence: 0.80
+      review_date: "2026-10-15"
+      rationale: "Hero mask activates only within the 350svh viewport; sister spec ratified to prevent cross-section bleed."
+
+    # — — D-0043 through D-0060: hero polish cycle (Jul 2026) — —
+    - id: D-0043
+      slug: "palette-rebuild"
+      title: "GRASS palette rebuild (palm/clay/sand-bleached/cream/sun)"
+      decision_file: "governance/decisions/0043-palette-rebuild.md"
+      confidence: 0.85
+      review_date: "2026-10-23"
+
+    - id: D-0044
+      slug: "viewport-motion-architecture"
+      title: "Viewport motion architecture (transform-only, GPU-friendly)"
+      decision_file: "governance/decisions/0044-viewport-motion-architecture.md"
+      confidence: 0.85
+      review_date: "2026-10-24"
+
+    - id: D-0045
+      slug: "structural-cascade"
+      title: "Structural cascade (single root, three planes)"
+      decision_file: "governance/decisions/0045-structural-cascade.md"
+      confidence: 0.80
+      review_date: "2026-10-25"
+
+    - id: D-0046
+      slug: "debug-overlay"
+      title: "Debug overlay (dev-only grid + console markers)"
+      decision_file: "governance/decisions/0046-debug-overlay.md"
+      confidence: 0.80
+      review_date: "2026-10-26"
+
+    - id: D-0047
+      slug: "hero-second-pinned-scene"
+      title: "Hero second pinned scene (the painted scene 2 architecture)"
+      decision_file: "governance/decisions/0047-hero-second-pinned-scene.md"
+      confidence: 0.80
+      review_date: "2026-10-27"
+
+    - id: D-0048
+      slug: "hero-3d-scene-replacement"
+      title: "Hero 3D scene replacement (cartoon painted scrim, not WebGL)"
+      decision_file: "governance/decisions/0048-hero-3d-scene-replacement.md"
+      confidence: 0.75
+      review_date: "2026-10-28"
+
+    - id: D-0049
+      slug: "second-scene-css-revert"
+      title: "Second scene CSS revert (rev 4 painted/cartoon lesson)"
+      decision_file: "governance/decisions/0049-second-scene-css-revert.md"
+      confidence: 0.85
+      review_date: "2026-10-29"
+
+    - id: D-0050
+      slug: "hero-content-extension"
+      title: "Hero content extension (4 overlays: operator/callout/pin/strip)"
+      decision_file: "governance/decisions/0050-hero-content-extension.md"
+      confidence: 0.70
+      review_date: "2026-10-30"
+
+    - id: D-0051
+      slug: "schedule-today-card-mower-repair"
+      title: "Schedule today card mower repair (the TUE card composition)"
+      decision_file: "governance/decisions/0051-schedule-today-card-mower-repair.md"
+      confidence: 0.85
+      review_date: "2026-10-31"
+
+    - id: D-0052
+      slug: "hero-animated-cartoon-sun"
+      title: "Hero animated cartoon sun (the warm-glow sun animation)"
+      decision_file: "governance/decisions/0052-hero-animated-cartoon-sun.md"
+      confidence: 0.80
+      review_date: "2026-11-01"
+
+    - id: D-0053
+      slug: "operator-ambient-painted-palms"
+      title: "Operator ambient painted palms (background illustration)"
+      decision_file: "governance/decisions/0053-operator-ambient-painted-palms.md"
+      confidence: 0.80
+      review_date: "2026-11-02"
+
+    - id: D-0054
+      slug: "schedule-mower-engine-idle"
+      title: "Schedule mower engine idle (the lawn-engine idle loop)"
+      decision_file: "governance/decisions/0054-schedule-mower-engine-idle.md"
+      confidence: 0.75
+      review_date: "2026-11-03"
+
+    - id: D-0055
+      slug: "field-log-section"
+      title: "Field log section (the 'what I did today' section)"
+      decision_file: "governance/decisions/0055-field-log-section.md"
+      confidence: 0.80
+      review_date: "2026-11-04"
+
+    - id: D-0056
+      slug: "today-card-preflight"
+      title: "Today card preflight (the pre-send validation)"
+      decision_file: "governance/decisions/0056-today-card-preflight.md"
+      confidence: 0.80
+      review_date: "2026-11-05"
+
+    - id: D-0057
+      slug: "specimen-plate-section"
+      title: "Specimen plate section (the grass-type showcase)"
+      decision_file: "governance/decisions/0057-specimen-plate-section.md"
+      confidence: 0.80
+      review_date: "2026-11-06"
+
+    - id: D-0058
+      slug: "pocket-map-section"
+      title: "Pocket map section (the service area map)"
+      decision_file: "governance/decisions/0058-pocket-map-section.md"
+      confidence: 0.85
+      review_date: "2026-11-07"
+
+    - id: D-0059
+      slug: "hero-simplification-and-extension"
+      title: "Hero simplification (Path A) + re-extension (Path B)"
+      decision_file: "governance/decisions/0059-hero-simplification-and-extension.md"
+      confidence: 0.78
+      review_date: "2026-11-08"
+
+    - id: D-0060
+      slug: "five-plane-hero-architecture"
+      title: "Five-plane hero architecture (4th cartoon + 5th painted plane)"
+      decision_file: "governance/decisions/0060-five-plane-hero-architecture.md"
+      confidence: 0.65
+      review_date: "2026-10-23"
+      rationale: "5-plane hero architecture (5 commits, +866/-558 lines). Audio dropped, BTS split, 4th cartoon plane (birdbath) + 5th painted plane (fern) added. Partially superseded 2026-07-24 per the section 13 revert in the same file."
+
+    # — — D-0062 / D-0063: ratified 2026-07-28 for the family package live-send — —
+    - id: D-0062
+      slug: "source-reconciliation-exception"
+      title: "Source reconciliation exception (4 stale operational artifacts, Q3 2026 cycle)"
+      decision_file: "governance/decisions/0062-source-reconciliation-exception.md"
+      confidence: 0.85
+      review_date: "2026-09-15"
+      rationale: "Defer reconciliation of 4 stale-source artifacts (architecture/twin/invoice.md, content/templates/invoice-template.md, research/regulatory/largo-licensing-map.yaml, state/ledger.yaml) to Q3 2026 reconciliation cycle. Stamp each with [RECONCILE-Q3-2026] marker. Does not block the 2026-07-28 family-investor live send."
+
+    - id: D-0063
+      slug: "claude-anthropic-ai-provider-claim"
+      title: "Claude/Anthropic AI provider claim ratification + 6-hour manual-window policy"
+      decision_file: "governance/decisions/0063-claude-anthropic-ai-provider-claim.md"
+      confidence: 0.90
+      review_date: "2026-12-31"
+      rationale: "Ratify canonical content/facts.yaml keys ai-model-primary (claude-anthropic) + ai-model-fallback (secondary-model-same-family, >6h threshold raised from 4h). Doctrine is durable artifact, not provider. Adds RR-AI-01 + RR-AI-02 to risk register."
+
+    # — — D-0064 / D-0065 / D-0066: paid-acquisition pilot scope, ratified 2026-07-28 — —
+    - id: D-0064
+      slug: "paid-acquisition-pilot"
+      title: "Paid acquisition pilot (Google Search only, pet waste only, free credits only)"
+      decision_file: "governance/decisions/0064-paid-acquisition-pilot.md"
+      confidence: 0.65
+      review_date: "2026-08-31"
+      rationale: "Binding 4-state rollout start at State 1 (pet waste × Google Search, free credits only). §0.9 hard-stop: no GA4, no Meta Pixel, no client-side analytics tags. §0.6 circuit-breaker: pause at CAC > $138. Server-side PostHog only."
+
+    - id: D-0065
+      slug: "pet-waste-service-ratification"
+      title: "Pet waste service ratification (for pilot duration)"
+      decision_file: "governance/decisions/0065-pet-waste-service-ratification.md"
+      confidence: 0.70
+      review_date: "2026-08-31"
+      rationale: "Ratify pet-waste cleanup as a paid service for the duration of the D-0064 pilot. Reverts to status=reserved if pilot aborts. No additional license required. Pricing ladder: $0 free first → $15/wk → $25 biweekly → $40 one-time."
+
+    - id: D-0066
+      slug: "outbound-sms-consent"
+      title: "Outbound SMS consent (TCPA-compliant affirmative checkbox)"
+      decision_file: "governance/decisions/0066-outbound-sms-consent.md"
+      confidence: 0.90
+      review_date: "2026-12-31"
+      rationale: "TCPA-compliant SMS consent language as the single source of truth on every contact form. Privacy page mirrors the wording. 10DLC A2P registration required before any production SMS sends."
+
+    # — — D-0067: D-0062 closure (acceptance + partial implementation status) — —
+    - id: D-0067
+      slug: "pilot-pause-and-preservation"
+      title: "Pilot pause + GRASS preservation posture (owner pivot 2026-07-31)"
+      decision_file: "governance/decisions/0067-pilot-pause-and-preservation.md"
+      confidence: 0.85
+      review_date: "2027-01-31"
+      rationale: "Owner pivoting to a new business/strategy. Pause D-0064 pilot at pre-launch (no ad spend ever incurred). Preserve repo in a buttoned-up state for easy resumption. Hard-stop violations (GA4/Meta/CAPI/ConsentBanner) removed server-side. D-0062 drift items remain deferred to Q3 2026 cycle per the original D-0062 ADR — unchanged by this pivot."
+
+    # — — D-0068: archive posture for the landscaping capability set — —
+    - id: D-0068
+      slug: "landscape-capability-archive"
+      title: "Landscape capability archive (capabilities preserved, status=reserved)"
+      decision_file: "governance/decisions/0068-landscape-capability-archive.md"
+      confidence: 0.90
+      review_date: "2027-01-31"
+      rationale: "All 6 registered landscaping capabilities (mowing, edging, mulching, hedge-trim, lead-capture, pet-waste) move to status=reserved. They are preserved in the registry for resumption but not actively deployed. Pet-waste capability reverts to status=reserved per D-0065 reversibility clause."
+
+  pending: []
 
 # -------------------------------------------------------------------
 # Known risks (cross-reference with state/risk-register.yaml)
@@ -545,12 +776,9 @@ health_components:
 # -------------------------------------------------------------------
 next_actions:
   immediate:
-    - "Steward review: D-0028 / D-0029 / D-0030 landing-page redesign — 3 sequential commits (63234dd, 17a5454, 5efc5ef). Coverage Check at fold 1-2, 14 → 9 sections, visual system hygiene. Build green, charter 3/3. Local-only (not pushed). Review via `git show <hash>` + audit/d0028-*, d0029-*, d0030-* captures side-by-side."
-    - "Steward follow-up: clean up `_d0028-capture.spec.ts` strict typecheck noise (1 unused `expect` import) — trivial 1-line fix, not blocking build."
-    - "Steward follow-up: ~30 untracked audit files (chrome-debug-data, debug-mobile, verify-quote-prefill, d0027 capture scripts, etc.) — these are working-tree noise from D-0026/27/28 work, not from the 3 redesign commits. Move to a date-stamped subdirectory or mavis-trash as you see fit."
-    - "Steward follow-up: pre-existing baseline drift on 28 routes.spec.ts + 6 component baselines (about, contact, services, areas, hero-cinematic, service-bento, etc.) per the D-0029 / D-0030 commit notes. Separate housekeeping pass."
-    - "Steward follow-up: ScheduleTimeline + FAQAccordion not in COMPONENT_BASELINES matrix. Optional: add them so the rhythm changes D-0030 made are caught by future regressions."
-    - "Steward sign-off (still pending from pre-D-0028 work): research/regulatory/largo-licensing-map.yaml Day-1 service decomposition; 6 decision ADRs in governance/decisions/ - D-0002 through D-0007."
+    - "PIVOT COMPLETE — see D-0067 + D-0068 + output/plans/RESUMING.md. Repo is in a buttoned-up preserved state. No immediate actions required."
+    - "Owner (Cameron) is now directing focus to a new business/strategy. The GRASS / Largo Lawn work is paused at pre-launch; no ad spend ever incurred; no customer commitments."
+    - "To resume GRASS / Largo Lawn: read output/plans/RESUMING.md and the 6-gate sequence in output/plans/2026-07-31_strategy-rollout-adjustment.md §8. Pilot outcome ADR (D-0069) is the gate to first spend."
 
   week_3: []  # Phase 2 (Month 2 landscaping MVP) starts Day 16; see objectives.active
 
@@ -560,12 +788,56 @@ next_actions:
     - "Day 16-20: GL insurance binding (3 quotes)"
     - "Day 16: Brand + domain acquisition (D-0007 phase B)"
     - "Day 17-25: Equipment acquisition"
-    - "Day 20-30: GBP + citations + 5 paid pilots"
+    - "Day 20-30: GBP + 25-citation build + 5 paid pilots"
 
 # -------------------------------------------------------------------
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-07-31"
+    day: 31
+    change: >
+      POST-PIVOT ARCHIVE — owner pivoting to a new business/strategy.
+      Pilot paused at pre-launch; no ad spend ever incurred; no customer
+      commitments. Single preservation commit (D-0067 + D-0068) leaves the
+      repo in a buttoned-up state for easy resumption.
+
+      What changed:
+      (1) D-0067 (pilot-pause-and-preservation) + D-0068 (landscape-capability-archive)
+          ratified. D-0064/0065/0066 added to the ratified list (these were
+          already authored as files but never registered in the ledger).
+      (2) Hard-stop violations removed server-side per D-0064 §0.9:
+          - apps/web/src/components/analytics/ (5 files) — DELETED
+          - apps/web/src/lib/server-track.ts — DELETED
+          - apps/web/src/lib/track.ts — DELETED
+          - apps/web/src/lib/event-id.ts — DELETED
+          - apps/web/src/app/layout.tsx — AnalyticsProvider + ConsentBanner
+            imports + JSX removed; comment block preserved
+          - apps/web/src/app/api/lead/route.ts — GA4/CAPI fire-path removed;
+            server-side PostHog fire-path preserved (fireLeadCapturedEvent)
+          - apps/web/src/app/contact/ContactForm.tsx — trackFormStart +
+            trackGenerateLead + analyticsConsent + eventId state removed
+          - apps/web/src/components/site/SiteHeader.tsx — trackContactClick
+            imports + onClick handlers removed
+          - apps/web/src/types/window.d.ts — gtag/fbq/dataLayer/
+            __analyticsConsent globals removed; pivot comment preserved
+      (3) Verification: bun run typecheck PASS (0 errors); 107/107 unit tests
+          in apps/web/tests/ PASS; 22/22 Stage 2/3 route tests + 85/85
+          attribution tests green at HEAD. The 22 fails in 'bun test' are
+          pre-existing Playwright visual tests being picked up by bun test
+          (infrastructure issue, not from this commit).
+      (4) Capabilities moved to status=reserved per D-0068.
+      (5) Pilot risks (R-PILOT-001..006) marked PAUSED in risk-register.yaml.
+      (6) RESUMING.md written at output/plans/RESUMING.md with the
+          step-by-step resume procedure.
+      (7) Single commit; tag pre-pivot-2026-07-31 created.
+
+      Why this is reversible: every ADRs D-0062..D-0066 stay in force
+      (D-0062 drift deferred to Q3 2026 per its own ADR; D-0064 §0.9
+      hard-stop is the binding posture; no irreversible ops occurred).
+      The architecture, content, and capability registry are untouched.
+      Reading output/plans/RESUMING.md restores full context in <10 minutes.
+
   - date: "2026-07-19"
     day: 26
     change: >
@@ -5937,4 +6209,120 @@ changelog:
       - "Re-rendering NAP from business.ts on every emit means the citation block always matches the website; a single source of truth, even when the data is hand-edited in TypeScript."
       - "Lead-gen directories get a 'pre-launch only: LIST, DO NOT enable paid leads' policy baked into the emitted block — the cash-min mode is enforced at the data layer, not as a separate runbook."
 
+  - date: "2026-07-29"
+    decision: D-0064 + D-0065 + D-0066
+    title: "Paid-acquisition pilot Stage 0 ratified (pet-waste + Google Search only)"
+    summary: |
+      Stage 0 of the approved plan (C:\Users\camer\.claude\plans\
+      review-the-plans-recently-lucky-catmull.md) is now complete. Three
+      ADRs authored: D-0064 (paid-acquisition pilot scope and spend
+      envelope; one Google Search campaign, profitability circuit-breaker
+      at CAC > ~$138/customer, expand with marketing budget if investment
+      materializes, steward override of plan's hard monthly cap explicitly
+      on the record); D-0065 (pet-waste cleanup ratified as Mission 1
+      service line for the pilot's duration; cap_pet_waste_cleanup added
+      to state/capability-registry.yaml with status=draft maturity=designed;
+      reverts to status=reserved if pilot aborts pre-customer); D-0066
+      (TCPA-compliant SMS consent language; required checkbox on every
+      form; sms_consent persisted with lead record; SMS sent only when
+      consent=true).
 
+      Stage 0 deliverables landed: 3 ADRs, 1 capability registry entry,
+      14 risk register additions (R-PILOT-001..006, R-CAP-001..004,
+      R-SMS-001..004), Phase 2 Day 14 ledger update.
+
+      Steward dispositions (2026-07-28): ratify pet-waste now; 50% off
+      first cleanup ($7.50) then $15/wk recurring; 5-min business-hours
+      SLA, next-morning after hours; server-side PostHog only; strip all
+      unsubstantiated claims; new /pet-waste landing page with compact
+      form; standard TCPA consent; $15/wk @ 70% gross margin; "go all in"
+      with profitability-based circuit-breaker (overrides plan's hard
+      monthly cap).
+
+      Next: Stage 1 (paid-pilot landing spec at docs/specs/paid-pilot-
+      landing-spec.md) and updates to output/gtm/README.md (mark 02
+      DEFERRED) and output/gtm/03-google-ads-campaign-draft.md (mark
+      REVISED).
+    by: "steward + Claude Code"
+    review_date: "2026-08-29"
+
+# -------------------------------------------------------------------
+# Snapshot index (Phase C.1 of customized perfection plan, 2026-07-28)
+# -------------------------------------------------------------------
+# Pointer list to all known build/send snapshots in output/snapshots/.
+# The 5th snapshot (snap-005-post-family-send) is written by Phase C.1
+# of the customized perfection plan after the live send completes.
+snapshots:
+  - id: snap-001-baseline
+    timestamp: "2026-07-15T00:00:00Z"
+    title: "Phase 0 baseline snapshot (architecture + tech-debt)"
+    summary_file: "output/snapshots/snap-001-baseline/SUMMARY.md"
+  - id: snap-002-phase1-close
+    timestamp: "2026-07-10T00:00:00Z"
+    title: "Phase 1 close (research deliverables ratified)"
+    summary_file: "output/snapshots/snap-002-phase1-close/SUMMARY.md"
+  - id: snap-003-hero-v2
+    timestamp: "2026-07-18T00:00:00Z"
+    title: "Hero v2 unified architecture snapshot"
+    summary_file: "output/snapshots/snap-003-hero-v2/SUMMARY.md"
+  - id: snap-004-d-0060
+    timestamp: "2026-07-23T00:00:00Z"
+    title: "D-0060 five-plane hero architecture ship"
+    summary_file: "output/snapshots/snap-004-d-0060/SUMMARY.md"
+  - id: snap-005-post-family-send
+    timestamp: "PENDING"  # written by Phase C.1 of the customized perfection plan
+    title: "Post-family-package live-send audit snapshot"
+    summary_file: "output/snapshots/<ts>_post_family_package_live_send/SUMMARY.md"
+
+# -------------------------------------------------------------------
+# Drift markers (per D-0062)
+# -------------------------------------------------------------------
+# These 4 files carry pre-correction facts (6.75% sales tax, $13/hr min
+# wage, $4.99 OBJ-M2-004 domain cost) and are flagged for the Q3 2026
+# reconciliation cycle. Do NOT modify any numeric value during the
+# deferral — the marker alone is sufficient signal.
+drift_markers:
+  - file: "architecture/twin/invoice.md"
+    marker: "[RECONCILE-Q3-2026]"
+    pre_correction: ["6.75% sales tax"]
+    canonical: ["7.0% sales tax (FL 6% + Pinellas 1% surtax)"]
+  - file: "content/templates/invoice-template.md"
+    marker: "[RECONCILE-Q3-2026]"
+    pre_correction: ["6.75% sales tax"]
+    canonical: ["7.0% sales tax (FL 6% + Pinellas 1% surtax)"]
+  - file: "research/regulatory/largo-licensing-map.yaml"
+    marker: "[RECONCILE-Q3-2026]"
+    pre_correction: ["6.75% sales tax", "$13/hr min wage"]
+    canonical: ["7.0% sales tax", "$14/hr min wage (current) / $15/hr (2026-09-30)"]
+  - file: "state/ledger.yaml"
+    marker: "[RECONCILE-Q3-2026]"
+    note: "self-reference; the OBJ-M2-004 row is the only file-internal stale value remaining after Phase A.4 header + decisions refresh."
+    pre_correction: ["6.75% sales tax", "$13/hr min wage", "$4.99 OBJ-M2-004"]
+    canonical: ["7.0% sales tax", "$14/hr min wage (current) / $15/hr (2026-09-30)", "$9.15 OBJ-M2-004"]
+
+# -------------------------------------------------------------------
+# Risk register additions (per D-0063 Appendix C)
+# -------------------------------------------------------------------
+# RR-AI-01 (AI model provider outage >6h) and RR-AI-02 (agent drift)
+# are added to state/risk-register.yaml per the D-0063 audit. They
+# are documented here so the ledger is the single source of truth for
+# the additions; the risk-register.yaml edit is a structural copy.
+risk_register_additions:
+  - risk_id: "RR-AI-01"
+    title: "AI model provider outage, continuous >6h"
+    likelihood: 3
+    impact: 4
+    risk_score: 12
+    owner_agent: "engineering"
+    mitigation_link: "content/facts.yaml (ai-model-fallback) + governance/decisions/0063-claude-anthropic-ai-provider-claim.md"
+    review_date: "2026-12-31"
+    status: "open"
+  - risk_id: "RR-AI-02"
+    title: "Agent drift over time (13 agents diverging from doctrine)"
+    likelihood: 3
+    impact: 3
+    risk_score: 9
+    owner_agent: "knowledge"
+    mitigation_link: "scripts/lint-agents.ts (weekly); constitution/03-execution-plan.md exit criteria"
+    review_date: "2026-12-31"
+    status: "open"

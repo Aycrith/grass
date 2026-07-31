@@ -191,16 +191,13 @@ export function SiteFooter({ className }: SiteFooterProps): ReactNode {
               - The browser stores an attribution key (`grass_attribution_v1`,
                 30-day TTL) so the UTMs survive page reloads. Functional,
                 not advertising.
-              - Google Analytics 4 + Google Ads (gtag.js) and Meta Pixel
-                (fbevents.js) load only after the consent banner is accepted.
-                Rejecting the banner keeps gtag in cookieless consent-mode v2
-                default-deny and prevents the Meta script from loading.
-              - Consent choice persisted in localStorage as
-                `grass:analytics-consent` (v1). Manage via the banner.
+              - 2026-07-31 pivot (D-0067): No Google Analytics, no Meta Pixel,
+                no client-side third-party tracking. No consent banner.
               The privacy page (see /privacy) is the canonical source. */}
           <span className={styles.analyticsNote}>
-            Server-side analytics (PostHog, keyed by lead id). After consent: GA4 + Meta Pixel.
-            One local-storage attribution key (grass_attribution_v1, 30 days).{' '}
+            Server-side analytics (PostHog, keyed by lead id). No client-side
+            third-party tracking. One local-storage attribution key
+            (grass_attribution_v1, 30 days).{' '}
           </span>
           <span>
             Built in Largo ·{' '}
