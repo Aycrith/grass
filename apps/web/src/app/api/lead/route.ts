@@ -46,12 +46,9 @@ import { appendLeadEvent } from '@grass/crm-core';
 import type { Lead } from '@grass/crm-core';
 import { sendLeadResponse } from '@grass/notifications-core';
 import { NextResponse } from 'next/server';
-import { sendAutoTextBack } from '@/lib/twilio';
-import { sendGA4ServerEvent, sendMetaConversionEvent } from '@/lib/server-track';
-import { generateEventId } from '@/lib/event-id';
+import { notifyNewLead } from '@/lib/notify';
 import { toLeadSource } from '@/lib/channels';
 import { buildLeadCapturedEvent, fireLeadCapturedEvent } from '@/lib/server-posthog';
-import type { UTMParams } from '@/lib/utm';
 
 interface LeadInput {
   first_name: string;
@@ -83,14 +80,12 @@ interface LeadInput {
   device_class?: 'mobile' | 'tablet' | 'desktop' | null;
   first_touch_at?: string | null;
   /**
-   * Client-generated event_id (UUID v4) shared with the browser pixel +
-   * gtag fires. Both ad platforms use it for server-side dedup. If the
-   * client didn't send one (older form variant), the server generates
-   * one before firing the server events.
+   * Server-side event id (UUID v4) for cross-platform dedup. The
+   * server generates one if the client doesn't pass it; the only
+   * fire-path is PostHog (server-side). Per D-0067 §0.9, no browser
+   * pixel + gtag fires — the id is used to dedup on the server.
    */
   event_id?: string | null;
-  /** Whether the user granted analytics consent (gates CAPI/GA4 MP). */
-  analytics_consent?: 'granted' | 'denied' | null;
   /** Compact-id of the form variant — "full" or "compact" — surfaces in
    *  analytics so the team can split conversion by variant. */
   form_variant?: 'full' | 'compact' | null;
@@ -115,19 +110,22 @@ const idempotencyStore = new Map<string, IdempotencyEntry>();
 const rateLimitStore = new Map<string, RateLimitState>();
 
 /**
- * __resetStores — test-only escape hatch. Resets the in-memory idempotency
- * and rate-limit stores. Production code MUST NOT call this; the test
- * suite at `apps/web/tests/lead/route.test.ts` imports it.
+ * __resetLeadStores — test-only escape hatch. Resets the in-memory
+ * idempotency and rate-limit stores. Production code MUST NOT call
+ * this; the test suite at `apps/web/tests/lead/route.test.ts` invokes
+ * it via `globalThis.__resetLeadStores?.()`.
  *
- * The leading double underscore is a deliberate "do not call from app
- * code" signal — visually obvious in code review and survives tree-shaking
- * in production bundles. Next.js 15.5's route-export validation tolerates
- * this name (it allows non-HTTP-method exports whose names begin with `_`).
+ * The function is attached to `globalThis` rather than exported. Next.js
+ * 15.5's route-export validation rejects named exports that aren't HTTP
+ * method handlers — using `globalThis` keeps the test affordance out of
+ * the module's public surface (and out of the generated `.next/types`
+ * files) while still letting tests reach the closure-scoped stores.
  */
-export function __resetStores(): void {
+const __resetLeadStores = (): void => {
   idempotencyStore.clear();
   rateLimitStore.clear();
 };
+(globalThis as { __resetLeadStores?: () => void }).__resetLeadStores = __resetLeadStores;
 
 // --- Tunables -------------------------------------------------------------
 
@@ -234,13 +232,9 @@ function validateLead(
       ...(input.referrer !== undefined ? { referrer: input.referrer } : {}),
       ...(input.device_class !== undefined ? { device_class: input.device_class } : {}),
       ...(input.first_touch_at !== undefined ? { first_touch_at: input.first_touch_at } : {}),
-      // GTM audit: client-shared event_id for cross-platform dedup.
+      // Server-side event_id for PostHog cross-platform dedup.
       ...(input.event_id?.trim() ? { event_id: input.event_id.trim() } : {}),
-      // GTM audit: explicit analytics consent signal from ConsentBanner.
-      ...(input.analytics_consent !== undefined && input.analytics_consent !== null
-        ? { analytics_consent: input.analytics_consent }
-        : {}),
-      // GTM audit: which form variant captured the lead.
+      // Which form variant captured the lead (for analytics split).
       ...(input.form_variant !== undefined && input.form_variant !== null
         ? { form_variant: input.form_variant }
         : {}),
@@ -351,84 +345,48 @@ export async function POST(req: Request) {
     );
   }
 
-  // 5.5 — GTM launch (2026-07-28): Twilio auto-text-back + server-side
-  //      GA4 Measurement Protocol + Meta Conversions API. All fire-
-  //      and-forget; never block the response. The shared `event_id`
-  //      is the client-provided UUID; if missing (older form variant
-  //      or a curl test), we generate one so client + server events
-  //      still dedup against each other.
-  const analyticsConsent = validated.data.analytics_consent ?? 'denied';
-  const eventId = validated.data.event_id?.trim() || generateEventId();
-  const utmForAnalytics: UTMParams = {
-    ...(validated.data.utm_source ? { utm_source: validated.data.utm_source } : {}),
-    ...(validated.data.utm_medium ? { utm_medium: validated.data.utm_medium } : {}),
-    ...(validated.data.utm_campaign ? { utm_campaign: validated.data.utm_campaign } : {}),
-    ...(validated.data.utm_content ? { utm_content: validated.data.utm_content } : {}),
-    ...(validated.data.utm_term ? { utm_term: validated.data.utm_term } : {}),
-  };
-  const sourceUrl =
-    validated.data.landing_path !== undefined && validated.data.landing_path !== null
-      ? `${BUSINESS.url}${validated.data.landing_path}`
-      : BUSINESS.url;
+  // 5.5 — Pivot cleanup (2026-07-31): GA4 Measurement Protocol + Meta
+  //      Conversions API removed per D-0064 §0.9 (server-side PostHog
+  //      only). The `event_id` / `form_variant` fields are preserved in
+  //      the LeadInput interface for Stage 3 attribution compatibility
+  //      (no-op unless future amendment re-introduces client-side
+  //      analytics). See output/plans/RESUMING.md.
 
-  // Twilio auto-text-back — gated on phone AND sms_consent (per D-0066).
-  // GTM audit Fix #6. Sends within ~1s of the lead being persisted;
-  // the user gets a near-instant "got it" message while the
-  // templated acknowledgement fires in parallel.
-  if (validated.data.phone && validated.data.sms_consent === true) {
-    void sendAutoTextBack({
-      to: validated.data.phone,
-      firstName: validated.data.first_name,
-      ...(validated.data.utm_source ? { utmSource: validated.data.utm_source } : {}),
-      leadId: lead.id,
-    }).catch((err) => {
-      console.error('[lead] twilio auto-text-back failed', {
-        lead_id: lead.id,
-        error: err instanceof Error ? err.message : 'unknown',
-      });
+  // Lead notification (operator-side, fire-and-forget) — gates on either
+  // phone OR email so we never silently drop a lead. The notify router
+  // picks the right backend:
+  //   - email (default V1) — Gmail SMTP, free, $0 forever
+  //   - twilio (V2 opt-in via LEAD_NOTIFY_MODE=twilio) — auto-text-back
+  // Either way the operator gets the lead in their inbox/phone within
+  // ~1s of submission; the customer-facing acknowledgement fires
+  // separately via sendLeadResponse below.
+  void notifyNewLead({
+    firstName: validated.data.first_name,
+    ...(validated.data.last_name ? { lastName: validated.data.last_name } : {}),
+    email: validated.data.email,
+    ...(validated.data.phone ? { phone: validated.data.phone } : {}),
+    zip: validated.data.zip,
+    ...(validated.data.message ? { message: validated.data.message } : {}),
+    ...(validated.data.source ? { source: validated.data.source } : {}),
+    ...(validated.data.utm_source ? { utmSource: validated.data.utm_source } : {}),
+    ...(validated.data.utm_medium ? { utmMedium: validated.data.utm_medium } : {}),
+    ...(validated.data.utm_campaign ? { utmCampaign: validated.data.utm_campaign } : {}),
+    ...(validated.data.utm_term ? { utmTerm: validated.data.utm_term } : {}),
+    ...(validated.data.utm_content ? { utmContent: validated.data.utm_content } : {}),
+    leadId: lead.id,
+    smsConsent: validated.data.sms_consent === true,
+    receivedAt: new Date().toISOString(),
+  }).catch((err) => {
+    console.error('[lead] notify failed', {
+      lead_id: lead.id,
+      error: err instanceof Error ? err.message : 'unknown',
     });
-  }
+  });
 
-  // Server-side analytics — only when the user granted consent. The
-  // client pixel/gtag already fired with the same event_id; these
-  // server events survive ad-blockers and iOS 14.5+ ATT.
-  if (analyticsConsent === 'granted') {
-    const clientId = getClientIp(req).replace(/[^\w.-]/g, '_');
-
-    void sendGA4ServerEvent({
-      eventName: 'generate_lead',
-      eventId,
-      clientId,
-      userId: lead.id,
-      value: 60,
-      currency: 'USD',
-      sourceUrl,
-      utm: utmForAnalytics,
-    }).catch((err) => {
-      console.error('[lead] GA4 server event failed', {
-        lead_id: lead.id,
-        error: err instanceof Error ? err.message : 'unknown',
-      });
-    });
-
-    void sendMetaConversionEvent({
-      eventName: 'Lead',
-      eventId,
-      email: validated.data.email,
-      ...(validated.data.phone ? { phone: validated.data.phone } : {}),
-      firstName: validated.data.first_name,
-      zip: validated.data.zip,
-      value: 60,
-      currency: 'USD',
-      sourceUrl,
-      utm: utmForAnalytics,
-    }).catch((err) => {
-      console.error('[lead] Meta CAPI failed', {
-        lead_id: lead.id,
-        error: err instanceof Error ? err.message : 'unknown',
-      });
-    });
-  }
+  // Server-side analytics removed at pivot (2026-07-31). Per D-0064 §0.9,
+  // server-side PostHog (fireLeadCapturedEvent below) is the only
+  // analytics fire-path. To re-introduce GA4/MP or Meta CAPI, write a
+  // new D-0064 amendment ADR.
 
   // 6. Record idempotency claim so duplicate submits within the window
   //    return the same response without creating a second lead.

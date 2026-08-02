@@ -137,7 +137,10 @@ mock.module('@/lib/business', () => ({
 }));
 
 // Dynamically import the route AFTER mocks are set up.
-const { POST, __resetStores } = await import('../../src/app/api/lead/route.ts');
+const { POST } = await import('../../src/app/api/lead/route.ts');
+// Test reset is attached to globalThis (Next.js 15.5 rejects non-HTTP
+// named exports from route files). See route.ts for the rationale.
+const __resetLeadStores = (globalThis as { __resetLeadStores?: () => void }).__resetLeadStores;
 
 // --- Test helpers ---------------------------------------------------------
 
@@ -174,7 +177,7 @@ function validBody(overrides: Record<string, unknown> = {}) {
 }
 
 beforeEach(() => {
-  __resetStores();
+  __resetLeadStores?.();
   mockCreateLead.mockClear();
   mockUpdateLeadAcknowledgement.mockClear();
   mockSendLeadResponse.mockClear();

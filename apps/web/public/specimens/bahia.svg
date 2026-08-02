@@ -13,7 +13,7 @@
   </g>
 
   <!-- Border -->
-  <rect x="14" y="14" width="312" height="312" fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.9" opacity="0.55" />
+  <rect x="14" y="14" width="312" height="312" fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.9" opacity="0.95" />
 
   <!-- BAHIA SEEDHEAD: distinctive Y-SHAPE (two spikes on a single stalk — most diagnostic) -->
   <g transform="translate(170 60)">
@@ -61,8 +61,8 @@
     <path d="M 170 222 Q 156 150 150 80 L 150 72 L 156 70 L 162 72 L 160 80 Q 162 150 170 222 Z"
           fill="var(--ll-olive, #6b7d4a)" fill-opacity="0.32" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.9" />
     <line x1="156" y1="80" x2="166" y2="210" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.55" opacity="0.75" />
-    <line x1="154" y1="90" x2="164" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.55" />
-    <line x1="158" y1="90" x2="168" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.55" />
+    <line x1="154" y1="90" x2="164" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.95" />
+    <line x1="158" y1="90" x2="168" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.95" />
   </g>
 
   <!-- Blade 2: center, tallest (with Y-seedhead) - V-fold -->
@@ -70,8 +70,8 @@
     <path d="M 170 222 Q 170 140 170 80 L 170 60 L 176 58 L 182 60 L 180 80 Q 180 140 170 222 Z"
           fill="var(--ll-olive, #6b7d4a)" fill-opacity="0.32" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.9" />
     <line x1="176" y1="70" x2="174" y2="210" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.55" opacity="0.75" />
-    <line x1="174" y1="80" x2="172" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.55" />
-    <line x1="178" y1="80" x2="176" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.55" />
+    <line x1="174" y1="80" x2="172" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.95" />
+    <line x1="178" y1="80" x2="176" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.95" />
   </g>
 
   <!-- Blade 3: right, V-fold -->
@@ -79,8 +79,8 @@
     <path d="M 170 222 Q 184 150 190 80 L 190 72 L 184 70 L 178 72 L 180 80 Q 180 150 170 222 Z"
           fill="var(--ll-olive, #6b7d4a)" fill-opacity="0.32" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.9" />
     <line x1="184" y1="80" x2="176" y2="210" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.55" opacity="0.75" />
-    <line x1="186" y1="90" x2="178" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.55" />
-    <line x1="182" y1="90" x2="174" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.55" />
+    <line x1="186" y1="90" x2="178" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.95" />
+    <line x1="182" y1="90" x2="174" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.95" />
   </g>
 
   <!-- RHIZOMES ONLY (no stolons) — Bahia's distinguishing feature -->
