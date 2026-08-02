@@ -1,0 +1,668 @@
+# GRASS Business Plan Facts (PRP-A A-7 + S-01)
+#
+# Schema (per fact):
+#   key:         kebab-case identifier
+#   value:       the canonical value (number, percent, or string)
+#   units:       currency / percent / count / string / etc.
+#   source:      citation (must be a real, verifiable source)
+#   effective:   ISO date the value became/will become canonical
+#   review:      ISO date the value must be re-verified
+#   confidence:  1-5 (5 = highest, sourced from primary docs)
+#   scope:       where the fact applies ("all", "family-package", "long-plan",
+#                "condensed-plan", "summary-card")
+#   notes:       optional context
+#
+# Drift discipline:
+#   - Every change to a fact MUST bump the version below.
+#   - The lock file (output/reports/facts.lock.yaml) is a frozen snapshot of
+#     the canonical state at the last successful build; the build gate
+#     fails if facts.yaml drifts from facts.lock.yaml without a version bump.
+#   - Operational artifacts (architecture/twin/invoice.md, content/templates/
+#     invoice-template.md, research/regulatory/largo-licensing-map.yaml,
+#     state/ledger.yaml) carry pre-correction values for some of these keys
+#     and are flagged as D-0062 for the next reconciliation cycle.
+
+version: "1.2.0"            # bump on any fact change (2026-07-28 v1.2: v3.0 AAA plan — added family-package-v3 facts; existing canonicals preserved)
+facts_model_version: "v1"   # bump on schema change
+locked_on: "2026-07-28"     # date of last lock
+
+facts:
+
+  # ──────────────────────────────────────────────────────────────────────
+  # FLORIDA LABOR & TAX
+  # ──────────────────────────────────────────────────────────────────────
+
+  - key: fl-min-wage-current
+    value: 14.00
+    units: USD/hr
+    source: "FL Constitution Amendment 2 (2020); FL Department of Economic Opportunity 2026 schedule"
+    effective: "2025-09-30"
+    review: "2026-09-30"     # before next-step increase
+    confidence: 5
+    scope: all
+    notes: "Current FL minimum wage. Steps up to $15/hr on 2026-09-30 per the constitutional amendment schedule."
+
+  - key: fl-min-wage-next
+    value: 15.00
+    units: USD/hr
+    source: "FL Constitution Amendment 2 (2020); FL Department of Economic Opportunity 2026 schedule"
+    effective: "2026-09-30"
+    review: "2027-09-30"
+    confidence: 5
+    scope: all
+    notes: "Next FL minimum wage step per constitutional schedule."
+
+  - key: fl-min-wage-loaded-multiplier
+    value: 1.30
+    units: ratio
+    source: "IRS Publication 15 + FL workers comp + benefits standard markup"
+    effective: "2026-01-01"
+    review: "2027-01-01"
+    confidence: 4
+    scope: long-plan
+    notes: "Loaded hourly cost = wage × 1.30 (payroll tax + workers comp + basic benefits)."
+
+  - key: pinellas-sales-tax
+    value: 7.0
+    units: percent
+    source: "FL Department of Revenue Form DR-15DSS 2026 (FL 6% + Pinellas 1% surtax)"
+    effective: "2025-01-01"
+    review: "2026-12-31"
+    confidence: 5
+    scope: all
+    notes: "Combined FL state + Pinellas County sales tax. Passed through to customers via Stripe."
+
+  # ──────────────────────────────────────────────────────────────────────
+  # INDUSTRY BENCHMARKS
+  # ──────────────────────────────────────────────────────────────────────
+
+  - key: landscaping-net-margin-min
+    value: 10
+    units: percent
+    source: "NALP 2025 Financial Benchmark Report (industry average ~11.9%, top performers ~14%); IBISWorld NAICS 561730 broader average ~7.9%"
+    effective: "2026-01-01"
+    review: "2027-01-01"
+    confidence: 2
+    scope: all
+    notes: "Lower bound of landscaping industry net margin range, bracket [8–15%] across two independent 2025–2026 pulls. NALP supports 10–15% for well-run operators; IBISWorld ~7.9% includes all operators (lower-margin tail). Below this is structurally unsound."
+
+  - key: landscaping-net-margin-max
+    value: 15
+    units: percent
+    source: "NALP 2025 Financial Benchmark Report (industry average ~11.9%, top performers ~14%); IBISWorld NAICS 561730 broader average ~7.9%"
+    effective: "2026-01-01"
+    review: "2027-01-01"
+    confidence: 2
+    scope: all
+    notes: "Upper bound of landscaping industry net margin range, bracket [8–15%] across two independent 2025–2026 pulls. NALP top-performer ~14%; IBISWorld broader average ~7.9%. Above 15% is the operator's structural advantage (no franchise fees, solo operator, equipment amortized). The 26.7% Year-1 baseline clears even the IBISWorld 7.9% floor by 18+ points."
+
+  - key: landscaping-gross-margin-solo
+    value: 74
+    units: percent
+    source: "research/market/profitability-roadmap.md (Year 1 solo operator)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 4
+    scope: long-plan
+    notes: "Year 1 solo-operator gross margin. Compresses to 45–55% post-first-hire."
+
+  - key: landscaping-gross-margin-with-hire
+    value: 50
+    units: percent
+    source: "research/market/profitability-roadmap.md (mid-point post-first-hire); NALP/IBISWorld do not publish first-hire-transition figures specifically"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 2
+    scope: long-plan
+    notes: "Mid-point of 45–55% range after first hire; INTERNAL ESTIMATE, not externally benchmarked as of 2026-07-28. NALP 2025 covers established operators with labor already in place; first-hire transition figure remains org-derived. Confidence held at 2 pending primary-source verification."
+
+  - key: landscaping-net-margin-with-hire
+    value: 20
+    units: percent
+    source: "Derived: research/market/profitability-roadmap.md (post-first-hire net = gross 45–55% × ~40% post-overhead retention)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 2
+    scope: long-plan
+    notes: "Mid-point of 18–22% net margin range after first hire. INTERNAL ESTIMATE, not externally benchmarked. First-hire transition is a one-time compression event that established-operator datasets (NALP, IBISWorld) do not isolate."
+
+  # ──────────────────────────────────────────────────────────────────────
+  # MARKET (LARGO FL 33771 SERVICE AREA)
+  # ──────────────────────────────────────────────────────────────────────
+
+  - key: service-area-households
+    value: 36200
+    units: count
+    source: "U.S. Census ACS 5-year 2024 + Pinellas Property Appraiser 2026"
+    effective: "2026-01-01"
+    review: "2027-01-01"
+    confidence: 5
+    scope: all
+    notes: "Households across the 6-ZIP service area (33770, 33771, 33773, 33774, 33778, 33756)."
+
+  - key: service-area-active-lawn-buyers
+    value: 13500
+    units: count
+    source: "U.S. Census ACS 2024 + NALP 2026 lawn-care penetration rates"
+    effective: "2026-01-01"
+    review: "2027-01-01"
+    confidence: 4
+    scope: all
+    notes: "Active lawn-care buyers in the service area. The addressable market."
+
+  - key: weekly-lawn-price
+    value: 48
+    units: USD
+    source: "research/pricing/price-book.yaml + Housecall Pro 2026 Largo FL pricing"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 5
+    scope: all
+    notes: "Standard weekly residential lawn-care price for typical 1/4-acre lot."
+
+  - key: weekly-pet-waste-price
+    value: 20
+    units: USD
+    source: "research/pricing/price-book.yaml + Housecall Pro 2026 add-on pricing"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 4
+    scope: all
+    notes: "Weekly pet waste removal add-on price."
+
+  - key: pressure-wash-min-price
+    value: 180
+    units: USD
+    source: "research/pricing/price-book.yaml + Housecall Pro 2026 pressure-wash"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 4
+    scope: all
+    notes: "Minimum pressure-washing job price (driveway / patio / single-story)."
+
+  - key: pressure-wash-max-price
+    value: 280
+    units: USD
+    source: "research/pricing/price-book.yaml + Housecall Pro 2026 pressure-wash"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 4
+    scope: all
+    notes: "Maximum pressure-washing job price (two-story home + driveway + pool deck)."
+
+  - key: y1-ltv-per-customer
+    value: 1387
+    units: USD
+    source: "research/market/profitability-roadmap.md (12-month LTV model)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 4
+    scope: all
+    notes: "Year-1 LTV per weekly customer: $48/wk × 52 wk × 0.74 gross × bundle adjustments, minus churn."
+
+  # ──────────────────────────────────────────────────────────────────────
+  # FORECASTS (Year 1)
+  # ──────────────────────────────────────────────────────────────────────
+
+  - key: y1-revenue-pessimistic
+    value: 30192
+    units: USD
+    source: "research/market/profitability-roadmap.md (slow-start scenario)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 3
+    scope: all
+    notes: "Year-1 gross revenue under slow-start pessimistic scenario (weather + slow acquisition)."
+
+  - key: y1-revenue-baseline
+    value: 62100
+    units: USD
+    source: "research/market/profitability-roadmap.md (baseline scenario)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 4
+    scope: all
+    notes: "Year-1 gross revenue under baseline scenario. The headline forecast."
+
+  - key: y1-revenue-stretch
+    value: 106560
+    units: USD
+    source: "research/market/profitability-roadmap.md (stretch scenario)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 3
+    scope: all
+    notes: "Year-1 gross revenue under stretch scenario (faster acquisition + bundle attach)."
+
+  - key: y1-net-profit-pessimistic
+    value: 7800
+    units: USD
+    source: "research/market/profitability-roadmap.md"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 3
+    scope: all
+    notes: "Year-1 net profit under pessimistic scenario."
+
+  - key: y1-net-profit-baseline
+    value: 16590
+    units: USD
+    source: "research/market/profitability-roadmap.md"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 4
+    scope: all
+    notes: "Year-1 net profit under baseline scenario. 26.7% net margin on $62,100 gross."
+
+  - key: y1-net-profit-stretch
+    value: 44000
+    units: USD
+    source: "research/market/profitability-roadmap.md"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 3
+    scope: all
+    notes: "Year-1 net profit under stretch scenario."
+
+  - key: y1-net-margin-baseline
+    value: 26.7
+    units: percent
+    source: "16590 / 62100 (computed from baseline scenario)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 4
+    scope: all
+    notes: "Year-1 net margin under baseline scenario. Above the 10-15% industry benchmark."
+
+  # ──────────────────────────────────────────────────────────────────────
+  # CUSTOMER ACQUISITION
+  # ──────────────────────────────────────────────────────────────────────
+
+  - key: cac-pilot-window
+    value: 0
+    units: USD/customer
+    source: "Free ad credits from Google ($500) + Microsoft/Bing ($100) + Meta ($100) + Yelp ($25) + NextDoor ($50) = $775 total + 5 free Thumbtack leads"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 4
+    scope: all
+    notes: "Effective CAC during the 30-60 day pilot window when free ad credits apply. Canonical $775 platform-level split per condensed-plan v2.1 Fix 10 reconciliation; prior round 1/2 split ($350 Google + $425 Meta) was incorrect."
+
+  - key: cac-post-credit-min
+    value: 90
+    units: USD/customer
+    source: "INTERNAL ESTIMATE — derived from Thumbtack/Nextdoor general paid-lead data; no landscaping-specific CAC benchmark published by either platform as of 2026-07-28"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 2
+    scope: long-plan
+    notes: "Lower bound of post-credit CAC range, after the pilot free credits expire. INTERNAL ESTIMATE; will be re-validated against real conversion data during the first 60 days post-launch (Week 1–4 Launch Checklist kill/continue signal)."
+
+  - key: cac-post-credit-max
+    value: 200
+    units: USD/customer
+    source: "INTERNAL ESTIMATE — derived from Thumbtack/Nextdoor general paid-lead data; no landscaping-specific CAC benchmark published by either platform as of 2026-07-28"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 2
+    scope: long-plan
+    notes: "Upper bound of post-credit CAC range. INTERNAL ESTIMATE; Year 2 forecast assumes $150/customer blended pending Week 4 real-data validation."
+
+  - key: conversion-call-to-quote
+    value: 65
+    units: percent
+    source: "Lawn & Landscape 2026 industry benchmark (60-70% range, mid-point)"
+    effective: "2026-01-01"
+    review: "2027-01-01"
+    confidence: 4
+    scope: long-plan
+    notes: "Conversion rate from inbound call to booked quote visit."
+
+  - key: conversion-quote-to-first-mow
+    value: 70
+    units: percent
+    source: "Industry norm cited in research/market/profitability-roadmap.md"
+    effective: "2026-01-01"
+    review: "2027-01-01"
+    confidence: 4
+    scope: long-plan
+    notes: "Conversion rate from quote to first paid mow."
+
+  - key: conversion-first-mow-to-weekly
+    value: 70
+    units: percent
+    source: "Lawn & Landscape 2026 industry benchmark (60-80% range, mid-point)"
+    effective: "2026-01-01"
+    review: "2027-01-01"
+    confidence: 4
+    scope: long-plan
+    notes: "Conversion rate from first paid mow to recurring weekly subscription."
+
+  # ──────────────────────────────────────────────────────────────────────
+  # SEED INVESTMENT (FAMILY LOAN)
+  # ──────────────────────────────────────────────────────────────────────
+
+  - key: seed-loan-principal
+    value: 15000
+    units: USD
+    source: "Founder decision Q8 (research-backed seed ask per SCORE + Housecall Pro 2026)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 5
+    scope: family-package
+    notes: "Seed loan principal. Used for equipment, marketing, software, licensing, insurance, working capital. See also loan-use-breakdown fact for line-item allocation ($1,200-$2,500 equipment + $1,250-$2,300 GL + $3,000 working capital + $1,500 hurricane reserve + $262 equipment replacement + buffer)."
+
+  # ──────────────────────────────────────────────────────────────────────
+  # 3-YEAR FINANCIAL MODEL (Fix 1, condensed-plan v2.1)
+  # ──────────────────────────────────────────────────────────────────────
+
+  - key: y2-revenue-baseline
+    value: 96000
+    units: USD
+    source: "Derived: research/market/profitability-roadmap.md 3-year model (60-75 customers @ $7,000-$9,000/mo avg $8,000/mo x 12 mo)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 3
+    scope: condensed-plan
+    notes: "Year 2 baseline gross revenue (mid-point of $84K-$108K range, 60-75 customers). Founder pays themselves market wage this year."
+
+  - key: y2-net-profit-baseline
+    value: 19200
+    units: USD
+    source: "Derived: Y2 revenue $96K - $43,750 founder wage - $18,750 helper wage - $16,300 opex (software/insurance/vehicle) = $19,200. 20% net margin on $96K."
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 3
+    scope: condensed-plan
+    notes: "Year 2 baseline net profit. Assumes post-first-hire 50% gross margin, 20% net margin (NALP/IBISWorld post-hire industry norm)."
+
+  - key: y3-revenue-baseline
+    value: 138000
+    units: USD
+    source: "Derived: research/market/profitability-roadmap.md 3-year model (90-110 customers @ $10K-$13K/mo avg $11,500/mo x 12 mo)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 2
+    scope: condensed-plan
+    notes: "Year 3 baseline gross revenue. Includes potential second-service revenue (pool/pressure-wash/pet-waste add-on)."
+
+  - key: y3-net-profit-baseline
+    value: 34500
+    units: USD
+    source: "Derived: Y3 revenue $138K - $43,750 founder wage - $37,500 helper/crew wages - $22,250 opex = $34,500. 25% net margin on $138K."
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 2
+    scope: condensed-plan
+    notes: "Year 3 baseline net profit. Assumes second-service add-on launches (per pre-scored candidates) and continued route-density optimization."
+
+  - key: y2-founder-hourly-return-baseline
+    value: 25
+    units: USD/hr
+    source: "Founder decision Q12 + research/market/profitability-roadmap.md 3-year model"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 3
+    scope: condensed-plan
+    notes: "Year 2 founder hourly return at 60-75 customers post-first-hire. Above FL min wage $15/hr (post-2026-09-30)."
+
+  - key: y3-founder-hourly-return-baseline
+    value: 35
+    units: USD/hr
+    source: "Derived: research/market/profitability-roadmap.md 3-year model (Y3 with second-service revenue)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 2
+    scope: condensed-plan
+    notes: "Year 3 founder hourly return with second-service add-on. Above market wage for solo-operator home-services."
+
+  - key: loan-use-breakdown
+    value: "15000"
+    units: USD
+    source: "Founder decision Q8 + condensed-plan v2.1 Fix 8 line-item allocation"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 5
+    scope: condensed-plan
+    notes: "Loan use-of-funds line-item breakdown (Fix 8): Equipment (used) $1,200-$2,500 + GL insurance Y1 $1,250-$2,300 + Working capital M1-M6 $3,000 + Hurricane reserve $1,500 + Equipment replacement Y1 contribution $262 + Buffer for over-runs $6,238-$6,488 = $15,000."
+
+  - key: founder-personal-buffer-recommended
+    value: "5000-8000"
+    units: USD
+    source: "Founder decision + condensed-plan v2.1 Fix 4 (4-month personal runway disclosure)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 4
+    scope: condensed-plan
+    notes: "Recommended founder personal cash buffer (NOT from $15K loan; from founder savings) to cover M1-M3 cumulative drain of -$500 plus quarterly estimated taxes. Disclosed in condensed-plan page 8 Fix 4."
+
+  - key: equipment-replacement-annual-baseline
+    value: 262
+    units: USD/yr
+    source: "Derived: condensed-plan v2.1 Fix 5 life-cycle reserve schedule (mower $50 + trimmer $40 + blower $29 + edger $16 + trailer $80 + hand tools $30 + safety gear $17)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 4
+    scope: condensed-plan
+    notes: "Annual equipment replacement reserve at used-equipment path ($1,915 total capex). Below 10%-of-net reserve ($166/yr from Y1 $16,590 net), so 10% rule is sufficient; the schedule's purpose is to show WHEN each replacement is due."
+
+  # ──────────────────────────────────────────────────────────────────────
+  # HURRICANE REVENUE MODEL (Fix 7, condensed-plan v2.1)
+  # ──────────────────────────────────────────────────────────────────────
+
+  - key: hurricane-prep-revenue-per-storm-low
+    value: 1200
+    units: USD/storm
+    source: "Derived: condensed-plan v2.1 Fix 7 per-storm model (Cat 1/TS: 8 prep hr + 12 cleanup hr = 20 hr x $60/hr)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 4
+    scope: condensed-plan
+    notes: "Per-storm revenue at Cat 1 / Tropical Storm severity. 20 hours total work at $60/hr blended rate."
+
+  - key: hurricane-prep-revenue-per-storm-mid
+    value: 2400
+    units: USD/storm
+    source: "Derived: condensed-plan v2.1 Fix 7 per-storm model (Cat 2-3: 16 prep + 24 cleanup = 40 hr x $60/hr)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 4
+    scope: condensed-plan
+    notes: "Per-storm revenue at Cat 2-3 severity (most common Pinellas impact level). 40 hours total work."
+
+  - key: hurricane-prep-revenue-per-storm-high
+    value: 3840
+    units: USD/storm
+    source: "Derived: condensed-plan v2.1 Fix 7 per-storm model (Cat 4-5: 24 prep + 40 cleanup = 64 hr x $60/hr)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 3
+    scope: condensed-plan
+    notes: "Per-storm revenue at Cat 4-5 severity (rare but high-impact). 64 hours total work."
+
+  - key: pinellas-named-storms-annual-avg
+    value: "2-3"
+    units: count/yr
+    source: "NOAA historical hurricane data for Pinellas County 1996-2025 (averaged)"
+    effective: "2026-07-28"
+    review: "2027-06-01"
+    confidence: 4
+    scope: condensed-plan
+    notes: "Annual average named storms affecting Pinellas County. Drives $3,600-$9,600/yr hurricane revenue expectation (mid-point of $5K-$15K band cited in plan)."
+
+  - key: hurricane-hourly-blended-rate
+    value: 60
+    units: USD/hr
+    source: "Founder decision + industry norm for emergency storm-prep work (premium above standard $48/customer visit)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 4
+    scope: condensed-plan
+    notes: "Blended hourly rate for hurricane prep + cleanup work. Premium reflects emergency response + debris haul-off (different skill mix than weekly mowing)."
+
+  - key: seed-loan-interest
+    value: 0
+    units: percent
+    source: "Founder decision Q9 (Option C: 0% family loan)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 5
+    scope: family-package
+    notes: "0% interest per annum. Friendly loan, not an investment."
+
+  - key: seed-loan-term-months
+    value: 24
+    units: months
+    source: "Founder decision Q9"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 5
+    scope: family-package
+    notes: "24-month term. Month 12 mid-term review. Repayment starts month 4."
+
+  - key: seed-loan-monthly-payment
+    value: 625
+    units: USD
+    source: "Computed: 15000 / 24 = 625"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 5
+    scope: family-package
+    notes: "Equal monthly payment to fully amortize over 24 months."
+
+  # ──────────────────────────────────────────────────────────────────────
+  # TECHNOLOGY
+  # ──────────────────────────────────────────────────────────────────────
+
+  - key: ai-model-primary
+    value: "claude-anthropic"
+    units: string
+    source: "org doctrine (self-reference: this file content/facts.yaml keys ai-model-primary and ai-model-fallback constitute the durable doctrine; architecture/04-systems-architecture.md does NOT contain AI doctrine — canonical state lives here)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 5
+    scope: long-plan
+    notes: "Primary AI model family. May change; doctrine is the durable artifact, not the provider."
+
+  - key: ai-model-fallback
+    value: "secondary-model-same-family"
+    units: string
+    source: "org doctrine (see ai-model-primary; canonical state lives in this file content/facts.yaml)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 4
+    scope: long-plan
+    notes: "Fallback procedure: secondary Anthropic model (haiku) when primary unavailable. >6h continuous outage triggers manual operating window (raised from 4h→6h to match bulk of real Anthropic mid-2026 incident durations per StatusGator tracking)."
+
+  - key: monthly-infra-ceiling
+    value: 200
+    units: USD
+    source: "Founder decision; tech stack ceiling per CLAUDE.md"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 5
+    scope: all
+    notes: "Monthly infrastructure cost ceiling through Month 6 (Vercel + Supabase + Stripe + Resend + Jobber)."
+
+  # ──────────────────────────────────────────────────────────────────────
+  # ORGANIZATIONAL
+  # ──────────────────────────────────────────────────────────────────────
+
+  - key: agent-count
+    value: 13
+    units: count
+    source: "constitution/02-charter.md (13 divisions)"
+    effective: "2026-07-10"
+    review: "2026-12-31"
+    confidence: 5
+    scope: long-plan
+    notes: "Total agent divisions in the GRASS organization."
+
+  # ──────────────────────────────────────────────────────────────────────
+  # v3.0 INVESTOR-GRADE PLAN (scope: family-package-v3)
+  # ──────────────────────────────────────────────────────────────────────
+  # These facts are ONLY used by build_business_plan_v3.py and its derivatives.
+  # They are kept separate from the canonical scope so condensed-plan / long-plan
+  # outputs are not affected. The v3 plan presents a $12K recommended ask with
+  # tiered options; the canonical seed-loan-principal ($15K) remains for the
+  # condensed package and family package plans.
+
+  - key: v3-seed-loan-principal
+    value: 12000
+    units: USD
+    source: "Founder decision 2026-07-28 v3.0 (AAA investor-grade ask)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 5
+    scope: family-package-v3
+    notes: "v3.0 investor-grade recommended seed ask. Lower than condensed-package $15K because v3 assumes founder has a personal buffer for hurricane reserve and 1 month working capital (see v3-personal-buffer contribution to working-capital reserve)."
+
+  - key: v3-seed-loan-monthly-payment
+    value: 500
+    units: USD
+    source: "Computed: 12000 / 24 = 500"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 5
+    scope: family-package-v3
+    notes: "Equal monthly payment to amortize $12,000 over 24 months at 0% interest."
+
+  - key: v3-seed-loan-ask-tiered
+    value: "10000/12000/15000"
+    units: string
+    source: "Founder decision 2026-07-28 v3.0 tiered ask structure"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 5
+    scope: family-package-v3
+    notes: "Tiered seed ask. Lean $10,000 (1 month working capital, lean equipment); Recommended $12,000 (3 month working capital, full equipment); Growth $15,000 (3 months + buffer + accelerated marketing)."
+
+  - key: v3-y1-customers-baseline
+    value: 45
+    units: count
+    source: "Founder decision 2026-07-28 v3.0 Y1 customer baseline (conservative)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 4
+    scope: family-package-v3
+    notes: "Y1 baseline customer count (conservative). Mix: ~30 weekly visit customers + ~15 biweekly. Drives unit-economics waterfall (45 customers × ~10.5 weekly-equivalent visits × $7 net per weekly visit ≈ revenue $74k weighted)."
+
+  - key: v3-y1-revenue-baseline-thousands
+    value: 62.1
+    units: thousands-USD
+    source: "Computed: 45 customers × ~10.5 weekly-equivalent visits × $48 avg ticket / 1000"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 4
+    scope: family-package-v3
+    notes: "Y1 baseline revenue, in thousands USD ($62,100). Slightly below $74k weighted because biweekly customers visit half as often as weekly."
+
+  - key: v3-y1-net-margin-baseline-percent
+    value: 26.7
+    units: percent
+    source: "Computed: net $16,590 / revenue $62,100 × 100"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 4
+    scope: family-package-v3
+    notes: "Y1 baseline net margin. Honest footnote: yields owner below FL minimum wage (~$9.48/hr equivalent on 25 hrs/wk × 52 wk = $12,324) plus capital reinvestment. Building year."
+
+  - key: v3-use-of-funds-buffer
+    value: 258
+    units: USD
+    source: "Computed: $12,000 total - ($5,230 + $1,750 + $3,000 + $1,500 + $262) = $258"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 5
+    scope: family-package-v3
+    notes: "v3.0 buffer for use-of-funds. Tight because equipment now includes a 36-inch commercial zero-turn (used, $5,230 line) reflecting actual procurement pricing. Buffer covers overruns on insurance, working capital gap, hurricane reserve gap. Optional Phase 2 stand-on zero-turn (~$2,900) deferred."
+
+  - key: v3-unit-economics-waterfall-bars
+    value: "48,-30,-11,7"
+    units: string
+    source: "Founder decision 2026-07-28 v3.0 (weekly visit unit economics: price $48, COGS $30, overhead $11, weekly net $7)"
+    effective: "2026-07-28"
+    review: "2026-12-31"
+    confidence: 5
+    scope: family-package-v3
+    notes: "Bar values for unit_economics_v3.jpg waterfall chart (in USD). Caption explains: 'Price $48 - COGS $30 - Overhead $11 = weekly net $7 per weekly visit customer. Weighted across weekly + biweekly mix, monthly contribution ≈ $74 per customer ($7 × ~10.5 weekly-equivalent visits).'"

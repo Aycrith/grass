@@ -27,6 +27,7 @@ import { HurricaneBanner, SiteFooter, SiteHeader } from '@/components/site';
 import { BUSINESS } from '@/lib/business';
 import { services } from '@/lib/content';
 import { JsonLd } from '@/lib/json-ld';
+import { PENDING_AGGREGATE_RATING, RATING } from '@/lib/reviews';
 import type { Metadata } from 'next';
 import { Fraunces, Inter } from 'next/font/google';
 import './globals.css';
@@ -158,6 +159,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     priceRange: '$$',
     image: `${BUSINESS.url}/og.png`,
     hasOfferCatalog: offerCatalog,
+    // aggregateRating — once the steward has 5+ verified GBP reviews,
+    // flip PENDING_AGGREGATE_RATING in src/lib/reviews.ts to false and
+    // populate the values. That surfaces the rating in JSON-LD so
+    // Google Search shows the ★★★★★ snippet. Gating avoids the
+    // Google penalty for star-ratings with too few reviews.
+    ...(PENDING_AGGREGATE_RATING
+      ? {}
+      : {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: RATING.ratingValue,
+            reviewCount: RATING.reviewCount,
+            ...(RATING.bestRating !== undefined ? { bestRating: RATING.bestRating } : {}),
+            ...(RATING.worstRating !== undefined ? { worstRating: RATING.worstRating } : {}),
+          },
+        }),
     // External profiles — `sameAs` tells Google these are the
     // canonical external presences for the business entity. Helps
     // the Knowledge Graph disambiguate the name. Empty array when
@@ -227,10 +244,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
          * and the header takes over the viewport top as the visitor
          * scrolls past it. */}
         {BUSINESS.hurricaneModeActive ? <HurricaneBanner /> : null}
-        {/* Stage 3 (Q-5): CookieConsent banner removed. Server-side PostHog
-         * is the only analytics source — no client-side tracking tags, no
-         * advertising cookies, no opt-out needed. The footer (SiteFooter)
-         * carries the accurate notice. */}
+        {/* Consent gates & client-side analytics removed at pivot (2026-07-31).
+         * Per D-0064 §0.9: server-side PostHog only. No GA4, no Meta Pixel,
+         * no client-side analytics tags. The privacy page (D-0066) is
+         * consistent with this posture. See output/plans/RESUMING.md. */}
         {/* WP19 - LenisProvider mounts smooth-scroll so the ParallaxImage
          * site-wide) actually sees a non-zero `scrollYProgress`. The
          * provider is gated for prefers-reduced-motion + coarse-pointer +
