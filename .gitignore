@@ -174,3 +174,5 @@ apps/web/visual/inventory/frames/
 *.this-session-is-being-continued-from-a-previous-c.txt
 GRASS_backup_tmp/
 v[0-9]-*-wf_[0-9][0-9][0-9].js
+scripts/__pycache__/
+tests/__pycache__/
