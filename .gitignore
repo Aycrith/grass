@@ -154,7 +154,7 @@ apps/web/visual/baselines/*-diff.png
 apps/web/test-results/
 apps/web/playwright-report/
 
-# --- Inventory / QA-pick frame extracts (apps/web/visual/inventory/frames/)
+# --- Inventory / QA-pick frame extracts (apps/web/visual/inventory/frames/) ---
 # Regenerated deterministically by tmp/qa-pick.py from raw MP4s at
 # C:\Users\camer\Downloads\. Do NOT commit -- rerun the tool to refresh.
 # NB: parent dir apps/web/visual/inventory/ contains tracked markdown
@@ -162,3 +162,15 @@ apps/web/playwright-report/
 # 2026-07-17-re-roll-picks.md); only the frames/ subdir is regenerable
 # working-tree noise. ---
 apps/web/visual/inventory/frames/
+
+# --- Working-tree noise (post-D-0067 preservation posture) ---
+# Local scratch that should never be staged. Includes Kilo IDE state,
+# Playwright MCP captures, and rolled workflow JS files (v4..v6).
+# Deliberately leaves tmp/, output/, research/, docs/, content/ facts.yaml,
+# CHANGELOG.md, VERSION, and scripts/ build scripts alone — those mix
+# tracked and untracked content; clean them per-file as needed.
+.kilo/
+.playwright-mcp/
+*.this-session-is-being-continued-from-a-previous-c.txt
+GRASS_backup_tmp/
+v[0-9]-*-wf_[0-9][0-9][0-9].js
