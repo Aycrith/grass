@@ -65,6 +65,9 @@ supabase/.branches
 supabase/.temp
 supabase/.env
 
+# --- Local secrets store (Twilio buy-number CLI) ---
+scripts/.twilio-creds.json
+
 # --- Next.js / Vercel ---
 .next/
 .vercel

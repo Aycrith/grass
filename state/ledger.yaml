@@ -8,11 +8,11 @@
 # agent. If you change anything, append a row to `changelog` at the bottom.
 #
 # Schema version: 0.1.0
-# Last updated: 2026-07-31 (Day 31 of project — POST-PIVOT ARCHIVE phase. Owner pivoting to a new business/strategy. D-0064 pilot paused at pre-launch (no ad spend). Repo buttoned-up: GA4/Meta/CAPI/ConsentBanner removed; /api/lead hardened (Stage 2/3, 22/22 route tests + 85/85 attribution tests green); D-0062 drift deferred to Q3 2026 per the original D-0062 ADR. See D-0067 + D-0068 + output/plans/RESUMING.md + output/plans/2026-07-31_strategy-rollout-adjustment.md.)
+# Last updated: 2026-08-01 (Day 32 of project — POST-PIVOT RESEARCH cycle COMPLETE. v6 ratification-reset workflow surfaced LISTING_MEDIA as the only surviving launch-eligible candidate (SMB_COMPLIANCE and REMOTE_NATIONAL_DOWNSIZING archived). Two DRAFT ADRs filed: D-0070 (Pinellas Listing Media 30-day pilot) and D-0071 (REMOTE_NATIONAL_DOWNSIZING DECLINED). Both pending steward ratification. Pilot activation remains GATED on: (1) Q5 framing answer (blocks D-0070 ratification); (2) 22 reflection answers in D-0070 §9; (3) 5 reflection answers in D-0071 §9. No irreversible action taken. See output/research/2026-08-01_v6-ratification-reset-synthesis.md.)
 # ===================================================================
 
 # Schema version: 0.1.0
-# Last updated: 2026-07-31 (Day 31 of project — POST-PIVOT ARCHIVE phase. Owner pivoting to a new business/strategy. D-0064 pilot paused at pre-launch (no ad spend). Repo buttoned-up: GA4/Meta/CAPI/ConsentBanner removed; /api/lead hardened (Stage 2/3, 22/22 route tests + 85/85 attribution tests green); D-0062 drift deferred to Q3 2026 per the original D-0062 ADR. See D-0067 + D-0068 + output/plans/RESUMING.md + output/plans/2026-07-31_strategy-rollout-adjustment.md.)
+# Last updated: 2026-08-01 (Day 32 of project — POST-PIVOT RESEARCH cycle COMPLETE. v6 ratification-reset workflow surfaced LISTING_MEDIA as the only surviving launch-eligible candidate (SMB_COMPLIANCE and REMOTE_NATIONAL_DOWNSIZING archived). Two DRAFT ADRs filed: D-0070 (Pinellas Listing Media 30-day pilot) and D-0071 (REMOTE_NATIONAL_DOWNSIZING DECLINED). Both pending steward ratification. Pilot activation remains GATED on: (1) Q5 framing answer (blocks D-0070 ratification); (2) 22 reflection answers in D-0070 §9; (3) 5 reflection answers in D-0071 §9. No irreversible action taken. See output/research/2026-08-01_v6-ratification-reset-synthesis.md.)
 # ===================================================================
 
 schema_version: 0.1.0
@@ -794,6 +794,45 @@ next_actions:
 # Changelog (append-only)
 # -------------------------------------------------------------------
 changelog:
+  - date: "2026-08-01"
+    day: 32
+    change: >
+      PARTIAL RATIFICATION ANSWER — Q5 framing answer captured.
+      Steward answered Q-V6-RATIFICATION-RESET-001 #5 letter (b)
+      "pure wage replacement from day one" 2026-08-01. Mechanical
+      implications applied to D-0070 + spec:
+
+      Threshold change: $30/hr → $40/hr from Day 1 (per D-0070 §9.1
+      steward answer letter b). Conditional escalation §0.9 SUPERSEDED.
+      Pricing floor: $250+ tier confirmed. Re-ratification trigger:
+      month-1 revenue <$520 (below $40/hr at 13 founder hours).
+
+      Files updated:
+      (1) governance/decisions/0070-pinellas-listing-media-pilot.md:
+          - §9.1 records steward answer letter (b) with timestamp.
+          - §0.5, §0.6, §0.9, §3.13, §3.14, §3.15, §3.16, §5.A, §5.H,
+            §6, §9.3 #12, §9.5, §9.6 #22, §9.7 #25, §9.10 #33, §11
+            all updated to reflect $40/hr.
+          - §7 R-LM-009 (Q5 framing unconfirmed) marked RESOLVED 2026-08-01.
+      (2) docs/specs/listing-media-pilot-spec.md:
+          - §0 paragraph and §6 success criterion updated to $40/hr.
+      (3) state/risk-register.yaml:
+          - R-LM-003 updated to reflect $40/hr threshold.
+          - ID SPACE NOTE added explaining D-0070 §7 vs state register
+            R-LM-001..010 collision resolution path (D-0070 §7 migrates
+            to R-LM-031..040 on ratification).
+
+      Remaining gate (DOES NOT ratify yet):
+      - 21 remaining D-0070 §9 reflection questions unanswered.
+      - 5 D-0071 §9 reflection questions unanswered.
+      - Steward signature on D-0070 + D-0071 to move DRAFT → RATIFIED.
+      - State-file posture update (research → active pilot) pending.
+      - Commit direction pending.
+
+      Why this is still reversible: Q5 framing answer is mechanical only.
+      No pilot activation, no customer commitments, no spend. D-0070 +
+      D-0071 remain DRAFT pending the full steward ratification.
+
   - date: "2026-07-31"
     day: 31
     change: >

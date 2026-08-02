@@ -7,7 +7,7 @@
 # ===================================================================
 
 schema_version: 0.1.0
-last_updated: 2026-07-31
+last_updated: 2026-08-01
 owner_agent: executive
 
 methodology:
@@ -393,6 +393,307 @@ risks:
     mitigation_link: "governance/decisions/0066-outbound-sms-consent.md §3.6"
     detection_signal: "Privacy page does not mention SMS or consent mechanism"
     review_date: 2026-08-29
+
+  # ----------------------------------------------------------------
+  # v6 ratification-reset research risks (added 2026-08-01 per DRAFT D-0070/D-0071)
+  # ----------------------------------------------------------------
+  # STATUS: DRAFT — these risks are tied to DRAFT ADRs D-0070 (Pinellas
+  # Listing Media pilot) and D-0071 (REMOTE_NATIONAL_DOWNSIZING DECLINED).
+  # They are NOT yet ratified. They become live risk-register entries
+  # upon steward ratification of either ADR. Mitigation steps reference
+  # the steward-ratification gate explicitly so a future reviewer can
+  # see which risks are pre-committed vs which require activation.
+  #
+  # ID SPACE NOTE: D-0070 §7 also has R-LM-001..010 with DIFFERENT
+  # definitions (D-0070 ADR-internal risk table). On D-0070 ratification,
+  # the §7 risks migrate to the master register with new IDs (R-LM-031..040)
+  # to avoid collision. The state-register R-LM-001..010 risks (this section)
+  # remain the project's research-state risks tied to the ratification gate.
+  # The D-0070 §7 R-LM-009 (Q5 framing unconfirmed) is now RESOLVED 2026-08-01
+  # per steward letter (b) wage replacement — see D-0070 §7 table for status.
+  # ----------------------------------------------------------------
+  - risk_id: R-LM-001
+    title: "Pilot never ratified by steward; research-cycle draft sits unratified"
+    description: >
+      Per DRAFT D-0070: Pinellas Listing Media 30-day pilot is filed as
+      DRAFT pending steward ratification. Without steward action, the
+      research cycle remains as drafts and no pilot activates. Risk:
+      indefinite deferral of new business direction while Mission 1
+      remains paused under D-0067/D-0068.
+    likelihood: 4
+    impact: 2
+    risk_score: 8
+    owner_agent: executive
+    mitigation:
+      - "22 reflection questions in D-0070 §9 framed as MCQ interview (file ready 2026-08-01)."
+      - "Q5 framing question is the blocking ask; surfaces central-success-criterion uncertainty."
+      - "State files (ledger, risk-register, capability-registry) updated to reflect research posture, not pilot activation."
+      - "RESUMING.md still describes Mission 1 resumption; new business direction is independent path."
+    mitigation_link: "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT), output/research/2026-08-01_v6-ratification-reset-synthesis.md"
+    detection_signal: "D-0070 status remains DRAFT >14 days after steward interview prompt"
+    review_date: "2026-08-30"
+
+  - risk_id: R-LM-002
+    title: "Pinellas Listing Media market turns out to be saturated post-launch"
+    description: >
+      Per DRAFT D-0070 §7: v4 saturation finding enumerated 26+ verified
+      competitors in Pinellas County (SkyView Tampa Bay, Tyto, Virtuals1,
+      TruFusion, CS3, ProMedia, Luxury Listing Specialists, Suncoast
+      Media, etc.). Risk: pricing power collapses further or competitors
+      undercut the $250-$300 entry tier before pilot completes.
+    likelihood: 3
+    impact: 4
+    risk_score: 12
+    owner_agent: marketing
+    mitigation:
+      - "Pilot success criterion is NOT zero competitors — it's paid bookings AND ≥$30/hr averaged."
+      - "Twilight add-on ($150) differentiates on timing; competing with daylight-only operators."
+      - "Channel-agnostic distribution (D-0070 §0.4) avoids betting on single channel that competitors own."
+      - "Hard kill-switch at $300 spend cap (D-0070 §0.3) prevents runaway loss."
+    mitigation_link: "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT) §0.6, §7"
+    detection_signal: "Inbound inquiries flat or declining at Day 7 OR competitor pricing under $200 entry"
+    review_date: "2026-08-30"
+
+  - risk_id: R-LM-003
+    title: "Steward cannot sustain $40/hr averaged margin during pilot"
+    description: >
+      Per DRAFT D-0070 §0.6 (per §9.1 Q5 framing answer 2026-08-01 letter b):
+      success criterion includes ≥$40/hr averaged across all booked
+      engagements. Risk: hours-burned (drone flight time, editing,
+      listing prep, client comms) exceeds bookings revenue, margin
+      drops below threshold, pilot aborts at Day 14.
+    likelihood: 3
+    impact: 3
+    risk_score: 9
+    owner_agent: operations
+    mitigation:
+      - "Day-1 hour tracking against bookings revenue (entry $250-$300)."
+      - "Day 14 hard review: if margin <$40/hr AND <3 paid bookings, pause and redesign (D-0070 §6)."
+      - "Premium-tier evidence threshold (≥5 paid bookings at $300+) before scaling (D-0070 §0.8)."
+      - "Aggregation rule: simple mean of all bookings (D-0070 §0.11)."
+    mitigation_link: "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT) §0.6, §0.8, §0.11, §6, §9.1"
+    detection_signal: "Day-7 mid-pilot margin <$30/hr OR hours-burned exceeds bookings revenue"
+    review_date: "2026-08-30"
+
+  - risk_id: R-LM-004
+    title: "Equipment access precondition fails (drone/founder-owned/rented)"
+    description: >
+      Per DRAFT D-0070 §0.2: photo-only pilot requires equipment access
+      pre-launch (drone for aerial hero shots OR founder-owned OR rented
+      for the duration). Risk: equipment is not available on Day 1 of
+      pilot, forcing late-stage scope reduction.
+    likelihood: 2
+    impact: 3
+    risk_score: 6
+    owner_agent: operations
+    mitigation:
+      - "Equipment precondition is a HARD gate (D-0070 §0.2)."
+      - "3D/Matterport deferred — not required for entry-tier pilot (D-0070 §0.9)."
+      - "FAA Part 107 trigger at first repeat engagement (≥3 paid bookings) per D-0070 §0.10."
+      - "Founder owns OR rents at standard Pinellas rate; both options accepted."
+    mitigation_link: "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT) §0.2, §0.9, §0.10"
+    detection_signal: "Equipment not confirmed available by Day -3 of pilot launch"
+    review_date: "2026-08-30"
+
+  - risk_id: R-LM-005
+    title: "Lead SLA collapse (steward cannot sustain 5-min response window)"
+    description: >
+      Per DRAFT D-0070 §0.7: lead SLA is 5-min during business hours,
+      next-morning after hours. Risk: founder is unavailable during
+      peak hours, leads cool, no bookings.
+    likelihood: 3
+    impact: 4
+    risk_score: 12
+    owner_agent: sales
+    mitigation:
+      - "Auto-acknowledge SMS within 30 seconds regardless of personal-reply window."
+      - "Honest copy on listing landing pages ('5-min business hours, next-morning after hours')."
+      - "Pause campaign during known unavailable windows."
+      - "Day 7 mid-pilot SLA measurement (avg response time)."
+    mitigation_link: "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT) §0.7"
+    detection_signal: "Average lead response time >30 minutes for any 24-hour period"
+    review_date: "2026-08-30"
+
+  - risk_id: R-LM-006
+    title: "Google Ads free credit denied or smaller than expected"
+    description: >
+      Per DRAFT D-0070 §0.3: $300 cap assumes Google Ads new-account
+      $500 free credit is honored. Risk: credit is denied or smaller,
+      pilot must operate on cash earlier than planned.
+    likelihood: 3
+    impact: 3
+    risk_score: 9
+    owner_agent: marketing
+    mitigation:
+      - "Treat credit as zero until claimed."
+      - "Cap spend at $0 until credit confirmation (first 7 days)."
+      - "If credit denied, request explicit steward approval before any cash spend."
+      - "Channel-agnostic distribution allows pivoting to NextDoor or Facebook Marketplace if Google Ads is unusable."
+    mitigation_link: "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT) §0.3"
+    detection_signal: "Google Ads account shows no credit balance after 7 days of account creation"
+    review_date: "2026-08-30"
+
+  - risk_id: R-LM-007
+    title: "D-0070 ratification premises refuted by Day-30 actuals"
+    description: >
+      Per DRAFT D-0070 §6: pilot commitment is ratify prior ratification
+      WITH 13 modifications (v6 synthesis). Risk: the v6 cycle
+      materially changed prior premises (26+ competitors vs <5, $149-$200
+      entry pricing vs $300 assumed). Day-30 actuals may further
+      invalidate the modified premises.
+    likelihood: 3
+    impact: 3
+    risk_score: 9
+    owner_agent: research
+    mitigation:
+      - "Day-14 redesign trigger if margin <$400/hr OR <3 paid bookings (D-0070 §6)."
+      - "Re-ratification trigger if Day-1 actuals diverge significantly from v6 baseline."
+      - "Confidence 0.65 explicitly acknowledges foundation-level refutation risk."
+      - "V6 adversarial verification loop re-runs on Day 14 actuals."
+    mitigation_link: "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT) §6, output/research/2026-08-01_v6-ratification-reset-synthesis.md"
+    detection_signal: "Day-7 actuals diverge >30% from v6 baseline projections"
+    review_date: "2026-08-30"
+
+  - risk_id: R-LM-008
+    title: "PREMIUM tier evidence threshold never reached (no $300+ bookings)"
+    description: >
+      Per DRAFT D-0070 §0.8: premium-tier (3D/Matterport) evidence
+      threshold is ≥5 paid bookings at $300+ before scaling. Risk:
+      pilot books only entry-tier ($250-$300), never crosses premium
+      threshold, leaving 3D/Matterport decision pending indefinitely.
+    likelihood: 4
+    impact: 2
+    risk_score: 8
+    owner_agent: marketing
+    mitigation:
+      - "Premium-tier defer is explicit (D-0070 §0.9); pilot can succeed without crossing threshold."
+      - "Premium-tier add-on is a Day 60 review, not a Day 14 review."
+      - "Aggregation rule includes all bookings; entry-tier alone can pass success criterion."
+      - "If 5+ bookings cross threshold, premium add-on ratifies via D-0072."
+    mitigation_link: "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT) §0.8, §0.9"
+    detection_signal: "Day-30 actuals show all bookings in entry tier; no $300+ confirmed"
+    review_date: "2026-09-30"
+
+  - risk_id: R-LM-009
+    title: "Steward physically cannot complete pilot (sick, off-grid, hurricane)"
+    description: >
+      Per DRAFT D-0070 §0: pilot is solo-founder-led. Risk: steward is
+      unavailable for any extended period, pilot stalls, leads cool.
+    likelihood: 2
+    impact: 4
+    risk_score: 8
+    owner_agent: operations
+    mitigation:
+      - "Hard kill-switch pauses campaign automatically at any sign of unavailability (D-0070 §0.12)."
+      - "Auto-acknowledge SMS keeps leads warm during steward absence."
+      - "Hurricane mode (R-HURR-001 cap_hurricane_mode) handles named-storm unavailability."
+      - "30-day pilot envelope allows pause-and-resume within window."
+    mitigation_link: "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT) §0.12, state/capability-registry.yaml → cap_hurricane_mode"
+    detection_signal: "Steward unavailable >3 consecutive days during active pilot window"
+    review_date: "2026-08-30"
+
+  - risk_id: R-LM-010
+    title: "Pilot crosses scope boundary into Mission 1-style landscaping work"
+    description: >
+      Per DRAFT D-0070 §0: pilot is photo-only real-estate listing
+      media. Risk: pilot drift into lawn-care, hedge-trim, mulching
+      (reserved Mission 1 capabilities) reactivates the landscaping
+      workstream without explicit D-0068 reopening.
+    likelihood: 2
+    impact: 3
+    risk_score: 6
+    owner_agent: executive
+    mitigation:
+      - "Pilot scope is photo-only; landscape-adjacent work is explicit scope-violation trigger."
+      - "Hard kill-switch on scope violation (D-0070 §0.12)."
+      - "Mission 1 capabilities remain status=reserved per D-0068; no implicit reopening."
+      - "RESUMING.md procedure remains the only path to Mission 1 reactivation."
+    mitigation_link: "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT) §0, governance/decisions/0068-landscape-capability-archive.md"
+    detection_signal: "Pilot engagements include landscaping service items OR customer inquiries for lawn-care"
+    review_date: "2026-08-30"
+
+  - risk_id: R-DOWNSIZING-001
+    title: "D-0071 DECLINED but market conditions change (reopen triggers misjudged)"
+    description: >
+      Per DRAFT D-0071: REMOTE_NATIONAL_DOWNSIZING is DECLINED based
+      on primary-source competitive enumeration (NASMM member directory,
+      Caring Transitions FDD Item 19 sampling, Caring Senior Service
+      aggregator model). Risk: reopen conditions (paid NASMM State of
+      Industry, Caring Transitions FDD Item 19, ratified Decision
+      Template) misjudge the threshold for reopening.
+    likelihood: 2
+    impact: 3
+    risk_score: 6
+    owner_agent: executive
+    mitigation:
+      - "3-condition reopen path explicitly documented (D-0071 §6)."
+      - "Confidence 0.85 reflects primary-source refutation quality."
+      - "Reopen trigger requires a NEW ratified Decision Template, not just file an observation."
+      - "NASMM State of Industry report is the primary demand-side evidence."
+    mitigation_link: "governance/decisions/0071-remote-national-downsizing-DECLINED.md (DRAFT) §6"
+    detection_signal: "Steward opens new downsizing investigation without meeting the 3 reopen conditions"
+    review_date: "2026-09-01"
+
+  - risk_id: R-DOWNSIZING-002
+    title: "NASMM or Caring Transitions market data releases after D-0071 that refutes the DECLINED posture"
+    description: >
+      Per DRAFT D-0071: DECLINED posture based on current 2026-08-01
+      NASMM member directory snapshot and Caring Transitions FDD Item
+      19 sampling. Risk: a subsequent NASMM State of Industry report or
+      Caring Transitions FDD Item 19 update shows material market
+      change (e.g., regional unsaturation).
+    likelihood: 2
+    impact: 2
+    risk_score: 4
+    owner_agent: research
+    mitigation:
+      - "Reopen path explicitly includes paid NASMM State of Industry acquisition."
+      - "Decision Template ratification required for reopen; cannot be auto-triggered."
+      - "D-0071 §10 acceptance criteria includes '...or decline to reopen after NASMM State of Industry publication'."
+      - "V6 research artifact at output/research/2026-08-01_v6-ratification-reset-synthesis.md preserves the foundation-level refutation for future re-evaluation."
+    mitigation_link: "governance/decisions/0071-remote-national-downsizing-DECLINED.md (DRAFT) §6, §10"
+    detection_signal: "NASMM publishes new State of Industry report with Pinellas-specific data OR Caring Transitions files new FDD Item 19"
+    review_date: "2026-12-01"
+
+  - risk_id: R-DOWNSIZING-003
+    title: "Steward pursues downsizing informally without ratifying a new ADR"
+    description: >
+      Per DRAFT D-0071: DECLINED posture requires explicit steward
+      ratification to override. Risk: steward informally pursues
+      downsizing work (e.g., takes a downsizing client) without
+      ratifying a new Decision Template, eroding the charter principle
+      of evidence-before-action.
+    likelihood: 2
+    impact: 3
+    risk_score: 6
+    owner_agent: executive
+    mitigation:
+      - "CLAUDE.md hard rule #10: 'No irreversible decision without a Decision Template entry that has been ratified'."
+      - "Pilot exception (constitution/charter-amendments/pilot-exception.md) does NOT apply to archived research."
+      - "D-0071 §0 explicitly states 'any new downsizing work requires a new Decision Template ratified before first customer commitment'."
+      - "Quarterly charter review includes check for unratified work."
+    mitigation_link: "governance/decisions/0071-remote-national-downsizing-DECLINED.md (DRAFT) §0, CLAUDE.md hard rule #10"
+    detection_signal: "Downsizing-related customer engagements without a ratified ADR in governance/decisions/"
+    review_date: "2026-09-01"
+
+  - risk_id: R-DOWNSIZING-004
+    title: "SMB_COMPLIANCE reopens independently via steward direction"
+    description: >
+      Per v6 synthesis §F: SMB_COMPLIANCE was archived as part of the
+      v6 ratification-reset cycle. Risk: steward directs independent
+      SMB_COMPLIANCE research without filing a new Decision Template.
+    likelihood: 2
+    impact: 2
+    risk_score: 4
+    owner_agent: research
+    mitigation:
+      - "SMB_COMPLIANCE archive decision is in v6 synthesis, not a standalone ADR; explicit Decision Template required to override."
+      - "v6 disposition table (synthesis §K) records SMB_COMPLIANCE archive reasoning for future traceability."
+      - "CLAUDE.md hard rule #1 (research before assumptions) and #2 (evidence before opinions) apply."
+      - "Quarterly charter review includes check for unratified research reopening."
+    mitigation_link: "output/research/2026-08-01_v6-ratification-reset-synthesis.md §F, §K"
+    detection_signal: "SMB_COMPLIANCE-related research artifacts filed without accompanying Decision Template"
+    review_date: "2026-09-01"
 
   # ----------------------------------------------------------------
   # Pivot risk (added 2026-07-31 per D-0067)

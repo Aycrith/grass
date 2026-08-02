@@ -20,23 +20,25 @@
  */
 
 export const BUSINESS = {
-  name: 'Largo Lawn',
-  legal_entity: 'Largo Lawn',
+  /**
+   * Business display name. Driven by `NEXT_PUBLIC_BUSINESS_NAME`
+   * so a name change is a one-line env-var flip with no code
+   * edits. Defaults to 'Largo Lawn' for backwards compat.
+   */
+  name: process.env['NEXT_PUBLIC_BUSINESS_NAME'] ?? 'Largo Lawn',
+  legal_entity: process.env['NEXT_PUBLIC_LEGAL_ENTITY'] ?? 'Largo Lawn',
   /**
    * Production domain. Use anywhere the canonical site URL is
    * needed (JSON-LD url field, metadataBase, sitemap base URL,
    * QR-code target domain, robots.txt sitemap directive, etc).
    *
-   * The 'https://largolawn.pro' literal was previously
-   * hard-coded in 13+ files (metadataBase, every JSON-LD
-   * `url:` field, the opengraph-image.tsx fallback comment,
-   * the services / areas / qr detail pages, the sitemap,
-   * the robots.ts, the /qr page DOMAIN constant, the
-   * SiteFooter "built in Largo" link, etc). Now the literal
-   * lives in exactly one place. When the domain changes
-   * (OBJ-M2-004), only this constant edits.
+   * Driven by `NEXT_PUBLIC_SITE_URL` so a domain change is a
+   * one-line env-var flip. Defaults to `https://largolawn.pro`
+   * to match the historical hard-coded literal. The 'https://largolawn.pro'
+   * literal was previously hard-coded in 13+ files; now it lives in
+   * exactly one place.
    */
-  url: 'https://largolawn.pro',
+  url: process.env['NEXT_PUBLIC_SITE_URL'] ?? 'https://largolawn.pro',
   /**
    * Display phone (formatted for humans). Use for any visible
    * text rendering — header, footer, contact page, success
@@ -98,6 +100,19 @@ export const BUSINESS = {
   // Hurricane operating rule: no outdoor work in named-storm conditions or sustained
   // winds >=30 mph. Hard charter rule, enforced by scheduling constraint.
   hurricane_wind_threshold_mph: 30,
+  /**
+   * Google Business Profile direct review URL. Read by ContactForm
+   * when `showReviewAsk` is true. The format is
+   * `https://search.google.com/local/writereview?placeid=<PLACE_ID>`
+   * where `<PLACE_ID>` is the GBP Place ID. Empty until GBP is
+   * verified (postcard arrives 5-7 days after claim).
+   *
+   * Driven by `NEXT_PUBLIC_GBP_REVIEW_URL` so the steward can
+   * paste the URL from GBP dashboard without touching code. When
+   * unset, the review-ask card is silently hidden — never shows
+   * a broken link.
+   */
+  gbpReviewUrl: process.env['NEXT_PUBLIC_GBP_REVIEW_URL'] ?? '',
 } as const;
 
 /**

@@ -46,6 +46,13 @@ const eslintConfig = [
       'next-env.d.ts',
       'capture-*.mjs',
       'audit-capture-*.mjs',
+      // .cjs scripts under scripts/ use CommonJS require() which the
+      // typescript ruleset rejects. Excluding them from lint keeps
+      // the dev-time `bun run lint` clean without disabling rules
+      // globally. The scripts are exercised at runtime by the
+      // pipeline proof tests, so they're not unvalidated.
+      'scripts/**/*.cjs',
+      'scripts/**/*.js',
     ],
   },
 ];
