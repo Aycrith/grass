@@ -11,7 +11,7 @@
 # ===================================================================
 
 schema_version: 0.1.0
-last_updated: "2026-07-10"
+last_updated: "2026-08-01"
 
 # -------------------------------------------------------------------
 # Mission 1 — Landscaping (Largo, FL) seed capabilities
@@ -25,10 +25,15 @@ capabilities:
   # ---------------------------------------------------------------
   # CAP-001 — Standard lawn mowing service
   # ---------------------------------------------------------------
+  # STATUS: reserved as of 2026-07-31 per D-0068 (landscape-capability-archive).
+  # Owner pivoting to a new business/strategy. Capability preserved
+  # in the registry for resumption; not actively deployed. To resume:
+  # change status back to active/draft, re-run scripts/lint-capabilities.ts,
+  # and write a D-0069 Pilot Outcome ADR per D-0064 §6.
   - cap_id: cap_mowing_standard
     name: "Standard residential lawn mowing"
     owner_agent: operations
-    status: draft
+    status: reserved
     version: 0.1.0
     maturity: designed  # not yet built
     mission: "M1"
@@ -65,10 +70,11 @@ capabilities:
   # ---------------------------------------------------------------
   # CAP-002 — Hard-edge edging
   # ---------------------------------------------------------------
+  # STATUS: reserved as of 2026-07-31 per D-0068 (landscape-capability-archive).
   - cap_id: cap_edging_hard_edge
     name: "Mechanical edging along curbs and walkways"
     owner_agent: operations
-    status: draft
+    status: reserved
     version: 0.1.0
     maturity: designed
     mission: "M1"
@@ -101,10 +107,11 @@ capabilities:
   # ---------------------------------------------------------------
   # CAP-003 — Mulch installation
   # ---------------------------------------------------------------
+  # STATUS: reserved as of 2026-07-31 per D-0068 (landscape-capability-archive).
   - cap_id: cap_mulching_install
     name: "Bulk mulch delivery and installation"
     owner_agent: operations
-    status: draft
+    status: reserved
     version: 0.1.0
     maturity: designed
     mission: "M1"
@@ -141,10 +148,11 @@ capabilities:
   # ---------------------------------------------------------------
   # CAP-004 — Hedge and shrub trimming
   # ---------------------------------------------------------------
+  # STATUS: reserved as of 2026-07-31 per D-0068 (landscape-capability-archive).
   - cap_id: cap_hedge_trim
     name: "Seasonal hedge and shrub trimming"
     owner_agent: operations
-    status: draft
+    status: reserved
     version: 0.1.0
     maturity: designed
     mission: "M1"
@@ -180,10 +188,11 @@ capabilities:
   # ---------------------------------------------------------------
   # CAP-005 — Lead capture from Google Business Profile
   # ---------------------------------------------------------------
+  # STATUS: reserved as of 2026-07-31 per D-0068 (landscape-capability-archive).
   - cap_id: cap_lead_capture_gbp
     name: "GBP form → CRM → auto-acknowledge"
     owner_agent: sales
-    status: draft
+    status: reserved
     version: 0.1.0
     maturity: designed
     mission: "M1"
@@ -216,6 +225,198 @@ capabilities:
       - "Multi-channel lead capture (Facebook, NextDoor) (Month 6+)"
     created: "2026-07-10"
     last_updated: "2026-07-10"
+
+  # ---------------------------------------------------------------
+  # CAP-006 — Pet-waste cleanup (Mission 1 pilot service line)
+  # ---------------------------------------------------------------
+  # Ratified by governance/decisions/0065-pet-waste-service-ratification.md
+  # on 2026-07-28 as a Mission 1 service line for the duration of the
+  # paid-acquisition pilot (D-0064). Reverts to status=reserved if the
+  # pilot aborts before the first paying customer is onboarded.
+  # STATUS: reserved as of 2026-07-31 per D-0068 (pilot never launched).
+  # Per D-0065 §0.7, this is the documented revert path.
+  - cap_id: cap_pet_waste_cleanup
+    name: "Weekly residential pet-waste cleanup"
+    owner_agent: operations
+    status: reserved
+    version: 0.1.0
+    maturity: designed
+    mission: "M1"
+    description: |
+      Weekly residential pet-waste cleanup. Yard visit, scoop and bag
+      all dog waste, off-yard disposal in household trash (or haul-off
+      by arrangement). Pilot service line for the paid-acquisition
+      test per governance/decisions/0064-paid-acquisition-pilot.md.
+    pricing:
+      first_cleanup_usd: 7.50
+      recurring_weekly_usd: 15.00
+      estimated_gross_margin_pct: 70
+    inputs:
+      - "Property record (yard size, dog count, gate access)"
+      - "Service frequency (default: weekly)"
+      - "Customer record (name, phone, address, pet notes)"
+      - "Disposal preference (household trash or haul-off)"
+    outputs:
+      - "Job record (date, duration, yard condition photo optional)"
+      - "Invoice line item (cleaning visit)"
+      - "Next-service-due estimate (7 days)"
+    consumers:
+      - "Scheduling agent (assigns to operator route)"
+      - "Invoicing agent (creates invoice line)"
+      - "Customer success (next-service reminder)"
+    tests:
+      - "scripts/test-capabilities/cap_pet_waste_cleanup.spec.ts (Day 5+)"
+    documentation:
+      - "research/pricing/price-book.yaml (price per visit)"
+      - "agents/operations.md (operational runbook)"
+      - "governance/decisions/0065-pet-waste-service-ratification.md (ratification)"
+    known_limitations:
+      - "Pilot scale: <=5 concurrent customers before route density review"
+      - "No automated lot-size or dog-count measurement (manual on first visit)"
+      - "Weather cancellation policy same as mowing (hurricane mode Day 1 handles named storms only)"
+    roadmap_links:
+      - "Auto-quoting from property polygon area (Month 6)"
+      - "Cross-sell to mowing service (Month 3, after pilot)"
+      - "Subscription cleanup with annual prepay discount (Month 9+)"
+    created: "2026-07-28"
+    last_updated: "2026-07-28"
+
+# -------------------------------------------------------------------
+# POST-PIVOT RESEARCH — v6 ratification-reset candidates (2026-08-01)
+# -------------------------------------------------------------------
+# Per v6 synthesis (output/research/2026-08-01_v6-ratification-reset-synthesis.md),
+# the following capabilities were surfaced from the post-pivot research
+# cycle. They are filed at status=research — meaning the capability has
+# been designed and the Decision Template drafted, but the pilot has NOT
+# been ratified. To activate: steward must ratify D-0070 (LISTING_MEDIA)
+# and/or override D-0071 (REMOTE_NATIONAL_DOWNSIZING DECLINED).
+# Status changes to draft/active ONLY upon steward ratification.
+# These capabilities do NOT count toward mission_specific reusability
+# until status moves out of research.
+
+  # ---------------------------------------------------------------
+  # CAP-007 — Pinellas listing media (post-pivot research candidate)
+  # ---------------------------------------------------------------
+  # STATUS: research as of 2026-08-01 per DRAFT D-0070 (pinellas-listing-media-pilot).
+  # Capability designed for the post-pivot 30-day pilot. NOT yet
+  # ratified by steward. Pilot activation gated on:
+  #   (1) Q5 framing answer (D-0070 §0.6 — central success criterion)
+  #   (2) 22 reflection answers in D-0070 §9 (or authorize defaults)
+  #   (3) Steward ratification of D-0070
+  # To activate: change status to draft, complete spec at
+  # docs/specs/listing-media-pilot-spec.md (DRAFT pending), re-run
+  # scripts/lint-capabilities.ts.
+  - cap_id: cap_listing_media_photo
+    name: "Real-estate listing photography (entry tier: drone-aerial + interior + twilight)"
+    owner_agent: marketing
+    status: research
+    version: 0.1.0
+    maturity: designed
+    mission: "M2_PROSPECTIVE"  # prospective; mission name reserved but not ratified
+    description: |
+      Photo-only listing media for Pinellas County real-estate agents.
+      Drone-aerial hero shot + interior stills + twilight add-on
+      optional. Pricing $250-$300 entry; $150 twilight add-on; $300 cap.
+      Pilot is 30-day reversible, channel-agnostic, gated on
+      ≥3 paid bookings AND ≥$30/hr averaged across all engagements.
+    inputs:
+      - "Listing record (address, MLS link if public, listing agent contact)"
+      - "Service tier selection (entry / entry+twilight)"
+      - "Property access window (drone flight + interior walk-through)"
+      - "Distribution channel (Google Ads / NextDoor / agent-direct / other)"
+    outputs:
+      - "Job record (date, duration, hours-burned, hours-billable, photos delivered)"
+      - "Invoice line item (entry / twilight / both)"
+      - "Margin/hr averaged computation (simple mean across all bookings)"
+      - "Premium-tier evidence tracking ($300+ booking count)"
+    consumers:
+      - "Marketing agent (channel attribution, premium-tier threshold tracking)"
+      - "Operations agent (hour tracking against bookings revenue)"
+      - "Sales agent (lead SLA, premium upsell to 3D/Matterport)"
+    pricing:
+      entry_usd: "250-300"
+      twilight_addon_usd: 150
+      cap_usd: 300
+      premium_threshold_usd: 300
+      premium_tier_evidence_bookings: 5
+    success_criteria:
+      bookings_minimum: 3
+      margin_per_hour_avg_minimum_usd: 30
+      aggregation_rule: "simple_mean_all_bookings"
+      channel_agnostic: true
+    hard_kill_switch:
+      conditions:
+        - "Spend >$300 cap (assumes Google Ads free credit)"
+        - "Margin <$30/hr AND <3 paid bookings at Day 14"
+        - "Scope violation into Mission 1 landscaping"
+        - "Steward unavailable >3 consecutive days"
+    tests:
+      - "scripts/test-capabilities/cap_listing_media_photo.spec.ts (TBD upon D-0070 ratification)"
+    documentation:
+      - "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT, 13 sections)"
+      - "output/research/2026-08-01_v6-ratification-reset-synthesis.md"
+      - "docs/specs/listing-media-pilot-spec.md (DRAFT, TBD)"
+    known_limitations:
+      - "Equipment access precondition required by Day -3 (drone or founder-owned or rented)"
+      - "FAA Part 107 trigger at first repeat engagement (≥3 paid bookings); not Day 1"
+      - "Premium-tier (3D/Matterport) explicitly deferred; ≤5 bookings at $300+ required"
+      - "Entry pricing $250-$300 assumed; v6 saturation finding notes actual market is $149-$200 (SkyView, Tyto, Virtuals1, etc.)"
+    roadmap_links:
+      - "Premium-tier 3D/Matterport add-on at ≥5 paid bookings at $300+ (D-0070 §0.8)"
+      - "Cross-customer upsell to drone-roof-inspection once Part 107 obtained"
+      - "Subscription listing media (annual prepay) post-Day 60"
+    created: "2026-08-01"
+    last_updated: "2026-08-01"
+
+  # ---------------------------------------------------------------
+  # CAP-008 — Remote downsizing concierge (DECLINED post-pivot research)
+  # ---------------------------------------------------------------
+  # STATUS: declined as of 2026-08-01 per DRAFT D-0071 (remote-national-downsizing-DECLINED).
+  # Capability designed for review; primary-source competitive
+  # enumeration (NASMM member directory, Caring Transitions FDD Item 19,
+  # Caring Senior Service A Place for Mom aggregator) refutes the
+  # "unlimited demand" thesis at the foundation level.
+  # To reopen: meet 3 conditions (paid NASMM State of Industry + Caring
+  # Transitions FDD Item 19 + ratified Decision Template).
+  - cap_id: cap_remote_downsizing_concierge
+    name: "Remote national downsizing concierge (declined — see D-0071)"
+    owner_agent: executive
+    status: declined
+    version: 0.1.0
+    maturity: declined
+    mission: "M2_PROSPECTIVE_DECLINED"
+    description: |
+      Remote downsizing concierge coordinating senior move-management,
+      estate sale, junk removal, donation pickup, and relocation
+      logistics for the 65+ population and their adult children.
+      Researched 2026-07-30 to 2026-08-01 across v3/v4/v5/v6 cycles.
+      DECLINED: incumbent franchise aggregator model (Caring Transitions,
+      Caring Senior Service, A Place for Mom, Senior Living Specialists)
+      already saturates the national downsizing market. Local operator
+      margins compressed by aggregator fees; entry-level CAC exceeds
+      gross margin per customer at any reasonable scale.
+    decline_rationale: |
+      Primary-source competitive enumeration (v6 synthesis §H): 26+
+      verified competitors in Pinellas alone; NASMM member directory
+      enumerates 600+ member firms nationally; Caring Transitions
+      franchise system has 250+ territories; A Place for Mom aggregator
+      captures ~70% of senior placement referrals. The "unlimited
+      demand" thesis is refuted at the foundation level by the existing
+      saturation. Confidence 0.85 in decline.
+    reopen_path:
+      conditions:
+        - "Paid NASMM State of Industry report (current year)"
+        - "Caring Transitions FDD Item 19 (current year)"
+        - "Ratified Decision Template"
+      decision_ref: "governance/decisions/0071-remote-national-downsizing-DECLINED.md §6"
+    documentation:
+      - "governance/decisions/0071-remote-national-downsizing-DECLINED.md (DRAFT, 13 sections)"
+      - "output/research/2026-08-01_v6-ratification-reset-synthesis.md §H"
+    known_limitations:
+      - "DECLINED is permanent unless 3 reopen conditions met"
+      - "Steward informal pursuit of downsizing work violates D-0071 §0 + CLAUDE.md hard rule #10"
+    created: "2026-08-01"
+    last_updated: "2026-08-01"
 
 # -------------------------------------------------------------------
 # Reserved capabilities (defined concept, not yet authored)
@@ -260,9 +461,9 @@ reserved:
 # Updated monthly. Tracks what percentage of registered capabilities
 # are reusable across missions vs mission-specific.
 reusability:
-  total_capabilities: 5
-  reserved_capabilities: 4
-  mission_specific: 5  # all 5 landscaping seeds are M1-specific today
+  total_capabilities: 6
+  reserved_capabilities: 10  # 6 active caps + 4 reserved (all moved to reserved per D-0068)
+  mission_specific: 6  # all 6 landscaping seeds are M1-specific today
   reusable_across_missions: 0
   reusability_pct: 0.0
   target_by_month_6: 0.60
@@ -271,3 +472,22 @@ reusability:
     Mission 2 (whatever it ends up being). Refactor into
     `platform/packages/` and mark them reusable. This number is the
     single most important chart for proving the charter is working.
+
+# -------------------------------------------------------------------
+# POST-PIVOT ARCHIVE — capability-preservation note (D-0068)
+# -------------------------------------------------------------------
+# 2026-07-31: D-0068 (landscape-capability-archive) ratified. All 6
+# active capabilities (cap_mowing_standard, cap_edging_hard_edge,
+# cap_mulching_install, cap_hedge_trim, cap_lead_capture_gbp,
+# cap_pet_waste_cleanup) and the 4 reserved capabilities moved to
+# status=reserved. Pet-waste reverted to reserved per D-0065 §0.7
+# (the documented revert path for pilot abort).
+#
+# To resume landscaping work:
+#   1. Read output/plans/RESUMING.md (the resume procedure).
+#   2. Change status back to active/draft for the capabilities you want.
+#   3. Re-run scripts/lint-capabilities.ts to verify schema.
+#   4. Write a D-0069 Pilot Outcome ADR per D-0064 §6 before any
+#      first ad spend.
+#   5. Update the last_updated date to the resume date.
+# -------------------------------------------------------------------

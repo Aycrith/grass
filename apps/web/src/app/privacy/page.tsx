@@ -1,23 +1,22 @@
 /**
  * Privacy page — honest about the actual current data flow.
  *
- * After B-3 + B-3a review: the previous version described a
- * server-side-only PostHog flow that did NOT match reality. The
- * layout actually mounts:
+ * 2026-07-31 pivot (D-0067): ConsentBanner + AnalyticsProvider +
+ * GoogleAnalytics + MetaPixel were removed from the layout (per
+ * D-0064 §0.9 hard-stop: no GA4, no Meta Pixel, no client-side
+ * analytics tags). The only analytics fire-path is the server-side
+ * PostHog `lead_captured` event fired by `/api/lead` — no consent
+ * gate, no client-side script, no third-party cookies.
  *
- *   - ConsentBanner (always visible at the bottom; Accept / Reject /
- *     Manage choices persist in localStorage as `grass:analytics-consent`
- *     with version `v1`)
- *   - AnalyticsProvider which composes:
- *     - GoogleAnalytics (loads gtag.js from googletag.net after consent,
- *       consent-mode v2 default-deny before script load; sets _ga / _ga_*)
- *     - MetaPixel (loads fbevents.js from connect.facebook.net after
- *       consent; sets _fbp)
- *
- * Plus, on every form submit:
- *   - Server-side PostHog `lead_captured` event (no consent gate,
- *     keyed by lead.id — analytics sub-processor)
+ * What flows:
+ *   - Server-side PostHog `lead_captured` event (keyed by lead.id,
+ *     analytics sub-processor; no PII beyond what was submitted)
  *   - grass_attribution_v1 localStorage (30-day TTL, no consent gate)
+ *   - No GA4, no Meta Pixel, no client-side tracking, no third-party
+ *     cookies set by this site.
+ *
+ * The privacy copy below documents this current posture. See
+ * `output/plans/RESUMING.md` and D-0067/D-0068 for the resume path.
  */
 
 import { Container, Section } from '@/components/site';
@@ -72,12 +71,6 @@ export default function PrivacyPage() {
               consent gate — PostHog receives only what is in your lead record (which you
               provided by submitting the form).
             </li>
-            <li>
-              <strong>Analytics consent choice (<code>grass:analytics-consent</code>, v1):</strong>
-              when the consent banner appears at the bottom of any page, your choice (Accept,
-              Reject, or Manage) is stored in localStorage. The choice is remembered on
-              subsequent visits. You can change it at any time via the banner.
-            </li>
           </ul>
 
           <h2>How we use it</h2>
@@ -91,50 +84,30 @@ export default function PrivacyPage() {
             </li>
           </ul>
 
-          <h2>Client-side analytics (consent-gated)</h2>
+          <h2>Client-side analytics (none — server-side PostHog only)</h2>
           <p>
-            When you accept the consent banner, two third-party scripts load in your browser:
+            As of 2026-07-31, this site does <strong>not</strong> load Google Analytics, Meta
+            Pixel, or any other third-party advertising or tracking script in your browser.
+            There is no consent banner because no third-party scripts are loaded. See
+            governance/decisions/0067-pilot-pause-and-preservation.md for the rationale.
           </p>
           <ul>
             <li>
-              <strong>Google Analytics 4 + Google Ads</strong> load{' '}
-              <code>https://www.googletag.net/gtag.js</code>. Google uses the events per its{' '}
-              <a
-                href="https://policies.google.com/privacy"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                privacy policy
-              </a>
-              . We apply consent-mode v2 with a default-deny state — even if you reject the
-              banner, gtag fires <em>cookieless</em> pings (no <code>_ga</code> /
-              <code>_ga_*</code> cookies). Full-fidelity tracking resumes only after Accept.
+              <strong>Server-side PostHog</strong> receives only the lead id, ZIP, landing path,
+              and UTMs on form submission. No PII (email, phone, first/last name, message body)
+              is shipped to PostHog. PostHog is the analytics sub-processor.
             </li>
             <li>
-              <strong>Meta (Facebook) Pixel</strong> loads{' '}
-              <code>https://connect.facebook.net/en_US/fbevents.js</code>. Meta uses the events
-              per its{' '}
-              <a
-                href="https://www.facebook.com/privacy/policy/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                privacy policy
-              </a>
-              . The pixel sets a <code>_fbp</code> cookie. The script does not load and no
-              cookies are set until you accept the consent banner.
+              <strong>Local-storage attribution key</strong> (<code>grass_attribution_v1</code>,
+              30-day TTL) records UTM parameters and first-touch landing path so the lead
+              pipeline can attribute organic and paid sources. Not shared with any third party.
             </li>
           </ul>
           <p>
-            If you reject the banner, neither script runs. Server-side PostHog and the
-            local-storage attribution key still operate (they are functional, not advertising),
-            so the lead form and the attribution pipeline keep working — but no advertising
-            pixels observe your visit.
-          </p>
-          <p>
-            To change your choice, clear the <code>grass:analytics-consent</code> key in your
-            browser&apos;s site data, or re-open the consent banner via the &ldquo;Cookie
-            settings&rdquo; link in the footer (when present).
+            No <code>_ga</code> / <code>_ga_*</code> cookies, no <code>_fbp</code> cookies, no
+            third-party cookies set by this site. If you previously accepted a consent banner
+            when the site had GA4 + Meta Pixel, those third-party cookies may still exist in
+            your browser — clear them via your browser&apos;s site data controls.
           </p>
 
           <h2>What we don&apos;t do</h2>
@@ -190,16 +163,8 @@ export default function PrivacyPage() {
             <li>
               <strong>PostHog</strong> — server-side analytics processor; events are keyed by{' '}
               <code>lead.id</code> and include ZIP and landing path. PostHog is a hosted
-              analytics sub-processor (no self-hosting yet).
-            </li>
-            <li>
-              <strong>Google (gtag.js / GA4 / Google Ads)</strong> — loaded in your browser only
-              after consent is granted. Sets <code>_ga</code> / <code>_ga_*</code> cookies when
-              consented.
-            </li>
-            <li>
-              <strong>Meta (fbevents.js / Facebook Pixel)</strong> — loaded in your browser only
-              after consent is granted. Sets a <code>_fbp</code> cookie when consented.
+              analytics sub-processor (no self-hosting yet). No client-side PostHog script is
+              loaded in your browser.
             </li>
             <li>
               <strong>SMS</strong> uses the steward&apos;s personal number until Twilio binds;
@@ -213,6 +178,11 @@ export default function PrivacyPage() {
               the integration cost.
             </li>
           </ul>
+          <p>
+            As of 2026-07-31 (D-0067 pivot), Google Analytics, Meta Pixel, and all
+            client-side third-party tracking scripts are <strong>not</strong> loaded in your
+            browser. There is no consent banner because no client-side scripts are loaded.
+          </p>
           <p>
             When the deferred items activate (Supabase, Twilio, Resend, Stripe), this section is
             updated to add them as sub-processors (each with a linked privacy policy and a

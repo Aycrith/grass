@@ -13,7 +13,7 @@
   </g>
 
   <!-- Border line (museum mounting sheet) -->
-  <rect x="14" y="14" width="312" height="312" fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.9" opacity="0.55" />
+  <rect x="14" y="14" width="312" height="312" fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.9" opacity="0.95" />
 
   <!-- St. Augustine seedhead (flat scaly spike) -->
   <g transform="translate(170 86)">
@@ -35,7 +35,7 @@
           fill="var(--ll-olive, #6b7d4a)" fill-opacity="0.32" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.9" />
     <!-- Veining (parallel lines down the blade) -->
     <line x1="153" y1="100" x2="166" y2="210" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.55" opacity="0.95" />
-    <line x1="155" y1="100" x2="168" y2="210" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.55" />
+    <line x1="155" y1="100" x2="168" y2="210" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.95" />
     <line x1="151" y1="105" x2="164" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.65" />
   </g>
 
@@ -44,8 +44,8 @@
     <path d="M 170 220 Q 164 160 162 90 Q 162 80 168 78 Q 174 80 174 90 Q 172 160 170 220 Z"
           fill="var(--ll-olive, #6b7d4a)" fill-opacity="0.32" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.9" />
     <line x1="168" y1="90" x2="170" y2="210" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.55" opacity="0.95" />
-    <line x1="165" y1="95" x2="167" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.55" />
-    <line x1="171" y1="95" x2="173" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.55" />
+    <line x1="165" y1="95" x2="167" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.95" />
+    <line x1="171" y1="95" x2="173" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.95" />
   </g>
 
   <!-- Blade 3: center-tallest, straight up (with seedhead) -->
@@ -53,8 +53,8 @@
     <path d="M 170 220 Q 170 150 170 86 L 170 76 L 174 74 L 178 76 L 178 86 Q 176 150 170 220 Z"
           fill="var(--ll-olive, #6b7d4a)" fill-opacity="0.32" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.9" />
     <line x1="174" y1="86" x2="174" y2="210" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.55" opacity="0.95" />
-    <line x1="172" y1="90" x2="172" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.55" />
-    <line x1="176" y1="90" x2="176" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.55" />
+    <line x1="172" y1="90" x2="172" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.95" />
+    <line x1="176" y1="90" x2="176" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.95" />
   </g>
 
   <!-- Blade 4: right-center, slight curve -->
@@ -62,8 +62,8 @@
     <path d="M 170 220 Q 176 160 178 90 Q 178 80 184 78 Q 190 80 188 90 Q 182 160 170 220 Z"
           fill="var(--ll-olive, #6b7d4a)" fill-opacity="0.32" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.9" />
     <line x1="180" y1="90" x2="180" y2="210" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.55" opacity="0.95" />
-    <line x1="183" y1="95" x2="183" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.55" />
-    <line x1="186" y1="95" x2="186" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.55" />
+    <line x1="183" y1="95" x2="183" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.95" />
+    <line x1="186" y1="95" x2="186" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.95" />
   </g>
 
   <!-- Blade 5: rightmost, leaning right -->
@@ -71,7 +71,7 @@
     <path d="M 170 220 Q 184 170 192 100 Q 194 90 188 88 Q 182 90 182 100 Q 178 170 170 220 Z"
           fill="var(--ll-olive, #6b7d4a)" fill-opacity="0.32" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.9" />
     <line x1="187" y1="100" x2="174" y2="210" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.55" opacity="0.95" />
-    <line x1="185" y1="100" x2="172" y2="210" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.55" />
+    <line x1="185" y1="100" x2="172" y2="210" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.95" />
     <line x1="189" y1="105" x2="176" y2="200" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.45" opacity="0.65" />
   </g>
 

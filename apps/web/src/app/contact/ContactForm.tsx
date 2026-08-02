@@ -55,6 +55,29 @@ import styles from './ContactForm.module.css';
 
 interface ContactFormProps {
   source?: string | undefined;
+  /**
+   * Form variant — "full" is the 6-field form (default) used on
+   * /contact and /quote for organic traffic. "compact" is the
+   * 3-field form (name + phone + zip) used on /pet-waste and
+   * any future ad-driven landing variant.
+   *
+   * GTM audit Fix #5: compact form reduces drop-off on paid
+   * traffic by ~30-50% vs the 6-field form. Email + message
+   * are optional in compact mode.
+   */
+  variant?: 'full' | 'compact';
+  /**
+   * When true, the success state includes a second card asking
+   * the customer to leave a Google Business Profile review. Used
+   * on the pet-waste landing page where the lead has just signed
+   * up for a free cleanup — the highest-trust moment to ask.
+   *
+   * The URL is read from `BUSINESS.gbpReviewUrl` (env-driven, set
+   * in `src/lib/business.ts` once GBP is verified). When unset,
+   * the review-ask card is silently hidden — better than a broken
+   * link.
+   */
+  showReviewAsk?: boolean | undefined;
 }
 
 interface FormState {
@@ -90,7 +113,7 @@ const INITIAL_STATE: FormState = {
 const SMS_CONSENT_LABEL =
   'I agree to receive SMS messages from Largo Lawn at the number provided. Message frequency varies. Reply STOP to opt out, HELP for help. Message and data rates may apply.';
 
-export default function ContactForm({ source }: ContactFormProps) {
+export default function ContactForm({ source, variant = 'full', showReviewAsk }: ContactFormProps) {
   const [form, setForm] = useState<FormState>({ ...INITIAL_STATE, source: source ?? 'website' });
   const [phoneTouched, setPhoneTouched] = useState(false);
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
@@ -156,15 +179,20 @@ export default function ContactForm({ source }: ContactFormProps) {
       // Stage 3: spread attribution fields into the lead payload. The
       // server-side validator handles undefined/missing fields gracefully.
       const attribution = form.attribution;
-      const leadPayload = {
+      const leadPayload: Record<string, unknown> = {
         first_name: form.first_name,
-        last_name: form.last_name,
+        // Compact variant omits last_name (saves a field) — for paid
+        // traffic, single-name capture is enough to start a conversation.
+        ...(variant === 'full' && form.last_name ? { last_name: form.last_name } : {}),
         email: form.email,
         phone: form.phone,
         zip: form.zip,
-        message: form.message,
+        ...(variant === 'full' && form.message ? { message: form.message } : {}),
         source: attribution?.source ?? form.source,
-        sms_consent: form.sms_consent,
+        // SMS consent is required for the auto-text-back flow. In compact
+        // mode we default to true (the offer is "free cleanup" which
+        // requires text reply); in full mode the user has to check the box.
+        sms_consent: variant === 'compact' ? true : form.sms_consent,
         ...(attribution?.utm_source !== undefined ? { utm_source: attribution.utm_source } : {}),
         ...(attribution?.utm_medium !== undefined ? { utm_medium: attribution.utm_medium } : {}),
         ...(attribution?.utm_campaign !== undefined
@@ -195,6 +223,9 @@ export default function ContactForm({ source }: ContactFormProps) {
         setErrorMessage(data.error ?? 'Something went wrong. Please try again or call us.');
         return;
       }
+      // Client-side fire path for `generate_lead` was removed at pivot
+      // (2026-07-31). Per D-0064 §0.9: server-side PostHog only.
+      // The /api/lead route still fires the PostHog `lead_captured` event.
       setStatus('success');
     } catch (err) {
       setStatus('error');
@@ -203,21 +234,46 @@ export default function ContactForm({ source }: ContactFormProps) {
   }
 
   if (status === 'success') {
+    const reviewUrl = BUSINESS.gbpReviewUrl;
     return (
-      <Card variant="insight">
-        <div className={cn(styles.successIconRow)}>
-          <CheckCircle2 size={28} aria-hidden="true" className={cn(styles.successIcon)} />
-          <h2 className={cn(styles.successHeading)}>Thanks, {form.first_name}!</h2>
-        </div>
-        <p className={cn(styles.successBody)}>
-          We text or email within 5 minutes during business hours (Mon-Fri 7a-5p, Sat 8a-2p). After
-          hours we&apos;ll reply first thing next business morning. For urgent requests, call{' '}
-          <a href={`tel:${BUSINESS.phoneTel}`} className={cn(styles.successLink)}>
-            {BUSINESS.phone}
-          </a>
-          .
-        </p>
-      </Card>
+      <>
+        <Card variant="insight">
+          <div className={cn(styles.successIconRow)}>
+            <CheckCircle2 size={28} aria-hidden="true" className={cn(styles.successIcon)} />
+            <h2 className={cn(styles.successHeading)}>Thanks, {form.first_name}!</h2>
+          </div>
+          <p className={cn(styles.successBody)}>
+            We text or email within 5 minutes during business hours (Mon-Fri 7a-5p, Sat 8a-2p). After
+            hours we&apos;ll reply first thing next business morning. For urgent requests, call{' '}
+            <a href={`tel:${BUSINESS.phoneTel}`} className={cn(styles.successLink)}>
+              {BUSINESS.phone}
+            </a>
+            .
+          </p>
+        </Card>
+        {showReviewAsk && reviewUrl ? (
+          <Card variant="insight">
+            <div className={cn(styles.successIconRow)}>
+              <CheckCircle2 size={28} aria-hidden="true" className={cn(styles.successIcon)} />
+              <h3 className={cn(styles.successHeading)}>One more thing — after your cleanup.</h3>
+            </div>
+            <p className={cn(styles.successBody)}>
+              If you were happy with the work, a 30-second Google review helps a lot. It&apos;s
+              the single biggest thing that gets a small business like mine in front of more
+              neighbors. Direct link:{' '}
+              <a
+                href={reviewUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(styles.successLink)}
+              >
+                Leave a review
+              </a>
+              .
+            </p>
+          </Card>
+        ) : null}
+      </>
     );
   }
 
@@ -231,31 +287,40 @@ export default function ContactForm({ source }: ContactFormProps) {
           onChange={(e) => update('first_name', e.target.value)}
           autoComplete="given-name"
         />
-        <Input
-          label="Last name"
-          value={form.last_name}
-          onChange={(e) => update('last_name', e.target.value)}
-          autoComplete="family-name"
-        />
+        {variant === 'full' ? (
+          <Input
+            label="Last name"
+            value={form.last_name}
+            onChange={(e) => update('last_name', e.target.value)}
+            autoComplete="family-name"
+          />
+        ) : null}
       </div>
-      <Input
-        label="Email"
-        type="email"
-        required
-        value={form.email}
-        onChange={(e) => update('email', e.target.value)}
-        autoComplete="email"
-        placeholder="you@email.com"
-      />
+      {variant === 'full' ? (
+        <Input
+          label="Email"
+          type="email"
+          required
+          value={form.email}
+          onChange={(e) => update('email', e.target.value)}
+          autoComplete="email"
+          placeholder="you@email.com"
+        />
+      ) : null}
       <Input
         label="Phone"
         type="tel"
+        required={variant === 'compact'}
         value={form.phone}
         onChange={(e) => update('phone', e.target.value)}
         onBlur={() => setPhoneTouched(true)}
         autoComplete="tel"
         placeholder="(727) 313-8011"
-        helper="Optional, but a text is the fastest way to quote you."
+        helper={
+          variant === 'compact'
+            ? "We'll text you to set up your free cleanup."
+            : 'Optional, but a text is the fastest way to quote you.'
+        }
       />
       <Input
         label="ZIP code"
@@ -266,26 +331,35 @@ export default function ContactForm({ source }: ContactFormProps) {
         autoComplete="postal-code"
         placeholder="33771"
         helper={
-          <>
-            We mow across {BUSINESS.service_area_zips.join(', ')}. Outside that? We may still be
-            able to help — leave a note.
-          </>
+          variant === 'compact' ? (
+            <>We cover {BUSINESS.service_area_zips.join(', ')}.</>
+          ) : (
+            <>
+              We mow across {BUSINESS.service_area_zips.join(', ')}. Outside that? We may still be
+              able to help — leave a note.
+            </>
+          )
         }
       />
-      <Input
-        label="Tell us about your yard"
-        type="textarea"
-        value={form.message}
-        onChange={(e) => update('message', e.target.value)}
-        placeholder="Lot size, services needed, anything we should know (dogs, gate code, etc.)"
-        rows={4}
-      />
+      {variant === 'full' ? (
+        <Input
+          label="Tell us about your yard"
+          type="textarea"
+          value={form.message}
+          onChange={(e) => update('message', e.target.value)}
+          placeholder="Lot size, services needed, anything we should know (dogs, gate code, etc.)"
+          rows={4}
+        />
+      ) : null}
 
       {/* D-0066 SMS consent — only required when a phone number is provided.
           When phone is blank, the consent is irrelevant (we'll email) so the
           checkbox is hidden. The phone blur tracks whether the user has typed
-          a value so the consent appears immediately as they fill the field. */}
-      {form.phone.trim().length > 0 ? (
+          a value so the consent appears immediately as they fill the field.
+          In compact (ad-driven) mode the consent is auto-granted because the
+          offer requires text reply; we still render the disclosure line so
+          the user knows what they're agreeing to. */}
+      {variant === 'full' && form.phone.trim().length > 0 ? (
         <Checkbox
           label={SMS_CONSENT_LABEL}
           checked={form.sms_consent}
@@ -297,6 +371,12 @@ export default function ContactForm({ source }: ContactFormProps) {
               : undefined
           }
         />
+      ) : null}
+      {variant === 'compact' ? (
+        <p className={cn(styles.legal)}>
+          By submitting, you agree to receive SMS from Largo Lawn at the number above. Message
+          frequency varies. Reply STOP to opt out, HELP for help. Message and data rates may apply.
+        </p>
       ) : null}
 
       {status === 'error' ? (
