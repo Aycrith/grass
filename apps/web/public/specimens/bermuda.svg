@@ -13,7 +13,7 @@
   </g>
 
   <!-- Border -->
-  <rect x="14" y="14" width="312" height="312" fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.9" opacity="0.55" />
+  <rect x="14" y="14" width="312" height="312" fill="none" stroke="var(--ll-sepia, #5a3e1f)" stroke-width="0.9" opacity="0.95" />
 
   <!-- BERMUDA SEEDHEAD: 3 finger-like spikes at the top (diagnostic) -->
   <g transform="translate(170 90)">

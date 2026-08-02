@@ -130,6 +130,41 @@
   margin-left: var(--space-3);
 }
 
+/* ---------- Text link (GTM Fix #2) ---------- */
+
+.textLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-left: var(--space-3);
+  padding: 0.45rem 0.85rem;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ll-palm-bark);
+  text-decoration: none;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--ll-palm-bark);
+  transition:
+    background-color var(--motion-duration-fast) var(--motion-easing-default),
+    color var(--motion-duration-fast) var(--motion-easing-default);
+}
+
+.textLink:hover {
+  background: var(--ll-palm-bark);
+  color: var(--ll-shell);
+}
+
+.textLinkLabel {
+  /* Visible on tablet+ */
+}
+
+@media (max-width: 900px) {
+  .textLink {
+    display: none; /* mobile users see it inside the drawer */
+  }
+}
+
 /* ---------- Hamburger (mobile only) ---------- */
 
 .hamburger {

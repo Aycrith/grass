@@ -7,7 +7,7 @@
 # ===================================================================
 
 schema_version: 0.1.0
-last_updated: 2026-07-10
+last_updated: 2026-08-01
 owner_agent: executive
 
 methodology:
@@ -124,6 +124,651 @@ risks:
     mitigation_link: "state/capability-registry.yaml → cap_hurricane_mode (reserved)"
     detection_signal: "NWS hurricane watch or warning for Pinellas County"
     review_date: 2026-07-17
+
+  # ----------------------------------------------------------------
+  # Pilot risks (added 2026-07-29 per D-0064 §7)
+  # ----------------------------------------------------------------
+  - risk_id: R-PILOT-001
+    title: "Unprofitable CAC after first 14 days of paid-acquisition pilot"
+    description: >
+      Per D-0064: pilot runs on Google Search ads for pet-waste cleanup
+      in the 6-ZIP service area. Profitability circuit-breaker pauses
+      the campaign when CAC exceeds 12 weeks of gross profit per customer
+      (~$138). Risk: early CAC reads above ceiling, indicating either
+      targeting failure (wrong keywords/geo) or offer failure (no
+      conversion at $7.50 first-cleanup price point).
+    likelihood: 4
+    impact: 4
+    risk_score: 16
+    owner_agent: marketing
+    mitigation:
+      - "Profitability circuit-breaker: pause campaign when CAC > $138/customer."
+      - "Manual daily spend check; weekly CAC reconciliation."
+      - "Pause campaign if <3 qualified leads by Day 7."
+      - "Pause campaign if zero booked jobs by Day 14."
+    mitigation_link: "governance/decisions/0064-paid-acquisition-pilot.md §6"
+    detection_signal: "GA4/Google Ads CAC exceeds $138/customer at Day 7 or Day 14"
+    review_date: 2026-08-29
+
+  - risk_id: R-PILOT-002
+    title: "Google new-account free credit not actually available"
+    description: >
+      Per D-0064: pilot assumes Google Search new-account $500 free
+      credit. The credit amount is typical but not guaranteed. If the
+      credit is denied or smaller, the pilot must operate on cash.
+    likelihood: 3
+    impact: 4
+    risk_score: 12
+    owner_agent: marketing
+    mitigation:
+      - "Treat credits as zero until claimed."
+      - "Cap first-month spend at $0 until credit confirmation."
+      - "If credit denied, request explicit steward approval before any cash spend."
+    mitigation_link: "governance/decisions/0064-paid-acquisition-pilot.md §2"
+    detection_signal: "Google Ads account shows no credit balance after 7 days of account creation"
+    review_date: 2026-08-29
+
+  - risk_id: R-PILOT-003
+    title: "Steward cannot sustain 5-minute lead response SLA"
+    description: >
+      Per D-0064: pilot commits to 5-min response during business hours
+      (Mon-Fri 7a-5p, Sat 8a-2p). Risk: solo founder is unavailable
+      (meeting, off-grid, hurricane prep, sick) and leads go unanswered.
+      Slow response destroys paid-lead conversion.
+    likelihood: 3
+    impact: 5
+    risk_score: 15
+    owner_agent: sales
+    mitigation:
+      - "Honest copy on landing page (5-min business hours, next-morning after hours)."
+      - "Pause campaign during known unavailable windows."
+      - "Auto-acknowledge SMS within 30 seconds regardless of personal-reply window."
+      - "Steward calendar block during active hours."
+    mitigation_link: "governance/decisions/0064-paid-acquisition-pilot.md §0.7"
+    detection_signal: "Average lead response time exceeds 30 minutes for any 24-hour period"
+    review_date: 2026-08-29
+
+  - risk_id: R-PILOT-004
+    title: "Pet-waste service turns out to be unviable (regulation, equipment, demand)"
+    description: >
+      Per D-0065: pet-waste is ratified as a Mission 1 service line for
+      the pilot's duration. Risk: unanticipated regulation, equipment
+      shortage, or zero demand surfaces after ads start.
+    likelihood: 2
+    impact: 4
+    risk_score: 8
+    owner_agent: operations
+    mitigation:
+      - "14-day early read; pause if no qualified leads by Day 7."
+      - "Pilot accepts up to 5 concurrent customers before route density review."
+      - "Capability reverts to status=reserved if pilot aborts pre-customer."
+    mitigation_link: "governance/decisions/0065-pet-waste-service-ratification.md §7"
+    detection_signal: "Zero qualified leads by Day 7 OR zero booked jobs by Day 14"
+    review_date: 2026-08-29
+
+  - risk_id: R-PILOT-005
+    title: "Account-level monthly cap not honored by Google Ads (overspend >2x daily)"
+    description: >
+      Per D-0064: steward acknowledges Google Ads daily budgets are not
+      hard caps and can overspend up to ~2x daily within a month. Risk:
+      a high-traffic day triggers a >2x daily overrun, monthly bill
+      exceeds steward's expected envelope.
+    likelihood: 2
+    impact: 4
+    risk_score: 8
+    owner_agent: marketing
+    mitigation:
+      - "Steward acknowledgement in writing (D-0064 §3.5)."
+      - "Monthly account-level cap set in Google Ads UI as primary control."
+      - "Reconciliation within 7 days of month end."
+      - "Profitability circuit-breaker (R-PILOT-001) caps further overspend risk."
+    mitigation_link: "governance/decisions/0064-paid-acquisition-pilot.md §3.5"
+    detection_signal: "Google Ads UI shows monthly spend exceeding daily cap x 30 by more than 20%"
+    review_date: 2026-08-29
+
+  - risk_id: R-PILOT-006
+    title: "Lead SLA collapse leads to zero qualified conversions"
+    description: >
+      Per D-0064: pilot conversion target is a booked cleanup. Risk:
+      leads arrive, steward cannot respond in time, leads cool, no
+      bookings. CAC calculated from spend without booked revenue
+      looks unbounded.
+    likelihood: 3
+    impact: 4
+    risk_score: 12
+    owner_agent: sales
+    mitigation:
+      - "Auto-acknowledge SMS within 30 seconds regardless of personal-reply window."
+      - "Steward calendar block during active hours."
+      - "Pause campaign if average response time exceeds 30 minutes for any 24-hour period."
+    mitigation_link: "governance/decisions/0064-paid-acquisition-pilot.md §7 (R-PILOT-003 mitigation)"
+    detection_signal: "Booked-job conversion rate below 10% at Day 14"
+    review_date: 2026-08-29
+
+  # ----------------------------------------------------------------
+  # Pet-waste capability risks (added 2026-07-29 per D-0065 §7)
+  # ----------------------------------------------------------------
+  - risk_id: R-CAP-001
+    title: "Pet-waste pilot aborts before first paying customer"
+    description: >
+      Per D-0065: cap_pet_waste_cleanup is ratified as draft for the
+      pilot's duration. If pilot aborts before first paying customer
+      is onboarded, capability reverts to status=reserved.
+    likelihood: 2
+    impact: 3
+    risk_score: 6
+    owner_agent: marketing
+    mitigation:
+      - "Capability reverts to status=reserved per D-0065 §0.7."
+      - "Ledger entry records the abort and revert."
+    mitigation_link: "governance/decisions/0065-pet-waste-service-ratification.md §0.7"
+    detection_signal: "Zero booked jobs by Day 14"
+    review_date: 2026-08-29
+
+  - risk_id: R-CAP-002
+    title: "Pet-waste demand turns out to be thin in 6-ZIP service area"
+    description: >
+      Per D-0065: pet-waste demand assumed from weighted-scores doc
+      ("natural for existing customers"). Risk: actual demand in the
+      6-ZIP service area is below break-even.
+    likelihood: 3
+    impact: 3
+    risk_score: 9
+    owner_agent: marketing
+    mitigation:
+      - "14-day early read; pause if <3 qualified leads by Day 7."
+      - "Day 14 review: pause if zero booked jobs OR CAC above ceiling."
+    mitigation_link: "governance/decisions/0065-pet-waste-service-ratification.md §7"
+    detection_signal: "<3 qualified leads by Day 7"
+    review_date: 2026-08-29
+
+  - risk_id: R-CAP-003
+    title: "Steward physically cannot keep up with concurrent pet-waste cleanups"
+    description: >
+      Per D-0065: pilot accepts up to 5 concurrent customers before
+      route density review. Risk: scheduling conflict with mowing
+      work or unexpected yard conditions exceed per-visit time budget.
+    likelihood: 2
+    impact: 3
+    risk_score: 6
+    owner_agent: operations
+    mitigation:
+      - "Operational envelope <=5 concurrent customers per D-0065 §0.5."
+      - "Pause new-customer acquisition if concurrent count exceeds 5."
+      - "Day 14 route density review before accepting customer 6."
+    mitigation_link: "governance/decisions/0065-pet-waste-service-ratification.md §0.5"
+    detection_signal: "Average per-visit duration exceeds 60 minutes"
+    review_date: 2026-08-29
+
+  - risk_id: R-CAP-004
+    title: "Pet-waste customers do not cross-sell to mowing"
+    description: >
+      Per D-0065: cross-sell to mowing is a stretch goal (roadmap_link).
+      Risk: pet-waste customers never convert to mowing customers,
+      leaving LTV below the assumed $546/year.
+    likelihood: 3
+    impact: 2
+    risk_score: 6
+    owner_agent: marketing
+    mitigation:
+      - "Pilot measures pet-waste conversion only."
+      - "Cross-sell to mowing is a Day 60 review, not a Day 14 review."
+    mitigation_link: "governance/decisions/0065-pet-waste-service-ratification.md §10"
+    detection_signal: "Cross-sell conversion rate below 5% at Day 60"
+    review_date: 2026-09-29
+
+  # ----------------------------------------------------------------
+  # SMS consent risks (added 2026-07-29 per D-0066 §7)
+  # ----------------------------------------------------------------
+  - risk_id: R-SMS-001
+    title: "Lead submits form but forgets to check SMS consent box (lost SMS acknowledgement)"
+    description: >
+      Per D-0066: SMS acknowledgement is sent only when sms_consent=true.
+      Risk: lead expects SMS reply but the box is unchecked, lead receives
+      email-only acknowledgement and concludes the form didn't work.
+    likelihood: 3
+    impact: 2
+    risk_score: 6
+    owner_agent: marketing
+    mitigation:
+      - "Default unchecked is correct (TCPA compliance)."
+      - "Lead still receives email acknowledgement."
+      - "Form copy makes the consequence of unchecking clear."
+    mitigation_link: "governance/decisions/0066-outbound-sms-consent.md §0"
+    detection_signal: "SMS opt-in rate below 50% of submissions"
+    review_date: 2026-08-29
+
+  - risk_id: R-SMS-002
+    title: "SMS-sending path is not A2P 10DLC-registered"
+    description: >
+      Per D-0066: TCPA-compliant consent is captured, but carriers
+      (Verizon, AT&T, T-Mobile) filter unconsented or unregistered
+      traffic under A2P 10DLC rules. Risk: existing SMS-sending path
+      (currently via personal phone per privacy page) is not 10DLC-
+      registered; messages are filtered.
+    likelihood: 4
+    impact: 4
+    risk_score: 16
+    owner_agent: operations
+    mitigation:
+      - "Audit the SMS-sending path before Stage 2 ships."
+      - "If unregistered, register the long code or migrate to a 10DLC-compliant provider."
+      - "Pause SMS acknowledgement until registration confirmed."
+    mitigation_link: "governance/decisions/0066-outbound-sms-consent.md §7"
+    detection_signal: "SMS delivery rate below 80% in test sends"
+    review_date: 2026-08-29
+
+  - risk_id: R-SMS-003
+    title: "STOP/HELP keyword handling fails (lead keeps receiving SMS after opt-out)"
+    description: >
+      Per D-0066: STOP and HELP keywords must be honored at any time
+      after consent is given. Risk: SMS provider or in-house handler
+      fails to process STOP, lead keeps receiving messages, TCPA
+      violation, FCC complaint.
+    likelihood: 2
+    impact: 5
+    risk_score: 10
+    owner_agent: operations
+    mitigation:
+      - "STOP/HELP handling is built into the SMS provider's standard; test before production."
+      - "Manual STOP processing documented for personal-phone fallback path."
+      - "Lead record persistent opt-out state is queryable."
+    mitigation_link: "governance/decisions/0066-outbound-sms-consent.md §3.5"
+    detection_signal: "STOP keyword test in pre-production fails OR lead files opt-out complaint"
+    review_date: 2026-08-29
+
+  - risk_id: R-SMS-004
+    title: "Privacy page not updated; consent capture is non-compliant on paper"
+    description: >
+      Per D-0066: privacy page must be updated to disclose SMS as a
+      contact channel and the consent capture mechanism. Risk: legal
+      defect on paper even if operational behavior is compliant.
+    likelihood: 2
+    impact: 4
+    risk_score: 8
+    owner_agent: compliance
+    mitigation:
+      - "Privacy page update is a Stage 0 deliverable alongside D-0066."
+      - "Privacy page reviewed by operations before Stage 2 ships."
+    mitigation_link: "governance/decisions/0066-outbound-sms-consent.md §3.6"
+    detection_signal: "Privacy page does not mention SMS or consent mechanism"
+    review_date: 2026-08-29
+
+  # ----------------------------------------------------------------
+  # v6 ratification-reset research risks (added 2026-08-01 per DRAFT D-0070/D-0071)
+  # ----------------------------------------------------------------
+  # STATUS: DRAFT — these risks are tied to DRAFT ADRs D-0070 (Pinellas
+  # Listing Media pilot) and D-0071 (REMOTE_NATIONAL_DOWNSIZING DECLINED).
+  # They are NOT yet ratified. They become live risk-register entries
+  # upon steward ratification of either ADR. Mitigation steps reference
+  # the steward-ratification gate explicitly so a future reviewer can
+  # see which risks are pre-committed vs which require activation.
+  #
+  # ID SPACE NOTE: D-0070 §7 also has R-LM-001..010 with DIFFERENT
+  # definitions (D-0070 ADR-internal risk table). On D-0070 ratification,
+  # the §7 risks migrate to the master register with new IDs (R-LM-031..040)
+  # to avoid collision. The state-register R-LM-001..010 risks (this section)
+  # remain the project's research-state risks tied to the ratification gate.
+  # The D-0070 §7 R-LM-009 (Q5 framing unconfirmed) is now RESOLVED 2026-08-01
+  # per steward letter (b) wage replacement — see D-0070 §7 table for status.
+  # ----------------------------------------------------------------
+  - risk_id: R-LM-001
+    title: "Pilot never ratified by steward; research-cycle draft sits unratified"
+    description: >
+      Per DRAFT D-0070: Pinellas Listing Media 30-day pilot is filed as
+      DRAFT pending steward ratification. Without steward action, the
+      research cycle remains as drafts and no pilot activates. Risk:
+      indefinite deferral of new business direction while Mission 1
+      remains paused under D-0067/D-0068.
+    likelihood: 4
+    impact: 2
+    risk_score: 8
+    owner_agent: executive
+    mitigation:
+      - "22 reflection questions in D-0070 §9 framed as MCQ interview (file ready 2026-08-01)."
+      - "Q5 framing question is the blocking ask; surfaces central-success-criterion uncertainty."
+      - "State files (ledger, risk-register, capability-registry) updated to reflect research posture, not pilot activation."
+      - "RESUMING.md still describes Mission 1 resumption; new business direction is independent path."
+    mitigation_link: "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT), output/research/2026-08-01_v6-ratification-reset-synthesis.md"
+    detection_signal: "D-0070 status remains DRAFT >14 days after steward interview prompt"
+    review_date: "2026-08-30"
+
+  - risk_id: R-LM-002
+    title: "Pinellas Listing Media market turns out to be saturated post-launch"
+    description: >
+      Per DRAFT D-0070 §7: v4 saturation finding enumerated 26+ verified
+      competitors in Pinellas County (SkyView Tampa Bay, Tyto, Virtuals1,
+      TruFusion, CS3, ProMedia, Luxury Listing Specialists, Suncoast
+      Media, etc.). Risk: pricing power collapses further or competitors
+      undercut the $250-$300 entry tier before pilot completes.
+    likelihood: 3
+    impact: 4
+    risk_score: 12
+    owner_agent: marketing
+    mitigation:
+      - "Pilot success criterion is NOT zero competitors — it's paid bookings AND ≥$30/hr averaged."
+      - "Twilight add-on ($150) differentiates on timing; competing with daylight-only operators."
+      - "Channel-agnostic distribution (D-0070 §0.4) avoids betting on single channel that competitors own."
+      - "Hard kill-switch at $300 spend cap (D-0070 §0.3) prevents runaway loss."
+    mitigation_link: "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT) §0.6, §7"
+    detection_signal: "Inbound inquiries flat or declining at Day 7 OR competitor pricing under $200 entry"
+    review_date: "2026-08-30"
+
+  - risk_id: R-LM-003
+    title: "Steward cannot sustain $40/hr averaged margin during pilot"
+    description: >
+      Per DRAFT D-0070 §0.6 (per §9.1 Q5 framing answer 2026-08-01 letter b):
+      success criterion includes ≥$40/hr averaged across all booked
+      engagements. Risk: hours-burned (drone flight time, editing,
+      listing prep, client comms) exceeds bookings revenue, margin
+      drops below threshold, pilot aborts at Day 14.
+    likelihood: 3
+    impact: 3
+    risk_score: 9
+    owner_agent: operations
+    mitigation:
+      - "Day-1 hour tracking against bookings revenue (entry $250-$300)."
+      - "Day 14 hard review: if margin <$40/hr AND <3 paid bookings, pause and redesign (D-0070 §6)."
+      - "Premium-tier evidence threshold (≥5 paid bookings at $300+) before scaling (D-0070 §0.8)."
+      - "Aggregation rule: simple mean of all bookings (D-0070 §0.11)."
+    mitigation_link: "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT) §0.6, §0.8, §0.11, §6, §9.1"
+    detection_signal: "Day-7 mid-pilot margin <$30/hr OR hours-burned exceeds bookings revenue"
+    review_date: "2026-08-30"
+
+  - risk_id: R-LM-004
+    title: "Equipment access precondition fails (drone/founder-owned/rented)"
+    description: >
+      Per DRAFT D-0070 §0.2: photo-only pilot requires equipment access
+      pre-launch (drone for aerial hero shots OR founder-owned OR rented
+      for the duration). Risk: equipment is not available on Day 1 of
+      pilot, forcing late-stage scope reduction.
+    likelihood: 2
+    impact: 3
+    risk_score: 6
+    owner_agent: operations
+    mitigation:
+      - "Equipment precondition is a HARD gate (D-0070 §0.2)."
+      - "3D/Matterport deferred — not required for entry-tier pilot (D-0070 §0.9)."
+      - "FAA Part 107 trigger at first repeat engagement (≥3 paid bookings) per D-0070 §0.10."
+      - "Founder owns OR rents at standard Pinellas rate; both options accepted."
+    mitigation_link: "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT) §0.2, §0.9, §0.10"
+    detection_signal: "Equipment not confirmed available by Day -3 of pilot launch"
+    review_date: "2026-08-30"
+
+  - risk_id: R-LM-005
+    title: "Lead SLA collapse (steward cannot sustain 5-min response window)"
+    description: >
+      Per DRAFT D-0070 §0.7: lead SLA is 5-min during business hours,
+      next-morning after hours. Risk: founder is unavailable during
+      peak hours, leads cool, no bookings.
+    likelihood: 3
+    impact: 4
+    risk_score: 12
+    owner_agent: sales
+    mitigation:
+      - "Auto-acknowledge SMS within 30 seconds regardless of personal-reply window."
+      - "Honest copy on listing landing pages ('5-min business hours, next-morning after hours')."
+      - "Pause campaign during known unavailable windows."
+      - "Day 7 mid-pilot SLA measurement (avg response time)."
+    mitigation_link: "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT) §0.7"
+    detection_signal: "Average lead response time >30 minutes for any 24-hour period"
+    review_date: "2026-08-30"
+
+  - risk_id: R-LM-006
+    title: "Google Ads free credit denied or smaller than expected"
+    description: >
+      Per DRAFT D-0070 §0.3: $300 cap assumes Google Ads new-account
+      $500 free credit is honored. Risk: credit is denied or smaller,
+      pilot must operate on cash earlier than planned.
+    likelihood: 3
+    impact: 3
+    risk_score: 9
+    owner_agent: marketing
+    mitigation:
+      - "Treat credit as zero until claimed."
+      - "Cap spend at $0 until credit confirmation (first 7 days)."
+      - "If credit denied, request explicit steward approval before any cash spend."
+      - "Channel-agnostic distribution allows pivoting to NextDoor or Facebook Marketplace if Google Ads is unusable."
+    mitigation_link: "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT) §0.3"
+    detection_signal: "Google Ads account shows no credit balance after 7 days of account creation"
+    review_date: "2026-08-30"
+
+  - risk_id: R-LM-007
+    title: "D-0070 ratification premises refuted by Day-30 actuals"
+    description: >
+      Per DRAFT D-0070 §6: pilot commitment is ratify prior ratification
+      WITH 13 modifications (v6 synthesis). Risk: the v6 cycle
+      materially changed prior premises (26+ competitors vs <5, $149-$200
+      entry pricing vs $300 assumed). Day-30 actuals may further
+      invalidate the modified premises.
+    likelihood: 3
+    impact: 3
+    risk_score: 9
+    owner_agent: research
+    mitigation:
+      - "Day-14 redesign trigger if margin <$400/hr OR <3 paid bookings (D-0070 §6)."
+      - "Re-ratification trigger if Day-1 actuals diverge significantly from v6 baseline."
+      - "Confidence 0.65 explicitly acknowledges foundation-level refutation risk."
+      - "V6 adversarial verification loop re-runs on Day 14 actuals."
+    mitigation_link: "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT) §6, output/research/2026-08-01_v6-ratification-reset-synthesis.md"
+    detection_signal: "Day-7 actuals diverge >30% from v6 baseline projections"
+    review_date: "2026-08-30"
+
+  - risk_id: R-LM-008
+    title: "PREMIUM tier evidence threshold never reached (no $300+ bookings)"
+    description: >
+      Per DRAFT D-0070 §0.8: premium-tier (3D/Matterport) evidence
+      threshold is ≥5 paid bookings at $300+ before scaling. Risk:
+      pilot books only entry-tier ($250-$300), never crosses premium
+      threshold, leaving 3D/Matterport decision pending indefinitely.
+    likelihood: 4
+    impact: 2
+    risk_score: 8
+    owner_agent: marketing
+    mitigation:
+      - "Premium-tier defer is explicit (D-0070 §0.9); pilot can succeed without crossing threshold."
+      - "Premium-tier add-on is a Day 60 review, not a Day 14 review."
+      - "Aggregation rule includes all bookings; entry-tier alone can pass success criterion."
+      - "If 5+ bookings cross threshold, premium add-on ratifies via D-0072."
+    mitigation_link: "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT) §0.8, §0.9"
+    detection_signal: "Day-30 actuals show all bookings in entry tier; no $300+ confirmed"
+    review_date: "2026-09-30"
+
+  - risk_id: R-LM-009
+    title: "Steward physically cannot complete pilot (sick, off-grid, hurricane)"
+    description: >
+      Per DRAFT D-0070 §0: pilot is solo-founder-led. Risk: steward is
+      unavailable for any extended period, pilot stalls, leads cool.
+    likelihood: 2
+    impact: 4
+    risk_score: 8
+    owner_agent: operations
+    mitigation:
+      - "Hard kill-switch pauses campaign automatically at any sign of unavailability (D-0070 §0.12)."
+      - "Auto-acknowledge SMS keeps leads warm during steward absence."
+      - "Hurricane mode (R-HURR-001 cap_hurricane_mode) handles named-storm unavailability."
+      - "30-day pilot envelope allows pause-and-resume within window."
+    mitigation_link: "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT) §0.12, state/capability-registry.yaml → cap_hurricane_mode"
+    detection_signal: "Steward unavailable >3 consecutive days during active pilot window"
+    review_date: "2026-08-30"
+
+  - risk_id: R-LM-010
+    title: "Pilot crosses scope boundary into Mission 1-style landscaping work"
+    description: >
+      Per DRAFT D-0070 §0: pilot is photo-only real-estate listing
+      media. Risk: pilot drift into lawn-care, hedge-trim, mulching
+      (reserved Mission 1 capabilities) reactivates the landscaping
+      workstream without explicit D-0068 reopening.
+    likelihood: 2
+    impact: 3
+    risk_score: 6
+    owner_agent: executive
+    mitigation:
+      - "Pilot scope is photo-only; landscape-adjacent work is explicit scope-violation trigger."
+      - "Hard kill-switch on scope violation (D-0070 §0.12)."
+      - "Mission 1 capabilities remain status=reserved per D-0068; no implicit reopening."
+      - "RESUMING.md procedure remains the only path to Mission 1 reactivation."
+    mitigation_link: "governance/decisions/0070-pinellas-listing-media-pilot.md (DRAFT) §0, governance/decisions/0068-landscape-capability-archive.md"
+    detection_signal: "Pilot engagements include landscaping service items OR customer inquiries for lawn-care"
+    review_date: "2026-08-30"
+
+  - risk_id: R-DOWNSIZING-001
+    title: "D-0071 DECLINED but market conditions change (reopen triggers misjudged)"
+    description: >
+      Per DRAFT D-0071: REMOTE_NATIONAL_DOWNSIZING is DECLINED based
+      on primary-source competitive enumeration (NASMM member directory,
+      Caring Transitions FDD Item 19 sampling, Caring Senior Service
+      aggregator model). Risk: reopen conditions (paid NASMM State of
+      Industry, Caring Transitions FDD Item 19, ratified Decision
+      Template) misjudge the threshold for reopening.
+    likelihood: 2
+    impact: 3
+    risk_score: 6
+    owner_agent: executive
+    mitigation:
+      - "3-condition reopen path explicitly documented (D-0071 §6)."
+      - "Confidence 0.85 reflects primary-source refutation quality."
+      - "Reopen trigger requires a NEW ratified Decision Template, not just file an observation."
+      - "NASMM State of Industry report is the primary demand-side evidence."
+    mitigation_link: "governance/decisions/0071-remote-national-downsizing-DECLINED.md (DRAFT) §6"
+    detection_signal: "Steward opens new downsizing investigation without meeting the 3 reopen conditions"
+    review_date: "2026-09-01"
+
+  - risk_id: R-DOWNSIZING-002
+    title: "NASMM or Caring Transitions market data releases after D-0071 that refutes the DECLINED posture"
+    description: >
+      Per DRAFT D-0071: DECLINED posture based on current 2026-08-01
+      NASMM member directory snapshot and Caring Transitions FDD Item
+      19 sampling. Risk: a subsequent NASMM State of Industry report or
+      Caring Transitions FDD Item 19 update shows material market
+      change (e.g., regional unsaturation).
+    likelihood: 2
+    impact: 2
+    risk_score: 4
+    owner_agent: research
+    mitigation:
+      - "Reopen path explicitly includes paid NASMM State of Industry acquisition."
+      - "Decision Template ratification required for reopen; cannot be auto-triggered."
+      - "D-0071 §10 acceptance criteria includes '...or decline to reopen after NASMM State of Industry publication'."
+      - "V6 research artifact at output/research/2026-08-01_v6-ratification-reset-synthesis.md preserves the foundation-level refutation for future re-evaluation."
+    mitigation_link: "governance/decisions/0071-remote-national-downsizing-DECLINED.md (DRAFT) §6, §10"
+    detection_signal: "NASMM publishes new State of Industry report with Pinellas-specific data OR Caring Transitions files new FDD Item 19"
+    review_date: "2026-12-01"
+
+  - risk_id: R-DOWNSIZING-003
+    title: "Steward pursues downsizing informally without ratifying a new ADR"
+    description: >
+      Per DRAFT D-0071: DECLINED posture requires explicit steward
+      ratification to override. Risk: steward informally pursues
+      downsizing work (e.g., takes a downsizing client) without
+      ratifying a new Decision Template, eroding the charter principle
+      of evidence-before-action.
+    likelihood: 2
+    impact: 3
+    risk_score: 6
+    owner_agent: executive
+    mitigation:
+      - "CLAUDE.md hard rule #10: 'No irreversible decision without a Decision Template entry that has been ratified'."
+      - "Pilot exception (constitution/charter-amendments/pilot-exception.md) does NOT apply to archived research."
+      - "D-0071 §0 explicitly states 'any new downsizing work requires a new Decision Template ratified before first customer commitment'."
+      - "Quarterly charter review includes check for unratified work."
+    mitigation_link: "governance/decisions/0071-remote-national-downsizing-DECLINED.md (DRAFT) §0, CLAUDE.md hard rule #10"
+    detection_signal: "Downsizing-related customer engagements without a ratified ADR in governance/decisions/"
+    review_date: "2026-09-01"
+
+  - risk_id: R-DOWNSIZING-004
+    title: "SMB_COMPLIANCE reopens independently via steward direction"
+    description: >
+      Per v6 synthesis §F: SMB_COMPLIANCE was archived as part of the
+      v6 ratification-reset cycle. Risk: steward directs independent
+      SMB_COMPLIANCE research without filing a new Decision Template.
+    likelihood: 2
+    impact: 2
+    risk_score: 4
+    owner_agent: research
+    mitigation:
+      - "SMB_COMPLIANCE archive decision is in v6 synthesis, not a standalone ADR; explicit Decision Template required to override."
+      - "v6 disposition table (synthesis §K) records SMB_COMPLIANCE archive reasoning for future traceability."
+      - "CLAUDE.md hard rule #1 (research before assumptions) and #2 (evidence before opinions) apply."
+      - "Quarterly charter review includes check for unratified research reopening."
+    mitigation_link: "output/research/2026-08-01_v6-ratification-reset-synthesis.md §F, §K"
+    detection_signal: "SMB_COMPLIANCE-related research artifacts filed without accompanying Decision Template"
+    review_date: "2026-09-01"
+
+  # ----------------------------------------------------------------
+  # Pivot risk (added 2026-07-31 per D-0067)
+  # ----------------------------------------------------------------
+  - risk_id: R-PIVOT-001
+    title: "Repo-forgetting: GRASS resume fails because of working-tree rot or lost context"
+    description: >
+      Owner pivoting to a new business/strategy. Risk: GRASS repo sits
+      idle for weeks/months; working-tree drift accumulates; context
+      is lost; steward (or future agent) cannot resume cleanly. Mitigation:
+      (1) D-0067 commits every pivot-state change in one commit + tag
+      pre-pivot-2026-07-31; (2) output/plans/RESUMING.md gives a
+      step-by-step resume procedure; (3) state ledger, risk register,
+      and capability registry all annotated with pivot status; (4) D-0062
+      drift items remain deferred to Q3 2026 per the original D-0062 ADR.
+    likelihood: 3
+    impact: 4
+    risk_score: 12
+    owner_agent: knowledge
+    mitigation:
+      - "Single commit + tag pre-pivot-2026-07-31 captures the pivot state."
+      - "output/plans/RESUMING.md is the contract for resume."
+      - "Status=PAUSED annotations on R-PILOT-*/R-CAP-*/R-SMS-* risks."
+      - "Capabilities moved to status=reserved per D-0068."
+      - "Sprint hygiene: future in-progress work should commit at least weekly."
+    mitigation_link: "governance/decisions/0067-pilot-pause-and-preservation.md, governance/decisions/0068-landscape-capability-archive.md, output/plans/RESUMING.md"
+    detection_signal: "Working tree has stale 'in-progress' state for >30 days OR RESUMING.md not found at expected path"
+    review_date: 2027-01-31
+
+# ===================================================================
+# Honorable mentions (not scored, tracked for awareness)
+# ===================================================================
+  - risk_id: RR-AI-01
+    title: "AI model provider outage (>6h continuous)"
+    description: >
+      Per content/facts.yaml ai-model-fallback + D-0063: continuous outage of
+      the primary AI model family (currently Claude/Anthropic) lasting more
+      than 6 hours triggers the manual operating window. Anthropic incident
+      durations in June-July 2026 ranged 9-17h per StatusGator tracking, so
+      every real-world outage in that window would have triggered the manual
+      window. Likelihood 3 (possible), impact 4 (major — 13 agents depend on
+      AI for routing, drafting, and execution).
+    likelihood: 3
+    impact: 4
+    risk_score: 12
+    owner_agent: engineering
+    mitigation:
+      - "Secondary-model-same-family fallback (e.g., Haiku when primary unavailable)."
+      - ">6h continuous outage threshold raised from 4h → 6h on 2026-07-28 to match real incident durations."
+      - "Manual operating window documented in facts.yaml ai-model-fallback notes."
+      - "Doctrine is durable artifact, not provider — provider rename is a facts.yaml version bump, not a new ADR."
+    mitigation_link: "content/facts.yaml (ai-model-primary, ai-model-fallback) + governance/decisions/0063-claude-anthropic-ai-provider-claim.md"
+    detection_signal: "AI model uptime monitoring (>6h continuous degraded)"
+    review_date: 2026-12-31
+
+  - risk_id: RR-AI-02
+    title: "Agent drift over time (13 agents diverging from doctrine)"
+    description: >
+      As the 13-agent GRASS organization grows in capability, individual agent
+      specs (agents/*.md) may drift from the constitution/02-charter.md and
+      constitution/03-execution-plan.md doctrine. Tells: agent spec edits without
+      corresponding charter amendment; capability-registry edits without decision
+      template entry; spec lint failures accumulating.
+    likelihood: 3
+    impact: 3
+    risk_score: 9
+    owner_agent: knowledge
+    mitigation:
+      - "scripts/lint-agents.ts runs weekly (commit-time lint)."
+      - "charter-compliance.ts aggregator runs weekly; reports gap to executive agent."
+      - "constitution/03-execution-plan.md exit criteria are the structural defense (phase exit requires lint-clean)."
+      - "Quarterly charter review includes drift signal check."
+    mitigation_link: "scripts/lint-agents.ts, scripts/charter-compliance.ts, constitution/03-execution-plan.md"
+    detection_signal: "agent spec lint failures accumulating across >2 weeks"
+    review_date: 2026-12-31
 
 # ===================================================================
 # Honorable mentions (not scored, tracked for awareness)

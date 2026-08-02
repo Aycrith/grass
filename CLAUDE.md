@@ -42,24 +42,28 @@ diff traceability.
 
 ---
 
-## Current phase and next actions
+## Current posture and next actions
 
-**Phase:** 0 — Repository audit and baseline
+**Organizational posture:** Post-pivot archive — researching a new business direction.
 
-**Day-of-Phase:** 3 of 5
+**Preserved Mission 1 phase:** 2 — Landscaping MVP launch (cash-min mode), paused on
+Day 14. The phase was not formally closed.
 
-**Active decisions requiring steward attention:** (mirrored from `state/ledger.yaml`)
-- D-0001 — Pilot Exception ratification (this amendment, in this commit)
-- D-0002 — Tech stack primary selection (Next.js + Supabase + Stripe + Vercel + Jobber)
-- D-0003 — Mission 1 service area (Largo, FL 33771) — already ratified
-- D-0004 — Solo founder / lean operating model — already ratified
+**Phase exit status:** `PAUSED AT PRE-LAUNCH (D-0067)` — the D-0064 paid-acquisition
+pilot never launched; no ad spend, customer commitments, domain purchase, or business
+formation occurred.
+
+**Binding preservation decisions:**
+- D-0064 — Paid-acquisition pilot remains ratified but paused.
+- D-0067 — Pilot pause and repository-preservation posture, ratified 2026-07-31.
+- D-0068 — All six Mission 1 capabilities archived as `status=reserved`, ratified 2026-07-31.
 
 **Immediate next actions:**
-1. Day 3 of 5: Author first 3 agent specs (research, architecture, engineering); instantiate
-   state ledger; seed capability registry.
-2. Day 4: Author remaining 9 agent specs; seed risk register; define KPI taxonomy.
-3. Day 5: Install Tier-1 MCP filesystem server; run smoke test protocol; write audit/phase-0
-   deliverables.
+1. Do not resume landscaping implicitly. The current workstream is research and scoping for a
+   new business direction; it is not yet a ratified new mission.
+2. Before any irreversible action in the new direction, use the Decision Template in
+   `governance/05-decision-framework.md` and obtain steward ratification.
+3. To resume Mission 1, follow `output/plans/RESUMING.md`; D-0069 is the gate to first spend.
 
 ---
 
@@ -122,18 +126,24 @@ Acceptance Criteria per `agents/_schema.md`. Spec is enforced by `scripts/lint-a
 
 ## Capability registry
 
-Every organizational capability is registered in `state/capability-registry.yaml`. 5
-landscaping capabilities are seeded on Day 3 (mowing, edging, mulching, hedge-trim,
-lead-capture). New capabilities are added via PR with the YAML entry, decision_id, and
-test reference. Enforced by `scripts/lint-capabilities.ts`.
+`state/capability-registry.yaml` currently preserves six authored Mission 1 capabilities
+(mowing, edging, mulching, hedge-trim, lead-capture, and pet-waste cleanup) plus four
+conceptual capabilities. All are `status=reserved` under D-0068 and must remain reserved
+unless landscaping is explicitly resumed through `output/plans/RESUMING.md`.
+
+A capability for the new direction must be added through a ratified Decision Template with
+its YAML entry, decision id, documentation, and test reference. Enforcement remains in
+`scripts/lint-capabilities.ts`.
 
 ---
 
 ## Risk register
 
-5 risks seeded on Day 4 per the bootstrap plan. Each risk has likelihood, impact, owner
-agent, mitigation link, and review date. Re-reviewed weekly. Enforced by ledger freshness
-script.
+`state/risk-register.yaml` was last updated 2026-07-31. Mission 1 pilot, capability, and
+SMS risks are preserved in a paused posture. R-PIVOT-001 tracks loss of resumability from
+working-tree rot or context loss; D-0067, D-0068, the `pre-pivot-2026-07-31` tag, and
+`output/plans/RESUMING.md` are its primary mitigations. Re-review cadence remains weekly
+unless a risk record specifies otherwise.
 
 ---
 
@@ -141,7 +151,7 @@ script.
 
 | Tier | Server | When added | Status |
 |---|---|---|---|
-| 1 | `@modelcontextprotocol/server-filesystem` | Day 5 | Pending |
+| 1 | `@modelcontextprotocol/server-filesystem` | Day 5 | Installed |
 | 2 | `server-github` | Month 2 | Deferred |
 | 2 | `server-postgres` | Month 2 | Deferred |
 | 2 | `context7` | Month 2 | Deferred |
@@ -150,7 +160,7 @@ script.
 
 ---
 
-## Tech stack (locked-in for Mission 1)
+## Tech stack (Mission 1 preserved; not inherited automatically)
 
 | Layer | Choice |
 |---|---|
@@ -174,15 +184,16 @@ script.
 
 ---
 
-## Mission 1 (Landscaping — Largo FL 33771)
+## Mission 1 (Landscaping — Largo FL 33771, preserved and paused)
 
+- **Status:** Paused at pre-launch under D-0067; all six authored capabilities are reserved under D-0068.
 - **Service area:** Largo, FL 33771 + adjacent ZIPs (33770, 33778, 33773, 33774, 33756)
 - **First legal service line:** Landscaping WITHOUT fertilization, WITHOUT irrigation,
   WITHOUT pest control (until respective licenses acquired).
 - **Climate:** USDA zone 10a (hot-humid subtropical, year-round mowing).
 - **Hurricane season:** June–November (registered capability, see Day-4 work).
 - **Sales tax:** 7% total (state 6% + Pinellas 1% surtax).
-- **Entity:** To be decided Day 8 (research output).
+- **Entity posture:** Florida single-member LLC was selected in D-0005, but no entity was formed before the pause.
 - **Insurance:** $1M general liability minimum before any field work.
 
 ---
@@ -202,6 +213,9 @@ script.
   first (it must cite at least one research artifact from `research/`).
 - **Do not modify `constitution/01-constitution.md`.** It is immutable. Amendments go in
   `constitution/charter-amendments/`.
+- **Do not reactivate Mission 1 implicitly.** Keep all six landscaping capabilities reserved,
+  preserve the `pre-pivot-2026-07-31` tag, and follow `output/plans/RESUMING.md` for any
+  explicit resumption.
 
 ---
 
@@ -227,5 +241,6 @@ bun run audit:phase-0
 
 | Date | Change | Author |
 |---|---|---|
-| 2026-07-10 | Initial creation. Day-3 of Phase 0. | Steward (with Claude Code) |
+| 2026-07-31 | Root index reconciled to D-0067/D-0068 post-pivot archive posture; Mission 1 paused at pre-launch and all six authored capabilities reserved. | Steward (with Claude Code) |
 | 2026-07-23 | D-0060 five-plane hero architecture (5 commits, +866/-558 lines). Audio dropped, BTS split, 4th cartoon plane (birdbath) + 5th painted plane (fern) added. See governance/decisions/0060-five-plane-hero-architecture.md and content/hero/INTENT.md §2. | Mavis (orchestrator) |
+| 2026-07-10 | Initial creation. Day-3 of Phase 0. | Steward (with Claude Code) |
